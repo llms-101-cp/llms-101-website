@@ -1984,15 +1984,19 @@ function drawConnectors(){
   const svg = document.getElementById('connector-svg');
   svg.innerHTML = '';
   const pairs = [];
-  TREE.root.forEach(bid=>{ if(visibleNodes.has(bid)) pairs.push(['root',bid,'#D2B48C',1.5]); });
+  
+  // Main branches use your theme's Gold/Highlight color
+  TREE.root.forEach(bid=>{ if(visibleNodes.has(bid)) pairs.push(['root',bid,'var(--gold)',1.5]); });
+  
+  // Child branches use your theme's Muted color
   TREE.root.forEach(bid=>{
     (TREE[bid]||[]).forEach(cid=>{
       if(visibleNodes.has(cid)){
-        const color = bid==='math'?'#B8860B':bid==='training'?'#a0623c':bid==='arch'?'#8a7a2a':'#7a5c28';
-        pairs.push([bid,cid,color,1.0]);
+        pairs.push([bid,cid,'var(--muted)',1.0]);
       }
     });
   });
+  
   pairs.forEach(([a,b,color,w])=>{
     if(!POS[a]||!POS[b]) return;
     const x1 = POS[a].x+W/2, y1 = POS[a].y+H;
@@ -2010,7 +2014,6 @@ function drawConnectors(){
     setTimeout(() => line.setAttribute('opacity', w>1.0?'0.6':'0.4'), 10);
   });
 }
-
 /* ══════════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════════ */
