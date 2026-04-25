@@ -58,9 +58,9 @@ collections:
         label: "Theme Colors"
         name: "theme"
         fields:
-          - {label: "Background Color", name: "bg", widget: "color", default: "#FAF8F4"}
-          - {label: "Surface Color (Cards & Sidebars)", name: "surface", widget: "color", default: "#FFFFFF"}
-          - {label: "Main Text Color", name: "text", widget: "color", default: "#3d2a18"}
-          - {label: "Dark Accent (Headers)", name: "brown", widget: "color", default: "#664228"}
-          - {label: "Highlight Accent (Gold)", name: "gold", widget: "color", default: "#B8860B"}
+          - label: "Select Theme"
+            name: "preset"
+            widget: "select"
+            options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest"]
+            default: "Sahel (Default)"
           - {label: "Pale Hover Color", name: "tan_pale", widget: "color", default: "#F5EDD8"}
