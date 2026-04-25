@@ -1495,17 +1495,30 @@ async function loadCMSData() {
       if (res.ok) {
         const data = await res.json();
         const container = document.querySelector(`#page-${pageId} .static-page`);
-        
-        // If the page JSON has body text, render it!
         if (container && data.body) {
-          // We use marked.parse() to turn the CMS Markdown into clean HTML
           container.innerHTML = `<h2>${data.title}</h2><div class="divider"></div>` + marked.parse(data.body);
         }
       }
     } catch(err) {}
   }));
-}
 
+  // 3. Fetch Theme Settings (NEW!)
+  try {
+    const themeRes = await fetch('/content/settings/theme.json');
+    if (themeRes.ok) {
+      const themeData = await themeRes.json();
+      const root = document.documentElement;
+      
+      // If a color exists in the CMS, override the CSS variable
+      if (themeData.bg) root.style.setProperty('--bg', themeData.bg);
+      if (themeData.surface) root.style.setProperty('--surface', themeData.surface);
+      if (themeData.text) root.style.setProperty('--text', themeData.text);
+      if (themeData.brown) root.style.setProperty('--brown', themeData.brown);
+      if (themeData.gold) root.style.setProperty('--gold', themeData.gold);
+      if (themeData.tan_pale) root.style.setProperty('--tan-pale', themeData.tan_pale);
+    }
+  } catch(err) {}
+}
 /* ══════════════════════════════════════════════
    LAYOUT CONFIG
 ══════════════════════════════════════════════ */
