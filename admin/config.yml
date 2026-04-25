@@ -22,3 +22,31 @@ collections:
       - {label: "Has Children?", name: "hasChildren", widget: "boolean", default: false}
       - {label: "Sidebar Title", name: "title", widget: "string"}
       - {label: "Sidebar Body Paragraphs (HTML allowed)", name: "body", widget: "text"}
+
+  - name: "pages"
+    label: "Website Pages"
+    files:
+      - file: "content/pages/beginners.json"
+        label: "AI for Beginners"
+        name: "beginners"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "AI for beginners"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/resources.json"
+        label: "Interesting Resources"
+        name: "resources"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "Interesting Resources"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/about.json"
+        label: "About this site"
+        name: "about"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "About this site"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/contact.json"
+        label: "Contact"
+        name: "contact"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "Contact"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
