@@ -1,0 +1,10 @@
+{
+  "hasChildren": true,
+  "id": "root",
+  "label": "Large Language Models",
+  "sub": "click to explore",
+  "tag": "Overview",
+  "theme": "root",
+  "title": "Large Language Models",
+  "body": "A little website built to help those with no LLM knowledge learn the basics."
+}
