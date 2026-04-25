@@ -58,9 +58,7 @@ collections:
         label: "Theme Colors"
         name: "theme"
         fields:
-          - label: "Select Theme"
-            name: "preset"
-            widget: "select"
-            options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest", "HC Light", "HC Dark"]
-            default: "Sahel (Default)"
-          - {label: "Pale Hover Color", name: "tan_pale", widget: "color", default: "#F5EDD8"}
+          - {label: "Base Theme Preset", name: "preset", widget: "select", options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest", "HC Light", "HC Dark"], default: "Sahel (Default)"}
+          - {label: "Override: Main Text Color", name: "text_override", widget: "color", required: false, hint: "Leave blank to use the theme's default text color."}
+          - {label: "Override: Background Color", name: "bg_override", widget: "color", required: false, hint: "Leave blank to use the theme's default background."}
+          - {label: "Override: Accent/Header Color", name: "brown_override", widget: "color", required: false, hint: "Overrides the dark brown/accent colors."}
