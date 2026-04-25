@@ -61,6 +61,6 @@ collections:
           - label: "Select Theme"
             name: "preset"
             widget: "select"
-            options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest"]
+            options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest", "HC Light", "HC Dark"]
             default: "Sahel (Default)"
           - {label: "Pale Hover Color", name: "tan_pale", widget: "color", default: "#F5EDD8"}
