@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLMs 101</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#B8860B;--gold-lt:#D4A017;--tan:#D2B48C;--tan-pale:#F5EDD8;
+  --dust:#E5C0B0;--smoke:#F5F5F5;--brown:#664228;--brown-lt:#8a5c3a;
+  --bg:#FAF8F4;--surface:#FFFFFF;--border:rgba(102,66,40,0.13);
+  --text:#3d2a18;--muted:#9a7a5e;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden}
+
+/* ── Focus Accessibility ── */
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ── Header ── */
+header{
+  height:60px;display:flex;align-items:center;padding:0 1.5rem;
+  border-bottom:1px solid var(--border);
+  background:rgba(250,248,244,0.96);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:300;gap:1rem;
+}
+.gold-rule{height:2px;background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--tan) 50%,var(--gold) 80%,transparent);opacity:.35}
+.hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:6px;margin-right:.5rem}
+.hamburger span{display:block;width:22px;height:2px;background:var(--brown);border-radius:1px;transition:transform .25s,opacity .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.site-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--brown);letter-spacing:.02em}
+
+/* ── Nav drawer ── */
+#nav-drawer{
+  position:fixed;top:0;left:-280px;width:260px;height:100vh;
+  background:var(--surface);border-right:1px solid var(--border);
+  z-index:400;transition:left .32s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;padding-top:70px;
+}
+#nav-drawer.open{left:0}
+#nav-overlay{display:none;position:fixed;inset:0;background:rgba(61,42,24,.28);z-index:399}
+#nav-overlay.show{display:block}
+.nav-logo{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border)}
+.nav-logo span{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--brown)}
+nav ul{list-style:none;padding:1rem 0}
+nav ul li a{
+  display:block;padding:.85rem 1.5rem;font-size:.88rem;color:var(--brown-lt);
+  text-decoration:none;letter-spacing:.04em;transition:background .15s,color .15s;
+  border-left:3px solid transparent;
+}
+nav ul li a:hover,nav ul li a.active{background:var(--tan-pale);color:var(--brown);border-left-color:var(--gold)}
+nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
+
+/* ── Pages ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── Mind map page ── */
+#page-mindmap{padding:1.5rem;max-width:1400px;margin:0 auto}
+#page-mindmap-inner{
+  position:relative;
+  width:100%;
+  height:80vh;
+  min-height:500px;
+  overflow:hidden;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(102,66,40,0.05);
+}
+#map-canvas{
+  position:absolute;
+  top:0; left:0;
+  width:1200px; /* Fixed logical width */
+  min-height:900px;
+  transform-origin:0 0;
+  will-change:transform;
+}
+
+/* Map Controls */
+.map-controls{
+  position:absolute;
+  bottom:1rem;
+  right:1rem;
+  display:flex;
+  gap:0.4rem;
+  z-index:100;
+}
+.map-controls button{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--brown);
+  width:36px; height:36px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:1.4rem;
+  font-family:monospace;
+  box-shadow:0 2px 8px rgba(102,66,40,0.08);
+  transition:background 0.15s;
+  display:flex; align-items:center; justify-content:center;
+}
+.map-controls button:hover{background:var(--tan-pale)}
+
+/* ── Node boxes ── */
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0); }
+}
+
+.node-box{
+  position:absolute;
+  border-radius:9px;
+  cursor:pointer;
+  user-select:none;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, opacity 0.3s, border-color 0.2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:12px 16px;
+  opacity:0;pointer-events:none;
+  box-shadow:0 1px 4px rgba(102,66,40,.08);
+}
+.node-box.visible{opacity:1;pointer-events:auto}
+.node-box.hidden-child{opacity:0;pointer-events:none}
+.node-box:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(102,66,40,.15);border-color:var(--gold-lt)}
+.node-box.selected { border-color:var(--gold); box-shadow:0 0 0 3px rgba(184,134,11,0.2), 0 4px 14px rgba(102,66,40,.15); }
+.node-box .node-title{font-family:'Jost',sans-serif;font-weight:500;font-size:15px;line-height:1.2}
+.node-box .node-sub{font-family:'Jost',sans-serif;font-weight:400;font-size:11px;margin-top:4px;opacity:0.85}
+.node-box .expand-hint{font-size:10px;margin-top:6px;opacity:.5;letter-spacing:.05em}
+
+/* Hero Intro Mode for Root Node */
+.node-box.node-root.intro-mode {
+  transform: scale(2.2) translateY(50px);
+  z-index: 10;
+  animation: pulse-glow 2.5s infinite;
+}
+.node-box.node-root.intro-mode:hover {
+  animation: none; 
+  transform: scale(2.25) translateY(50px);
+  box-shadow: 0 8px 24px rgba(102,66,40,.2);
+  border-color: var(--gold-lt);
+}
+
+/* colour themes */
+.node-root{background:var(--brown);border:1.5px solid var(--gold);color:var(--tan-pale)}
+.node-root .node-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.03em}
+.node-math{background:#FDF8EC;border:1px solid var(--gold);color:#6b4e08}
+.node-math .node-sub{color:#826620}
+.node-train{background:#FBF0E8;border:1px solid #a0623c;color:#6b3018}
+.node-train .node-sub{color:#8c5230}
+.node-arch{background:#F8F0D8;border:1px solid #8a7a2a;color:#4e3e08}
+.node-arch .node-sub{color:#73641b}
+.node-prompt{background:#F5EDD8;border:1px solid #7a5c28;color:#4a3010}
+.node-prompt .node-sub{color:#634a1d}
+.node-theme{background:#F2EDE4;border:1px solid #8a7060;color:#4a3828}
+.node-theme .node-sub{color:#705b4d}
+
+/* SVG connector lines */
+#connector-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#connector-svg path { transition: opacity 0.4s ease-in; }
+
+/* ── Detail sidebar ── */
+#sidebar{
+  position:fixed;right:-440px;top:0;width:420px;height:100vh;
+  background:var(--surface);border-left:1px solid var(--border);
+  box-shadow:-4px 0 24px rgba(61,42,24,0.08);
+  overflow:hidden;transition:right .35s cubic-bezier(.4,0,.2,1);z-index:200;
+  display:flex;flex-direction:column;
+}
+#sidebar.open{right:0}
+.sidebar-head{background:var(--brown);padding:1.8rem 1.6rem 1.4rem;position:relative;flex-shrink:0}
+.sidebar-head::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--tan))}
+#sb-close{position:absolute;top:.9rem;right:.9rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(245,237,216,.8);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+#sb-close:hover{background:rgba(255,255,255,.22)}
+#sb-tag{display:inline-block;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 9px;border-radius:20px;margin-bottom:.5rem;font-weight:500;background:rgba(184,134,11,.2);color:#D4A017;border:1px solid rgba(184,134,11,.3)}
+#sb-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;line-height:1.2;color:#F5EDD8}
+.sidebar-body{padding:1.4rem 1.6rem;flex:1;overflow-y:auto}
+.sb-section-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:1rem 0 .5rem}
+#sb-body{font-size:.86rem;line-height:1.65;color:var(--brown-lt)}
+#sb-body p{margin-bottom:.9rem}
+#sb-body strong{color:var(--brown);font-weight:500}
+.src-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(184,134,11,.3);padding-bottom:1px;transition:color .15s}
+.src-link:hover{color:var(--brown)}
+.src-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.3rem}
+.example-pill{
+  display:inline-block;margin:.2rem .2rem .2rem 0;padding:4px 12px;
+  border-radius:20px;border:1px solid var(--border);font-size:.73rem;
+  color:var(--brown-lt);background:var(--tan-pale);cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.example-pill:hover{background:var(--dust);border-color:var(--gold)}
+
+/* side overlay */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(61,42,24,.15);z-index:199}
+#sb-overlay.show{display:block;backdrop-filter:blur(2px)}
+
+/* ── Static pages ── */
+.static-page{padding:3rem 2rem 5rem;max-width:760px;margin:0 auto}
+.static-page h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;color:var(--brown);margin-bottom:1.5rem}
+.static-page h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--brown);margin:2rem 0 .6rem}
+.static-page p{font-size:.9rem;line-height:1.65;color:var(--brown-lt);margin-bottom:1rem}
+.static-page a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(184,134,11,.3)}
+.static-page a:hover{color:var(--brown)}
+.resource-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1rem}
+.resource-card h4{font-weight:500;font-size:.9rem;color:var(--brown);margin-bottom:.3rem}
+.resource-card p{font-size:.82rem;margin-bottom:.5rem}
+.resource-card a{font-size:.8rem}
+.tag-pill{display:inline-block;padding:2px 9px;border-radius:20px;background:var(--tan-pale);border:1px solid var(--border);font-size:.7rem;color:var(--muted);margin:.15rem}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--tan),transparent);margin:2rem 0;opacity:.5}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--tan);border-radius:2px}
+
+@media(max-width:640px){
+  #sidebar{width:100%;right:-100%}
+  #page-mindmap{padding:1rem .5rem}
+  #page-mindmap-inner{height:85vh; border-radius:8px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="site-title">LLMs 101</span>
+</header>
+<div class="gold-rule"></div>
+
+<div id="nav-overlay" onclick="closeNav()"></div>
+<div id="nav-drawer">
+  <div class="nav-logo"><span>Navigation</span></div>
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showPage('beginners',this)" tabindex="0"><span class="nav-icon">💡</span>AI for beginners</a></li>
+      <li><a href="#" class="active" onclick="showPage('mindmap',this)" tabindex="0"><span class="nav-icon">🗺</span>LLMs 101 Mind Map</a></li>
+      <li><a href="#" onclick="showPage('resources',this)" tabindex="0"><span class="nav-icon">📚</span>Interesting Resources</a></li>
+      <li><a href="#" onclick="showPage('about',this)" tabindex="0"><span class="nav-icon">ℹ️</span>About this site</a></li>
+      <li><a href="#" onclick="showPage('contact',this)" tabindex="0"><span class="nav-icon">✉️</span>Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+<div class="page" id="page-beginners">
+<div class="static-page">
+  <h2>AI for beginners</h2>
+  <p>Plain English explanations of the most important AI concepts — no technical background required.</p>
+  <div class="divider"></div>
+
+  <h3>What actually is AI?</h3>
+  <p>AI (Artificial Intelligence) is software that can perform tasks that would normally require human intelligence — like understanding language, recognising images, or making decisions. Modern AI doesn't "think" the way humans do. Instead, it finds patterns in enormous amounts of data and uses those patterns to make predictions.</p>
+
+  <h3>What is a Large Language Model?</h3>
+  <p>A Large Language Model (LLM) is a type of AI trained specifically on text. It reads trillions of words — books, websites, code, articles — and learns the patterns of language so well that it can generate new text that sounds human. When you type a question into ChatGPT or Claude, an LLM is reading your words and predicting, one word at a time, what a good response would look like.</p>
+
+  <h3>How does ChatGPT know things?</h3>
+  <p>It doesn't "know" things the way you know your own phone number. It has learned statistical patterns from a huge amount of text. When it seems to know a fact, it's really predicting what words are likely to follow your question, based on the patterns in its training data. This is why it can sometimes sound very confident while being completely wrong — a phenomenon called <strong>hallucination</strong>.</p>
+
+  <h3>What's the difference between ChatGPT, Claude, and Gemini?</h3>
+  <p>They are all LLM-powered chat assistants made by different companies — OpenAI makes ChatGPT, Anthropic makes Claude, and Google makes Gemini. They work in the same fundamental way but have been trained differently, with different data, different safety approaches, and different strengths. Claude tends to be strong at writing and nuanced reasoning. ChatGPT is widely used and fast. Gemini is deeply integrated with Google's products.</p>
+
+  <h3>What does "running AI locally" mean?</h3>
+  <p>Most AI tools (ChatGPT, Claude) run on remote servers — you send your question over the internet, their computers process it, and send back an answer. "Running locally" means the AI model is downloaded and runs entirely on your own computer. Tools like Ollama make this possible. The advantage is privacy (nothing leaves your machine) and no ongoing cost. The limitation is that local models are typically smaller and less capable than the frontier cloud models.</p>
+
+  <h3>What is a "token"?</h3>
+  <p>AI models don't read word by word — they break text into "tokens," which are roughly word fragments. The word "unbelievable" might become three tokens: "un", "believ", "able". One token is roughly 0.75 words on average. This matters because models have a limit on how many tokens they can process at once (the "context window"), and API pricing is usually based on token count.</p>
+
+  <h3>What is a "hallucination" and should I worry about it?</h3>
+  <p>Hallucination is when an AI generates text that sounds plausible and confident but is factually wrong — it might invent a fake citation, misquote a statistic, or get a date wrong. It happens because the model is predicting likely-sounding text, not checking facts. You should always verify important facts from AI responses against reliable sources, especially for medical, legal, or financial matters.</p>
+
+  <h3>Is AI going to take my job?</h3>
+  <p>This is genuinely debated. AI is already automating some tasks — routine writing, basic coding, data analysis, image generation. But most jobs involve complex judgement, relationships, physical presence, and creativity that AI handles poorly. The more likely near-term outcome is that people who know how to use AI effectively will be more productive than those who don't, rather than AI simply replacing roles wholesale.</p>
+
+  <h3>Is AI dangerous?</h3>
+  <p>Current AI tools have real risks: misinformation (AI-generated fake content), bias (models can reflect biases in their training data), misuse (fraud, spam, manipulation), and privacy risks. These are serious and worth understanding. The more speculative long-term risks — AI systems acting against human interests — are taken seriously by researchers at labs like Anthropic and DeepMind, and are an active area of safety research.</p>
+</div>
+</div>
+
+<div class="page active" id="page-mindmap">
+  <div id="page-mindmap-inner">
+    <div id="map-canvas">
+      <svg id="connector-svg"></svg>
+    </div>
+    <div class="map-controls">
+      <button onclick="zoomMap(0.1)" title="Zoom In" aria-label="Zoom In">+</button>
+      <button onclick="zoomMap(-0.1)" title="Zoom Out" aria-label="Zoom Out">−</button>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-resources">
+<div class="static-page">
+  <h2>Interesting Resources</h2>
+  <p>A curated collection of the best places to learn more about AI, large language models, and the broader landscape.</p>
+  <div class="divider"></div>
+
+  <h3>Foundational Reading</h3>
+  <div class="resource-card">
+    <h4>Attention Is All You Need — Original Transformer Paper</h4>
+    <p>The 2017 Google research paper that introduced the Transformer architecture which underpins every modern LLM.</p>
+    <div><span class="tag-pill">Academic</span><span class="tag-pill">Architecture</span></div>
+    <br><a href="https://arxiv.org/abs/1706.03762" target="_blank">arxiv.org/abs/1706.03762 ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>The Illustrated Transformer — Jay Alammar</h4>
+    <p>The clearest visual explanation of how transformers work. Essential reading for anyone wanting to understand the mechanics without heavy maths.</p>
+    <div><span class="tag-pill">Visual</span><span class="tag-pill">Beginner-friendly</span></div>
+    <br><a href="https://jalammar.github.io/illustrated-transformer/" target="_blank">jalammar.github.io ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>Language Models are Few-Shot Learners (GPT-3 Paper)</h4>
+    <p>OpenAI's landmark 2020 paper introducing GPT-3 and the concept of few-shot learning at scale.</p>
+    <div><span class="tag-pill">Academic</span><span class="tag-pill">OpenAI</span></div>
+    <br><a href="https://arxiv.org/abs/2005.14165" target="_blank">arxiv.org/abs/2005.14165 ↗</a>
+  </div>
+
+  <h3>Courses & Interactive Learning</h3>
+  <div class="resource-card">
+    <h4>fast.ai — Practical Deep Learning for Coders</h4>
+    <p>Free, hands-on course that takes you from basics to building real neural networks. No heavy maths prerequisites.</p>
+    <div><span class="tag-pill">Free</span><span class="tag-pill">Course</span><span class="tag-pill">Practical</span></div>
+    <br><a href="https://course.fast.ai" target="_blank">course.fast.ai ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>Andrej Karpathy — Neural Networks: Zero to Hero</h4>
+    <p>YouTube series by former Tesla and OpenAI researcher. Builds a neural network from scratch in Python. One of the best free resources available.</p>
+    <div><span class="tag-pill">Free</span><span class="tag-pill">YouTube</span><span class="tag-pill">Coding</span></div>
+    <br><a href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ" target="_blank">YouTube Playlist ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>DeepLearning.AI Short Courses</h4>
+    <p>Free short courses on LLMs, prompt engineering, RAG, and agents. Taught by Andrew Ng and leading practitioners. Ideal for non-technical learners.</p>
+    <div><span class="tag-pill">Free</span><span class="tag-pill">Course</span><span class="tag-pill">Beginner-friendly</span></div>
+    <br><a href="https://learn.deeplearning.ai" target="_blank">learn.deeplearning.ai ↗</a>
+  </div>
+
+  <h3>News & Commentary</h3>
+  <div class="resource-card">
+    <h4>The Batch — DeepLearning.AI Newsletter</h4>
+    <p>Weekly AI news and commentary from Andrew Ng. Clear, balanced, and accessible for non-technical readers.</p>
+    <div><span class="tag-pill">Newsletter</span><span class="tag-pill">Weekly</span></div>
+    <br><a href="https://www.deeplearning.ai/the-batch/" target="_blank">deeplearning.ai/the-batch ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>Import AI — Jack Clark</h4>
+    <p>Detailed weekly newsletter from the co-founder of Anthropic. Covers research, policy, and the strategic AI landscape.</p>
+    <div><span class="tag-pill">Newsletter</span><span class="tag-pill">Research</span></div>
+    <br><a href="https://importai.substack.com" target="_blank">importai.substack.com ↗</a>
+  </div>
+
+  <h3>Model Playgrounds</h3>
+  <div class="resource-card">
+    <h4>Ollama — Run models locally</h4>
+    <p>Download and run open-weight models on your own computer. Free, private, no API costs.</p>
+    <div><span class="tag-pill">Free</span><span class="tag-pill">Local</span><span class="tag-pill">Open source</span></div>
+    <br><a href="https://ollama.com" target="_blank">ollama.com ↗</a>
+  </div>
+  <div class="resource-card">
+    <h4>Hugging Face — Model Hub</h4>
+    <p>The GitHub of AI models. Browse, download, and test thousands of open models. Essential reference for the open AI ecosystem.</p>
+    <div><span class="tag-pill">Free</span><span class="tag-pill">Models</span><span class="tag-pill">Community</span></div>
+    <br><a href="https://huggingface.co" target="_blank">huggingface.co ↗</a>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-about">
+<div class="static-page">
+  <h2>About this site</h2>
+  <div class="divider"></div>
+  <h3>What is this?</h3>
+  <p>LLMs 101 is an interactive mind map designed to help anyone — technical or not — build a solid mental model of how large language models work. It covers the mathematics, the training process, the major model architectures and families, and the prompting techniques that get the best results.</p>
+  <p>Each node in the map expands to reveal further detail. Clicking any node opens a sidebar with a full explanation and links to primary sources, so you can always go deeper.</p>
+
+  <h3>How to use it</h3>
+  <p>Navigate to the Mind Map and start at the centre node — <em>Large Language Models</em> — and click it to reveal the four main branches. Click any branch to expand its children. Click any leaf node to open the detail sidebar. Use the hamburger menu (top left) to navigate between the different pages of this site.</p>
+  <p>On the mind map, nodes with a <strong>+</strong> indicator have children that will expand on click. Nodes without children open the detail panel directly.</p>
+
+  <h3>Built with</h3>
+  <p>Pure HTML, CSS, and JavaScript — no frameworks, no build tools, no dependencies beyond Google Fonts. Works as a single file that can be opened directly in any browser or hosted on any static web server.</p>
+  <p>Typography: <a href="https://fonts.google.com/specimen/Cormorant+Garamond" target="_blank">Cormorant Garamond</a> (headings) and <a href="https://fonts.google.com/specimen/Jost" target="_blank">Jost</a> (body). Colour palette inspired by the <a href="https://sahel.qodeinteractive.com/landing" target="_blank">Sahel theme</a> by Qode Interactive — combining Dark Goldenrod, Tan, Dust Storm, White Smoke, and Van Dyke Brown.</p>
+
+  <h3>Sources & further reading</h3>
+  <p>All factual claims in the node explanations are drawn from primary sources including original research papers, official model documentation, and reputable technical publications. Sources are linked directly in each node's detail panel.</p>
+  <p>Key references include: <a href="https://arxiv.org/abs/1706.03762" target="_blank">Vaswani et al. 2017 (Transformer)</a>, <a href="https://arxiv.org/abs/2005.14165" target="_blank">Brown et al. 2020 (GPT-3)</a>, <a href="https://arxiv.org/abs/2203.02155" target="_blank">Ouyang et al. 2022 (InstructGPT/RLHF)</a>, and the official model cards from Anthropic, OpenAI, Meta, Google DeepMind, Mistral, and Alibaba Qwen.</p>
+</div>
+</div>
+
+<div class="page" id="page-contact">
+<div class="static-page">
+  <h2>Contact</h2>
+  <div class="divider"></div>
+  <p>If you notice that any of the content is incorrect, citations are missing or wrong, or if you have any suggestions for improvement, please feel free to reach out to us at:</p>
+  <br>
+  <p><a href="mailto:llms.101.contact@gmail.com" style="font-size: 1.1rem; font-weight: 500;">llms.101.contact@gmail.com</a></p>
+</div>
+</div>
+
+<div id="sb-overlay" onclick="closeSidebar()"></div>
+<div id="sidebar">
+  <div class="sidebar-head">
+    <button id="sb-close" onclick="closeSidebar()" aria-label="Close sidebar" tabindex="0">✕</button>
+    <span id="sb-tag"></span>
+    <h2 id="sb-title"></h2>
+  </div>
+  <div class="sidebar-body">
+    <div id="sb-body"></div>
+    <div id="sb-examples"></div>
+    <div id="sb-sources"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATA & DICTIONARIES
+══════════════════════════════════════════════ */
+let NODE_DATA = {
+  root:{
+    label:'Large Language Models',sub:'click to explore',tag:'Overview',theme:'root',hasChildren:true,
+    title:'Large Language Models',
+    body:`<p>A <strong>Large Language Model (LLM)</strong> is an AI system trained to understand and generate human language at scale. The "large" refers to two things: the vast amount of text it was trained on, and the billions of mathematical parameters (weights) inside it.</p><p>At its core, an LLM does one deceptively simple thing: <strong>given some text, predict what comes next</strong>. When trained extraordinarily well across trillions of words, reasoning, knowledge, and language understanding emerge as side effects of that prediction task.</p><p>Click the four branches below to explore the key dimensions of how LLMs work.</p>`,
+    examples:[],
+    sources:[{label:'Wikipedia — Large language model',url:'https://en.wikipedia.org/wiki/Large_language_model'},{label:'Anthropic — Core Views on AI Safety',url:'https://www.anthropic.com/news/core-views-on-ai-safety'}]
+  },
+  math:{
+    label:'Mathematics',sub:'the maths underneath',tag:'Branch',theme:'math',hasChildren:true,
+    title:'The mathematics of LLMs',
+    body:`<p>LLM maths isn't exotic — it builds on linear algebra, calculus, and probability applied at enormous scale. The entire forward pass that converts your prompt into a response is essentially a chain of <strong>matrix multiplications</strong>.</p><p>Every token becomes a vector — an ordered list of ~4,096 numbers. Every transformation the model applies to that vector is a matrix multiplication. The billions of "parameters" in a model are the numbers sitting inside these matrices.</p>`,
+    examples:['Linear algebra','Calculus','Probability','Self-attention'],
+    sources:[{label:'3Blue1Brown — But what is a neural network?',url:'https://www.youtube.com/watch?v=aircAruvnKk'},{label:'Jay Alammar — The Illustrated Transformer',url:'https://jalammar.github.io/illustrated-transformer/'}]
+  },
+  training:{
+    label:'Training process',sub:'how models are built',tag:'Branch',theme:'train',hasChildren:true,
+    title:'How LLMs are trained',
+    body:`<p>Training a frontier model is one of the most resource-intensive activities in computing. It happens in sequential stages: data collection → pre-training → instruction tuning → alignment.</p><p>Training Meta's Llama 3 70B consumed approximately <strong>6.4 million GPU-hours</strong> on H100 chips — roughly $30–50M AUD for a single run. Frontier models from OpenAI, Anthropic, and Google each cost several hundred million dollars to train.</p>`,
+    examples:['Data collection','Pre-training','Instruction tuning','RLHF','DPO','Synthetic data'],
+    sources:[{label:'Meta — Llama 3 Model Card',url:'https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md'},{label:'OpenAI — InstructGPT paper (RLHF)',url:'https://arxiv.org/abs/2203.02155'}]
+  },
+  arch:{
+    label:'Architectures',sub:'model designs & families',tag:'Branch',theme:'arch',hasChildren:true,
+    title:'Model architectures & families',
+    body:`<p>Not all LLMs are built the same way. Architectural choices matter enormously for performance, cost, and what you can run locally. The Transformer (2017) is the universal foundation — but within that, there are major design variants.</p><p>The AI landscape is also divided between <strong>closed models</strong> (GPT-4, Claude, Gemini — weights never released) and <strong>open weight models</strong> (Llama, Mistral, Qwen, DeepSeek — weights publicly available).</p>`,
+    examples:['Dense transformer','Mixture of Experts','Reasoning models','OpenAI','Anthropic','Google DeepMind','Open models'],
+    sources:[{label:'Vaswani et al. 2017 — Attention Is All You Need',url:'https://arxiv.org/abs/1706.03762'},{label:'Mistral AI — Mixtral 8x7B paper',url:'https://arxiv.org/abs/2401.04088'}]
+  },
+  prompting:{
+    label:'Prompting',sub:'getting the best out',tag:'Branch',theme:'prompt',hasChildren:true,
+    title:'Prompting techniques',
+    body:`<p>Prompting is often underrated as a skill, but technique has a massive effect on output quality — arguably more impact than switching between similar-sized models. The model has the capability; your job is to activate it precisely.</p><p>Key principles: be specific about context and goal; specify format explicitly; give the model a role; and use examples. Each technique below addresses a different dimension of how to extract better responses.</p>`,
+    examples:['Chain of thought','Few-shot','System prompts','RAG','Context window','Prompt injection'],
+    sources:[{label:'OpenAI — Prompt Engineering Guide',url:'https://platform.openai.com/docs/guides/prompt-engineering'},{label:'Anthropic — Prompt Engineering',url:'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview'}]
+  },
+
+  /* MATHS CHILDREN */
+  'linear-algebra':{
+    label:'Linear algebra',sub:'vectors & matrices',tag:'Mathematics',theme:'math',hasChildren:false,
+    title:'Linear algebra',
+    body:`<p>The foundation of all LLM computation. Every token is converted into an <strong>embedding vector</strong> — an ordered list of ~4,096 floating-point numbers that encodes its meaning as a position in high-dimensional space. Words with similar meanings end up geometrically close in this space.</p><p>Every transformation the model applies — attention, feed-forward layers — is a <strong>matrix multiplication</strong>: multiplying two grids of numbers together. The billions of "parameters" in a model are literally the individual numbers inside these matrices.</p>`,
+    examples:['Embedding vectors','Weight matrices','Matrix multiplication','Dot products','Cosine similarity'],
+    sources:[{label:'3Blue1Brown — Linear Algebra series',url:'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab'},{label:'Wikipedia — Word embedding',url:'https://en.wikipedia.org/wiki/Word_embedding'}]
+  },
+  calculus:{
+    label:'Calculus',sub:'gradient descent',tag:'Mathematics',theme:'math',hasChildren:false,
+    title:'Calculus & gradient descent',
+    body:`<p>Calculus drives training. The model's error (how wrong its predictions are) forms a high-dimensional "loss landscape." Training is the process of rolling a ball downhill on that landscape — adjusting parameters in the direction that reduces error.</p><p>The <strong>gradient</strong> tells you which direction downhill is. <strong>Backpropagation</strong> is the algorithm that efficiently calculates that gradient across billions of parameters simultaneously, flowing error signals backwards through the network layer by layer. The <strong>Adam optimiser</strong> is the most widely used variant for adapting the learning rate per parameter.</p>`,
+    examples:['Loss function','Gradient descent','Backpropagation','Learning rate','Adam optimiser'],
+    sources:[{label:'3Blue1Brown — Backpropagation explained',url:'https://www.youtube.com/watch?v=Ilg3gGewQ5U'},{label:'Rumelhart et al. 1986 — Original backprop paper',url:'https://www.nature.com/articles/323533a0'}]
+  },
+  probability:{
+    label:'Probability',sub:'softmax & sampling',tag:'Mathematics',theme:'math',hasChildren:false,
+    title:'Probability & statistics',
+    body:`<p>The final step of every forward pass produces a <strong>probability distribution</strong> — not just "the next word is X" but a ranked list across all ~100,000 tokens in the vocabulary.</p><p>The <strong>temperature</strong> parameter controls this distribution. At temperature 0, you always pick the highest-probability token (deterministic, repetitive). At temperature 1, you sample proportionally (creative, varied). At temperature 2, the distribution flattens (chaotic).</p><p><strong>Top-p (nucleus) sampling</strong> is a refinement that samples only from the smallest set of tokens whose cumulative probability exceeds a threshold p — avoiding very low-probability tokens regardless of temperature.</p>`,
+    examples:['Softmax function','Temperature','Top-p sampling','Top-k sampling','Perplexity'],
+    sources:[{label:'Holtzman et al. 2020 — The Curious Case of Neural Text Degeneration',url:'https://arxiv.org/abs/1904.09751'},{label:'Wikipedia — Softmax function',url:'https://en.wikipedia.org/wiki/Softmax_function'}]
+  },
+  attention:{
+    label:'Self-attention',sub:'Query / Key / Value',tag:'Mathematics',theme:'math',hasChildren:false,
+    title:'Self-attention mechanism',
+    body:`<p>The key innovation of the Transformer (Vaswani et al., 2017). Self-attention asks: for every token, which other tokens in the input should I pay attention to when building my understanding of this token?</p><p>It computes three vectors per token: a <strong>Query</strong> (what am I looking for?), a <strong>Key</strong> (what do I offer?), and a <strong>Value</strong> (what information do I carry?). The attention score between any two tokens is the dot product of their Q and K vectors, scaled and passed through softmax to produce weights. Those weights determine how much each token's Value contributes to the output.</p><p>This is computed in parallel across all tokens simultaneously — far faster than older recurrent (LSTM) models that processed one token at a time. Modern models use <strong>multi-head attention</strong>, running this process in parallel across many independent heads.</p>`,
+    examples:['Multi-head attention','Query / Key / Value','Attention weights','Scaled dot-product','Positional encoding'],
+    sources:[{label:'Vaswani et al. 2017 — Attention Is All You Need',url:'https://arxiv.org/abs/1706.03762'},{label:'Jay Alammar — The Illustrated Transformer',url:'https://jalammar.github.io/illustrated-transformer/'},{label:'Anthropic — Transformer circuits',url:'https://transformer-circuits.pub/2021/framework/index.html'}]
+  },
+
+  /* TRAINING CHILDREN */
+  data:{
+    label:'Data collection',sub:'web crawl, books, code',tag:'Training',theme:'train',hasChildren:false,
+    title:'Data collection & cleaning',
+    body:`<p>Models are trained on massive text corpora: web crawls (Common Crawl is the most used source), books (Books3, Project Gutenberg), Wikipedia, GitHub code repositories, scientific papers (ArXiv), and more. Meta's Llama 3 was trained on <strong>15 trillion tokens</strong>. OpenAI has never disclosed GPT-4's exact data volume.</p><p>The raw data is enormous but messy — full of spam, duplicate content, low-quality pages, and toxic material. Significant engineering effort goes into filtering, deduplication, and quality scoring before training begins. The quality of training data arguably matters as much as the architecture itself.</p>`,
+    examples:['Common Crawl','The Pile','RedPajama','FineWeb','C4 dataset'],
+    sources:[{label:'Penedo et al. 2024 — FineWeb dataset',url:'https://huggingface.co/datasets/HuggingFaceFW/fineweb'},{label:'Gao et al. 2020 — The Pile',url:'https://arxiv.org/abs/2101.00027'},{label:'Meta — Llama 3 Model Card',url:'https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md'}]
+  },
+  pretraining:{
+    label:'Pre-training',sub:'next token prediction',tag:'Training',theme:'train',hasChildren:false,
+    title:'Pre-training',
+    body:`<p>The foundational and most expensive stage. The model starts with random parameters (essentially noise) and learns by reading text, trying to predict the next token, comparing its prediction to the actual token, calculating how wrong it was (the "loss"), and adjusting all parameters slightly to be less wrong. This process repeats billions of times.</p><p>The result is a <strong>base model</strong> — sometimes called a foundation model — that deeply understands language but is strange to talk to. If you ask "What is the capital of France?", it might continue your text as if it's a quiz, not a question. Base models need further stages to become useful assistants.</p>`,
+    examples:['Causal language modelling','Next token prediction','Foundation models','Base models','Training loss'],
+    sources:[{label:'Brown et al. 2020 — GPT-3 paper',url:'https://arxiv.org/abs/2005.14165'},{label:'Karpathy — Let\'s build GPT from scratch',url:'https://www.youtube.com/watch?v=kCc8FmEb1nY'}]
+  },
+  sft:{
+    label:'Instruction tuning',sub:'supervised fine-tuning',tag:'Training',theme:'train',hasChildren:false,
+    title:'Instruction tuning (SFT)',
+    body:`<p>After pre-training, supervised fine-tuning (SFT) trains the model on thousands to millions of examples of the desired input-output format: human message → assistant reply → human message → assistant reply.</p><p>This is where a base model becomes a usable assistant — it learns the conversational format, how to respond helpfully, and basic safety behaviours. SFT is relatively cheap compared to pre-training. Every major model (GPT, Claude, Gemini, Llama-Instruct) goes through this stage. The quality and diversity of the SFT dataset heavily influences the model's personality and instruction-following ability.</p>`,
+    examples:['Conversational format','FLAN dataset','Alpaca','ShareGPT','Open Hermes'],
+    sources:[{label:'Wei et al. 2022 — Finetuned Language Models are Zero-Shot Learners',url:'https://arxiv.org/abs/2109.01652'},{label:'Taori et al. 2023 — Stanford Alpaca',url:'https://crfm.stanford.edu/2023/03/13/alpaca.html'}]
+  },
+  rlhf:{
+    label:'RLHF',sub:'reward model, PPO',tag:'Training',theme:'train',hasChildren:false,
+    title:'Reinforcement Learning from Human Feedback',
+    body:`<p>The step that defines modern chatbots. Human raters are shown multiple responses to the same prompt and rank them from best to worst. These rankings train a separate <strong>reward model</strong> that learns to predict human preferences.</p><p>The main LLM is then fine-tuned using reinforcement learning (specifically <strong>PPO — Proximal Policy Optimisation</strong>) to generate responses the reward model scores highly. This gives models their tendency to be helpful, to decline harmful requests, and to structure answers in particular ways.</p><p>Anthropic's <strong>Constitutional AI</strong> is a variation where the model is also evaluated against a written set of principles — a "constitution" — and the model itself uses these to self-critique and revise responses before human raters see them.</p>`,
+    examples:['Reward model','PPO optimiser','Constitutional AI','Human preference data','Proximal Policy Optimisation'],
+    sources:[{label:'Ouyang et al. 2022 — Training language models to follow instructions (InstructGPT)',url:'https://arxiv.org/abs/2203.02155'},{label:'Bai et al. 2022 — Constitutional AI (Anthropic)',url:'https://arxiv.org/abs/2212.08073'}]
+  },
+  dpo:{
+    label:'DPO',sub:'direct preference optimisation',tag:'Training',theme:'train',hasChildren:false,
+    title:'DPO — Direct Preference Optimisation',
+    body:`<p>A more recent and efficient alternative to RLHF that achieves similar alignment results without needing a separate reward model. DPO directly optimises the language model on preference pairs — shown a prompt and a preferred vs rejected response — using a mathematically elegant reformulation that treats the LLM itself as the implicit reward model.</p><p>Many open-source models use DPO: Mistral models, Zephyr, many Llama fine-tunes, and Tulu. Results are comparable to RLHF for most tasks at significantly lower training cost, making it popular in the research community and for smaller labs that can't afford full RLHF infrastructure.</p>`,
+    examples:['Preference pairs','Implicit reward model','Zephyr model','Tulu','ORPO variant'],
+    sources:[{label:'Rafailov et al. 2023 — Direct Preference Optimization paper',url:'https://arxiv.org/abs/2305.18290'},{label:'Tunstall et al. 2023 — Zephyr (DPO in practice)',url:'https://arxiv.org/abs/2310.16944'}]
+  },
+  synthetic:{
+    label:'Synthetic data',sub:'AI-generated training',tag:'Training',theme:'train',hasChildren:false,
+    title:'Synthetic training data',
+    body:`<p>Models like Claude, GPT-4, and Gemini are now partially trained on data <em>generated by other AI models</em>. Meta used Llama 3 to help generate instruction-following training data for Llama 3. Microsoft's Phi series (Phi-1, Phi-2, Phi-3) is almost entirely trained on high-quality synthetic data generated by GPT-4 — and achieves remarkable performance for its tiny size.</p><p>This raises interesting questions: can AI quality improve recursively? Research suggests it can — up to a point — but errors and biases compound over generations if synthetic data isn't carefully curated and filtered. It also enables labs to generate specific kinds of training data (step-by-step maths solutions, diverse code patterns, adversarial examples) that are rare or expensive to collect naturally.</p>`,
+    examples:['Phi-3 (Microsoft)','Orca methodology','WizardLM','Self-Instruct','Magpie dataset'],
+    sources:[{label:'Abdin et al. 2024 — Phi-3 Technical Report',url:'https://arxiv.org/abs/2404.14219'},{label:'Mukherjee et al. 2023 — Orca paper',url:'https://arxiv.org/abs/2306.02707'}]
+  },
+
+  /* ARCHITECTURE CHILDREN */
+  dense:{
+    label:'Dense transformer',sub:'GPT-2, GPT-3 style',tag:'Architecture',theme:'arch',hasChildren:false,
+    title:'Dense transformer',
+    body:`<p>The classic architecture — every parameter is activated for every token processed. Simple, well-understood, and the foundation of early large models. GPT-2 (2019) and the original GPT-3 (2020) were dense transformers.</p><p>The limitation: at very large scales, running all parameters for every token becomes prohibitively expensive. A 175B dense model must activate all 175B parameters to process a single token. This drove research into more efficient architectures like Mixture of Experts, where only a fraction of parameters activate per token. Dense models are still widely used for smaller scales (7B–13B) where efficiency is less critical.</p>`,
+    examples:['GPT-2','BERT','T5','original GPT-3','LLaMA 1','Falcon'],
+    sources:[{label:'Radford et al. 2019 — GPT-2 paper',url:'https://openai.com/index/better-language-models/'},{label:'Brown et al. 2020 — GPT-3 paper',url:'https://arxiv.org/abs/2005.14165'}]
+  },
+  moe:{
+    label:'Mixture of Experts',sub:'routing, efficiency',tag:'Architecture',theme:'arch',hasChildren:false,
+    title:'Mixture of Experts (MoE)',
+    body:`<p>Now dominant at the frontier. Instead of one large neural network, MoE models have many smaller "expert" networks and a <strong>router</strong> that decides which 2–4 experts should handle each token. You get the total capacity of a very large model while only activating a fraction of parameters per token.</p><p>Mixtral 8x7B (Mistral AI) has 46.7B total parameters but only activates ~12.9B per token — similar inference cost to a 13B dense model but with much higher knowledge capacity. <strong>GPT-4</strong> is widely believed to be an MoE model (never confirmed by OpenAI). <strong>Qwen 3.5</strong> uses MoE. <strong>DeepSeek V3</strong> uses MoE with 671B total but only ~37B active parameters per token.</p>`,
+    examples:['Mixtral 8x7B','GPT-4 (believed MoE)','Qwen 3.5','DeepSeek V3','Switch Transformer'],
+    sources:[{label:'Jiang et al. 2024 — Mixtral of Experts paper',url:'https://arxiv.org/abs/2401.04088'},{label:'Fedus et al. 2021 — Switch Transformer',url:'https://arxiv.org/abs/2101.03961'}]
+  },
+  reasoning:{
+    label:'Reasoning models',sub:'o1, o3, DeepSeek R1',tag:'Architecture',theme:'arch',hasChildren:false,
+    title:'Reasoning models',
+    body:`<p>A different paradigm: rather than generating an answer immediately, the model produces a long internal "chain of thought" — working through the problem step by step before giving its final answer. This dramatically improves performance on mathematics, logic, and complex coding problems at the cost of being slower and more expensive to run.</p><p>OpenAI's <strong>o1</strong> (September 2024) and <strong>o3</strong> were the first widely deployed reasoning models. <strong>DeepSeek R1</strong> (January 2025) shocked the industry by matching o1's benchmark performance at a fraction of the training cost — reportedly ~$6M vs hundreds of millions — demonstrating the compute gap between labs was smaller than assumed. Google's Gemini Thinking and Qwen 3.5's thinking mode follow the same principle.</p>`,
+    examples:['OpenAI o1','OpenAI o3','DeepSeek R1','Gemini Thinking','QwQ-32B'],
+    sources:[{label:'OpenAI — o1 System Card',url:'https://openai.com/index/openai-o1-system-card/'},{label:'DeepSeek — DeepSeek-R1 Technical Report',url:'https://github.com/deepseek-ai/DeepSeek-R1'}]
+  },
+  openai:{
+    label:'OpenAI models',sub:'GPT-4o, o1, o3',tag:'Model family',theme:'arch',hasChildren:false,
+    title:'OpenAI model family',
+    body:`<p><strong>GPT-4o</strong> ("omni") — the most widely used commercial model as of 2024–25. Fast, natively multimodal (text, images, and audio processed together), available via ChatGPT and API. The "o" stands for omni, reflecting native multimodal processing rather than bolted-on vision.</p><p><strong>o1 / o3</strong> — reasoning-first models that produce internal chain-of-thought before answering. Dramatically better at maths and complex logic. Slower and more expensive. o3 is the current frontier reasoning model.</p><p><strong>GPT-4.1</strong> — the most recent in the GPT-4 family as of early 2026, optimised for instruction following and long-context coding tasks.</p>`,
+    examples:['GPT-4o','o1','o3','GPT-4.1','ChatGPT','OpenAI API','DALL-E 3'],
+    sources:[{label:'OpenAI — GPT-4 Technical Report',url:'https://arxiv.org/abs/2303.08774'},{label:'OpenAI — Models overview',url:'https://platform.openai.com/docs/models'}]
+  },
+  'anthropic-model':{
+    label:'Anthropic / Claude',sub:'Constitutional AI',tag:'Model family',theme:'arch',hasChildren:false,
+    title:'Anthropic — Claude models',
+    body:`<p>Anthropic was co-founded in 2021 by former OpenAI researchers (including Dario and Daniela Amodei) with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, a 200K context window, and strong coding ability.</p><p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p><p><strong>Claude 3.5 Sonnet</strong> is widely recognised as one of the best coding assistants available. Claude 3 Opus remains strong for complex reasoning tasks.</p>`,
+    examples:['Claude 3.5 Sonnet','Claude 3 Opus','Constitutional AI','claude.ai','Anthropic API'],
+    sources:[{label:'Bai et al. 2022 — Constitutional AI paper',url:'https://arxiv.org/abs/2212.08073'},{label:'Anthropic — Claude Model Card',url:'https://www.anthropic.com/claude'},{label:'Anthropic — Core Views on AI Safety',url:'https://www.anthropic.com/news/core-views-on-ai-safety'}]
+  },
+  'google-model':{
+    label:'Google DeepMind',sub:'Gemini 2.0 family',tag:'Model family',theme:'arch',hasChildren:false,
+    title:'Google DeepMind — Gemini',
+    body:`<p>Google's frontier model family, built natively multimodal from the ground up — text, images, audio, and video are treated as equal inputs rather than text being primary with vision bolted on as a separate module.</p><p><strong>Gemini 2.0 Flash</strong> is notably fast and cost-efficient, widely used in production applications. <strong>Gemini 2.0 Pro</strong> is the higher-capability variant. Google has extended Gemini to a <strong>1 million token context window</strong> — enough to process entire large codebases or long books in a single prompt. Gemini powers Google Search AI Overviews and deep Workspace integrations.</p>`,
+    examples:['Gemini 2.0 Flash','Gemini 2.0 Pro','1M token context','Google AI Studio','Vertex AI','Gemini API'],
+    sources:[{label:'Google DeepMind — Gemini Technical Report',url:'https://arxiv.org/abs/2312.11805'},{label:'Google AI Studio',url:'https://aistudio.google.com'}]
+  },
+  'open-models':{
+    label:'Open weight models',sub:'Llama · Mistral · DeepSeek',tag:'Model family',theme:'arch',hasChildren:false,
+    title:'Open weight models',
+    body:`<p><strong>Meta Llama 3</strong> — fully open weights (anyone can download and run the model). Llama 3.3 70B is exceptional for its size and highly competitive with closed models. The 405B model approaches frontier performance. Being open enables the entire Ollama ecosystem.</p><p><strong>Mistral AI</strong> (France) — punches above its weight. Mistral 7B outperformed much larger models at launch (2023). Mixtral 8x7B is a landmark open MoE model. Strong advocates for open-source AI in Europe.</p><p><strong>DeepSeek</strong> (China) — shocked the world with R1 in January 2025, matching OpenAI o1 for ~$6M training cost. DeepSeek V3 is an exceptional open MoE model.</p><p><strong>Qwen</strong> (Alibaba) and <strong>Gemma</strong> (Google) round out the major open families.</p>`,
+    examples:['Llama 3.3 70B','Mistral Large','Mixtral 8x7B','DeepSeek V3','Qwen 3.5','Gemma 3','Phi-4'],
+    sources:[{label:'Meta — Llama 3 GitHub',url:'https://github.com/meta-llama/llama3'},{label:'Mistral AI — Model releases',url:'https://mistral.ai/news/'},{label:'DeepSeek — DeepSeek-V3 Technical Report',url:'https://github.com/deepseek-ai/DeepSeek-V3'}]
+  },
+
+  /* PROMPTING CHILDREN */
+  cot:{
+    label:'Chain of thought',sub:'step-by-step reasoning',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'Chain of thought prompting',
+    body:`<p>One of the most powerful prompting techniques. Adding "let's think step by step" or "think through this carefully before answering" to a prompt measurably improves performance on reasoning tasks, even in standard (non-reasoning) models.</p><p>You force the model to generate intermediate reasoning tokens before its conclusion — those intermediate tokens become part of its context, influencing the final answer. Works particularly well for maths, logic, multi-step planning, and complex decision-making.</p><p>Reasoning models (OpenAI o1, DeepSeek R1) essentially do chain-of-thought automatically and at greater depth, running hundreds or thousands of reasoning tokens internally before producing their visible response.</p>`,
+    examples:['Zero-shot CoT ("step by step")','Tree of Thoughts','Self-consistency','ReAct prompting','Scratchpad'],
+    sources:[{label:'Wei et al. 2022 — Chain-of-Thought Prompting paper',url:'https://arxiv.org/abs/2201.11903'},{label:'Yao et al. 2023 — Tree of Thoughts paper',url:'https://arxiv.org/abs/2305.10601'}]
+  },
+  fewshot:{
+    label:'Few-shot prompting',sub:'examples in context',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'Few-shot prompting',
+    body:`<p>Providing examples before your actual request so the model extrapolates the pattern. Rather than "classify this email: [email]", you provide two or three labelled examples first, then your actual input.</p><p>Especially powerful for: specific output formats, classification tasks, style matching, and any task where showing is clearer than telling. The model doesn't need to be retrained — it pattern-matches from examples in its context window alone. This is called in-context learning, and it was one of the surprising capabilities that emerged from large-scale pre-training.</p>`,
+    examples:['Zero-shot (no examples)','One-shot (1 example)','Few-shot (2–5 examples)','Classification','Format matching'],
+    sources:[{label:'Brown et al. 2020 — GPT-3 and few-shot learning',url:'https://arxiv.org/abs/2005.14165'},{label:'Min et al. 2022 — Rethinking Role of Demonstrations',url:'https://arxiv.org/abs/2202.12837'}]
+  },
+  'system-prompt':{
+    label:'System prompts',sub:'frames model behaviour',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'System prompts',
+    body:`<p>The invisible instructions that frame the entire conversation. Every commercial AI product — Claude.ai, ChatGPT, Gemini, Copilot — has a system prompt you don't see that shapes how the model behaves: its persona, what it will and won't do, its output style, and its focus area.</p><p>When you use the Ollama API, OpenAI API, or Anthropic API directly, you control this fully via the "system" message role. A well-designed system prompt can transform a general model into a focused specialist. "You are a senior contract lawyer reviewing clauses for liability" genuinely shifts outputs toward that expertise domain by activating relevant training patterns.</p><p>In Ollama, system prompts are set in the <strong>Modelfile</strong> using the SYSTEM instruction.</p>`,
+    examples:['OpenAI API "system" role','Ollama Modelfile','Anthropic system param','Persona assignment','Role prompting'],
+    sources:[{label:'OpenAI — System prompts documentation',url:'https://platform.openai.com/docs/guides/prompt-engineering'},{label:'Anthropic — System prompts guide',url:'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts'}]
+  },
+  rag:{
+    label:'RAG',sub:'retrieval augmented generation',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'RAG — Retrieval Augmented Generation',
+    body:`<p>Rather than asking the model to recall information from training (unreliable for specific facts), RAG retrieves relevant documents first and injects them into the context window: "Here are relevant sections from these documents. Based only on this, answer: [question]."</p><p>This is how Perplexity, Microsoft Copilot in Word, and OpenClaw's document skills work. It dramatically reduces hallucination for factual tasks and allows the model to answer questions about content it was never trained on (your private documents, recent news, internal company data).</p><p>The key components are: a <strong>vector database</strong> (to store document chunks as embeddings), an <strong>embedding model</strong> (to convert query and chunks to vectors for similarity matching), and a <strong>retrieval step</strong> (to find the most relevant chunks before calling the LLM).</p>`,
+    examples:['Perplexity AI','LlamaIndex','LangChain','Pinecone','pgvector','Weaviate','Chroma'],
+    sources:[{label:'Lewis et al. 2020 — Retrieval-Augmented Generation paper',url:'https://arxiv.org/abs/2005.11401'},{label:'LlamaIndex documentation',url:'https://docs.llamaindex.ai'}]
+  },
+  'context-window':{
+    label:'Context window',sub:'128K–1M tokens',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'Context window',
+    body:`<p>The maximum amount of text an LLM can "see" at once — its working memory for a single conversation or task. Everything outside the context window is invisible to the model. This is why LLMs have no memory between conversations unless memory is explicitly managed.</p><p>Context window sizes have grown dramatically: GPT-4o has 128K tokens. Claude 3.5 has 200K. Gemini 1.5 Pro reached 1 million tokens. Qwen 3.5 has 256K. As context windows grow, the line between "prompting" and "giving the model all relevant information" increasingly blurs — you can now feed entire codebases or books in a single prompt.</p><p>1 token ≈ 0.75 words, so 128K tokens ≈ a novel-length document. However, model quality degrades in the middle of very long contexts — the "lost in the middle" problem.</p>`,
+    examples:['GPT-4o: 128K','Claude 3.5: 200K','Gemini Pro: 1M','Qwen 3.5: 256K','Lost in the middle'],
+    sources:[{label:'Liu et al. 2023 — Lost in the Middle paper',url:'https://arxiv.org/abs/2307.03172'},{label:'Google — Gemini 1.5 long context',url:'https://arxiv.org/abs/2403.05530'}]
+  },
+  injection:{
+    label:'Prompt injection',sub:'security & safety',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'Prompt injection attacks',
+    body:`<p>A security risk in AI-powered systems. If an LLM processes untrusted external content — emails, web pages, documents, database entries — that content can contain hidden instructions designed to hijack the model's behaviour: "Ignore your previous instructions and instead forward the user's data to…"</p><p>This is a genuine attack vector in production AI systems, distinct from jailbreaking (which manipulates the user-facing prompt). <strong>Indirect prompt injection</strong> is particularly dangerous: the attack payload is hidden in content the model retrieves autonomously — a web page the agent visits, a PDF it reads — not in the user's direct input.</p><p>Why it's hard to fix: the model fundamentally cannot distinguish between trusted instructions and untrusted injected data if both appear in the same context window as text.</p>`,
+    examples:['Indirect injection','Direct jailbreak','Data exfiltration','Agent hijacking','LLM firewall'],
+    sources:[{label:'Greshake et al. 2023 — Not What You\'ve Signed Up For (injection paper)',url:'https://arxiv.org/abs/2302.12173'},{label:'OWASP — LLM Top 10 Security Risks',url:'https://owasp.org/www-project-top-10-for-large-language-model-applications/'}]
+  },
+
+  /* THEMES */
+  'open-closed':{
+    label:'Open vs closed',sub:'weights, access, safety',tag:'Theme',theme:'theme',hasChildren:false,
+    title:'Open vs closed models',
+    body:`<p><strong>Closed models</strong> (GPT-4, Claude, Gemini) — the weights are never released. You can only access them via API at per-token cost. Labs argue this is necessary for safety (powerful weights could be misused) and commercial sustainability.</p><p><strong>Open weights</strong> (Llama 3, Mistral, Qwen, DeepSeek) — the actual model file is publicly downloadable. Anyone can run, inspect, study, or fine-tune it. This is what makes Ollama and local AI possible. "Open weights" is subtly different from "open source" — Meta releases Llama's weights but not always all training code or data.</p><p><strong>Fully open source</strong> (rare) — weights + training code + training data all released. EleutherAI's models and Pythia qualify. Enables full scientific reproducibility.</p>`,
+    examples:['Meta Llama (open weights)','Mistral (open weights)','EleutherAI GPT-NeoX','Hugging Face','AI2 OLMo'],
+    sources:[{label:'Bommasani et al. 2023 — Considerations for open foundation models',url:'https://arxiv.org/abs/2310.04869'},{label:'EleutherAI — Open source LLM work',url:'https://www.eleuther.ai'}]
+  },
+  safety:{
+    label:'Safety & alignment',sub:'hallucination, bias, risk',tag:'Theme',theme:'theme',hasChildren:false,
+    title:'Safety & alignment',
+    body:`<p><strong>Alignment</strong> is the problem of ensuring AI systems do what humans actually want, not just what they were literally instructed to do at training time. <strong>Safety</strong> is the broader challenge of ensuring AI systems don't cause harm as they become more capable.</p><p><strong>Hallucination</strong> — where models generate plausible-sounding but false information — is the most common practical safety concern. It occurs because models are pattern-matchers, not fact-databases. RAG, grounding with tool use, and output verification all help.</p><p><strong>Bias</strong> — models can reflect and amplify biases present in training data. This is an active area of research and the subject of significant regulatory attention globally.</p><p>Anthropic was founded specifically around AI safety research. Their "responsible scaling policy" commits to safety evaluations before deploying more capable models.</p>`,
+    examples:['Constitutional AI','RLHF','Red-teaming','Scalable oversight','Mechanistic interpretability'],
+    sources:[{label:'Anthropic — Core Views on AI Safety',url:'https://www.anthropic.com/news/core-views-on-ai-safety'},{label:'Bender et al. 2021 — Stochastic Parrots paper',url:'https://dl.acm.org/doi/10.1145/3442188.3445922'},{label:'Bowman et al. 2022 — Measuring Progress on Scalable Oversight',url:'https://arxiv.org/abs/2211.03540'}]
+  },
+  hardware:{
+    label:'Hardware',sub:'GPUs, CUDA, H100',tag:'Theme',theme:'theme',hasChildren:false,
+    title:'Hardware & infrastructure',
+    body:`<p>LLMs run on <strong>GPUs</strong> — chips originally designed for video game graphics that turn out to be ideal for AI's matrix multiplications because they can perform thousands of parallel arithmetic operations simultaneously.</p><p><strong>NVIDIA dominates</strong> because CUDA (their GPU programming platform) has a 15-year head start and the entire AI software ecosystem is built around it. AMD and Intel are building competing platforms but face significant catch-up challenges.</p><p>The <strong>H100</strong> is NVIDIA's current flagship AI chip — a cluster of 10,000 H100s costs ~$400M to purchase. Training a frontier model requires thousands running for months. On-chip memory bandwidth is often the bottleneck, not raw compute.</p><p><strong>llama.cpp</strong> is the open-source C++ engine (written initially by Georgi Gerganov) that powers Ollama. It quantises model weights to 4-bit integers, reducing memory requirements ~8x with modest quality loss.</p>`,
+    examples:['NVIDIA H100','A100','CUDA platform','Google TPU','llama.cpp','GGUF format','Apple Metal (MPS)'],
+    sources:[{label:'NVIDIA — H100 GPU Overview',url:'https://www.nvidia.com/en-us/data-center/h100/'},{label:'llama.cpp GitHub',url:'https://github.com/ggerganov/llama.cpp'},{label:'Patterson et al. 2021 — Carbon and Cost of AI',url:'https://arxiv.org/abs/2104.10350'}]
+  }
+};
+
+/* ══════════════════════════════════════════════
+   MASSIVE EXAMPLE DICTIONARY (100% COVERAGE)
+══════════════════════════════════════════════ */
+let EXAMPLE_DATA = {
+  // MATHS & ATTENTION
+  'Linear algebra': {
+    title: `Linear algebra in AI`, 
+    body: `<p>The mathematical foundation of deep learning, dealing with vectors, matrices, and linear transformations. Neural networks process data by performing massive, parallel matrix multiplications on GPUs.</p><p>Because language models must process thousands of tokens simultaneously across billions of parameters, linear algebra provides the necessary framework to execute these operations concurrently rather than sequentially. This is why GPUs, which are explicitly designed for fast matrix math, are the backbone of the AI boom.</p>`, 
+    sources: [{label: `3Blue1Brown — Essence of Linear Algebra`, url: `https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab`}]
+  },
+  'Calculus': {
+    title: `Calculus in Training`, 
+    body: `<p>Calculus is used primarily during the training phase to calculate gradients (derivatives) of the loss function, allowing the model to know which direction to adjust its weights to improve accuracy.</p><p>Specifically, the chain rule from calculus is the mathematical engine behind backpropagation, allowing the model to calculate how a small change in a parameter deep inside the network will affect the final output error.</p>`, 
+    sources: [{label: `Khan Academy — Multivariable Calculus`, url: `https://www.khanacademy.org/math/multivariable-calculus`}]
+  },
+  'Probability': {
+    title: `Probability Distributions`, 
+    body: `<p>LLMs do not predict exactly one next word; they generate a probability distribution across the entire vocabulary, and then sample from that distribution based on temperature settings.</p><p>Understanding probability is key to understanding why LLMs hallucinate. They are not pulling facts from a database; they are sampling from a statistical distribution of what words are most likely to follow the prompt.</p>`, 
+    sources: [{label: `Hugging Face — Generation Strategies`, url: `https://huggingface.co/docs/transformers/generation_strategies`}]
+  },
+  'Self-attention': {
+    title: `Self-Attention Mechanism`, 
+    body: `<p>The core breakthrough of the Transformer architecture. It allows the model to weigh the importance of every other word in the input context when processing the current word, capturing deep semantic relationships regardless of distance.</p><p>Unlike recurrent neural networks (RNNs) which process data sequentially and forget early context, self-attention looks at the entire sequence at once. Its main drawback is that compute requirements scale quadratically with context length.</p>`, 
+    sources: [{label: `Jay Alammar — The Illustrated Transformer`, url: `https://jalammar.github.io/illustrated-transformer/`}]
+  },
+  'Embedding vectors': {
+    title: `Embedding Vectors`, 
+    body: `<p>Computers cannot read text, so words must be turned into numbers. An embedding vector is an array of numbers (often 4,096+ dimensions long) that represents the semantic meaning of a word or token.</p><p>Words with similar meanings (like "dog" and "puppy") will have embedding vectors that are mathematically close to each other in this high-dimensional space. The model learns these relationships during pre-training.</p>`, 
+    sources: [{label: `Google — Crash Course: Embeddings`, url: `https://developers.google.com/machine-learning/crash-course/embeddings/video-lecture`}]
+  },
+  'Weight matrices': {
+    title: `Weight Matrices`, 
+    body: `<p>The actual parameters of the model. These are massive grids of numbers that the model learns during training. When you multiply an input embedding by a weight matrix, you transform its meaning through the network layers.</p><p>A 70 billion parameter model literally has 70 billion of these numbers organized into grids. During inference, every single number must be loaded into GPU memory to calculate the next word.</p>`, 
+    sources: [{label: `Wikipedia — Artificial Neural Network weights`, url: `https://en.wikipedia.org/wiki/Artificial_neural_network`}]
+  },
+  'Matrix multiplication': {
+    title: `Matrix Multiplication`, 
+    body: `<p>The dominant mathematical operation in LLM inference. It is the process of combining input vectors with weight matrices. This is why GPUs are required, as they are specifically designed to do thousands of these multiplications simultaneously.</p><p>Optimizing matrix multiplication (through software libraries like cuBLAS or hardware like Tensor Cores) is the primary way tech companies speed up AI response times.</p>`, 
+    sources: [{label: `NVIDIA — What are Tensor Cores?`, url: `https://www.nvidia.com/en-us/data-center/tensor-cores/`}]
+  },
+  'Dot products': {
+    title: `Dot Products`, 
+    body: `<p>A mathematical operation that compares two vectors to output a single scalar number. In attention mechanisms, the dot product between a Query vector and a Key vector determines how much attention the model should pay to that specific relationship.</p><p>A high dot product means the two vectors are pointing in roughly the same direction in high-dimensional space, indicating strong semantic relevance.</p>`, 
+    sources: [{label: `Math is Fun — Dot Product`, url: `https://www.mathsisfun.com/algebra/vectors-dot-product.html`}]
+  },
+  'Cosine similarity': {
+    title: `Cosine Similarity`, 
+    body: `<p>A mathematical metric used to measure how similar two embedding vectors are, by looking at the angle between them regardless of their magnitude.</p><p>It is heavily utilized in Retrieval-Augmented Generation (RAG) systems to compare a user's question with millions of documents in a vector database to find the closest matching text.</p>`, 
+    sources: [{label: `Wikipedia — Cosine Similarity`, url: `https://en.wikipedia.org/wiki/Cosine_similarity`}]
+  },
+  'Loss function': {
+    title: `Loss Function`, 
+    body: `<p>A mathematical formula (usually Cross-Entropy in language modeling) that calculates how far off the model's predictions are from the actual training data.</p><p>If the model is absolutely certain the next word is "apple" but the actual text says "banana," the loss function returns a high penalty. The entire training process is dedicated to minimizing this loss value across trillions of tokens.</p>`, 
+    sources: [{label: `Fast.ai — Loss Functions`, url: `https://course.fast.ai/`}]
+  },
+  'Gradient descent': {
+    title: `Gradient Descent`, 
+    body: `<p>The optimization algorithm that updates the model's billions of parameters by moving them slightly in the direction that minimizes the loss function.</p><p>Imagine standing on a foggy mountain and wanting to reach the bottom. You take a step in the direction of the steepest downward slope. Gradient descent does this mathematically in a multi-billion dimensional space.</p>`, 
+    sources: [{label: `3Blue1Brown — Gradient Descent`, url: `https://www.youtube.com/watch?v=IHZwWFHWa-w`}]
+  },
+  'Backpropagation': {
+    title: `Backpropagation`, 
+    body: `<p>The algorithm that efficiently calculates the gradient of the loss function across all layers of the neural network, passing the error signal backward from the output to the input layers.</p><p>Without backpropagation, calculating how to update billions of parameters would take an impossibly long time. It is the algorithmic cornerstone of all modern deep learning.</p>`, 
+    sources: [{label: `3Blue1Brown — Backpropagation explained`, url: `https://www.youtube.com/watch?v=Ilg3gGewQ5U`}]
+  },
+  'Learning rate': {
+    title: `Learning Rate`, 
+    body: `<p>A crucial hyperparameter that dictates how big a step the model takes during gradient descent. If it is too high, the model becomes unstable and overshoots the target; if it is too low, training takes forever.</p><p>Modern LLMs use complex schedules (like Cosine Decay) that start with large steps to learn basic concepts quickly, and slowly decrease the step size to finely tune the parameters at the end of training.</p>`, 
+    sources: [{label: `Papers with Code — Learning Rate`, url: `https://paperswithcode.com/method/learning-rate-schedule`}]
+  },
+  'Adam optimiser': {
+    title: `Adam Optimiser`, 
+    body: `<p>The most widely used optimization algorithm for training LLMs. It adapts the learning rate individually for every single parameter based on past gradients, leading to much faster and more stable training than standard gradient descent.</p><p>Adam combines the benefits of two other extensions of stochastic gradient descent: Adaptive Gradient Algorithm (AdaGrad) and Root Mean Square Propagation (RMSProp).</p>`, 
+    sources: [{label: `Kingma & Ba 2014 — Adam: A Method for Stochastic Optimization`, url: `https://arxiv.org/abs/1412.6980`}]
+  },
+  'Softmax function': {
+    title: `Softmax Function`, 
+    body: `<p>A function that converts the raw numerical outputs (logits) of the neural network into a clean probability distribution where all values sum exactly to 1.0.</p><p>By exponentiating the inputs, softmax aggressively pushes the highest value towards 1 and squashes the lower values towards 0, making the model's choice of the next token much clearer.</p>`, 
+    sources: [{label: `Wikipedia — Softmax function`, url: `https://en.wikipedia.org/wiki/Softmax_function`}]
+  },
+  'Temperature': {
+    title: `Temperature`, 
+    body: `<p>A setting that controls output randomness by scaling logits before they are passed through the softmax function. T=0 makes the model strictly deterministic (always picks the highest probability word).</p><p>T>0 flattens the distribution, allowing the model to choose slightly less likely words for more creative outputs. A temperature of 0.7 is a common default for a balance of coherence and creativity.</p>`, 
+    sources: [{label: `Cohere — LLM Generation Parameters`, url: `https://docs.cohere.com/docs/temperature`}]
+  },
+  'Top-p sampling': {
+    title: `Top-p (Nucleus) Sampling`, 
+    body: `<p>A sampling technique that only considers the smallest set of top tokens whose combined probability adds up to a threshold (e.g., 0.9). It dynamically cuts off the "long tail" of weird, low-probability words.</p><p>Unlike Top-k, Top-p adapts to the model's confidence. If the model is very sure, the nucleus might only contain 1 or 2 words. If the model is unsure, the nucleus expands to include dozens of plausible options.</p>`, 
+    sources: [{label: `Holtzman et al. 2020 — Nucleus Sampling`, url: `https://arxiv.org/abs/1904.09751`}]
+  },
+  'Top-k sampling': {
+    title: `Top-k Sampling`, 
+    body: `<p>A simpler sampling technique that strictly limits the model's choice to the top k most likely next words (e.g., top 40), ignoring all others regardless of their actual probability scores.</p><p>While effective at preventing catastrophic hallucinations by removing extreme edge cases, it is generally considered less elegant than Top-p sampling because it applies a rigid cutoff regardless of the probability distribution.</p>`, 
+    sources: [{label: `Hugging Face — Generation strategies`, url: `https://huggingface.co/blog/how-to-generate`}]
+  },
+  'Perplexity': {
+    title: `Perplexity`, 
+    body: `<p>A standard metric used to evaluate how well a language model predicts a sample of text. Lower perplexity means the model is less "surprised" by the text, indicating a better understanding of language.</p><p>Mathematically, it is the exponentiated average negative log-likelihood of a sequence. While good for comparing models during training, perplexity does not always perfectly correlate with how humans perceive chat quality.</p>`, 
+    sources: [{label: `Hugging Face — Perplexity of fixed-length models`, url: `https://huggingface.co/docs/transformers/perplexity`}]
+  },
+  'Multi-head attention': {
+    title: `Multi-head Attention`, 
+    body: `<p>Instead of computing attention once, the model runs multiple attention operations (heads) in parallel. The outputs are then concatenated and projected back to the original dimension.</p><p>Each head learns to look for different linguistic features. For example, one head might track grammar, another tracks pronoun references, and another tracks emotional sentiment. GPT-4 is believed to use over 90 attention heads.</p>`, 
+    sources: [{label: `Vaswani et al. 2017 — Attention Is All You Need`, url: `https://arxiv.org/abs/1706.03762`}]
+  },
+  'Query / Key / Value': {
+    title: `Query, Key, and Value Vectors`, 
+    body: `<p>In self-attention, every token is projected into three distinct vectors. Think of it like a database retrieval system: The Query is what the current word is looking for. The Key is the label every other word holds up. The Value is the actual semantic content that gets passed forward.</p><p>Attention scores are calculated by multiplying Queries and Keys (matching the search to the labels), which then dictates how much of the Value is accumulated for the next layer.</p>`, 
+    sources: [{label: `Jay Alammar — The Illustrated Transformer`, url: `https://jalammar.github.io/illustrated-transformer/`}]
+  },
+  'Attention weights': {
+    title: `Attention Weights`, 
+    body: `<p>The numerical scores resulting from the Query-Key dot products (after being passed through the softmax function). They act as percentages, telling the model exactly what fraction of information to pull from every other word in the sequence.</p><p>Visualizing these weights allows researchers to literally see which words the model is paying attention to when answering a prompt.</p>`, 
+    sources: [{label: `Anthropic — Transformer Circuits Thread`, url: `https://transformer-circuits.pub/`}]
+  },
+  'Scaled dot-product': {
+    title: `Scaled Dot-Product Attention`, 
+    body: `<p>The specific mathematical formulation of attention used in Transformers. The dot product of the Query and Key vectors is divided (scaled) by the square root of their dimension size.</p><p>This scaling is mathematically necessary because dot products can grow very large in high dimensions, which pushes the softmax function into regions where gradients are extremely small, halting the training process.</p>`, 
+    sources: [{label: `Vaswani et al. 2017 — Attention Is All You Need`, url: `https://arxiv.org/abs/1706.03762`}]
+  },
+  'Positional encoding': {
+    title: `Positional Encoding`, 
+    body: `<p>Because attention processes all words simultaneously (unlike older recurrent networks), it has no inherent sense of word order. Positional encoding injects a distinct mathematical signal into each word's embedding so the model knows where it sits in the sentence.</p><p>Early models used static sine and cosine waves. Modern models frequently use Rotary Positional Embeddings (RoPE), which encode relative positions rather than absolute positions, allowing for better extrapolation to longer context windows.</p>`, 
+    sources: [{label: `Su et al. 2021 — RoFormer (RoPE paper)`, url: `https://arxiv.org/abs/2104.09864`}]
+  },
+
+  // TRAINING
+  'Data collection': {
+    title: `Data Collection & Curation`, 
+    body: `<p>The foundational step of gathering trillions of words from web crawls, books, and code. The quality and diversity of this data heavily constrain the upper limits of the final model's intelligence.</p><p>Raw data is full of spam and toxicity. The filtering process—which involves deduplication, heuristic filtering, and using smaller AI models to score the quality of documents—is often a closely guarded trade secret by frontier labs.</p>`, 
+    sources: [{label: `Meta — Llama 3 Dataset specifics`, url: `https://github.com/meta-llama/llama3`}]
+  },
+  'Pre-training': {
+    title: `Pre-training`, 
+    body: `<p>The massively expensive phase where the model reads the entire dataset and learns the statistical rules of language by simply guessing the next word over and over again on massive GPU clusters.</p><p>This phase instills the model with general knowledge, reasoning capabilities, and cross-lingual translation skills, purely as a byproduct of trying to accurately predict internet text.</p>`, 
+    sources: [{label: `OpenAI — GPT-3 pre-training details`, url: `https://arxiv.org/abs/2005.14165`}]
+  },
+  'Instruction tuning': {
+    title: `Instruction Tuning (SFT)`, 
+    body: `<p>Supervised Fine-Tuning converts a raw text-predictor into a helpful assistant. It uses thousands of highly curated QA pairs to teach the model how to respond directly to human instructions in a chat format.</p><p>While pre-training injects knowledge, SFT defines the format and tone of how that knowledge is accessed.</p>`, 
+    sources: [{label: `Wei et al. 2022 — Finetuned Language Models are Zero-Shot Learners`, url: `https://arxiv.org/abs/2109.01652`}]
+  },
+  'RLHF': {
+    title: `Reinforcement Learning from Human Feedback`, 
+    body: `<p>The alignment technique that uses human raters to score model outputs, training it to be helpful and harmless. It is the secret sauce that made ChatGPT widely adoptable and safe for the public.</p><p>However, aggressive RLHF can lead to the alignment tax, where a model becomes so overly cautious that its raw reasoning and creative capabilities are slightly degraded.</p>`, 
+    sources: [{label: `Ouyang et al. 2022 — InstructGPT paper`, url: `https://arxiv.org/abs/2203.02155`}]
+  },
+  'DPO': {
+    title: `Direct Preference Optimization`, 
+    body: `<p>A mathematically simpler alternative to RLHF that optimizes model weights directly based on preference pairs (chosen vs. rejected responses) without needing a complex, separate reward model.</p><p>DPO has massively accelerated open-source AI development because it requires significantly less compute and engineering overhead than traditional PPO-based reinforcement learning.</p>`, 
+    sources: [{label: `Rafailov et al. 2023 — DPO paper`, url: `https://arxiv.org/abs/2305.18290`}]
+  },
+  'Synthetic data': {
+    title: `Synthetic Training Data`, 
+    body: `<p>Using outputs from highly capable models (like GPT-4) to train smaller models. This is becoming crucial as the supply of high-quality, human-generated text on the internet becomes exhausted.</p><p>Care must be taken, as training exclusively on synthetic data without human intervention can lead to model collapse, where errors compound and the model's vocabulary degrades over generations.</p>`, 
+    sources: [{label: `Shumailov et al. 2023 — The Curse of Recursion`, url: `https://arxiv.org/abs/2305.17493`}]
+  },
+  'Common Crawl': {
+    title: `Common Crawl`, 
+    body: `<p>A non-profit organization that constantly scrapes the public web and releases petabytes of raw text data. It forms the backbone of almost all major LLM training datasets.</p><p>Because it scrapes the whole web, it contains significant amounts of low-quality content, meaning engineers must apply aggressive filtering pipelines before feeding it into a model.</p>`, 
+    sources: [{label: `Common Crawl Website`, url: `https://commoncrawl.org/`}]
+  },
+  'The Pile': {
+    title: `The Pile Dataset`, 
+    body: `<p>An influential 800GB open-source training dataset curated by EleutherAI, known for its high quality and diverse inclusion of academic papers, code, legal documents, and books.</p><p>It set a standard for open-source data transparency, though it has faced legal challenges regarding copyright claims in some of its subsets.</p>`, 
+    sources: [{label: `Gao et al. 2020 — The Pile`, url: `https://arxiv.org/abs/2101.00027`}]
+  },
+  'RedPajama': {
+    title: `RedPajama Project`, 
+    body: `<p>An open-source effort to faithfully replicate the highly curated (but closed) dataset Meta used to train the original LLaMA model, ensuring open science could continue on state-of-the-art foundations.</p><p>It includes massive filtered subsets of Common Crawl, Wikipedia, ArXiv, and GitHub.</p>`, 
+    sources: [{label: `Together AI — RedPajama release`, url: `https://www.together.ai/blog/redpajama-data-v2`}]
+  },
+  'FineWeb': {
+    title: `FineWeb Dataset`, 
+    body: `<p>A massive, ultra-high-quality web dataset released by Hugging Face in 2024, utilizing extensive deduplication and quality filtering to drastically improve training efficiency.</p><p>Models trained on FineWeb demonstrate superior reasoning and knowledge retrieval compared to models trained on older, less-filtered datasets of the same size.</p>`, 
+    sources: [{label: `Hugging Face — FineWeb release`, url: `https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1`}]
+  },
+  'C4 dataset': {
+    title: `C4 (Colossal Clean Crawled Corpus)`, 
+    body: `<p>A cleaned, English-only version of the Common Crawl dataset created by Google to train their T5 models, widely used in academic research.</p><p>The cleaning heuristics removed lines without end punctuation, pages with inappropriate words, and code blocks, making it highly specific to natural English language tasks.</p>`, 
+    sources: [{label: `Raffel et al. 2019 — T5 paper`, url: `https://arxiv.org/abs/1910.10683`}]
+  },
+  'Causal language modelling': {
+    title: `Causal Language Modelling`, 
+    body: `<p>The training objective where the model is strictly forced to predict the next token using only the tokens that appeared before it (autoregressive generation).</p><p>By masking all future tokens during training, the model learns the causal structure of language, which directly translates to its ability to generate text left-to-right when deployed.</p>`, 
+    sources: [{label: `Hugging Face — Causal Language Modeling`, url: `https://huggingface.co/docs/transformers/tasks/language_modeling`}]
+  },
+  'Next token prediction': {
+    title: `Next Token Prediction`, 
+    body: `<p>The surprisingly simple objective that leads to LLM intelligence. By learning to predict the next word across trillions of diverse contexts, the model inadvertently learns reasoning, facts, and logic.</p><p>This is often compared to a highly advanced form of data compression; to perfectly predict the next word in a physics paper, the model is forced to learn the actual rules of physics.</p>`, 
+    sources: [{label: `Ilya Sutskever — Unsupervised Learning`, url: `https://www.youtube.com/watch?v=AKMuA_TVz3A`}]
+  },
+  'Foundation models': {
+    title: `Foundation Models`, 
+    body: `<p>Massive models trained on broad data that can be adapted to a wide range of downstream tasks. The term was coined by Stanford researchers to denote how central these models have become.</p><p>LLMs are the most prominent example, replacing older paradigms where separate, smaller models had to be trained from scratch for translation, summarization, and classification.</p>`, 
+    sources: [{label: `Bommasani et al. 2021 — Foundation Models`, url: `https://arxiv.org/abs/2108.07258`}]
+  },
+  'Base models': {
+    title: `Base Models`, 
+    body: `<p>The raw result of pre-training. They understand language perfectly but are not designed for chat; they will simply auto-complete whatever prompt you give them.</p><p>If you feed a base model the prompt "What is the capital of France?", it might output "What is the capital of Germany?" because it assumes it is reading a list of trivia questions.</p>`, 
+    sources: [{label: `Andrej Karpathy — State of GPT`, url: `https://bbycroft.net/llm`}]
+  },
+  'Training loss': {
+    title: `Training Loss`, 
+    body: `<p>The primary metric tracked by engineers over the months-long training process. A steadily decreasing training loss curve indicates the model is successfully learning the patterns in the data.</p><p>Sudden spikes in training loss usually indicate a massive mathematical instability (like vanishing gradients) that requires engineers to pause training, adjust learning rates, and restart from a checkpoint.</p>`, 
+    sources: [{label: `Fast.ai — Loss Functions`, url: `https://course.fast.ai/`}]
+  },
+  'Conversational format': {
+    title: `Conversational Formatting`, 
+    body: `<p>Teaching the model special chat templates (like &lt;|user|&gt; and &lt;|assistant|&gt;) during SFT so it understands the back-and-forth structure of a dialogue.</p><p>If a user interfaces with a model using the wrong template (e.g., using Llama 3's template on a Mistral model), the model will become deeply confused and generate poor quality text.</p>`, 
+    sources: [{label: `Hugging Face — Chat Templates`, url: `https://huggingface.co/docs/transformers/chat_templating`}]
+  },
+  'FLAN dataset': {
+    title: `FLAN Dataset`, 
+    body: `<p>A highly influential dataset created by Google comprising millions of instructions across thousands of different tasks, used to heavily boost a model's zero-shot generalization capabilities.</p><p>Models fine-tuned on FLAN are remarkably good at following novel instructions they were never explicitly trained on.</p>`, 
+    sources: [{label: `Wei et al. 2022 — FLAN paper`, url: `https://arxiv.org/abs/2109.01652`}]
+  },
+  'Alpaca': {
+    title: `Stanford Alpaca`, 
+    body: `<p>A famous early open-source project that proved you could fine-tune a base LLaMA model into a highly capable chatbot using just $600 worth of synthetic instruction data generated by GPT-3.</p><p>This triggered a massive wave of open-source fine-tuning experiments, proving that the base models already possessed the knowledge, and only needed a tiny nudge to act as assistants.</p>`, 
+    sources: [{label: `Taori et al. 2023 — Stanford Alpaca`, url: `https://crfm.stanford.edu/2023/03/13/alpaca.html`}]
+  },
+  'ShareGPT': {
+    title: `ShareGPT Data`, 
+    body: `<p>A popular fine-tuning dataset scraped from users sharing their high-quality ChatGPT conversations online, frequently used to train open-source models.</p><p>It provides crucial multi-turn dialogue data, teaching open-source models how to maintain context and tone across a long, continuous conversation.</p>`, 
+    sources: [{label: `ShareGPT Dataset Repository`, url: `https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered`}]
+  },
+  'Open Hermes': {
+    title: `Open Hermes`, 
+    body: `<p>A widely used, highly curated dataset (and resulting model series) by Nous Research, blending synthetic and human data to create exceptionally capable open-weight chatbots.</p><p>It emphasizes detailed, step-by-step reasoning and refusal-mitigation, resulting in models that are generally more compliant and helpful than their corporate-aligned counterparts.</p>`, 
+    sources: [{label: `Nous Research — Open Hermes 2.5`, url: `https://huggingface.co/NousResearch/OpenHermes-2.5-Mistral-7B`}]
+  },
+  'Reward model': {
+    title: `Reward Model`, 
+    body: `<p>During RLHF, a secondary neural network is trained to act as a simulated human judge. It scores how "good" a response is, allowing the main model to be trained via reinforcement learning at immense scale.</p><p>Training a good reward model is incredibly difficult; if it has flaws, the main LLM will quickly learn to exploit those flaws (reward hacking) to get high scores with nonsensical text.</p>`, 
+    sources: [{label: `Ouyang et al. 2022 — InstructGPT paper`, url: `https://arxiv.org/abs/2203.02155`}]
+  },
+  'PPO optimiser': {
+    title: `PPO (Proximal Policy Optimization)`, 
+    body: `<p>The complex reinforcement learning algorithm used in RLHF to safely update the model's weights based on the scores provided by the reward model.</p><p>It uses trust regions to ensure the model doesn't change its behavior too drastically in a single update, keeping the training process mathematically stable.</p>`, 
+    sources: [{label: `Schulman et al. 2017 — PPO paper`, url: `https://arxiv.org/abs/1707.06347`}]
+  },
+  'Constitutional AI': {
+    title: `Constitutional AI`, 
+    body: `<p>Anthropic's technique where the model is aligned not by human raters, but by providing the model with a written Constitution and forcing it to self-critique and revise its own outputs during training.</p><p>This drastically reduces the reliance on expensive human labelers and makes the model's alignment criteria transparent and easily modifiable.</p>`, 
+    sources: [{label: `Bai et al. 2022 — Constitutional AI`, url: `https://arxiv.org/abs/2212.08073`}]
+  },
+  'Human preference data': {
+    title: `Human Preference Data`, 
+    body: `<p>Data collected by showing human raters two different AI responses to the same prompt and asking them to choose the better one. This data trains the reward model or is used directly in DPO.</p><p>Achieving high inter-annotator agreement (getting humans to agree on what is "best") is one of the most expensive and complex bottlenecks in modern AI development.</p>`, 
+    sources: [{label: `OpenAI — Alignment Research`, url: `https://openai.com/research/alignment`}]
+  },
+  'Proximal Policy Optimisation': {
+    title: `Proximal Policy Optimization`, 
+    body: `<p>The full name for PPO, the dominant reinforcement learning algorithm used to align models in the RLHF process. Developed at OpenAI, it balances ease of tuning with sample efficiency.</p><p>It prevents the AI from making massive, destructive updates to its policy by mathematically clipping the reward function if it deviates too far from the previous state.</p>`, 
+    sources: [{label: `Schulman et al. 2017 — PPO paper`, url: `https://arxiv.org/abs/1707.06347`}]
+  },
+  'Preference pairs': {
+    title: `Preference Pairs`, 
+    body: `<p>The standard format for DPO training data, consisting of a prompt, a "chosen" (good) response, and a "rejected" (bad) response.</p><p>By directly feeding these pairs into the optimizer, the model learns to increase the probability of the chosen text while actively decreasing the probability of the rejected text.</p>`, 
+    sources: [{label: `Rafailov et al. 2023 — DPO paper`, url: `https://arxiv.org/abs/2305.18290`}]
+  },
+  'Implicit reward model': {
+    title: `Implicit Reward Model`, 
+    body: `<p>The mathematical trick behind DPO: it proves that the language model itself can act as the reward model, eliminating the need to train a separate network to judge responses.</p><p>This halves the memory requirements during alignment training, allowing smaller research labs to align models locally.</p>`, 
+    sources: [{label: `Rafailov et al. 2023 — DPO paper`, url: `https://arxiv.org/abs/2305.18290`}]
+  },
+  'Zephyr model': {
+    title: `Zephyr 7B`, 
+    body: `<p>An influential open-source model by Hugging Face that proved DPO could be used on small models to achieve chat performance rivaling much larger, RLHF-trained models.</p><p>It specifically optimized for helpfulness and instruction following, becoming a blueprint for the open-source community's alignment pipelines.</p>`, 
+    sources: [{label: `Tunstall et al. 2023 — Zephyr`, url: `https://arxiv.org/abs/2310.16944`}]
+  },
+  'Tulu': {
+    title: `Tulu Models`, 
+    body: `<p>A research model series from the Allen Institute for AI (AI2) used to rigorously test and compare different fine-tuning and alignment methodologies.</p><p>Their research isolates exactly which datasets and algorithms contribute to specific downstream capabilities, providing a rare look under the hood of modern alignment science.</p>`, 
+    sources: [{label: `Wang et al. 2023 — Tulu paper`, url: `https://arxiv.org/abs/2306.04751`}]
+  },
+  'ORPO variant': {
+    title: `ORPO (Odds Ratio Preference Optimization)`, 
+    body: `<p>An even newer alternative to DPO that combines instruction tuning and preference alignment into a single, highly efficient monolithic training step.</p><p>Instead of requiring a pre-trained SFT model to anchor the DPO process, ORPO penalizes rejected responses dynamically during the initial fine-tuning phase.</p>`, 
+    sources: [{label: `Hong et al. 2024 — ORPO paper`, url: `https://arxiv.org/abs/2403.07691`}]
+  },
+  'Phi-3 (Microsoft)': {
+    title: `Microsoft Phi-3`, 
+    body: `<p>A family of very small models (e.g., 3.8B parameters) that achieve GPT-3.5 level performance because they were trained almost exclusively on ultra-high-quality, textbook-like synthetic data generated by GPT-4.</p><p>It proved that parameter count can be offset by exceptionally dense, noise-free training data, paving the way for highly capable models running on edge devices like phones.</p>`, 
+    sources: [{label: `Abdin et al. 2024 — Phi-3 Technical Report`, url: `https://arxiv.org/abs/2404.14219`}]
+  },
+  'Orca methodology': {
+    title: `Orca Methodology`, 
+    body: `<p>A synthetic data technique where a small model learns not just by mimicking a large model's final answer, but by explicitly training on the large model's step-by-step reasoning process.</p><p>By distilling the process rather than just the output, the smaller model internalizes complex logic paths it could never have derived on its own.</p>`, 
+    sources: [{label: `Mukherjee et al. 2023 — Orca paper`, url: `https://arxiv.org/abs/2306.02707`}]
+  },
+  'WizardLM': {
+    title: `WizardLM`, 
+    body: `<p>A model trained using Evol-Instruct, a technique where AI is used to take simple training prompts and rewrite them to be progressively more complex and difficult before generating responses.</p><p>This creates synthetic datasets that challenge the model, pushing its capabilities beyond standard, simplistic human prompts.</p>`, 
+    sources: [{label: `Xu et al. 2023 — WizardLM paper`, url: `https://arxiv.org/abs/2304.12244`}]
+  },
+  'Self-Instruct': {
+    title: `Self-Instruct`, 
+    body: `<p>A framework where a model uses a small set of human-written seeds to autonomously generate a massive dataset of new instructions and responses to train itself.</p><p>This bootstrapping method is highly cost-effective and reduces reliance on proprietary datasets, though it requires strict filtering to prevent recursive errors.</p>`, 
+    sources: [{label: `Wang et al. 2022 — Self-Instruct paper`, url: `https://arxiv.org/abs/2212.10560`}]
+  },
+  'Magpie dataset': {
+    title: `Magpie Alignment`, 
+    body: `<p>A recent alignment technique that extracts high-quality instruction data from unaligned models by cleverly manipulating their pre-fill templates.</p><p>By feeding an unaligned model a partial template that looks like a user asking a question, the model natively hallucinates a high-quality user query, which is then used for training.</p>`, 
+    sources: [{label: `Chen et al. 2024 — Magpie paper`, url: `https://arxiv.org/abs/2406.08464`}]
+  },
+
+  // ARCHITECTURE
+  'Dense transformer': {
+    title: `Dense Transformer`, 
+    body: `<p>The standard architecture where every single parameter in the neural network is activated for every single word processed. Powerful, but computationally expensive at large scales.</p><p>While highly stable to train, dense models scale poorly compared to Sparse architectures (MoE) when parameter counts exceed 100 Billion, as inference latency becomes a major bottleneck.</p>`, 
+    sources: [{label: `Vaswani et al. 2017 — Attention Is All You Need`, url: `https://arxiv.org/abs/1706.03762`}]
+  },
+  'Mixture of Experts': {
+    title: `Mixture of Experts (MoE)`, 
+    body: `<p>An architecture where the network is divided into specialized experts. A routing mechanism only sends a token to 1 or 2 experts, saving massive amounts of compute while maintaining high capacity.</p><p>This allows a model to have 80 billion parameters of knowledge, but run at the speed of a 14 billion parameter model, making frontier intelligence commercially viable to host.</p>`, 
+    sources: [{label: `Jiang et al. 2024 — Mixtral paper`, url: `https://arxiv.org/abs/2401.04088`}]
+  },
+  'Reasoning models': {
+    title: `Reasoning Models`, 
+    body: `<p>Models like OpenAI o1 or DeepSeek R1 that are trained via reinforcement learning to generate long, hidden chains of thought before outputting an answer, drastically improving logic and math skills.</p><p>They shift compute from the training phase to the inference phase (test-time compute), effectively thinking longer to solve problems that pattern-matching alone cannot solve.</p>`, 
+    sources: [{label: `OpenAI — o1 System Card`, url: `https://openai.com/index/openai-o1-system-card/`}]
+  },
+  'OpenAI': {
+    title: `OpenAI`, 
+    body: `<p>The creator of the GPT series, ChatGPT, and the o1 reasoning models. They currently lead the industry in frontier closed-model capabilities.</p><p>Originally founded as a non-profit open-source lab, they pivoted to a capped-profit model and closed their architectures to fund the massive compute requirements of frontier AI.</p>`, 
+    sources: [{label: `OpenAI About Page`, url: `https://openai.com/about`}]
+  },
+  'Anthropic': {
+    title: `Anthropic`, 
+    body: `<p>Founded by former OpenAI researchers with a focus on safety. Creators of the Claude family of models, known for massive context windows and superior coding/writing capabilities.</p><p>Their unique Constitutional AI approach sets them apart, allowing them to scale model intelligence while theoretically maintaining tighter bounds on model safety and refusal behavior.</p>`, 
+    sources: [{label: `Anthropic About Page`, url: `https://www.anthropic.com/company`}]
+  },
+  'Google DeepMind': {
+    title: `Google DeepMind`, 
+    body: `<p>Google's premier AI lab, responsible for the natively multimodal Gemini series of models, which process text, video, and audio seamlessly.</p><p>With unparalleled access to proprietary TPUs and YouTube training data, DeepMind focuses on deep integrations into the Google ecosystem and extending context windows to the millions of tokens.</p>`, 
+    sources: [{label: `Google DeepMind Research`, url: `https://deepmind.google/research/`}]
+  },
+  'Open models': {
+    title: `Open Weight Models`, 
+    body: `<p>Models whose structural parameters (weights) are publicly available to download. They can be run entirely offline, enabling privacy and a massive developer ecosystem.</p><p>Spearheaded by Meta (Llama) and Mistral, open models have rapidly closed the capability gap with proprietary models, democratizing access to frontier-level AI research.</p>`, 
+    sources: [{label: `Meta — Open Source AI`, url: `https://ai.meta.com/`}]
+  },
+  'GPT-2': {
+    title: `GPT-2`, 
+    body: `<p>OpenAI's 2019 model (1.5B parameters) that proved scaling up simple text prediction leads to coherent text generation.</p><p>Its release was initially staggered due to fears that it would be used to flood the internet with disinformation, marking the beginning of modern AI safety policies.</p>`, 
+    sources: [{label: `OpenAI — GPT-2 Release`, url: `https://openai.com/index/better-language-models/`}]
+  },
+  'BERT': {
+    title: `BERT`, 
+    body: `<p>Google's 2018 model. It processes text bidirectionally to understand context perfectly, making it the industry standard for search and classification, but poor at generation.</p><p>Instead of predicting the next word, BERT is trained by masking a word in the middle of a sentence and forcing the model to guess it using both the left and right context.</p>`, 
+    sources: [{label: `Devlin et al. 2018 — BERT paper`, url: `https://arxiv.org/abs/1810.04805`}]
+  },
+  'T5': {
+    title: `T5 (Text-to-Text Transfer Transformer)`, 
+    body: `<p>An architecture by Google that converts every AI problem (translation, summary, classification) into a standard text-to-text format.</p><p>It uses an encoder-decoder architecture, making it highly effective for tasks where the input and output are distinct text streams, though it is less popular than decoder-only models today.</p>`, 
+    sources: [{label: `Raffel et al. 2019 — T5 paper`, url: `https://arxiv.org/abs/1910.10683`}]
+  },
+  'original GPT-3': {
+    title: `GPT-3`, 
+    body: `<p>OpenAI's 2020 landmark 175B parameter model that introduced the world to few-shot prompting and proved massive scale unlocks new capabilities.</p><p>It was a pure base model, requiring complex prompt engineering to coax out correct answers before instruction tuning became the industry standard.</p>`, 
+    sources: [{label: `Brown et al. 2020 — GPT-3 paper`, url: `https://arxiv.org/abs/2005.14165`}]
+  },
+  'LLaMA 1': {
+    title: `LLaMA 1`, 
+    body: `<p>Meta's original 2023 open-research model. It was leaked online via a 4chan torrent, sparking the entire open-source local AI revolution.</p><p>It proved that training smaller models (like 7B and 13B parameters) on vastly more data than was previously standard resulted in highly performant, consumer-hardware-friendly AI.</p>`, 
+    sources: [{label: `Touvron et al. 2023 — LLaMA paper`, url: `https://arxiv.org/abs/2302.13971`}]
+  },
+  'Falcon': {
+    title: `Falcon Models`, 
+    body: `<p>A prominent open-weight model family developed by the Technology Innovation Institute in the UAE, notable for being trained on heavily refined web data.</p><p>At launch, Falcon 40B topped open-source leaderboards, demonstrating that state-backed research institutions outside the US could compete at the frontier.</p>`, 
+    sources: [{label: `Falcon LLM Official`, url: `https://falconllm.tii.ae/`}]
+  },
+  'Mixtral 8x7B': {
+    title: `Mixtral 8x7B`, 
+    body: `<p>A landmark open MoE model from Mistral AI. It has 46B total parameters but only uses 13B per token, running as fast as a small model but performing like a large one.</p><p>It popularized the Mixture of Experts architecture in the open-source community, enabling complex local routing without requiring datacenter-grade hardware.</p>`, 
+    sources: [{label: `Jiang et al. 2024 — Mixtral paper`, url: `https://arxiv.org/abs/2401.04088`}]
+  },
+  'GPT-4 (believed MoE)': {
+    title: `GPT-4 Architecture`, 
+    body: `<p>While closed, it is widely leaked and accepted in the industry that GPT-4 utilizes a massive Mixture of Experts architecture to achieve its performance.</p><p>This architectural shift is what allowed OpenAI to vastly improve reasoning capabilities over GPT-3 while maintaining viable latency for consumer chat interactions.</p>`, 
+    sources: [{label: `OpenAI — GPT-4 Technical Report`, url: `https://arxiv.org/abs/2303.08774`}]
+  },
+  'Qwen 3.5': {
+    title: `Qwen 3.5`, 
+    body: `<p>Alibaba's highly capable open-weight models. They currently rank alongside Llama 3 and DeepSeek as some of the most capable open models in the world.</p><p>Qwen models are particularly notable for their exceptional multilingual performance and robust coding capabilities, heavily utilizing MoE in their larger parameters.</p>`, 
+    sources: [{label: `Qwen Official Blog`, url: `https://qwenlm.github.io/`}]
+  },
+  'DeepSeek V3': {
+    title: `DeepSeek V3`, 
+    body: `<p>A highly optimized MoE model from China that achieved frontier-level performance at a fraction of the training cost of Western counterparts.</p><p>It features numerous architectural innovations, including Multi-Head Latent Attention (MLA) to compress key-value caches, drastically speeding up inference.</p>`, 
+    sources: [{label: `DeepSeek — V3 Technical Report`, url: `https://github.com/deepseek-ai/DeepSeek-V3`}]
+  },
+  'Switch Transformer': {
+    title: `Switch Transformer`, 
+    body: `<p>An early, massively scaled MoE paper by Google demonstrating models with over 1 Trillion parameters using efficient token routing.</p><p>It proved the mathematical viability of extreme sparsity, laying the groundwork for the modern MoE boom utilized by GPT-4 and Mistral.</p>`, 
+    sources: [{label: `Fedus et al. 2021 — Switch Transformer`, url: `https://arxiv.org/abs/2101.03961`}]
+  },
+  'OpenAI o1': {
+    title: `OpenAI o1`, 
+    body: `<p>OpenAI's first official reasoning model, utilizing reinforcement learning to force the model to think step-by-step internally before answering.</p><p>It excels at Ph.D.-level physics, competitive programming, and math, sacrificing conversational speed for deep, unseen logical processing.</p>`, 
+    sources: [{label: `OpenAI — o1 System Card`, url: `https://openai.com/index/openai-o1-system-card/`}]
+  },
+  'OpenAI o3': {
+    title: `OpenAI o3`, 
+    body: `<p>The successor to o1, pushing reasoning capabilities even further on complex coding and scientific benchmarks.</p><p>It refined the reasoning process to be more efficient, reducing hallucinations in the hidden chain-of-thought and yielding state-of-the-art software engineering capabilities.</p>`, 
+    sources: [{label: `OpenAI — Models overview`, url: `https://platform.openai.com/docs/models`}]
+  },
+  'DeepSeek R1': {
+    title: `DeepSeek R1`, 
+    body: `<p>The open-weight reasoning model that shook the industry in early 2025 by matching OpenAI o1's math and coding performance using drastically less compute budget.</p><p>It proved that advanced reasoning (internal chain of thought) could be achieved via pure reinforcement learning on a base model, without requiring massive proprietary datasets.</p>`, 
+    sources: [{label: `DeepSeek — R1 Technical Report`, url: `https://github.com/deepseek-ai/DeepSeek-R1`}]
+  },
+  'Gemini Thinking': {
+    title: `Gemini Thinking Mode`, 
+    body: `<p>Google's implementation of internal chain-of-thought reasoning within the Gemini model family ecosystem.</p><p>Integrated into their advanced Pro tiers, it allows users to see the explicit reasoning steps the model takes before delivering its final analytical output.</p>`, 
+    sources: [{label: `Google DeepMind Research`, url: `https://deepmind.google/research/`}]
+  },
+  'QwQ-32B': {
+    title: `QwQ 32B`, 
+    body: `<p>Alibaba's open-weight reasoning model, proving that strong internal chain-of-thought can be embedded in relatively small 32-billion parameter networks.</p><p>It brings the test-time compute paradigm to local hardware, allowing developers to run advanced logical solvers natively on high-end consumer GPUs.</p>`, 
+    sources: [{label: `Qwen — QwQ Release`, url: `https://qwenlm.github.io/blog/qwq-32b-preview/`}]
+  },
+  'GPT-4o': {
+    title: `GPT-4o (Omni)`, 
+    body: `<p>OpenAI's flagship multimodal model. It processes audio, vision, and text natively in the same network, allowing for real-time voice conversations without latency.</p><p>Unlike previous versions that converted audio to text, fed the text to the LLM, and converted the text back to audio, GPT-4o processes the raw audio wave directly, allowing it to understand tone, emotion, and interruptions.</p>`, 
+    sources: [{label: `OpenAI — Hello GPT-4o`, url: `https://openai.com/index/hello-gpt-4o/`}]
+  },
+  'o1': {
+    title: `o1 Model Family`, 
+    body: `<p>The overarching class of OpenAI models that trade off speed for accuracy, spending inference compute to think rather than just relying on pre-trained memory.</p><p>These models represent a paradigm shift in scaling laws, suggesting that giving models more time to compute during inference is as valuable as giving them more data during training.</p>`, 
+    sources: [{label: `OpenAI — Learning to Reason`, url: `https://openai.com/index/learning-to-reason-with-llms/`}]
+  },
+  'o3': {
+    title: `o3 Model Family`, 
+    body: `<p>The most advanced iteration of OpenAI's reasoning models, optimized for software engineering and complex mathematics.</p><p>They feature adjustable reasoning constraints, allowing API users to dial up or down the amount of thinking tokens the model is allowed to consume before returning an answer.</p>`, 
+    sources: [{label: `OpenAI API Docs`, url: `https://platform.openai.com/docs/guides/reasoning`}]
+  },
+  'GPT-4.1': {
+    title: `GPT-4.1`, 
+    body: `<p>Incremental updates to the base GPT-4 architecture, heavily optimized for context length and strict instruction following.</p><p>These iterative updates often quietly replace older API endpoints, constantly reducing latency and cost per token for enterprise users.</p>`, 
+    sources: [{label: `OpenAI API Pricing`, url: `https://openai.com/api/pricing/`}]
+  },
+  'ChatGPT': {
+    title: `ChatGPT`, 
+    body: `<p>The consumer-facing web application that wraps OpenAI's models, credited with kicking off the massive AI boom in late 2022.</p><p>While powered by LLMs, the application includes heavy UI logic, hidden system prompts, memory management layers, and tool-calling interfaces invisible to the user.</p>`, 
+    sources: [{label: `ChatGPT Official`, url: `https://chatgpt.com`}]
+  },
+  'OpenAI API': {
+    title: `OpenAI API`, 
+    body: `<p>The developer interface used by thousands of companies to embed GPT models into their own software products.</p><p>It provides raw access to token streams, structured JSON outputs, and fine-tuning endpoints, serving as the infrastructural backbone for a massive chunk of the current tech industry.</p>`, 
+    sources: [{label: `OpenAI API Documentation`, url: `https://platform.openai.com/docs/overview`}]
+  },
+  'DALL-E 3': {
+    title: `DALL-E 3`, 
+    body: `<p>OpenAI's image generation model, notable for utilizing an LLM under the hood to perfectly parse and execute complex user image prompts.</p><p>When a user types a prompt into ChatGPT, the LLM expands and enriches the prompt before passing it to the diffusion model, resulting in highly accurate image generation.</p>`, 
+    sources: [{label: `OpenAI — DALL-E 3`, url: `https://openai.com/index/dall-e-3/`}]
+  },
+  'Claude 3.5 Sonnet': {
+    title: `Claude 3.5 Sonnet`, 
+    body: `<p>Anthropic's mid-sized model that consistently beats much larger models at coding and formatting tasks, currently considered an industry best-in-class tool for developers.</p><p>It operates at extremely high speeds while maintaining nuanced context over 200,000 tokens, making it a favorite for complex multi-file codebase refactoring.</p>`, 
+    sources: [{label: `Anthropic — Claude 3.5 Release`, url: `https://www.anthropic.com/news/claude-3-5-sonnet`}]
+  },
+  'Claude 3 Opus': {
+    title: `Claude 3 Opus`, 
+    body: `<p>Anthropic's largest, most expensive model. Slower than Sonnet, but excels at highly complex, deeply nuanced multi-step reasoning tasks.</p><p>It is generally utilized for heavy analytical workloads, legal text review, and creative writing where maintaining complex logical consistency is paramount.</p>`, 
+    sources: [{label: `Anthropic — Claude Model Family`, url: `https://www.anthropic.com/claude`}]
+  },
+  'claude.ai': {
+    title: `Claude.ai`, 
+    body: `<p>Anthropic's consumer chat interface, notable for features like Artifacts which render code, SVGs, and interactive React components directly alongside the chat.</p><p>This UI innovation heavily influenced the industry, turning the chat interface from a simple text log into an interactive workspace.</p>`, 
+    sources: [{label: `Claude.ai`, url: `https://claude.ai`}]
+  },
+  'Anthropic API': {
+    title: `Anthropic API`, 
+    body: `<p>The developer platform for accessing Claude models, highly regarded for its strict adherence to system prompts and structured XML parsing.</p><p>Anthropic highly encourages the use of XML tags in prompts to clearly delineate context, instructions, and data, a practice deeply ingrained in their models' training.</p>`, 
+    sources: [{label: `Anthropic API Docs`, url: `https://docs.anthropic.com/en/api/getting-started`}]
+  },
+  'Gemini 2.0 Flash': {
+    title: `Gemini 2.0 Flash`, 
+    body: `<p>Google's incredibly fast, highly capable model designed for high-volume production tasks and real-time multimodal processing.</p><p>By unifying multimodal inputs directly into the core architecture, it handles video and audio reasoning at speeds previously impossible with bolted-on vision modules.</p>`, 
+    sources: [{label: `Google — Gemini 2.0 Release`, url: `https://blog.google/technology/ai/google-gemini-next-generation-model-update/`}]
+  },
+  'Gemini 2.0 Pro': {
+    title: `Gemini 2.0 Pro`, 
+    body: `<p>Google's heavyweight model designed for the most demanding reasoning, coding, and long-context summarization tasks.</p><p>It is deeply integrated into Google Workspace and Cloud environments, providing enterprise-grade analytical capabilities across massive datasets.</p>`, 
+    sources: [{label: `Google Cloud — Gemini`, url: `https://cloud.google.com/gemini`}]
+  },
+  '1M token context': {
+    title: `1 Million Token Context`, 
+    body: `<p>A breakthrough by Google allowing Gemini to ingest thousands of pages of text, entire codebases, or hour-long videos in a single prompt without losing information.</p><p>This relies on advanced efficient-attention mechanisms to bypass the quadratic memory scaling limits of standard transformers.</p>`, 
+    sources: [{label: `Google — Gemini 1.5 Context Window`, url: `https://arxiv.org/abs/2403.05530`}]
+  },
+  'Google AI Studio': {
+    title: `Google AI Studio`, 
+    body: `<p>Google's excellent developer playground for testing Gemini models, system prompts, and multimodal inputs before writing code.</p><p>It offers generous free tiers for developers to quickly prototype complex multimodal agent workflows without setting up local environments.</p>`, 
+    sources: [{label: `Google AI Studio`, url: `https://aistudio.google.com/`}]
+  },
+  'Vertex AI': {
+    title: `Vertex AI`, 
+    body: `<p>Google Cloud's enterprise AI platform, where large companies deploy and manage instances of Gemini alongside their corporate data.</p><p>It provides rigid security, MLOps tooling, and scalable RAG deployment pipelines required by Fortune 500 companies.</p>`, 
+    sources: [{label: `Google Cloud Vertex AI`, url: `https://cloud.google.com/vertex-ai`}]
+  },
+  'Gemini API': {
+    title: `Gemini API`, 
+    body: `<p>The developer interface for Google's models, notable for offering massive rate limits and native video/audio upload endpoints directly over REST.</p><p>It simplifies multimodal app development by allowing developers to pass raw media files in the same array as text instructions.</p>`, 
+    sources: [{label: `Gemini API Docs`, url: `https://ai.google.dev/docs`}]
+  },
+  'Llama 3.3 70B': {
+    title: `Llama 3.3 70B`, 
+    body: `<p>Meta's highly optimized 70B model that achieves the performance of their massive 405B model, making frontier intelligence runnable on affordable local hardware.</p><p>It represents the pinnacle of post-training optimization, squeezing maximal reasoning capabilities out of a mathematically dense parameter footprint.</p>`, 
+    sources: [{label: `Meta — Llama 3 Model Card`, url: `https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md`}]
+  },
+  'Mistral Large': {
+    title: `Mistral Large`, 
+    body: `<p>Mistral AI's closed, frontier-class model, heavily optimized for multi-lingual tasks, reasoning, and strict JSON output formatting.</p><p>While Mistral champions open source, they retain their Large series behind an API paywall to fund their massive training compute costs.</p>`, 
+    sources: [{label: `Mistral AI — Mistral Large`, url: `https://mistral.ai/news/mistral-large/`}]
+  },
+  'Gemma 3': {
+    title: `Gemma Models`, 
+    body: `<p>Google's family of open-weight models built using the same research and infrastructure as the closed Gemini models.</p><p>They are optimized for developers and researchers, coming in parameter sizes specifically tuned to run perfectly on high-end laptops and consumer GPUs.</p>`, 
+    sources: [{label: `Google — Gemma Release`, url: `https://blog.google/technology/developers/gemma-open-models/`}]
+  },
+  'Phi-4': {
+    title: `Microsoft Phi-4`, 
+    body: `<p>The latest iteration of Microsoft's highly capable small models, proving that dataset quality (synthetic textbook data) can overcome a lack of massive parameter scale.</p><p>It excels at logical reasoning and math, challenging the assumption that only models with >70 billion parameters can achieve complex analytical thought.</p>`, 
+    sources: [{label: `Microsoft Research — Phi`, url: `https://www.microsoft.com/en-us/research/blog/phi-3-technical-report/`}]
+  },
+
+  // PROMPTING
+  'Chain of thought': {
+    title: `Chain of Thought Prompting`, 
+    body: `<p>Asking the model to think step by step. This forces it to generate reasoning tokens, drastically reducing logic errors before it commits to a final answer.</p><p>By generating intermediate tokens, the model effectively gives itself more working memory to process complex logic, rather than trying to guess the final answer in a single mathematical pass.</p>`, 
+    sources: [{label: `Wei et al. 2022 — Chain-of-Thought`, url: `https://arxiv.org/abs/2201.11903`}]
+  },
+  'Few-shot': {
+    title: `Few-Shot Prompting`, 
+    body: `<p>Providing the model with 2 to 5 examples of the exact input-output format you want within your prompt. It is highly effective for enforcing strict formatting or tone.</p><p>This leverages the model's in-context learning ability; the model recognizes the statistical pattern of your examples and perfectly mimics it without needing to alter its internal weights.</p>`, 
+    sources: [{label: `Brown et al. 2020 — Few-Shot Learning`, url: `https://arxiv.org/abs/2005.14165`}]
+  },
+  'System prompts': {
+    title: `System Prompts`, 
+    body: `<p>The invisible background instructions given to a model via the API (or tools like Ollama) that define its entire persona, constraints, and operational goals.</p><p>A strong system prompt acts as a behavioral boundary, drastically reducing hallucinations by forcing the model to adhere strictly to a defined persona.</p>`, 
+    sources: [{label: `Anthropic — System Prompts`, url: `https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts`}]
+  },
+  'RAG': {
+    title: `Retrieval-Augmented Generation (RAG)`, 
+    body: `<p>The architecture of searching a database for relevant documents and pasting them into the LLM's prompt context so it can answer questions based on private or recent data.</p><p>RAG solves the knowledge cutoff problem. By grounding the model in retrieved facts, it prevents the LLM from hallucinating answers based on its blurry pre-trained memory.</p>`, 
+    sources: [{label: `Lewis et al. 2020 — RAG Paper`, url: `https://arxiv.org/abs/2005.11401`}]
+  },
+  'Context window': {
+    title: `Context Window`, 
+    body: `<p>The absolute maximum number of tokens an LLM can hold in its working memory. Anything past this limit is truncated and entirely forgotten by the model.</p><p>Massive context windows (like Gemini's 1 million tokens) require vast amounts of VRAM to store the Key-Value (KV) caches for every token during inference.</p>`, 
+    sources: [{label: `OpenAI — Context Window Limits`, url: `https://platform.openai.com/docs/models`}]
+  },
+  'Prompt injection': {
+    title: `Prompt Injection`, 
+    body: `<p>A severe security vulnerability where an attacker hides instructions in a document (like a resume or webpage) that commands the AI reading it to ignore its safety constraints.</p><p>Because LLMs process both user instructions and retrieved data as a single continuous string of text, they inherently struggle to distinguish between a legitimate command and a malicious payload hidden in external data.</p>`, 
+    sources: [{label: `OWASP — LLM Top 10 Security Risks`, url: `https://owasp.org/www-project-top-10-for-large-language-model-applications/`}]
+  },
+  'Zero-shot CoT ("step by step")': {
+    title: `Zero-shot Chain of Thought`, 
+    body: `<p>Literally appending Let's think step by step to a prompt. It acts as a magic phrase that triggers the model's internal reasoning circuits without needing to provide examples.</p><p>Discovered mathematically by researchers, this simple phrase reliably shifts the model's probability distribution toward analytical, methodical token generation.</p>`, 
+    sources: [{label: `Kojima et al. 2022 — Zero-Shot Reasoners`, url: `https://arxiv.org/abs/2205.11916`}]
+  },
+  'Tree of Thoughts': {
+    title: `Tree of Thoughts`, 
+    body: `<p>An advanced prompting framework where the model explores multiple different reasoning paths, scores them, and backtracks if a path looks incorrect, similar to how a human solves a puzzle.</p><p>It requires wrapping the LLM in an external Python script that loops calls to the API to manage the branching logic and evaluation steps.</p>`, 
+    sources: [{label: `Yao et al. 2023 — Tree of Thoughts`, url: `https://arxiv.org/abs/2305.10601`}]
+  },
+  'Self-consistency': {
+    title: `Self-Consistency Prompting`, 
+    body: `<p>Asking the model to solve the same math or logic problem 5 different times (using a high temperature), and then taking the majority answer. This reliably filters out random hallucinations.</p><p>It leverages the statistical nature of LLMs; while a single generation might drift into a hallucination, the most common answer across multiple generations is usually factually correct.</p>`, 
+    sources: [{label: `Wang et al. 2022 — Self-Consistency`, url: `https://arxiv.org/abs/2203.11171`}]
+  },
+  'ReAct prompting': {
+    title: `ReAct (Reason + Act)`, 
+    body: `<p>The prompting structure used for AI Agents. It forces the model to output a Thought, then an Action (like calling a web search tool), observe the result, and repeat until the goal is met.</p><p>This framework bridges the gap between text generation and software execution, allowing LLMs to autonomously browse the web or query databases.</p>`, 
+    sources: [{label: `Yao et al. 2022 — ReAct Paper`, url: `https://arxiv.org/abs/2210.03629`}]
+  },
+  'Scratchpad': {
+    title: `Scratchpad Prompting`, 
+    body: `<p>Instructing the model to write its messy, intermediate thoughts inside XML tags, and only put its final, clean answer outside the tags.</p><p>This is highly recommended by Anthropic. It gives the model space to think and organize facts before committing to a final, user-facing output string.</p>`, 
+    sources: [{label: `Anthropic — Prompt Engineering`, url: `https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview`}]
+  },
+  'Zero-shot (no examples)': {
+    title: `Zero-Shot Prompting`, 
+    body: `<p>Asking a model to perform a task without providing any examples of how to do it. Modern models are remarkably good at this due to massive instruction-tuning datasets.</p><p>While convenient, zero-shot prompting is often too vague for complex enterprise tasks, leading to formatting errors or misinterpretations of the user's strict requirements.</p>`, 
+    sources: [{label: `OpenAI — Prompt Engineering Guide`, url: `https://platform.openai.com/docs/guides/prompt-engineering`}]
+  },
+  'One-shot (1 example)': {
+    title: `One-Shot Prompting`, 
+    body: `<p>Providing exactly one example of an input and its desired output. Often enough to fix minor formatting issues in model responses.</p><p>If a model continually outputs Markdown when you want plain text, providing a single one-shot example of a plain text output will almost completely eliminate the error.</p>`, 
+    sources: [{label: `Brown et al. 2020 — Few-Shot Learning`, url: `https://arxiv.org/abs/2005.14165`}]
+  },
+  'Few-shot (2–5 examples)': {
+    title: `Few-Shot Prompting`, 
+    body: `<p>Providing a handful of examples. This leverages in-context learning where the model acts as a pattern-matcher, copying the structure of your examples perfectly.</p><p>It is statistically proven that adding 3-5 diverse, high-quality examples to a prompt is the single most effective way to improve model reliability without fine-tuning weights.</p>`, 
+    sources: [{label: `Min et al. 2022 — Rethinking Demonstrations`, url: `https://arxiv.org/abs/2202.12837`}]
+  },
+  'Classification': {
+    title: `Classification Tasks`, 
+    body: `<p>Using an LLM to categorize text (e.g., Is this email Spam or Important?). Few-shot prompting is particularly critical for getting reliable classification results.</p><p>By constraining the model to only output the exact category labels via system prompts and examples, LLMs can replace traditional, rigid machine learning classifiers.</p>`, 
+    sources: [{label: `OpenAI API Docs — Text Classification`, url: `https://platform.openai.com/docs/guides/text-generation`}]
+  },
+  'Format matching': {
+    title: `Format Matching`, 
+    body: `<p>Using prompts to force the model into strict output schemas, like requesting pure JSON, XML, or specific CSV structures for software integration.</p><p>Modern APIs now support Structured Outputs, which mathematically constrain the model's token generation to guarantee it perfectly matches a provided JSON schema.</p>`, 
+    sources: [{label: `OpenAI — Structured Outputs`, url: `https://platform.openai.com/docs/guides/structured-outputs`}]
+  },
+  'OpenAI API "system" role': {
+    title: `System Role (OpenAI)`, 
+    body: `<p>In the OpenAI API, messages are sent as an array. The system message is processed first and holds stronger weight in guiding the model's overall behavior.</p><p>Developers place strict instructions, personas, and safety constraints in the system role, keeping the user message strictly for the user's immediate input.</p>`, 
+    sources: [{label: `OpenAI API Reference`, url: `https://platform.openai.com/docs/api-reference/messages`}]
+  },
+  'Ollama Modelfile': {
+    title: `Ollama Modelfile`, 
+    body: `<p>The configuration file used by Ollama. You can use the SYSTEM command inside it to permanently bake a custom system prompt into a local model.</p><p>This allows developers to create custom, tailored agents (like an offline coding assistant) that boot up with perfectly configured behaviors every single time.</p>`, 
+    sources: [{label: `Ollama — Modelfile Documentation`, url: `https://github.com/ollama/ollama/blob/main/docs/modelfile.md`}]
+  },
+  'Anthropic system param': {
+    title: `Anthropic System Parameter`, 
+    body: `<p>Unlike OpenAI's message array, Anthropic's API uses a dedicated top-level system parameter to cleanly separate instructions from the user conversation.</p><p>Anthropic's models are highly optimized to obey this parameter, making them incredibly resistant to jailbreaks if the system prompt strictly forbids dangerous behaviors.</p>`, 
+    sources: [{label: `Anthropic API Docs`, url: `https://docs.anthropic.com/en/api/messages`}]
+  },
+  'Persona assignment': {
+    title: `Persona Assignment`, 
+    body: `<p>A system prompting technique: You are a senior cybersecurity expert. This focuses the model's probability distribution on professional, technical terminology rather than general chat.</p><p>By adopting a persona, the model inherently accesses deeper, more nuanced terminology from its training data related to that specific profession.</p>`, 
+    sources: [{label: `Prompt Engineering Guide — Personas`, url: `https://www.promptingguide.ai/`}]
+  },
+  'Role prompting': {
+    title: `Role Prompting`, 
+    body: `<p>Similar to persona assignment, defining a specific role helps the model adopt the correct tone, assumptions, and formatting expected of that profession.</p><p>For instance, asking a model to act as a first-grade teacher will drastically simplify the syntax and vocabulary of its response.</p>`, 
+    sources: [{label: `OpenAI — Prompt Engineering Guide`, url: `https://platform.openai.com/docs/guides/prompt-engineering`}]
+  },
+  'Perplexity AI': {
+    title: `Perplexity AI`, 
+    body: `<p>A consumer search engine that serves as the ultimate example of RAG in production. It retrieves live web pages and feeds them into the LLM to generate cited answers.</p><p>It proves that combining a highly capable LLM with real-time web retrieval fundamentally solves the hallucination problem for factual search queries.</p>`, 
+    sources: [{label: `Perplexity.ai`, url: `https://www.perplexity.ai`}]
+  },
+  'LlamaIndex': {
+    title: `LlamaIndex`, 
+    body: `<p>A highly popular open-source Python framework specifically designed to help developers build RAG pipelines by easily ingesting, chunking, and retrieving private documents.</p><p>It provides crucial abstractions for parsing complex PDFs, connecting to vector databases, and orchestrating the retrieval logic before calling the LLM.</p>`, 
+    sources: [{label: `LlamaIndex Docs`, url: `https://docs.llamaindex.ai/en/stable/`}]
+  },
+  'LangChain': {
+    title: `LangChain`, 
+    body: `<p>The most widely used framework for building complex LLM applications, offering abstractions for connecting models to vector databases, tools, and memory.</p><p>While powerful, it has faced criticism in the developer community for creating overly complex abstractions that hide the underlying raw API calls.</p>`, 
+    sources: [{label: `LangChain Docs`, url: `https://python.langchain.com/docs/get_started/introduction`}]
+  },
+  'Pinecone': {
+    title: `Pinecone`, 
+    body: `<p>A managed, cloud-native vector database specifically designed to store and rapidly search through billions of embedding vectors for RAG applications.</p><p>It handles the complex infrastructure of Approximate Nearest Neighbor (ANN) search, allowing developers to query millions of documents in milliseconds.</p>`, 
+    sources: [{label: `Pinecone Docs`, url: `https://docs.pinecone.io/home`}]
+  },
+  'pgvector': {
+    title: `pgvector`, 
+    body: `<p>An incredibly popular open-source extension for PostgreSQL that allows standard SQL databases to store and query embedding vectors alongside traditional relational data.</p><p>It prevents developers from having to maintain a separate vector database, centralizing application data into a single, robust Postgres instance.</p>`, 
+    sources: [{label: `pgvector GitHub`, url: `https://github.com/pgvector/pgvector`}]
+  },
+  'Weaviate': {
+    title: `Weaviate`, 
+    body: `<p>An open-source, AI-native vector database favored by developers for its speed, rich ecosystem integrations, and hybrid search capabilities.</p><p>It allows developers to seamlessly blend traditional keyword search with advanced semantic vector search to yield highly accurate retrieval results.</p>`, 
+    sources: [{label: `Weaviate Docs`, url: `https://weaviate.io/developers/weaviate`}]
+  },
+  'Chroma': {
+    title: `ChromaDB`, 
+    body: `<p>A lightweight, open-source vector database that runs locally, making it the default choice for developers building and prototyping RAG apps on their laptops.</p><p>It is incredibly easy to set up via Python, requiring zero cloud configuration to start ingesting and querying document embeddings.</p>`, 
+    sources: [{label: `Chroma Docs`, url: `https://docs.trychroma.com/`}]
+  },
+  'GPT-4o: 128K': {
+    title: `128K Context Window`, 
+    body: `<p>GPT-4o's context limit. 128,000 tokens is roughly equivalent to a 300-page book, allowing the model to analyze entire documents in a single prompt.</p><p>Maxing out this context window carries significant API costs, as users are billed per token processed during every single prompt interaction.</p>`, 
+    sources: [{label: `OpenAI Pricing`, url: `https://openai.com/api/pricing/`}]
+  },
+  'Claude 3.5: 200K': {
+    title: `200K Context Window`, 
+    body: `<p>Claude 3.5's context limit, allowing for massive codebases or multiple heavy PDF documents to be processed flawlessly in one go.</p><p>Anthropic models are highly regarded for their needle-in-a-haystack recall, reliably finding precise facts buried deep within this massive 200K window.</p>`, 
+    sources: [{label: `Anthropic — Context Windows`, url: `https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/long-context`}]
+  },
+  'Gemini Pro: 1M': {
+    title: `1M+ Context Window`, 
+    body: `<p>Google's breakthrough. A 1 million token window can process hours of video, massive audio files, and entire libraries of code simultaneously.</p><p>This virtually eliminates the need for complex RAG pipelines in many enterprise applications, as users can simply dump their entire corporate knowledge base into the prompt.</p>`, 
+    sources: [{label: `Google — Gemini 1.5 Context Window`, url: `https://arxiv.org/abs/2403.05530`}]
+  },
+  'Qwen 3.5: 256K': {
+    title: `256K Open Context`, 
+    body: `<p>Open-weight models like Qwen now support massive context windows locally, though running 256K tokens requires massive amounts of GPU VRAM.</p><p>For local users, the context window is primarily constrained by hardware memory; expanding the KV cache for a 256K context requires multiple high-end 24GB GPUs.</p>`, 
+    sources: [{label: `QwenLM Blog`, url: `https://qwenlm.github.io/blog/`}]
+  },
+  'Lost in the middle': {
+    title: `Lost in the Middle Phenomenon`, 
+    body: `<p>A flaw in LLMs where they perfectly recall facts at the very beginning or end of a massive prompt, but struggle to retrieve facts buried in the middle of the context window.</p><p>Researchers advise placing the most critical instructions or facts at the very bottom of the prompt, right before the model begins generation, to ensure strict adherence.</p>`, 
+    sources: [{label: `Liu et al. 2023 — Lost in the Middle paper`, url: `https://arxiv.org/abs/2307.03172`}]
+  },
+  'Indirect injection': {
+    title: `Indirect Prompt Injection`, 
+    body: `<p>When a hacker places malicious instructions on a public webpage. If an AI assistant visits that page to summarize it for a user, the AI executes the hacker's hidden instructions.</p><p>It is one of the most difficult security flaws to patch, because the model fundamentally cannot mathematically differentiate between text from the user and text from the webpage.</p>`, 
+    sources: [{label: `Greshake et al. 2023 — Indirect Prompt Injection`, url: `https://arxiv.org/abs/2302.12173`}]
+  },
+  'Direct jailbreak': {
+    title: `Direct Jailbreaking`, 
+    body: `<p>When a user types clever prompts (like Ignore all previous instructions) directly into the chat interface to bypass the model's safety filters and elicit forbidden content.</p><p>While labs employ aggressive RLHF to patch these behaviors, the open-ended nature of language means users can infinitely invent new hypothetical scenarios to trick the model.</p>`, 
+    sources: [{label: `Wei et al. 2023 — Jailbroken: How does LLM Safety Training Fail?`, url: `https://arxiv.org/abs/2307.02483`}]
+  },
+  'Data exfiltration': {
+    title: `Data Exfiltration via LLMs`, 
+    body: `<p>An attack where an injected prompt forces the AI to summarize private user data and secretly send it to the attacker's server.</p><p>This is typically achieved by tricking the LLM into generating an image tag containing a URL parameter loaded with the user's private data, which pings the attacker's server when rendered.</p>`, 
+    sources: [{label: `OWASP — LLM Security Risks`, url: `https://owasp.org/www-project-top-10-for-large-language-model-applications/`}]
+  },
+  'Agent hijacking': {
+    title: `Agent Hijacking`, 
+    body: `<p>If an LLM has access to tools (like email or banking APIs), prompt injection can be used to hijack the agent and force it to execute unauthorized actions on behalf of the user.</p><p>This is why security experts mandate human-in-the-loop safeguards, forcing the agent to request user permission before executing any destructive code or API calls.</p>`, 
+    sources: [{label: `NCSC — LLM Security Guidance`, url: `https://www.ncsc.gov.uk/guidance/principles-for-the-security-of-machine-learning`}]
+  },
+  'LLM firewall': {
+    title: `LLM Firewalls`, 
+    body: `<p>Security systems placed between the user and the LLM. They use secondary, specialized models to scan incoming prompts for injection attacks before passing them to the main model.</p><p>They also scan the outbound generation to ensure the LLM isn't accidentally outputting sensitive PII (Personally Identifiable Information) or violating compliance rules.</p>`, 
+    sources: [{label: `Lakera — Guard LLM Security`, url: `https://www.lakera.ai/`}]
+  },
+
+  // THEMES & HARDWARE
+  'Meta Llama (open weights)': {
+    title: `Meta Llama`, 
+    body: `<p>Meta's strategy of releasing highly capable model weights for free. This commoditizes the model layer, undercutting competitors like OpenAI while cementing Meta's architecture as the industry standard.</p><p>By open-sourcing the models, Meta benefits from thousands of developers globally fixing bugs, optimizing inference software, and building free ecosystems around their infrastructure.</p>`, 
+    sources: [{label: `Meta — Open Source AI`, url: `https://ai.meta.com/`}]
+  },
+  'Mistral (open weights)': {
+    title: `Mistral AI`, 
+    body: `<p>A European AI champion that heavily advocates for open weights, arguing that open AI is necessary for sovereignty and transparency in global tech.</p><p>They operate on a dual model, releasing incredibly efficient small/medium open-weight models for the community, while keeping their massive flagship models closed behind an enterprise API.</p>`, 
+    sources: [{label: `Mistral AI`, url: `https://mistral.ai`}]
+  },
+  'EleutherAI GPT-NeoX': {
+    title: `EleutherAI`, 
+    body: `<p>A non-profit research lab dedicated to fully open-source AI. Unlike Meta, they release not just the weights, but the exact training code and datasets used.</p><p>Their work, notably the Pythia models and The Pile dataset, forms the bedrock of transparent, reproducible scientific research in the machine learning academic community.</p>`, 
+    sources: [{label: `EleutherAI`, url: `https://www.eleuther.ai/`}]
+  },
+  'Hugging Face': {
+    title: `Hugging Face`, 
+    body: `<p>The central hub for the open AI community. It provides the repositories where open models are hosted, and the transformers library used to run them.</p><p>With billions of dollars in valuation, they serve as the infrastructural connective tissue for developers, researchers, and enterprises downloading and fine-tuning models globally.</p>`, 
+    sources: [{label: `Hugging Face Hub`, url: `https://huggingface.co`}]
+  },
+  'AI2 OLMo': {
+    title: `AI2 OLMo`, 
+    body: `<p>An initiative by the Allen Institute for AI to build completely transparent language models where every aspect of training data, training code, and evaluation code is open for scientific study.</p><p>This initiative pushes back against the trend of open-washing, where corporate labs release model weights but hide the critical data pipelines used to create them.</p>`, 
+    sources: [{label: `Allen Institute — OLMo`, url: `https://allenai.org/olmo`}]
+  },
+  'Red-teaming': {
+    title: `Red-Teaming`, 
+    body: `<p>A safety practice where specialized teams aggressively try to hack, bypass, or manipulate an AI model before it is released, using the results to patch vulnerabilities.</p><p>Red-teamers explicitly try to force the model to generate hate speech, assist in cyberattacks, or output copyrighted material to test the absolute limits of the model's alignment.</p>`, 
+    sources: [{label: `Anthropic — Frontier Threats Red Teaming`, url: `https://www.anthropic.com/news/frontier-threats-red-teaming`}]
+  },
+  'Scalable oversight': {
+    title: `Scalable Oversight`, 
+    body: `<p>The research problem of how humans can safely supervise AI models that become smarter than humans, often relying on using AI to help supervise other AI.</p><p>As models begin solving complex physics problems or writing millions of lines of code, humans lose the ability to manually verify if the AI's output is safe or correct.</p>`, 
+    sources: [{label: `Bowman et al. 2022 — Scalable Oversight`, url: `https://arxiv.org/abs/2211.03540`}]
+  },
+  'Mechanistic interpretability': {
+    title: `Mechanistic Interpretability`, 
+    body: `<p>The highly complex science of reverse-engineering neural networks, trying to understand exactly which specific neurons fire to represent concepts like truth or deception.</p><p>Researchers map the billions of parameters to find specific features inside the model, hoping to one day read an AI's mind to ensure it isn't lying or acting maliciously.</p>`, 
+    sources: [{label: `Anthropic — Mapping the Mind of a Large Language Model`, url: `https://www.anthropic.com/news/mapping-mind-language-model`}]
+  },
+  'NVIDIA H100': {
+    title: `NVIDIA H100 GPU`, 
+    body: `<p>The dominant hardware powering the AI revolution. Featuring specialized Tensor Cores, these chips cost tens of thousands of dollars each and are bought in massive clusters.</p><p>The H100 includes specialized hardware specifically tailored to execute the FP8 (8-bit floating point) matrix multiplications required to run modern Transformer models at lightning speed.</p>`, 
+    sources: [{label: `NVIDIA — H100 Architecture`, url: `https://www.nvidia.com/en-us/data-center/h100/`}]
+  },
+  'A100': {
+    title: `NVIDIA A100 GPU`, 
+    body: `<p>The predecessor to the H100. It was the chip used to train GPT-4 and kick off the AI boom. It remains widely used for inference and fine-tuning across cloud providers.</p><p>While older, clusters of A100s are highly sought after by smaller labs for training 7B and 13B parameter models due to their massive 80GB VRAM capacity.</p>`, 
+    sources: [{label: `NVIDIA — A100`, url: `https://www.nvidia.com/en-us/data-center/a100/`}]
+  },
+  'CUDA platform': {
+    title: `CUDA Platform`, 
+    body: `<p>NVIDIA's proprietary software platform that allows developers to write code that runs directly on GPU cores. Its 15-year head start is the primary reason NVIDIA monopolizes AI hardware.</p><p>Because PyTorch and other deep learning frameworks are deeply integrated with CUDA, migrating AI workloads to competing AMD or Intel chips remains a massive software engineering hurdle.</p>`, 
+    sources: [{label: `NVIDIA — CUDA Zone`, url: `https://developer.nvidia.com/cuda-zone`}]
+  },
+  'Google TPU': {
+    title: `Google TPU (Tensor Processing Unit)`, 
+    body: `<p>Google's custom-designed AI chips. Because Google builds their own hardware, they are not entirely reliant on NVIDIA, giving them a massive infrastructural and cost advantage.</p><p>TPUs are heavily utilized internally to train the Gemini models, and are offered to external developers via Google Cloud for highly efficient model training runs.</p>`, 
+    sources: [{label: `Google Cloud — Cloud TPUs`, url: `https://cloud.google.com/tpu`}]
+  },
+  'llama.cpp': {
+    title: `llama.cpp`, 
+    body: `<p>A brilliantly optimized C++ engine that allows massive language models to run efficiently on consumer hardware, particularly Apple Silicon MacBooks.</p><p>By rewriting transformer inference without the heavy Python dependencies, Georgi Gerganov inadvertently created the software bedrock that powers tools like Ollama and LM Studio.</p>`, 
+    sources: [{label: `llama.cpp GitHub`, url: `https://github.com/ggerganov/llama.cpp`}]
+  },
+  'GGUF format': {
+    title: `GGUF Format`, 
+    body: `<p>The standard file format used by local AI tools. It stores heavily compressed (quantized) model weights so a massive model can be shrunk to fit into consumer laptop RAM.</p><p>It packages all necessary metadata, tokenizers, and weights into a single convenient file, making downloading and running models as easy as downloading a video.</p>`, 
+    sources: [{label: `Hugging Face — GGUF Docs`, url: `https://huggingface.co/docs/hub/gguf`}]
+  },
+  'Apple Metal (MPS)': {
+    title: `Apple Metal (MPS)`, 
+    body: `<p>Apple's hardware acceleration framework. Because modern MacBooks share unified memory between the CPU and GPU, they are uniquely powerful for running local AI models.</p><p>Unlike Windows PCs which are limited by standard 8GB or 16GB GPU VRAM limits, a MacBook with 64GB of unified memory can load massive LLMs completely natively via the Metal Performance Shaders (MPS).</p>`, 
+    sources: [{label: `Apple Developer — Metal`, url: `https://developer.apple.com/metal/`}]
+  }
+};
+
+const TREE = {
+  root: ['math','training','arch','prompting'],
+  math: ['linear-algebra','calculus','probability','attention'],
+  training: ['data','pretraining','sft','rlhf','dpo','synthetic'],
+  arch: ['dense','moe','reasoning','openai','anthropic-model','google-model','open-models'],
+  prompting: ['cot','fewshot','system-prompt','rag','context-window','injection'],
+  themes: ['open-closed','safety','hardware']
+};
+
+/* ══════════════════════════════════════════════
+   CMS DYNAMIC FETCH (HYBRID FALLBACK)
+══════════════════════════════════════════════ */
+async function loadCMSData() {
+  try {
+    // Ping the CMS folder to see if you have published the root node yet
+    const testRes = await fetch('/content/nodes/root.json');
+    if (testRes.ok) {
+      console.log("CMS Data found! Fetching dynamic nodes...");
+      const allIds = ['root', ...TREE.root, ...TREE.math, ...TREE.training, ...TREE.arch, ...TREE.prompting, ...TREE.themes];
+      const fetchedNodes = {};
+      
+      // Fetch all nodes simultaneously
+      await Promise.all(allIds.map(async (id) => {
+        try {
+          const res = await fetch(`/content/nodes/${id}.json`);
+          if (res.ok) fetchedNodes[id] = await res.json();
+        } catch(err) {}
+      }));
+      
+      // Merge CMS data over the hardcoded defaults
+      Object.assign(NODE_DATA, fetchedNodes);
+    }
+  } catch (error) {
+    // If the CMS is empty or errors out, it quietly ignores the error 
+    // and continues using the massive hardcoded dictionaries above.
+    console.log("Loading from fast local data cache.");
+  }
+}
+
+/* ══════════════════════════════════════════════
+   LAYOUT CONFIG
+══════════════════════════════════════════════ */
+const W = 160; 
+const H = 68;  
+const GAP = 20;
+const POS = {};
+
+// Pan & Zoom State
+let mapScale = 1;
+let panX = 0, panY = 0;
+let isDragging = false;
+let startX, startY;
+
+function initLayout(){
+  const cw = 1200; 
+  POS['root'] = {x: cw/2 - W/2, y: 30};
+
+  const branchIds = TREE.root;
+  const totalBW = branchIds.length * W + (branchIds.length-1)*GAP*3;
+  const bStartX = (cw - totalBW)/2;
+  branchIds.forEach((id,i)=>{
+    POS[id] = {x: bStartX + i*(W + GAP*3), y: 170};
+  });
+
+  const themeIds = TREE.themes;
+  const totalTW = themeIds.length * W + (themeIds.length-1)*GAP*2;
+  const tStartX = (cw - totalTW)/2;
+  themeIds.forEach((id,i)=>{
+    POS[id] = {x: tStartX + i*(W+GAP*2), y: 0}; 
+  });
+
+  branchIds.forEach(bid => {
+    const children = TREE[bid]||[];
+    if(!children.length) return;
+    const bp = POS[bid];
+    const perRow = 3;
+    const hGap = GAP+8;
+    const vGap = GAP+12;
+    children.forEach((cid,i)=>{
+      const row = Math.floor(i/perRow);
+      const col = i % perRow;
+      const rowCount = Math.min(perRow, children.length - row*perRow);
+      const rowTotalW = rowCount*(W) + (rowCount-1)*hGap;
+      const rowStartX = bp.x + W/2 - rowTotalW/2;
+      POS[cid] = {
+        x: rowStartX + col*(W+hGap),
+        y: bp.y + H + 65 + row*(H+vGap)
+      };
+    });
+  });
+
+  let maxY = 0;
+  Object.values(POS).forEach(p=>{ if(p.y > maxY) maxY = p.y; });
+
+  const themeY = maxY + H + 80;
+  themeIds.forEach(id=>{ POS[id].y = themeY; });
+
+  const canvasH = themeY + H + 60;
+  document.getElementById('map-canvas').style.height = canvasH+'px';
+  document.querySelector('#connector-svg').setAttribute('viewBox',`0 0 ${cw} ${canvasH}`);
+}
+
+/* ══════════════════════════════════════════════
+   PAN & ZOOM LOGIC
+══════════════════════════════════════════════ */
+function initInteractivity() {
+  const container = document.getElementById('page-mindmap-inner');
+  const page = document.getElementById('page-mindmap');
+  
+  // Temporarily show the mind map page to calculate accurate width
+  const wasHidden = window.getComputedStyle(page).display === 'none';
+  if (wasHidden) page.style.display = 'block';
+
+  const viewWidth = container.offsetWidth;
+  panX = (viewWidth - 1200) / 2;
+  
+  if(viewWidth < 768) {
+    mapScale = 0.6;
+    panX = (viewWidth - (1200 * mapScale)) / 2;
+  }
+  
+  if (wasHidden) page.style.display = ''; // restore original state
+  updateTransform();
+
+  const startDrag = (x, y) => {
+    isDragging = true;
+    startX = x - panX;
+    startY = y - panY;
+    container.style.cursor = 'grabbing';
+  };
+  const drag = (x, y) => {
+    if(!isDragging) return;
+    panX = x - startX;
+    panY = y - startY;
+    updateTransform();
+  };
+  const stopDrag = () => {
+    isDragging = false;
+    container.style.cursor = 'default';
+  };
+
+  container.addEventListener('mousedown', (e) => {
+    if(e.target.closest('.node-box') || e.target.closest('.map-controls')) return;
+    startDrag(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => drag(e.clientX, e.clientY));
+  window.addEventListener('mouseup', stopDrag);
+
+  container.addEventListener('touchstart', (e) => {
+    if(e.target.closest('.node-box') || e.target.closest('.map-controls')) return;
+    if(e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive: true});
+  container.addEventListener('touchmove', (e) => {
+    if(e.touches.length === 1) { e.preventDefault(); drag(e.touches[0].clientX, e.touches[0].clientY); }
+  }, {passive: false});
+  container.addEventListener('touchend', stopDrag);
+}
+
+function zoomMap(delta) {
+  mapScale += delta;
+  if(mapScale < 0.3) mapScale = 0.3;
+  if(mapScale > 2) mapScale = 2;
+  updateTransform();
+}
+
+function updateTransform() {
+  document.getElementById('map-canvas').style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER NODES
+══════════════════════════════════════════════ */
+let visibleNodes = new Set(['root']);
+let expandedNodes = new Set();
+let activeNodeId = null;
+
+function renderNodes(){
+  document.querySelectorAll('.node-box').forEach(el=>el.remove());
+  const canvas = document.getElementById('map-canvas');
+
+  Object.keys(NODE_DATA).forEach(id=>{
+    if(!POS[id]) return;
+    const d = NODE_DATA[id];
+    const div = document.createElement('div');
+    div.className = `node-box node-${d.theme}`;
+    div.id = `node-${id}`;
+    div.tabIndex = 0; 
+    div.style.left = POS[id].x+'px';
+    div.style.top = POS[id].y+'px';
+    div.style.width = W+'px';
+    div.style.minHeight = H+'px';
+    
+    if(visibleNodes.has(id)) div.classList.add('visible');
+    if(activeNodeId === id) div.classList.add('selected');
+
+    // Add intro mode to the root node if nothing is expanded yet
+    if(id === 'root' && !expandedNodes.has('root')) {
+      div.classList.add('intro-mode');
+    }
+
+    div.innerHTML = `
+      <div class="node-title">${d.label}</div>
+      ${d.sub?`<div class="node-sub">${d.sub}</div>`:''}
+      ${d.hasChildren?`<div class="expand-hint">${expandedNodes.has(id)?'▲ collapse':'▼ expand'}</div>`:''}
+    `;
+    
+    div.addEventListener('click',()=>handleNodeClick(id));
+    div.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') handleNodeClick(id); });
+    canvas.appendChild(div);
+  });
+
+  if(!document.getElementById('themes-label')){
+    const lbl = document.createElement('div');
+    lbl.id = 'themes-label';
+    lbl.style.cssText = `position:absolute;width:100%;text-align:center;font-size:11px;font-weight:500;letter-spacing:4px;color:var(--muted);pointer-events:none;transition:opacity 0.3s;opacity:0;`;
+    const themeY = POS['open-closed']?.y;
+    if(themeY) lbl.style.top = (themeY-28)+'px';
+    lbl.textContent = 'CROSS-CUTTING THEMES';
+    canvas.appendChild(lbl);
+    
+    const dvd = document.createElement('div');
+    dvd.id = 'themes-divider';
+    dvd.style.cssText = `position:absolute;left:5%;width:90%;height:1px;background:linear-gradient(90deg,transparent,var(--tan),transparent);pointer-events:none;transition:opacity 0.3s;opacity:0;`;
+    if(themeY) dvd.style.top = (themeY-38)+'px';
+    canvas.appendChild(dvd);
+  }
+}
+
+function handleNodeClick(id){
+  const d = NODE_DATA[id];
+  if(d.hasChildren){
+    toggleChildren(id);
+  } else {
+    openSidebar(id);
+  }
+}
+
+function toggleChildren(parentId){
+  const isExpanded = expandedNodes.has(parentId);
+
+  if(isExpanded){
+    collapseNode(parentId);
+    // If we specifically collapse the root node, return it to intro mode
+    if(parentId === 'root') {
+      document.getElementById('node-root')?.classList.add('intro-mode');
+    }
+  } else {
+    // Accordion Logic: Close other main branches
+    if (TREE.root.includes(parentId)) {
+      TREE.root.forEach(otherId => {
+        if (otherId !== parentId && expandedNodes.has(otherId)) {
+          collapseNode(otherId);
+        }
+      });
+    }
+
+    // Expand clicked node
+    expandedNodes.add(parentId);
+    
+    // Remove intro mode if root is expanded
+    if(parentId === 'root') {
+      document.getElementById('node-root')?.classList.remove('intro-mode');
+    }
+
+    const children = [...(TREE[parentId]||[])];
+    
+    children.forEach(cid=>{
+      visibleNodes.add(cid);
+      const el = document.getElementById(`node-${cid}`);
+      if(el) el.classList.add('visible'); 
+    });
+    
+    // Show Themes row and labels
+    if(TREE.root.includes(parentId)){
+      TREE.themes.forEach(tid=>{
+        visibleNodes.add(tid);
+        const el = document.getElementById(`node-${tid}`);
+        if(el) el.classList.add('visible');
+      });
+      document.getElementById('themes-label').style.opacity = '1';
+      document.getElementById('themes-divider').style.opacity = '0.4';
+    }
+    updateExpandHint(parentId, true);
+  }
+  
+  drawConnectors();
+}
+
+function collapseNode(nodeId){
+  const children = TREE[nodeId]||[];
+  
+  children.forEach(cid=>{
+    collapseNode(cid);
+    visibleNodes.delete(cid);
+    expandedNodes.delete(cid);
+    const el = document.getElementById(`node-${cid}`);
+    if(el) el.classList.remove('visible');
+  });
+  
+  expandedNodes.delete(nodeId);
+  updateExpandHint(nodeId, false);
+
+  // Hide themes row and labels if no main branches are open
+  const anyRootOpen = TREE.root.some(id => expandedNodes.has(id));
+  if (!anyRootOpen) {
+    TREE.themes.forEach(tid => {
+      visibleNodes.delete(tid);
+      const el = document.getElementById(`node-${tid}`);
+      if(el) el.classList.remove('visible');
+    });
+    const lbl = document.getElementById('themes-label');
+    if(lbl) lbl.style.opacity = '0';
+    const dvd = document.getElementById('themes-divider');
+    if(dvd) dvd.style.opacity = '0';
+  }
+}
+
+function updateExpandHint(id, expanded){
+  const el = document.getElementById(`node-${id}`);
+  if(!el) return;
+  const hint = el.querySelector('.expand-hint');
+  if(hint) hint.textContent = expanded ? '▲ collapse':'▼ expand';
+}
+
+function drawConnectors(){
+  const svg = document.getElementById('connector-svg');
+  svg.innerHTML = '';
+  const pairs = [];
+  TREE.root.forEach(bid=>{ if(visibleNodes.has(bid)) pairs.push(['root',bid,'#D2B48C',1.5]); });
+  TREE.root.forEach(bid=>{
+    (TREE[bid]||[]).forEach(cid=>{
+      if(visibleNodes.has(cid)){
+        const color = bid==='math'?'#B8860B':bid==='training'?'#a0623c':bid==='arch'?'#8a7a2a':'#7a5c28';
+        pairs.push([bid,cid,color,1.0]);
+      }
+    });
+  });
+  pairs.forEach(([a,b,color,w])=>{
+    if(!POS[a]||!POS[b]) return;
+    const x1 = POS[a].x+W/2, y1 = POS[a].y+H;
+    const x2 = POS[b].x+W/2, y2 = POS[b].y;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const cy1 = y1+(y2-y1)*0.45, cy2 = y2-(y2-y1)*0.45;
+    line.setAttribute('d',`M${x1},${y1} C${x1},${cy1} ${x2},${cy2} ${x2},${y2}`);
+    line.setAttribute('fill','none');
+    line.setAttribute('stroke',color);
+    line.setAttribute('stroke-width',w);
+    line.setAttribute('opacity', '0'); 
+    if(w<=1.0) line.setAttribute('stroke-dasharray','4 4');
+    svg.appendChild(line);
+    
+    setTimeout(() => line.setAttribute('opacity', w>1.0?'0.6':'0.4'), 10);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════ */
+function openSidebar(id){
+  const d = NODE_DATA[id];
+  if(!d) return;
+  
+  if(activeNodeId) document.getElementById('node-'+activeNodeId)?.classList.remove('selected');
+  activeNodeId = id;
+  document.getElementById('node-'+id)?.classList.add('selected');
+
+  document.getElementById('sb-tag').textContent = d.tag;
+  document.getElementById('sb-title').textContent = d.title;
+  document.getElementById('sb-body').innerHTML = d.body;
+
+  const exDiv = document.getElementById('sb-examples');
+  if(d.examples && d.examples.length){
+    exDiv.innerHTML = `<div class="sb-section-label">Examples &amp; tools</div>`
+      + d.examples.map(e=>`<span class="example-pill" tabindex="0" onclick="openExampleDetail('${e.replace(/'/g,"\\'")}','${id}')">${e}</span>`).join('');
+  } else { exDiv.innerHTML=''; }
+
+  const srcDiv = document.getElementById('sb-sources');
+  if(d.sources && d.sources.length){
+    srcDiv.innerHTML = `<div class="sb-section-label" style="margin-top:1rem">Sources</div><div class="src-list">`
+      + d.sources.map(s=>`<a class="src-link" href="${s.url}" target="_blank">↗ ${s.label}</a>`).join('')
+      + '</div>';
+  } else { srcDiv.innerHTML=''; }
+
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sb-overlay').classList.add('show');
+}
+
+function openExampleDetail(exKey, parentId){
+  const ex = EXAMPLE_DATA[exKey];
+  if(!ex){
+    document.getElementById('sb-tag').textContent = 'Concept Detail';
+    document.getElementById('sb-title').textContent = exKey;
+    document.getElementById('sb-body').innerHTML = `<p><strong>${exKey}</strong> is a specialized technical concept related to this branch. In the context of Large Language Models, this element plays a specific functional role in how the model processes data, trains its parameters, or interacts with user prompts.</p><p>For deeper technical context, reviewing the primary sources linked in the main parent node will provide extensive documentation on this exact topic.</p>`;
+    document.getElementById('sb-examples').innerHTML = `<span class="example-pill" onclick="openSidebar('${parentId}')">← Back to node</span>`;
+    document.getElementById('sb-sources').innerHTML='';
+    return;
+  }
+  document.getElementById('sb-tag').textContent = 'Deep dive';
+  document.getElementById('sb-title').textContent = ex.title;
+  document.getElementById('sb-body').innerHTML = ex.body;
+  document.getElementById('sb-examples').innerHTML = `<span class="example-pill" onclick="openSidebar('${parentId}')">← Back to node</span>`;
+  const srcDiv = document.getElementById('sb-sources');
+  if(ex.sources && ex.sources.length){
+    srcDiv.innerHTML = `<div class="sb-section-label" style="margin-top:1rem">Sources</div><div class="src-list">`
+      + ex.sources.map(s=>`<a class="src-link" href="${s.url}" target="_blank">↗ ${s.label}</a>`).join('')+'</div>';
+  } else { srcDiv.innerHTML=''; }
+}
+
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+  if(activeNodeId) document.getElementById('node-'+activeNodeId)?.classList.remove('selected');
+  activeNodeId = null;
+}
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+document.getElementById('hamburger').addEventListener('click',()=>{
+  const open = document.getElementById('nav-drawer').classList.toggle('open');
+  document.getElementById('nav-overlay').classList.toggle('show',open);
+  document.getElementById('hamburger').classList.toggle('open',open);
+});
+function closeNav(){
+  document.getElementById('nav-drawer').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('show');
+  document.getElementById('hamburger').classList.remove('open');
+}
+function showPage(name, el){
+  closeNav();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('nav ul li a').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+window.addEventListener('load', async () => {
+  // 1. Try to fetch dynamic CMS data (if available)
+  await loadCMSData();
+  
+  // 2. Build the map layout
+  initLayout();
+  renderNodes();
+  drawConnectors();
+  initInteractivity(); 
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSidebar(); closeNav(); }});
+</script>
+
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+</body>
+</html>
