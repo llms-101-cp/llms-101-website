@@ -58,7 +58,43 @@ collections:
         label: "Theme Colors"
         name: "theme"
         fields:
-          - {label: "Base Theme Preset", name: "preset", widget: "select", options: ["Sahel (Default)", "Dark Mode", "Ocean", "Forest", "HC Light", "HC Dark","Midnight Blue", "Sunset", "Cherry Blossom", "Cyberpunk", "Monochrome","Autumn", "Lavender", "Coffee House", "Mint Chocolate", "Slate & Copper","Vintage Rose", "Deep Purple", "Arctic Ice", "Solarized Dark"]
-          - {label: "Override: Main Text Color", name: "text_override", widget: "color", required: false, hint: "Leave blank to use the theme's default text color."}
-          - {label: "Override: Background Color", name: "bg_override", widget: "color", required: false, hint: "Leave blank to use the theme's default background."}
-          - {label: "Override: Accent/Header Color", name: "brown_override", widget: "color", required: false, hint: "Overrides the dark brown/accent colors."}
+          - label: "Base Theme Preset"
+            name: "preset"
+            widget: "select"
+            default: "Sahel (Default)"
+            options:
+              - "Sahel (Default)"
+              - "Dark Mode"
+              - "Ocean"
+              - "Forest"
+              - "HC Light"
+              - "HC Dark"
+              - "Midnight Blue"
+              - "Sunset"
+              - "Cherry Blossom"
+              - "Cyberpunk"
+              - "Monochrome"
+              - "Autumn"
+              - "Lavender"
+              - "Coffee House"
+              - "Mint Chocolate"
+              - "Slate & Copper"
+              - "Vintage Rose"
+              - "Deep Purple"
+              - "Arctic Ice"
+              - "Solarized Dark"
+          - label: "Override: Main Text Color"
+            name: "text_override"
+            widget: "color"
+            required: false
+            hint: "Leave blank to use the theme's default text color."
+          - label: "Override: Background Color"
+            name: "bg_override"
+            widget: "color"
+            required: false
+            hint: "Leave blank to use the theme's default background."
+          - label: "Override: Accent/Header Color"
+            name: "brown_override"
+            widget: "color"
+            required: false
+            hint: "Overrides the dark brown/accent colors."
