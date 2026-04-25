@@ -424,10 +424,30 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
    THEME DICTIONARY
 ══════════════════════════════════════════════ */
 const THEMES = {
-  "Sahel (Default)": { bg: '#FAF8F4', surface: '#FFFFFF', text: '#3d2a18', brown: '#664228', gold: '#B8860B', tan_pale: '#F5EDD8' },
-  "Dark Mode":       { bg: '#121212', surface: '#1E1E1E', text: '#E0E0E0', brown: '#BB86FC', gold: '#03DAC6', tan_pale: '#2C2C2C' },
-  "Ocean":           { bg: '#F0F8FF', surface: '#FFFFFF', text: '#002B36', brown: '#006B8F', gold: '#2AA198', tan_pale: '#E0F2F1' },
-  "Forest":          { bg: '#F1F8E9', surface: '#FFFFFF', text: '#1B5E20', brown: '#33691E', gold: '#8BC34A', tan_pale: '#DCEDC8' }
+  "Sahel (Default)": { 
+    bg: '#FAF8F4', surface: '#FFFFFF', border: 'rgba(102,66,40,0.13)', 
+    text: '#3d2a18', muted: '#9a7a5e', brown: '#664228', brown_lt: '#8a5c3a', 
+    gold: '#B8860B', gold_lt: '#D4A017', tan: '#D2B48C', tan_pale: '#F5EDD8', dust: '#E5C0B0',
+    header_bg: 'rgba(250,248,244,0.96)', overlay: 'rgba(61,42,24,.28)'
+  },
+  "Dark Mode": { 
+    bg: '#121212', surface: '#1E1E1E', border: 'rgba(255,255,255,0.1)', 
+    text: '#E0E0E0', muted: '#888888', brown: '#BB86FC', brown_lt: '#9965f4', 
+    gold: '#03DAC6', gold_lt: '#00B3A6', tan: '#333333', tan_pale: '#2C2C2C', dust: '#444444',
+    header_bg: 'rgba(18,18,18,0.96)', overlay: 'rgba(0,0,0,0.6)'
+  },
+  "Ocean": { 
+    bg: '#001b24', surface: '#002633', border: 'rgba(42,161,152,0.2)', 
+    text: '#E0F2F1', muted: '#6699a1', brown: '#2AA198', brown_lt: '#4ebdb5', 
+    gold: '#cb4b16', gold_lt: '#e66b35', tan: '#004d66', tan_pale: '#003b4d', dust: '#005973',
+    header_bg: 'rgba(0,27,36,0.96)', overlay: 'rgba(0,15,20,0.6)'
+  },
+  "Forest": { 
+    bg: '#F1F8E9', surface: '#FFFFFF', border: 'rgba(51,105,30,0.15)', 
+    text: '#1B5E20', muted: '#558B2F', brown: '#33691E', brown_lt: '#558B2F', 
+    gold: '#8BC34A', gold_lt: '#9CCC65', tan: '#DCEDC8', tan_pale: '#E8F5E9', dust: '#C5E1A5',
+    header_bg: 'rgba(241,248,233,0.96)', overlay: 'rgba(27,94,32,0.2)'
+  }
 };
 /* ══════════════════════════════════════════════
    DATA & DICTIONARIES
@@ -1523,12 +1543,33 @@ async function loadCMSData() {
       
       if (colors) {
         const root = document.documentElement;
+        
+        // Update all 12 CSS variables
         root.style.setProperty('--bg', colors.bg);
         root.style.setProperty('--surface', colors.surface);
+        root.style.setProperty('--border', colors.border);
         root.style.setProperty('--text', colors.text);
+        root.style.setProperty('--muted', colors.muted);
         root.style.setProperty('--brown', colors.brown);
+        root.style.setProperty('--brown-lt', colors.brown_lt);
         root.style.setProperty('--gold', colors.gold);
+        root.style.setProperty('--gold-lt', colors.gold_lt);
+        root.style.setProperty('--tan', colors.tan);
         root.style.setProperty('--tan-pale', colors.tan_pale);
+        root.style.setProperty('--dust', colors.dust);
+        
+        // Override the elements with hardcoded transparencies
+        const header = document.querySelector('header');
+        if(header) header.style.background = colors.header_bg;
+        
+        const navOverlay = document.getElementById('nav-overlay');
+        if(navOverlay) navOverlay.style.background = colors.overlay;
+        
+        const sbOverlay = document.getElementById('sb-overlay');
+        if(sbOverlay) sbOverlay.style.background = colors.overlay;
+        
+        const sbTitle = document.getElementById('sb-title');
+        if(sbTitle) sbTitle.style.color = colors.tan_pale;
       }
     }
   } catch(err) {}
