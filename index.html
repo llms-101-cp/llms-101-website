@@ -1511,20 +1511,25 @@ async function loadCMSData() {
     } catch(err) {}
   }));
 
-  // 3. Fetch Theme Settings (NEW!)
+  // 3. Fetch Theme Settings (Dropdown Themes)
   try {
     const themeRes = await fetch('/content/settings/theme.json');
     if (themeRes.ok) {
       const themeData = await themeRes.json();
-      const root = document.documentElement;
       
-      // If a color exists in the CMS, override the CSS variable
-      if (themeData.bg) root.style.setProperty('--bg', themeData.bg);
-      if (themeData.surface) root.style.setProperty('--surface', themeData.surface);
-      if (themeData.text) root.style.setProperty('--text', themeData.text);
-      if (themeData.brown) root.style.setProperty('--brown', themeData.brown);
-      if (themeData.gold) root.style.setProperty('--gold', themeData.gold);
-      if (themeData.tan_pale) root.style.setProperty('--tan-pale', themeData.tan_pale);
+      // Get the selected theme from the CMS, fallback to Sahel if not found
+      const selectedTheme = themeData.preset || "Sahel (Default)";
+      const colors = THEMES[selectedTheme];
+      
+      if (colors) {
+        const root = document.documentElement;
+        root.style.setProperty('--bg', colors.bg);
+        root.style.setProperty('--surface', colors.surface);
+        root.style.setProperty('--text', colors.text);
+        root.style.setProperty('--brown', colors.brown);
+        root.style.setProperty('--gold', colors.gold);
+        root.style.setProperty('--tan-pale', colors.tan_pale);
+      }
     }
   } catch(err) {}
 }
