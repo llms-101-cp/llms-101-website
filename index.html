@@ -1627,7 +1627,7 @@ let EXAMPLE_DATA = {
 };
 
 const TREE = {
-  root: ['math','training','arch','prompting','themes','roles'],
+  root: ['math','training','arch','prompting','roles'],
   math: ['linear-algebra','calculus','probability','attention'],
   training: ['data','pretraining','sft','rlhf','dpo','synthetic'],
   arch: ['dense','moe','reasoning','openai','anthropic-model','google-model','open-models'],
@@ -1635,7 +1635,7 @@ const TREE = {
   themes: ['open-closed','safety','hardware'],
   roles: ['role-data', 'role-ml', 'role-ethics', 'role-swe', 'role-hw']
 };
-/* ══════════════════════════════════════════════
+  /* ══════════════════════════════════════════════
    CMS DYNAMIC FETCH (HYBRID FALLBACK)
 ══════════════════════════════════════════════ */
 async function loadCMSData() {
@@ -1749,7 +1749,7 @@ let isDragging = false;
 let startX, startY;
 
 function initLayout(){
-  const cw = 1400; 
+  const cw = 1400; // Increased to 1400 to fit 5 branches perfectly!
   POS['root'] = {x: cw/2 - W/2, y: 30};
 
   const branchIds = TREE.root;
@@ -1809,11 +1809,11 @@ function initInteractivity() {
   if (wasHidden) page.style.display = 'block';
 
   const viewWidth = container.offsetWidth;
-  panX = (viewWidth - 1200) / 2;
+  panX = (viewWidth - 1400) / 2; // Updated to match the new 1400 canvas
   
   if(viewWidth < 768) {
     mapScale = 0.6;
-    panX = (viewWidth - (1200 * mapScale)) / 2;
+    panX = (viewWidth - (1400 * mapScale)) / 2; // Updated to match
   }
   
   if (wasHidden) page.style.display = ''; // restore original state
@@ -1852,7 +1852,6 @@ function initInteractivity() {
   }, {passive: false});
   container.addEventListener('touchend', stopDrag);
 }
-
 function zoomMap(delta) {
   mapScale += delta;
   if(mapScale < 0.3) mapScale = 0.3;
@@ -2040,11 +2039,11 @@ function drawConnectors(){
     
     if(!nodeA || !nodeB || !POS[a] || !POS[b]) return;
 
-    // Fix: Measure actual height to account for text wrapping!
+    // Dynamically measure the exact height of the top box
     const heightA = nodeA.offsetHeight;
     
     const x1 = POS[a].x + (W / 2);
-    const y1 = POS[a].y + heightA;
+    const y1 = POS[a].y + heightA; // Starts perfectly at the bottom edge!
     const x2 = POS[b].x + (W / 2);
     const y2 = POS[b].y;
     
