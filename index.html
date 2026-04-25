@@ -1636,20 +1636,21 @@ async function loadCMSData() {
     } catch(err) {}
   }));
 
-  // 3. Fetch Theme Settings (Dropdown Themes)
+  // 3. Fetch Theme Settings (Themes + Overrides + Cache Busting)
   try {
-    const themeRes = await fetch('/content/settings/theme.json');
+    const timestamp = new Date().getTime();
+    const themeRes = await fetch('/content/settings/theme.json?v=' + timestamp);
+    
     if (themeRes.ok) {
       const themeData = await themeRes.json();
       
-      // Get the selected theme from the CMS, fallback to Sahel if not found
+      // Apply the Base Theme
       const selectedTheme = themeData.preset || "Sahel (Default)";
       const colors = THEMES[selectedTheme];
       
       if (colors) {
         const root = document.documentElement;
         
-        // Update all 12 CSS variables
         root.style.setProperty('--bg', colors.bg);
         root.style.setProperty('--surface', colors.surface);
         root.style.setProperty('--border', colors.border);
@@ -1663,23 +1664,38 @@ async function loadCMSData() {
         root.style.setProperty('--tan-pale', colors.tan_pale);
         root.style.setProperty('--dust', colors.dust);
         
-        // Override the elements with hardcoded transparencies
         const header = document.querySelector('header');
         if(header) header.style.background = colors.header_bg;
-        
         const navOverlay = document.getElementById('nav-overlay');
         if(navOverlay) navOverlay.style.background = colors.overlay;
-        
         const sbOverlay = document.getElementById('sb-overlay');
         if(sbOverlay) sbOverlay.style.background = colors.overlay;
-        
         const sbTitle = document.getElementById('sb-title');
         if(sbTitle) sbTitle.style.color = colors.tan_pale;
+
+        // Apply Optional Overrides
+        if (themeData.text_override) {
+          root.style.setProperty('--text', themeData.text_override);
+        }
+        if (themeData.bg_override) {
+          root.style.setProperty('--bg', themeData.bg_override);
+          // Force header to match custom background with frosted glass effect
+          if (header) {
+            if (themeData.bg_override.length === 7) {
+              header.style.background = themeData.bg_override + 'F2';
+            } else {
+              header.style.background = themeData.bg_override;
+            }
+          }
+        }
+        if (themeData.brown_override) {
+          root.style.setProperty('--brown', themeData.brown_override);
+        }
       }
     }
   } catch(err) {}
 }
-/* ══════════════════════════════════════════════
+  /* ══════════════════════════════════════════════
    LAYOUT CONFIG
 ══════════════════════════════════════════════ */
 const W = 160; 
