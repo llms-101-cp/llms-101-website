@@ -148,18 +148,18 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 }
 
 /* colour themes */
-.node-root{background:var(--brown);border:1.5px solid var(--gold);color:var(--tan-pale)}
+/* colour themes */
+.node-root{background:var(--brown);border:1.5px solid var(--gold);color:var(--bg)}
 .node-root .node-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.03em}
-.node-math{background:#FDF8EC;border:1px solid var(--gold);color:#6b4e08}
-.node-math .node-sub{color:#826620}
-.node-train{background:#FBF0E8;border:1px solid #a0623c;color:#6b3018}
-.node-train .node-sub{color:#8c5230}
-.node-arch{background:#F8F0D8;border:1px solid #8a7a2a;color:#4e3e08}
-.node-arch .node-sub{color:#73641b}
-.node-prompt{background:#F5EDD8;border:1px solid #7a5c28;color:#4a3010}
-.node-prompt .node-sub{color:#634a1d}
-.node-theme{background:#F2EDE4;border:1px solid #8a7060;color:#4a3828}
-.node-theme .node-sub{color:#705b4d}
+
+.node-math, .node-train, .node-arch, .node-prompt, .node-theme {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.node-math .node-sub, .node-train .node-sub, .node-arch .node-sub, .node-prompt .node-sub, .node-theme .node-sub {
+  color: var(--muted);
+}
 
 /* SVG connector lines */
 #connector-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
