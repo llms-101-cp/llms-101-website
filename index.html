@@ -426,7 +426,11 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 /* ══════════════════════════════════════════════
    THEME DICTIONARY
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   THEME DICTIONARY (20 THEMES)
+══════════════════════════════════════════════ */
 const THEMES = {
+  // ── ORIGINAL 6 THEMES ──
   "Sahel (Default)": { 
     bg: '#FAF8F4', surface: '#FFFFFF', border: 'rgba(102,66,40,0.13)', 
     text: '#3d2a18', muted: '#9a7a5e', brown: '#664228', brown_lt: '#8a5c3a', 
@@ -462,75 +466,94 @@ const THEMES = {
     text: '#FFFFFF', muted: '#CCCCCC', brown: '#FFFFFF', brown_lt: '#DDDDDD', 
     gold: '#44AAFF', gold_lt: '#66BBFF', tan: '#222222', tan_pale: '#333333', dust: '#444444',
     header_bg: 'rgba(0,0,0,0.98)', overlay: 'rgba(255,255,255,0.2)'
+  },
+
+  // ── 14 NEW THEMES ──
+  "Midnight Blue": {
+    bg: '#0A192F', surface: '#112240', border: 'rgba(100,255,218,0.1)', 
+    text: '#CCD6F6', muted: '#8892B0', brown: '#64FFDA', brown_lt: '#52E0C4', 
+    gold: '#00BFFF', gold_lt: '#0099CC', tan: '#233554', tan_pale: '#1E2D4A', dust: '#3A506B',
+    header_bg: 'rgba(10,25,47,0.96)', overlay: 'rgba(2,12,27,0.7)'
+  },
+  "Sunset": {
+    bg: '#FFF3E0', surface: '#FFFFFF', border: 'rgba(230,81,0,0.15)', 
+    text: '#3E2723', muted: '#795548', brown: '#E65100', brown_lt: '#EF6C00', 
+    gold: '#F57C00', gold_lt: '#FB8C00', tan: '#FFE0B2', tan_pale: '#FFECB3', dust: '#FFCC80',
+    header_bg: 'rgba(255,243,224,0.96)', overlay: 'rgba(62,39,35,0.3)'
+  },
+  "Cherry Blossom": {
+    bg: '#FFF0F5', surface: '#FFFFFF', border: 'rgba(219,112,147,0.2)', 
+    text: '#4A235A', muted: '#884EA0', brown: '#C70039', brown_lt: '#E74C3C', 
+    gold: '#FF69B4', gold_lt: '#FFB6C1', tan: '#FADBD8', tan_pale: '#FDEDEC', dust: '#F5B7B1',
+    header_bg: 'rgba(255,240,245,0.96)', overlay: 'rgba(74,35,90,0.3)'
+  },
+  "Cyberpunk": {
+    bg: '#0D0221', surface: '#261447', border: 'rgba(255,0,255,0.3)', 
+    text: '#00FFCC', muted: '#A626D3', brown: '#FF00FF', brown_lt: '#D400D4', 
+    gold: '#00FFFF', gold_lt: '#00CCCC', tan: '#2F0A28', tan_pale: '#4A0E4E', dust: '#592E83',
+    header_bg: 'rgba(13,2,33,0.96)', overlay: 'rgba(0,0,0,0.7)'
+  },
+  "Monochrome": {
+    bg: '#F5F5F5', surface: '#FFFFFF', border: 'rgba(0,0,0,0.1)', 
+    text: '#222222', muted: '#666666', brown: '#000000', brown_lt: '#333333', 
+    gold: '#555555', gold_lt: '#777777', tan: '#E0E0E0', tan_pale: '#EEEEEE', dust: '#CCCCCC',
+    header_bg: 'rgba(245,245,245,0.96)', overlay: 'rgba(0,0,0,0.3)'
+  },
+  "Autumn": {
+    bg: '#FDF5E6', surface: '#FFFFFF', border: 'rgba(139,69,19,0.15)', 
+    text: '#3E2723', muted: '#8D6E63', brown: '#BF360C', brown_lt: '#D84315', 
+    gold: '#FF8F00', gold_lt: '#FFA000', tan: '#FFE0B2', tan_pale: '#FFF8E1', dust: '#FFCC80',
+    header_bg: 'rgba(253,245,230,0.96)', overlay: 'rgba(62,39,35,0.4)'
+  },
+  "Lavender": {
+    bg: '#F4EEFF', surface: '#FFFFFF', border: 'rgba(104,73,208,0.15)', 
+    text: '#311B92', muted: '#5E35B1', brown: '#6200EA', brown_lt: '#7C4DFF', 
+    gold: '#00B8D4', gold_lt: '#00E5FF', tan: '#D1C4E9', tan_pale: '#EDE7F6', dust: '#B39DDB',
+    header_bg: 'rgba(244,238,255,0.96)', overlay: 'rgba(49,27,146,0.3)'
+  },
+  "Coffee House": {
+    bg: '#EFEBE9', surface: '#FAFAFA', border: 'rgba(7E,55,49,0.15)', 
+    text: '#3E2723', muted: '#6D4C41', brown: '#4E342E', brown_lt: '#5D4037', 
+    gold: '#795548', gold_lt: '#8D6E63', tan: '#D7CCC8', tan_pale: '#F5F5F5', dust: '#BCAAA4',
+    header_bg: 'rgba(239,235,233,0.96)', overlay: 'rgba(62,39,35,0.4)'
+  },
+  "Mint Chocolate": {
+    bg: '#E0F2F1', surface: '#FFFFFF', border: 'rgba(0,77,64,0.15)', 
+    text: '#004D40', muted: '#00796B', brown: '#3E2723', brown_lt: '#4E342E', 
+    gold: '#009688', gold_lt: '#26A69A', tan: '#B2DFDB', tan_pale: '#E8F5E9', dust: '#80CBC4',
+    header_bg: 'rgba(224,242,241,0.96)', overlay: 'rgba(0,77,64,0.4)'
+  },
+  "Slate & Copper": {
+    bg: '#263238', surface: '#37474F', border: 'rgba(255,255,255,0.1)', 
+    text: '#ECEFF1', muted: '#B0BEC5', brown: '#D84315', brown_lt: '#E64A19', 
+    gold: '#FF7043', gold_lt: '#FF8A65', tan: '#455A64', tan_pale: '#546E7A', dust: '#78909C',
+    header_bg: 'rgba(38,50,56,0.96)', overlay: 'rgba(0,0,0,0.6)'
+  },
+  "Vintage Rose": {
+    bg: '#F9EBEA', surface: '#FFFFFF', border: 'rgba(146,43,33,0.15)', 
+    text: '#641E16', muted: '#922B21', brown: '#7B241C', brown_lt: '#922B21', 
+    gold: '#C0392B', gold_lt: '#D98880', tan: '#F2D7D5', tan_pale: '#FDEDEC', dust: '#E6B0AA',
+    header_bg: 'rgba(249,235,234,0.96)', overlay: 'rgba(100,30,22,0.3)'
+  },
+  "Deep Purple": {
+    bg: '#1A0B2E', surface: '#2D1B4E', border: 'rgba(187,134,252,0.2)', 
+    text: '#EADDFF', muted: '#D0BCFF', brown: '#BB86FC', brown_lt: '#D0BCFF', 
+    gold: '#F2B8B5', gold_lt: '#F9DEDC', tan: '#4A3279', tan_pale: '#3B2363', dust: '#65489A',
+    header_bg: 'rgba(26,11,46,0.96)', overlay: 'rgba(0,0,0,0.7)'
+  },
+  "Arctic Ice": {
+    bg: '#E1F5FE', surface: '#FFFFFF', border: 'rgba(1,87,155,0.15)', 
+    text: '#01579B', muted: '#0277BD', brown: '#006064', brown_lt: '#00838F', 
+    gold: '#0097A7', gold_lt: '#00BCD4', tan: '#B3E5FC', tan_pale: '#E1F5FE', dust: '#81D4FA',
+    header_bg: 'rgba(225,245,254,0.96)', overlay: 'rgba(1,87,155,0.3)'
+  },
+  "Solarized Dark": {
+    bg: '#002B36', surface: '#073642', border: 'rgba(131,148,150,0.2)', 
+    text: '#839496', muted: '#586E75', brown: '#2AA198', brown_lt: '#268BD2', 
+    gold: '#B58900', gold_lt: '#CB4B16', tan: '#002B36', tan_pale: '#073642', dust: '#586E75',
+    header_bg: 'rgba(0,43,54,0.96)', overlay: 'rgba(0,0,0,0.6)'
   }
-};
-
-/* ══════════════════════════════════════════════
-   CMS DYNAMIC FETCH (HYBRID FALLBACK)
-══════════════════════════════════════════════ */
-async function loadCMSData() {
-  // 1. Fetch Static Pages First (To ensure text loads fast)
-  const pages = ['beginners', 'resources', 'about', 'contact'];
-  await Promise.all(pages.map(async (pageId) => {
-    try {
-      const res = await fetch(`/content/pages/${pageId}.json`);
-      if (res.ok) {
-        const data = await res.json();
-        const container = document.querySelector(`#page-${pageId} .static-page`);
-        if (container && data.body) {
-          container.innerHTML = `<h2>${data.title}</h2><div class="divider"></div>` + marked.parse(data.body);
-        }
-      }
-    } catch(err) {}
-  }));
-
-  // 2. Fetch Theme Settings (Dropdown Themes + Overrides with Cache Busting)
-  try {
-    const timestamp = new Date().getTime();
-    const themeRes = await fetch('/content/settings/theme.json?v=' + timestamp);
-    
-    if (themeRes.ok) {
-      const themeData = await themeRes.json();
-      
-      const selectedTheme = themeData.preset || "Sahel (Default)";
-      const colors = THEMES[selectedTheme];
-      
-      if (colors) {
-        const root = document.documentElement;
-        
-        root.style.setProperty('--bg', colors.bg);
-        root.style.setProperty('--surface', colors.surface);
-        root.style.setProperty('--border', colors.border);
-        root.style.setProperty('--text', colors.text);
-        root.style.setProperty('--muted', colors.muted);
-        root.style.setProperty('--brown', colors.brown);
-        root.style.setProperty('--brown-lt', colors.brown_lt);
-        root.style.setProperty('--gold', colors.gold);
-        root.style.setProperty('--gold-lt', colors.gold_lt);
-        root.style.setProperty('--tan', colors.tan);
-        root.style.setProperty('--tan-pale', colors.tan_pale);
-        root.style.setProperty('--dust', colors.dust);
-        
-        const header = document.querySelector('header');
-        if(header) header.style.background = colors.header_bg;
-        const navOverlay = document.getElementById('nav-overlay');
-        if(navOverlay) navOverlay.style.background = colors.overlay;
-        const sbOverlay = document.getElementById('sb-overlay');
-        if(sbOverlay) sbOverlay.style.background = colors.overlay;
-        const sbTitle = document.getElementById('sb-title');
-        if(sbTitle) sbTitle.style.color = colors.tan_pale;
-
-        // Apply Optional Overrides
-        if (themeData.text_override) root.style.setProperty('--text', themeData.text_override);
-        if (themeData.bg_override) root.style.setProperty('--bg', themeData.bg_override);
-        if (themeData.brown_override) {
-          root.style.setProperty('--brown', themeData.brown_override);
-          if(header) header.style.background = themeData.brown_override; 
-        }
-      }
-    }
-  } catch(err) {}
-}  
+};  
   /* ══════════════════════════════════════════════
    DATA & DICTIONARIES
 ══════════════════════════════════════════════ */
