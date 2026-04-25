@@ -1,0 +1,24 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "mindmap_nodes"
+    label: "Mind Map Nodes"
+    folder: "content/nodes"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - {label: "ID (e.g., math, linear-algebra)", name: "id", widget: "string"}
+      - {label: "Label (Short Title)", name: "label", widget: "string"}
+      - {label: "Subtitle", name: "sub", widget: "string", required: false}
+      - {label: "Tag (e.g., Branch, Overview)", name: "tag", widget: "string"}
+      - {label: "Theme Color", name: "theme", widget: "select", options: ["root", "math", "train", "arch", "prompt", "theme"]}
+      - {label: "Has Children?", name: "hasChildren", widget: "boolean", default: false}
+      - {label: "Sidebar Title", name: "title", widget: "string"}
+      - {label: "Sidebar Body Paragraphs (HTML allowed)", name: "body", widget: "text"}
