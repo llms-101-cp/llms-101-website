@@ -2024,6 +2024,60 @@ const syncLines = () => {
   drawConnectors();
   if (Date.now() - startTime < 500) { // match your 0.5s CSS transition
     requestAnimationFrame(syncLines);
+    function drawConnectors() {
+  const svg = document.getElementById('connector-svg');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const pairs = [];
+  
+  // Define parent-child pairs
+  TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
+  
+  const allBranches = [...TREE.root];
+  allBranches.forEach(bid => {
+    (TREE[bid] || []).forEach(cid => {
+      if(visibleNodes.has(cid)) {
+        pairs.push([bid, cid, 'var(--muted)', 1.0]);
+      }
+    });
+  });
+  
+  pairs.forEach(([a, b, color, w]) => {
+    const nodeA = document.getElementById(`node-${a}`);
+    const nodeB = document.getElementById(`node-${b}`);
+    if(!nodeA || !nodeB) return;
+
+    const rectA = {
+      x: parseFloat(nodeA.style.left),
+      y: parseFloat(nodeA.style.top),
+      w: nodeA.offsetWidth,
+      h: nodeA.offsetHeight
+    };
+    const rectB = {
+      x: parseFloat(nodeB.style.left),
+      y: parseFloat(nodeB.style.top),
+      w: nodeB.offsetWidth,
+      h: nodeB.offsetHeight
+    };
+
+    const x1 = rectA.x + (rectA.w / 2);
+    const y1 = rectA.y + rectA.h;
+    const x2 = rectB.x + (rectB.w / 2);
+    const y2 = rectB.y;
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const distY = Math.abs(y2 - y1);
+    const curveStrength = distY * 0.45;
+    
+    line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', color);
+    line.setAttribute('stroke-width', w);
+    line.setAttribute('opacity', w > 1.0 ? '0.6' : '0.4');
+    if(w <= 1.0) line.setAttribute('stroke-dasharray', '4 4');
+    svg.appendChild(line);
+  });
+}
   }
 };
 requestAnimationFrame(syncLines);
