@@ -1865,12 +1865,13 @@ function updateTransform() {
   document.getElementById('map-canvas').style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
 }
 
-/* ══════════════════════════════════════════════
+/* /* ══════════════════════════════════════════════
    RENDER NODES
 ══════════════════════════════════════════════ */
 let visibleNodes = new Set(['root']);
 let expandedNodes = new Set();
 let activeNodeId = null;
+let startTime = Date.now();
 
 function renderNodes(){
   document.querySelectorAll('.node-box').forEach(el=>el.remove());
@@ -1891,7 +1892,6 @@ function renderNodes(){
     if(visibleNodes.has(id)) div.classList.add('visible');
     if(activeNodeId === id) div.classList.add('selected');
 
-    // Add intro mode to the root node if nothing is expanded yet
     if(id === 'root' && !expandedNodes.has('root')) {
       div.classList.add('intro-mode');
     }
@@ -1938,12 +1938,10 @@ function toggleChildren(parentId){
 
   if(isExpanded){
     collapseNode(parentId);
-    // If we specifically collapse the root node, return it to intro mode
     if(parentId === 'root') {
       document.getElementById('node-root')?.classList.add('intro-mode');
     }
   } else {
-    // Accordion Logic: Close other main branches
     if (TREE.root.includes(parentId)) {
       TREE.root.forEach(otherId => {
         if (otherId !== parentId && expandedNodes.has(otherId)) {
@@ -1952,23 +1950,18 @@ function toggleChildren(parentId){
       });
     }
 
-    // Expand clicked node
     expandedNodes.add(parentId);
-    
-    // Remove intro mode if root is expanded
     if(parentId === 'root') {
       document.getElementById('node-root')?.classList.remove('intro-mode');
     }
 
     const children = [...(TREE[parentId]||[])];
-    
     children.forEach(cid=>{
       visibleNodes.add(cid);
       const el = document.getElementById(`node-${cid}`);
       if(el) el.classList.add('visible'); 
     });
     
-    // Show Themes row and labels
     if(TREE.root.includes(parentId)){
       TREE.themes.forEach(tid=>{
         visibleNodes.add(tid);
@@ -1981,18 +1974,12 @@ function toggleChildren(parentId){
     updateExpandHint(parentId, true);
   }
   
-  // TRIGGER ANIMATION SYNC
   startTime = Date.now();
   syncLines(); 
-}
-  }
-  
-  drawConnectors();
 }
 
 function collapseNode(nodeId){
   const children = TREE[nodeId]||[];
-  
   children.forEach(cid=>{
     collapseNode(cid);
     visibleNodes.delete(cid);
@@ -2004,7 +1991,6 @@ function collapseNode(nodeId){
   expandedNodes.delete(nodeId);
   updateExpandHint(nodeId, false);
 
-  // Hide themes row and labels if no main branches are open
   const anyRootOpen = TREE.root.some(id => expandedNodes.has(id));
   if (!anyRootOpen) {
     TREE.themes.forEach(tid => {
@@ -2026,23 +2012,22 @@ function updateExpandHint(id, expanded){
   if(hint) hint.textContent = expanded ? '▲ collapse':'▼ expand';
 }
 
-// Add this inside handleNodeClick or toggleChildren to keep lines in sync during animation
-let startTime = Date.now();
 const syncLines = () => {
   drawConnectors();
-  if (Date.now() - startTime < 500) { // match your 0.5s CSS transition
+  if (Date.now() - startTime < 550) { 
     requestAnimationFrame(syncLines);
-    function drawConnectors() {
+  }
+};
+
+function drawConnectors() {
   const svg = document.getElementById('connector-svg');
   if (!svg) return;
   svg.innerHTML = '';
   const pairs = [];
   
-  // Define parent-child pairs
   TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
   
-  const allBranches = [...TREE.root];
-  allBranches.forEach(bid => {
+  TREE.root.forEach(bid => {
     (TREE[bid] || []).forEach(cid => {
       if(visibleNodes.has(cid)) {
         pairs.push([bid, cid, 'var(--muted)', 1.0]);
@@ -2085,8 +2070,6 @@ const syncLines = () => {
     if(w <= 1.0) line.setAttribute('stroke-dasharray', '4 4');
     svg.appendChild(line);
   });
-}
-  }
 };
 requestAnimationFrame(syncLines);
 /* ══════════════════════════════════════════════
