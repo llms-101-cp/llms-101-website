@@ -1738,11 +1738,10 @@ async function loadCMSData() {
    REVISED LAYOUT CONFIG (Edge Detection)
 ══════════════════════════════════════════════ */
 function initLayout(){
-  const cw = 1400; // Logical width for internal math
+  const cw = 1400; 
   POS['root'] = {x: cw/2 - W/2, y: 30};
 
   const branchIds = TREE.root;
-  // Dynamic spacing: Use a tighter multiplier for more branches
   const spacingFactor = branchIds.length > 4 ? 1.4 : 1.5;
   const totalBW = branchIds.length * W + (branchIds.length-1) * GAP * spacingFactor;
   const bStartX = (cw - totalBW)/2;
@@ -1765,7 +1764,7 @@ function initLayout(){
       
       let targetX = POS[id].x + W/2 - rowTotalW/2 + col * (W + hGap);
       
-      // Strict Edge Detection: Pull nodes back if they approach canvas edges
+      // Strict Edge Detection: Keeps "AI Roles" on screen
       const margin = 50; 
       if (targetX < margin) targetX = margin;
       if (targetX > (cw - W - margin)) targetX = cw - W - margin;
@@ -1781,8 +1780,9 @@ function initLayout(){
   Object.values(POS).forEach(p => { if(p.y > maxY) maxY = p.y; });
   const themeY = maxY + H + 100;
   
-  TREE.themes.forEach((id, i) => {
-    const tStartX = (cw - (TREE.themes.length * W + (TREE.themes.length-1)*GAP*2))/2;
+  const themeIds = TREE.themes || [];
+  themeIds.forEach((id, i) => {
+    const tStartX = (cw - (themeIds.length * W + (themeIds.length-1)*GAP*2))/2;
     POS[id] = {x: tStartX + i*(W+GAP*2), y: themeY};
   });
 
@@ -1851,6 +1851,7 @@ function zoomMap(delta) {
   if(mapScale < 0.3) mapScale = 0.3;
   if(mapScale > 2) mapScale = 2;
   updateTransform();
+  drawConnectors();
 }
 
 function updateTransform() {
@@ -1863,6 +1864,7 @@ function updateTransform() {
 let visibleNodes = new Set(['root']);
 let expandedNodes = new Set();
 let activeNodeId = null;
+let startTime = Date.now();
 
 function renderNodes(){
   document.querySelectorAll('.node-box').forEach(el=>el.remove());
@@ -1897,71 +1899,35 @@ function renderNodes(){
     div.addEventListener('keydown',(e)=>{ if(e.key === 'Enter') handleNodeClick(id); });
     canvas.appendChild(div);
   });
-
-  if(!document.getElementById('themes-label')){
-    const lbl = document.createElement('div');
-    lbl.id = 'themes-label';
-    lbl.style.cssText = `position:absolute;width:100%;text-align:center;font-size:11px;font-weight:500;letter-spacing:4px;color:var(--muted);pointer-events:none;transition:opacity 0.3s;opacity:0;`;
-    const themeY = POS['open-closed']?.y;
-    if(themeY) lbl.style.top = (themeY-28)+'px';
-    lbl.textContent = 'CROSS-CUTTING THEMES';
-    canvas.appendChild(lbl);
-    
-    const dvd = document.createElement('div');
-    dvd.id = 'themes-divider';
-    dvd.style.cssText = `position:absolute;left:5%;width:90%;height:1px;background:linear-gradient(90deg,transparent,var(--tan),transparent);pointer-events:none;transition:opacity 0.3s;opacity:0;`;
-    if(themeY) dvd.style.top = (themeY-38)+'px';
-    canvas.appendChild(dvd);
-  }
 }
 
 function handleNodeClick(id){
   const d = NODE_DATA[id];
-  if(d.hasChildren){
-    toggleChildren(id);
-  } else {
-    openSidebar(id);
-  }
+  if(d.hasChildren) toggleChildren(id);
+  else openSidebar(id);
 }
 
 function toggleChildren(parentId){
   const isExpanded = expandedNodes.has(parentId);
-
   if(isExpanded){
     collapseNode(parentId);
-    if(parentId === 'root') {
-      document.getElementById('node-root')?.classList.add('intro-mode');
-    }
+    if(parentId === 'root') document.getElementById('node-root')?.classList.add('intro-mode');
   } else {
     if (TREE.root.includes(parentId)) {
       TREE.root.forEach(otherId => {
-        if (otherId !== parentId && expandedNodes.has(otherId)) {
-          collapseNode(otherId);
-        }
+        if (otherId !== parentId && expandedNodes.has(otherId)) collapseNode(otherId);
       });
     }
     expandedNodes.add(parentId);
-    if(parentId === 'root') {
-      document.getElementById('node-root')?.classList.remove('intro-mode');
-    }
+    if(parentId === 'root') document.getElementById('node-root')?.classList.remove('intro-mode');
     const children = [...(TREE[parentId]||[])];
     children.forEach(cid=>{
       visibleNodes.add(cid);
       const el = document.getElementById(`node-${cid}`);
       if(el) el.classList.add('visible'); 
     });
-    if(TREE.root.includes(parentId)){
-      TREE.themes.forEach(tid=>{
-        visibleNodes.add(tid);
-        const el = document.getElementById(`node-${tid}`);
-        if(el) el.classList.add('visible');
-      });
-      document.getElementById('themes-label').style.opacity = '1';
-      document.getElementById('themes-divider').style.opacity = '0.4';
-    }
     updateExpandHint(parentId, true);
   }
-  
   startTime = Date.now();
   syncLines(); 
 }
@@ -1975,21 +1941,8 @@ function collapseNode(nodeId){
     const el = document.getElementById(`node-${cid}`);
     if(el) el.classList.remove('visible');
   });
-  
   expandedNodes.delete(nodeId);
   updateExpandHint(nodeId, false);
-  const anyRootOpen = TREE.root.some(id => expandedNodes.has(id));
-  if (!anyRootOpen) {
-    TREE.themes.forEach(tid => {
-      visibleNodes.delete(tid);
-      const el = document.getElementById(`node-${tid}`);
-      if(el) el.classList.remove('visible');
-    });
-    const lbl = document.getElementById('themes-label');
-    if(lbl) lbl.style.opacity = '0';
-    const dvd = document.getElementById('themes-divider');
-    if(dvd) dvd.style.opacity = '0';
-  }
 }
 
 function updateExpandHint(id, expanded){
@@ -2033,11 +1986,10 @@ function drawConnectors() {
     const nodeB = document.getElementById(`node-${b}`);
     if(!nodeA || !nodeB) return;
 
-    // Get current visual positions relative to the canvas
     const rectA = nodeA.getBoundingClientRect();
     const rectB = nodeB.getBoundingClientRect();
 
-    // Account for mapScale to ensure lines touch box edges exactly
+    // Use getBoundingClientRect to find exact center-points relative to canvas
     const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
     const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
     const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
