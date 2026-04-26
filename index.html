@@ -1859,8 +1859,8 @@ function updateTransform() {
   if(canvas) canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
 }
 
-/* ══════════════════════════════════════════════
-   RENDER NODES
+/* ═══════════════════════════════════════════
+RENDER NODES
 ══════════════════════════════════════════════ */
 let visibleNodes = new Set(['root']);
 let expandedNodes = new Set();
@@ -1886,7 +1886,7 @@ function renderNodes(){
     if(visibleNodes.has(id)) div.classList.add('visible');
     if(activeNodeId === id) div.classList.add('selected');
 
-    if(id === 'root' && !expandedNodes.has('root')) {
+    if(id === 'root' && !expandedNodes.has('root')){
       div.classList.add('intro-mode');
     }
 
@@ -1982,8 +1982,6 @@ function drawConnectors() {
           pairs.push([parentId, childId, color, weight]);
         }
       });
-    }
-  });
 
   pairs.forEach(([a, b, color, w]) => {
     const nodeA = document.getElementById(`node-${a}`);
