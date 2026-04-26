@@ -1749,16 +1749,18 @@ let isDragging = false;
 let startX, startY;
 
 function initLayout(){
-  const cw = 1400; // Increased to 1400 to fit 5 branches perfectly!
+  const cw = 1400; 
   POS['root'] = {x: cw/2 - W/2, y: 30};
 
   const branchIds = TREE.root;
-  const totalBW = branchIds.length * W + (branchIds.length-1)*GAP*3;
+  // CHANGE: Reduced GAP multiplier from 3 to 1.5 to keep everything on screen
+  const totalBW = branchIds.length * W + (branchIds.length-1)*GAP*1.5; 
   const bStartX = (cw - totalBW)/2;
+  
   branchIds.forEach((id,i)=>{
-    POS[id] = {x: bStartX + i*(W + GAP*3), y: 170};
+    POS[id] = {x: bStartX + i*(W + GAP*1.5), y: 170};
   });
-
+  
   const themeIds = TREE.themes;
   const totalTW = themeIds.length * W + (themeIds.length-1)*GAP*2;
   const tStartX = (cw - totalTW)/2;
