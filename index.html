@@ -1734,69 +1734,63 @@ async function loadCMSData() {
     }
   } catch(err) {}
 }
-  /* ══════════════════════════════════════════════
-   LAYOUT CONFIG
+  /* /* ══════════════════════════════════════════════
+   REVISED LAYOUT CONFIG (Edge Detection)
 ══════════════════════════════════════════════ */
-const W = 160; 
-const H = 68;  
-const GAP = 20;
-const POS = {};
-
-// Pan & Zoom State
-let mapScale = 1;
-let panX = 0, panY = 0;
-let isDragging = false;
-let startX, startY;
-
 function initLayout(){
-  const cw = 1400; 
+  const cw = 1400; // Logical width for internal math
   POS['root'] = {x: cw/2 - W/2, y: 30};
 
   const branchIds = TREE.root;
-  // CHANGE: Reduced GAP multiplier from 3 to 1.5 to keep everything on screen
-  const totalBW = branchIds.length * W + (branchIds.length-1)*GAP*1.5; 
+  // Dynamic spacing: Use a tighter multiplier for more branches
+  const spacingFactor = branchIds.length > 4 ? 1.4 : 1.5;
+  const totalBW = branchIds.length * W + (branchIds.length-1) * GAP * spacingFactor;
   const bStartX = (cw - totalBW)/2;
   
-  branchIds.forEach((id,i)=>{
-    POS[id] = {x: bStartX + i*(W + GAP*1.5), y: 170};
-  });
-  
-  const themeIds = TREE.themes;
-  const totalTW = themeIds.length * W + (themeIds.length-1)*GAP*2;
-  const tStartX = (cw - totalTW)/2;
-  themeIds.forEach((id,i)=>{
-    POS[id] = {x: tStartX + i*(W+GAP*2), y: 0}; 
-  });
-
-  branchIds.forEach(bid => {
-    const children = TREE[bid]||[];
+  branchIds.forEach((id, i) => {
+    POS[id] = {x: bStartX + i * (W + GAP * spacingFactor), y: 170};
+    
+    const children = TREE[id] || [];
     if(!children.length) return;
-    const bp = POS[bid];
+
     const perRow = 3;
-    const hGap = GAP+8;
-    const vGap = GAP+12;
-    children.forEach((cid,i)=>{
-      const row = Math.floor(i/perRow);
-      const col = i % perRow;
-      const rowCount = Math.min(perRow, children.length - row*perRow);
-      const rowTotalW = rowCount*(W) + (rowCount-1)*hGap;
-      const rowStartX = bp.x + W/2 - rowTotalW/2;
+    const hGap = GAP;
+    const vGap = GAP + 12;
+
+    children.forEach((cid, index) => {
+      const row = Math.floor(index / perRow);
+      const col = index % perRow;
+      const rowCount = Math.min(perRow, children.length - row * perRow);
+      const rowTotalW = rowCount * W + (rowCount - 1) * hGap;
+      
+      let targetX = POS[id].x + W/2 - rowTotalW/2 + col * (W + hGap);
+      
+      // Strict Edge Detection: Pull nodes back if they approach canvas edges
+      const margin = 50; 
+      if (targetX < margin) targetX = margin;
+      if (targetX > (cw - W - margin)) targetX = cw - W - margin;
+
       POS[cid] = {
-        x: rowStartX + col*(W+hGap),
-        y: bp.y + H + 65 + row*(H+vGap)
+        x: targetX,
+        y: POS[id].y + H + 80 + row * (H + vGap)
       };
     });
   });
 
   let maxY = 0;
-  Object.values(POS).forEach(p=>{ if(p.y > maxY) maxY = p.y; });
+  Object.values(POS).forEach(p => { if(p.y > maxY) maxY = p.y; });
+  const themeY = maxY + H + 100;
+  
+  TREE.themes.forEach((id, i) => {
+    const tStartX = (cw - (TREE.themes.length * W + (TREE.themes.length-1)*GAP*2))/2;
+    POS[id] = {x: tStartX + i*(W+GAP*2), y: themeY};
+  });
 
-  const themeY = maxY + H + 80;
-  themeIds.forEach(id=>{ POS[id].y = themeY; });
-
-  const canvasH = themeY + H + 60;
-  document.getElementById('map-canvas').style.height = canvasH+'px';
-  document.querySelector('#connector-svg').setAttribute('viewBox',`0 0 ${cw} ${canvasH}`);
+  const canvasH = themeY + H + 100;
+  const canvasEl = document.getElementById('map-canvas');
+  canvasEl.style.height = canvasH + 'px';
+  canvasEl.style.width = cw + 'px'; 
+  document.querySelector('#connector-svg').setAttribute('viewBox', `0 0 ${cw} ${canvasH}`);
 }
 
 /* ══════════════════════════════════════════════
@@ -1805,20 +1799,18 @@ function initLayout(){
 function initInteractivity() {
   const container = document.getElementById('page-mindmap-inner');
   const page = document.getElementById('page-mindmap');
-  
-  // Temporarily show the mind map page to calculate accurate width
   const wasHidden = window.getComputedStyle(page).display === 'none';
   if (wasHidden) page.style.display = 'block';
 
   const viewWidth = container.offsetWidth;
-  panX = (viewWidth - 1400) / 2; // Updated to match the new 1400 canvas
+  panX = (viewWidth - 1400 * mapScale) / 2;
   
   if(viewWidth < 768) {
     mapScale = 0.6;
-    panX = (viewWidth - (1400 * mapScale)) / 2; // Updated to match
+    panX = (viewWidth - (1400 * mapScale)) / 2;
   }
   
-  if (wasHidden) page.style.display = ''; // restore original state
+  if (wasHidden) page.style.display = ''; 
   updateTransform();
 
   const startDrag = (x, y) => {
@@ -1844,7 +1836,6 @@ function initInteractivity() {
   });
   window.addEventListener('mousemove', (e) => drag(e.clientX, e.clientY));
   window.addEventListener('mouseup', stopDrag);
-
   container.addEventListener('touchstart', (e) => {
     if(e.target.closest('.node-box') || e.target.closest('.map-controls')) return;
     if(e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
@@ -1854,6 +1845,7 @@ function initInteractivity() {
   }, {passive: false});
   container.addEventListener('touchend', stopDrag);
 }
+
 function zoomMap(delta) {
   mapScale += delta;
   if(mapScale < 0.3) mapScale = 0.3;
@@ -1865,13 +1857,12 @@ function updateTransform() {
   document.getElementById('map-canvas').style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
 }
 
-/* /* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════
    RENDER NODES
 ══════════════════════════════════════════════ */
 let visibleNodes = new Set(['root']);
 let expandedNodes = new Set();
 let activeNodeId = null;
-let startTime = Date.now();
 
 function renderNodes(){
   document.querySelectorAll('.node-box').forEach(el=>el.remove());
@@ -1949,19 +1940,16 @@ function toggleChildren(parentId){
         }
       });
     }
-
     expandedNodes.add(parentId);
     if(parentId === 'root') {
       document.getElementById('node-root')?.classList.remove('intro-mode');
     }
-
     const children = [...(TREE[parentId]||[])];
     children.forEach(cid=>{
       visibleNodes.add(cid);
       const el = document.getElementById(`node-${cid}`);
       if(el) el.classList.add('visible'); 
     });
-    
     if(TREE.root.includes(parentId)){
       TREE.themes.forEach(tid=>{
         visibleNodes.add(tid);
@@ -1990,7 +1978,6 @@ function collapseNode(nodeId){
   
   expandedNodes.delete(nodeId);
   updateExpandHint(nodeId, false);
-
   const anyRootOpen = TREE.root.some(id => expandedNodes.has(id));
   if (!anyRootOpen) {
     TREE.themes.forEach(tid => {
@@ -2023,45 +2010,43 @@ function drawConnectors() {
   const svg = document.getElementById('connector-svg');
   if (!svg) return;
   svg.innerHTML = '';
+  const canvas = document.getElementById('map-canvas');
+  const canvasRect = canvas.getBoundingClientRect();
+
   const pairs = [];
-  
   TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
   
-  TREE.root.forEach(bid => {
-    (TREE[bid] || []).forEach(cid => {
-      if(visibleNodes.has(cid)) {
-        pairs.push([bid, cid, 'var(--muted)', 1.0]);
-      }
-    });
+  Object.keys(TREE).forEach(parentId => {
+    if (visibleNodes.has(parentId)) {
+      (TREE[parentId] || []).forEach(childId => {
+        if (visibleNodes.has(childId)) {
+          const color = parentId === 'root' ? 'var(--gold)' : 'var(--muted)';
+          const weight = parentId === 'root' ? 1.5 : 1.0;
+          pairs.push([parentId, childId, color, weight]);
+        }
+      });
+    }
   });
-  
+
   pairs.forEach(([a, b, color, w]) => {
     const nodeA = document.getElementById(`node-${a}`);
     const nodeB = document.getElementById(`node-${b}`);
     if(!nodeA || !nodeB) return;
 
-    const rectA = {
-      x: parseFloat(nodeA.style.left),
-      y: parseFloat(nodeA.style.top),
-      w: nodeA.offsetWidth,
-      h: nodeA.offsetHeight
-    };
-    const rectB = {
-      x: parseFloat(nodeB.style.left),
-      y: parseFloat(nodeB.style.top),
-      w: nodeB.offsetWidth,
-      h: nodeB.offsetHeight
-    };
+    // Get current visual positions relative to the canvas
+    const rectA = nodeA.getBoundingClientRect();
+    const rectB = nodeB.getBoundingClientRect();
 
-    const x1 = rectA.x + (rectA.w / 2);
-    const y1 = rectA.y + rectA.h;
-    const x2 = rectB.x + (rectB.w / 2);
-    const y2 = rectB.y;
-    
+    // Account for mapScale to ensure lines touch box edges exactly
+    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
+    const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
+    const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
+    const y2 = (rectB.top - canvasRect.top) / mapScale;
+
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     const distY = Math.abs(y2 - y1);
-    const curveStrength = distY * 0.45;
-    
+    const curveStrength = distY * 0.5;
+
     line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
     line.setAttribute('fill', 'none');
     line.setAttribute('stroke', color);
@@ -2070,8 +2055,8 @@ function drawConnectors() {
     if(w <= 1.0) line.setAttribute('stroke-dasharray', '4 4');
     svg.appendChild(line);
   });
-};
-requestAnimationFrame(syncLines);
+}
+
 /* ══════════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════════ */
