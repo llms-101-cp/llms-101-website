@@ -1981,6 +1981,12 @@ function toggleChildren(parentId){
     updateExpandHint(parentId, true);
   }
   
+  // TRIGGER ANIMATION SYNC
+  startTime = Date.now();
+  syncLines(); 
+}
+  }
+  
   drawConnectors();
 }
 
