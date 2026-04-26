@@ -152,12 +152,12 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 .node-root{background:var(--brown);border:1.5px solid var(--gold);color:var(--bg)}
 .node-root .node-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;letter-spacing:.03em}
 
-.node-math, .node-train, .node-arch, .node-prompt, .node-theme {
+.node-math, .node-train, .node-arch, .node-prompt, .node-theme, .node-roles {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
 }
-.node-math .node-sub, .node-train .node-sub, .node-arch .node-sub, .node-prompt .node-sub, .node-theme .node-sub {
+.node-math .node-sub, .node-train .node-sub, .node-arch .node-sub, .node-prompt .node-sub, .node-theme .node-sub, .node-roles .node-sub {
   color: var(--muted);
 }
 
@@ -420,6 +420,18 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 </div>
 
 <script>
+  const W = 160;
+const H = 60;
+const GAP = 30;
+
+const POS = {};
+
+let mapScale = 0.85;
+let panX = 0;
+let panY = 0;
+let isDragging = false;
+let startX = 0;
+let startY = 0;
   /* ══════════════════════════════════════════════
    THEME DICTIONARY
 ══════════════════════════════════════════════ */
