@@ -1886,7 +1886,7 @@ function renderNodes(){
     if(visibleNodes.has(id)) div.classList.add('visible');
     if(activeNodeId === id) div.classList.add('selected');
 
-    if(id === 'root' && !expandedNodes.has('root')){
+    if(id === 'root' && !expandedNodes.has('root')) {
       div.classList.add('intro-mode');
     }
 
