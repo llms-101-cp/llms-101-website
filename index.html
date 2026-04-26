@@ -1764,7 +1764,7 @@ function initLayout(){
       
       let targetX = POS[id].x + W/2 - rowTotalW/2 + col * (W + hGap);
       
-      // Strict Edge Detection: Keeps "AI Roles" on screen
+      // Strict Edge Detection: Keeps nodes within the 1400px laptop view
       const margin = 50; 
       if (targetX < margin) targetX = margin;
       if (targetX > (cw - W - margin)) targetX = cw - W - margin;
@@ -1855,7 +1855,8 @@ function zoomMap(delta) {
 }
 
 function updateTransform() {
-  document.getElementById('map-canvas').style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
+  const canvas = document.getElementById('map-canvas');
+  if(canvas) canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
 }
 
 /* ══════════════════════════════════════════════
@@ -1952,6 +1953,9 @@ function updateExpandHint(id, expanded){
   if(hint) hint.textContent = expanded ? '▲ collapse':'▼ expand';
 }
 
+/* ══════════════════════════════════════════════
+   CONNECTOR LOGIC (SNAP FIX)
+══════════════════════════════════════════════ */
 const syncLines = () => {
   drawConnectors();
   if (Date.now() - startTime < 550) { 
@@ -1989,7 +1993,6 @@ function drawConnectors() {
     const rectA = nodeA.getBoundingClientRect();
     const rectB = nodeB.getBoundingClientRect();
 
-    // Use getBoundingClientRect to find exact center-points relative to canvas
     const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
     const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
     const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
@@ -2010,7 +2013,7 @@ function drawConnectors() {
 }
 
 /* ══════════════════════════════════════════════
-   SIDEBAR
+SIDEBAR
 ══════════════════════════════════════════════ */
 function openSidebar(id){
   const d = NODE_DATA[id];
