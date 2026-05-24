@@ -3,7 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LLMs 101</title>
+
+<!-- ── Primary SEO ── -->
+<title>LLMs 101 — A Beginner's Guide to Large Language Models</title>
+<meta name="description" content="LLMs 101 is a free interactive mind map and plain-English guide to large language models. Learn what ChatGPT, Claude, and Gemini are, how transformers work, and what hallucination means — no technical background required.">
+<meta name="keywords" content="large language models, LLMs explained, what is an LLM, how do LLMs work, AI for beginners, ChatGPT explained, transformer architecture, AI hallucination, tokens in AI, prompt engineering">
+<meta name="author" content="LLMs 101">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://llms101.com/">
+
+<!-- ── Open Graph (Facebook / LinkedIn) ── -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://llms101.com/">
+<meta property="og:title" content="LLMs 101 — A Beginner's Guide to Large Language Models">
+<meta property="og:description" content="A free interactive mind map and plain-English guide to large language models. Understand ChatGPT, Claude, Gemini and how AI really works — no technical background needed.">
+<meta property="og:image" content="https://llms101.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="LLMs 101">
+<meta property="og:locale" content="en_US">
+
+<!-- ── Twitter / X Card ── -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://llms101.com/">
+<meta name="twitter:title" content="LLMs 101 — A Beginner's Guide to Large Language Models">
+<meta name="twitter:description" content="A free interactive mind map and plain-English guide to large language models. No technical background needed.">
+<meta name="twitter:image" content="https://llms101.com/og-image.png">
+
+<!-- ── JSON-LD Structured Data ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://llms101.com/#website",
+      "url": "https://llms101.com/",
+      "name": "LLMs 101",
+      "description": "A free interactive mind map and plain-English guide to large language models.",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "LearningResource",
+      "@id": "https://llms101.com/#learning-resource",
+      "url": "https://llms101.com/",
+      "name": "LLMs 101 — A Beginner's Guide to Large Language Models",
+      "description": "An interactive mind map designed to help anyone — technical or not — build a solid mental model of how large language models work. Covers mathematics, training process, model architectures, and prompting techniques.",
+      "educationalLevel": "Beginner",
+      "educationalUse": "Self-study",
+      "learningResourceType": "Interactive resource",
+      "teaches": "Large Language Models, AI fundamentals, Transformer architecture, Prompt engineering",
+      "isAccessibleForFree": true,
+      "inLanguage": "en-US",
+      "about": [
+        { "@type": "Thing", "name": "Large Language Models" },
+        { "@type": "Thing", "name": "Artificial Intelligence" },
+        { "@type": "Thing", "name": "Transformer architecture" },
+        { "@type": "Thing", "name": "Prompt engineering" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://llms101.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What actually is AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI (Artificial Intelligence) is software that can perform tasks that would normally require human intelligence — like understanding language, recognising images, or making decisions. Modern AI doesn't think the way humans do. Instead, it finds patterns in enormous amounts of data and uses those patterns to make predictions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a Large Language Model?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Large Language Model (LLM) is a type of AI trained specifically on text. It reads trillions of words — books, websites, code, articles — and learns the patterns of language so well that it can generate new text that sounds human. When you type a question into ChatGPT or Claude, an LLM is reading your words and predicting, one word at a time, what a good response would look like."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between ChatGPT, Claude, and Gemini?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are all LLM-powered chat assistants made by different companies — OpenAI makes ChatGPT, Anthropic makes Claude, and Google makes Gemini. They work in the same fundamental way but have been trained differently, with different data, different safety approaches, and different strengths. Claude tends to be strong at writing and nuanced reasoning. ChatGPT is widely used and fast. Gemini is deeply integrated with Google's products."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a token in AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI models don't read word by word — they break text into tokens, which are roughly word fragments. The word unbelievable might become three tokens: un, believ, able. One token is roughly 0.75 words on average. This matters because models have a limit on how many tokens they can process at once (the context window), and API pricing is usually based on token count."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is AI hallucination and should I worry about it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hallucination is when an AI generates text that sounds plausible and confident but is factually wrong — it might invent a fake citation, misquote a statistic, or get a date wrong. It happens because the model is predicting likely-sounding text, not checking facts. You should always verify important facts from AI responses against reliable sources, especially for medical, legal, or financial matters."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does running AI locally mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most AI tools like ChatGPT and Claude run on remote servers — you send your question over the internet, their computers process it, and send back an answer. Running locally means the AI model is downloaded and runs entirely on your own computer. Tools like Ollama make this possible. The advantage is privacy (nothing leaves your machine) and no ongoing cost."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is AI going to take my job?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This is genuinely debated. AI is already automating some tasks — routine writing, basic coding, data analysis, image generation. But most jobs involve complex judgement, relationships, physical presence, and creativity that AI handles poorly. The more likely near-term outcome is that people who know how to use AI effectively will be more productive than those who don't."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is AI dangerous?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current AI tools have real risks: misinformation (AI-generated fake content), bias (models can reflect biases in their training data), misuse (fraud, spam, manipulation), and privacy risks. These are serious and worth understanding. The more speculative long-term risks — AI systems acting against human interests — are taken seriously by researchers at labs like Anthropic and DeepMind, and are an active area of safety research."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -232,7 +363,9 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
   <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
     <span></span><span></span><span></span>
   </button>
-  <a href="/" class="site-title" style="text-decoration: none;">LLMs 101</a>
+  <a href="/" class="site-title" style="text-decoration: none;" aria-label="LLMs 101 — Home">LLMs 101</a>
+  <!-- Visually hidden H1 for SEO — search engines and screen readers see it, visual design unchanged -->
+  <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">LLMs 101 — A Beginner's Guide to Large Language Models</h1>
 </header>
 <div class="gold-rule"></div>
 
@@ -252,7 +385,7 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 
 <div class="page" id="page-beginners">
 <div class="static-page">
-  <h2>AI for beginners</h2>
+  <h2>AI for Beginners — Plain English Guide to Large Language Models</h2>
   <p>Plain English explanations of the most important AI concepts — no technical background required.</p>
   <div class="divider"></div>
 
@@ -286,6 +419,8 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 </div>
 
 <div class="page active" id="page-mindmap">
+  <!-- SEO: describe the mind map for crawlers since the interactive canvas isn't indexable -->
+  <p style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Interactive mind map covering: Mathematics of LLMs (vectors, embeddings, attention scores), Training process (pre-training, fine-tuning, RLHF), Model architectures (GPT, BERT, LLaMA, Mistral, Gemini, Claude), and Prompting techniques (zero-shot, few-shot, chain-of-thought, RAG). Click any node to expand and explore deeper explanations with citations to primary research papers.</p>
   <div id="page-mindmap-inner">
     <div id="map-canvas">
       <svg id="connector-svg"></svg>
@@ -299,7 +434,7 @@ nav ul li a .nav-icon{margin-right:.6rem;opacity:.7}
 
 <div class="page" id="page-resources">
 <div class="static-page">
-  <h2>Interesting Resources</h2>
+  <h2>Best AI &amp; LLM Learning Resources — Curated Reading List</h2>
   <p>A curated collection of the best places to learn more about AI, large language models, and the broader landscape.</p>
   <div class="divider"></div>
 
