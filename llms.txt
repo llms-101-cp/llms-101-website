@@ -1,0 +1,33 @@
+# LLMs 101
+
+> A free interactive mind map and plain-English guide to large language models. Designed for anyone — technical or not — who wants to build a solid mental model of how modern AI works.
+
+LLMs 101 covers the mathematics, training process, model architectures and families, and prompting techniques that get the best results from large language models. Each concept links to primary source research papers and authoritative references.
+
+## Core pages
+
+- [AI for Beginners](https://llms101.com/): Plain-English explanations of the most important AI concepts — what AI is, what an LLM is, how ChatGPT works, what tokens and hallucinations are, and more.
+- [LLMs 101 Mind Map](https://llms101.com/): Interactive mind map with four main branches: Mathematics, Training, Architectures, and Prompting. Each node expands to reveal deeper explanations and citations.
+- [Learning Resources](https://llms101.com/): Curated list of the best free courses, papers, newsletters, and tools for learning about LLMs — including fast.ai, Andrej Karpathy's Zero to Hero series, and DeepLearning.AI.
+- [About](https://llms101.com/): How to use the mind map, how the site is built, and key references (Vaswani et al. 2017, Brown et al. 2020, Ouyang et al. 2022).
+
+## Key topics covered
+
+- What is a Large Language Model (LLM)
+- Transformer architecture and the attention mechanism
+- Tokenisation and context windows
+- Pre-training, fine-tuning, and RLHF
+- Model families: GPT, Claude, Gemini, LLaMA, Mistral, Qwen
+- Prompt engineering: zero-shot, few-shot, chain-of-thought, RAG
+- AI hallucination — causes and how to mitigate it
+- Running AI locally with Ollama
+
+## Primary sources cited
+
+- Vaswani et al. 2017 — "Attention Is All You Need" (Transformer): https://arxiv.org/abs/1706.03762
+- Brown et al. 2020 — "Language Models are Few-Shot Learners" (GPT-3): https://arxiv.org/abs/2005.14165
+- Ouyang et al. 2022 — "Training language models to follow instructions with human feedback" (InstructGPT/RLHF): https://arxiv.org/abs/2203.02155
+
+## Contact
+
+llms.101.contact@gmail.com
