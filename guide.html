@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ── Primary SEO ── -->
+<title>LLMs 101 — Complete Guide to Large Language Models</title>
+<meta name="description" content="A complete plain-English guide to large language models — covering mathematics, training process, model architectures, prompting techniques, and AI safety. Every topic from the LLMs 101 mind map, explained in full.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://llms101.com/guide">
+
+<!-- ── Open Graph ── -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://llms101.com/guide">
+<meta property="og:title" content="LLMs 101 — Complete Guide to Large Language Models">
+<meta property="og:description" content="A complete plain-English guide covering mathematics, training, architectures, prompting, and AI safety. Every concept from the LLMs 101 mind map, explained in full.">
+<meta property="og:image" content="https://llms101.com/og-image.png">
+<meta property="og:site_name" content="LLMs 101">
+
+<!-- ── Twitter Card ── -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LLMs 101 — Complete Guide to Large Language Models">
+<meta name="twitter:description" content="Every concept from the LLMs 101 mind map explained in plain English — maths, training, architectures, prompting and safety.">
+<meta name="twitter:image" content="https://llms101.com/og-image.png">
+
+<!-- ── Favicons ── -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/favicon-192.png">
+
+<!-- ── Fonts ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ── JSON-LD ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "@id": "https://llms101.com/guide",
+  "headline": "LLMs 101 — Complete Guide to Large Language Models",
+  "description": "A complete plain-English guide to large language models covering mathematics, training process, model architectures, prompting techniques, and AI safety.",
+  "url": "https://llms101.com/guide",
+  "isPartOf": { "@type": "WebSite", "url": "https://llms101.com/", "name": "LLMs 101" },
+  "about": [
+    {"@type":"Thing","name":"Large Language Models"},
+    {"@type":"Thing","name":"Transformer architecture"},
+    {"@type":"Thing","name":"Prompt engineering"},
+    {"@type":"Thing","name":"AI safety"},
+    {"@type":"Thing","name":"Reinforcement Learning from Human Feedback"}
+  ],
+  "educationalLevel": "Beginner",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true
+}
+</script>
+
+<style>
+  :root {
+    --brown: #3d2a18;
+    --gold: #B8860B;
+    --tan: #D2B48C;
+    --cream: #FAF8F4;
+    --muted: #9a7a5e;
+    --light: #F5EDD8;
+    --border: rgba(184,134,11,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    background: var(--cream);
+    color: var(--brown);
+    line-height: 1.75;
+    font-size: 16px;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,248,244,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--brown);
+    text-decoration: none;
+    letter-spacing: .02em;
+  }
+
+  .site-title span { color: var(--gold); }
+
+  nav a {
+    font-size: 0.8rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    transition: color .2s;
+  }
+
+  nav a:hover { color: var(--gold); }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--brown);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+
+  .hero-rule {
+    width: 50px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 2rem;
+  }
+
+  /* ── TOC ── */
+  .toc-wrap {
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+  }
+
+  .toc {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+  }
+
+  .toc-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--brown);
+    margin-bottom: 1rem;
+    letter-spacing: .02em;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.3rem 1.5rem;
+  }
+
+  .toc-grid a {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: .03em;
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toc-grid a::before {
+    content: '›';
+    color: var(--gold);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .toc-grid a:hover { color: var(--gold); }
+
+  /* ── Main content ── */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* ── Section group ── */
+  .section-group {
+    margin-bottom: 4rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 400;
+    color: var(--brown);
+    letter-spacing: .01em;
+  }
+
+  .section-tag {
+    font-size: 0.68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184,134,11,0.3);
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .section-intro {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  /* ── Topic cards ── */
+  .topic {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.25rem;
+    scroll-margin-top: 80px;
+  }
+
+  .topic h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--brown);
+    margin-bottom: 0.15rem;
+    letter-spacing: .01em;
+  }
+
+  .topic-sub {
+    font-size: 0.75rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .topic p {
+    font-size: 0.94rem;
+    color: #5a3e28;
+    line-height: 1.8;
+    margin-bottom: 0.85rem;
+  }
+
+  .topic p:last-of-type { margin-bottom: 0; }
+
+  .topic strong { font-weight: 500; color: var(--brown); }
+
+  /* ── Key concepts tags ── */
+  .concepts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .concepts-label {
+    font-size: 0.68rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .concept-tag {
+    font-size: 0.74rem;
+    background: rgba(184,134,11,0.07);
+    color: var(--muted);
+    border: 1px solid rgba(184,134,11,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .03em;
+  }
+
+  /* ── Sources ── */
+  .sources {
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .sources-label {
+    font-size: 0.68rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .sources a {
+    display: inline-block;
+    font-size: 0.76rem;
+    color: var(--gold);
+    text-decoration: none;
+    margin-right: 1rem;
+    margin-bottom: 0.25rem;
+    transition: opacity .2s;
+  }
+
+  .sources a:hover { opacity: 0.7; }
+  .sources a::after { content: ' ↗'; font-size: 0.65rem; }
+
+  /* ── Back to map CTA ── */
+  .cta-band {
+    background: var(--brown);
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .cta-band h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--light);
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-band p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brown);
+    background: var(--gold);
+    text-decoration: none;
+    padding: 0.65rem 1.75rem;
+    border-radius: 4px;
+    transition: opacity .2s;
+  }
+
+  .cta-btn:hover { opacity: 0.85; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--brown);
+    color: var(--muted);
+    text-align: center;
+    padding: 1.5rem 2rem;
+    font-size: 0.78rem;
+    letter-spacing: .04em;
+  }
+
+  footer a { color: var(--gold); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    header { padding: 0.75rem 1rem; }
+    nav a { margin-left: 0.75rem; font-size: 0.72rem; }
+    .hero { padding: 3rem 1rem 2rem; }
+    .toc-wrap, .content { padding-left: 1rem; padding-right: 1rem; }
+    .topic { padding: 1.25rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="site-title"><span>LLMs</span> 101</a>
+  <nav>
+    <a href="/">Mind Map</a>
+    <a href="/guide" aria-current="page">Full Guide</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <p class="hero-eyebrow">Complete reference guide</p>
+  <h1>Everything you need to understand <span>Large Language Models</span></h1>
+  <p class="hero-sub">Every topic from the interactive mind map, laid out as a readable guide. No technical background required.</p>
+  <div class="hero-rule"></div>
+</div>
+
+<!-- Table of Contents -->
+<div class="toc-wrap">
+  <div class="toc">
+    <p class="toc-title">Contents</p>
+    <div class="toc-grid">
+      <a href="#overview">What is an LLM?</a>
+      <a href="#linear-algebra">Linear algebra</a>
+      <a href="#calculus">Calculus &amp; gradient descent</a>
+      <a href="#probability">Probability &amp; statistics</a>
+      <a href="#attention">Self-attention mechanism</a>
+      <a href="#data">Data collection &amp; cleaning</a>
+      <a href="#pretraining">Pre-training</a>
+      <a href="#sft">Instruction tuning (SFT)</a>
+      <a href="#rlhf">RLHF</a>
+      <a href="#dpo">DPO</a>
+      <a href="#synthetic">Synthetic training data</a>
+      <a href="#dense">Dense transformer</a>
+      <a href="#moe">Mixture of Experts</a>
+      <a href="#reasoning">Reasoning models</a>
+      <a href="#openai">OpenAI model family</a>
+      <a href="#anthropic">Anthropic — Claude</a>
+      <a href="#google">Google DeepMind — Gemini</a>
+      <a href="#open-models">Open weight models</a>
+      <a href="#cot">Chain of thought prompting</a>
+      <a href="#fewshot">Few-shot prompting</a>
+      <a href="#system-prompt">System prompts</a>
+      <a href="#rag">RAG</a>
+      <a href="#context-window">Context window</a>
+      <a href="#injection">Prompt injection</a>
+      <a href="#open-closed">Open vs closed models</a>
+      <a href="#safety">Safety &amp; alignment</a>
+      <a href="#hardware">Hardware &amp; infrastructure</a>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ══════════════════════════════════
+       OVERVIEW
+  ══════════════════════════════════ -->
+  <div class="section-group" id="overview">
+    <div class="section-header">
+      <h2>What is a Large Language Model?</h2>
+      <span class="section-tag">Overview</span>
+    </div>
+
+    <div class="topic">
+      <h3>Large Language Models</h3>
+      <p class="topic-sub">The foundation</p>
+      <p>A <strong>Large Language Model (LLM)</strong> is an AI system trained to understand and generate human language at scale. The "large" refers to two things: the vast amount of text it was trained on, and the billions of mathematical parameters (weights) inside it.</p>
+      <p>At its core, an LLM does one deceptively simple thing: <strong>given some text, predict what comes next</strong>. When trained extraordinarily well across trillions of words, reasoning, knowledge, and language understanding emerge as side effects of that prediction task.</p>
+      <p>The four key dimensions of how LLMs work are: the mathematics underpinning them, the training process that builds them, the architectural choices that define them, and the prompting techniques that get the best out of them.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Next token prediction</span>
+        <span class="concept-tag">Parameters</span>
+        <span class="concept-tag">Foundation models</span>
+        <span class="concept-tag">Emergent capabilities</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://en.wikipedia.org/wiki/Large_language_model" target="_blank" rel="noopener">Wikipedia — Large language model</a>
+        <a href="https://www.anthropic.com/news/core-views-on-ai-safety" target="_blank" rel="noopener">Anthropic — Core Views on AI Safety</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       MATHEMATICS
+  ══════════════════════════════════ -->
+  <div class="section-group">
+    <div class="section-header">
+      <h2>The Mathematics of LLMs</h2>
+      <span class="section-tag">Mathematics</span>
+    </div>
+    <p class="section-intro">LLM maths isn't exotic — it builds on linear algebra, calculus, and probability applied at enormous scale. The entire forward pass that converts your prompt into a response is essentially a chain of matrix multiplications. Every token becomes a vector — an ordered list of ~4,096 numbers — and every transformation the model applies is a matrix multiplication.</p>
+
+    <div class="topic" id="linear-algebra">
+      <h3>Linear algebra</h3>
+      <p class="topic-sub">Vectors &amp; matrices</p>
+      <p>The foundation of all LLM computation. Every token is converted into an <strong>embedding vector</strong> — an ordered list of ~4,096 floating-point numbers that encodes its meaning as a position in high-dimensional space. Words with similar meanings end up geometrically close in this space.</p>
+      <p>Every transformation the model applies — attention, feed-forward layers — is a <strong>matrix multiplication</strong>: multiplying two grids of numbers together. The billions of "parameters" in a model are literally the individual numbers inside these matrices.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Embedding vectors</span>
+        <span class="concept-tag">Weight matrices</span>
+        <span class="concept-tag">Matrix multiplication</span>
+        <span class="concept-tag">Dot products</span>
+        <span class="concept-tag">Cosine similarity</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" target="_blank" rel="noopener">3Blue1Brown — Linear Algebra series</a>
+        <a href="https://en.wikipedia.org/wiki/Word_embedding" target="_blank" rel="noopener">Wikipedia — Word embedding</a>
+      </div>
+    </div>
+
+    <div class="topic" id="calculus">
+      <h3>Calculus &amp; gradient descent</h3>
+      <p class="topic-sub">How models learn</p>
+      <p>Calculus drives training. The model's error — how wrong its predictions are — forms a high-dimensional "loss landscape." Training is the process of rolling a ball downhill on that landscape, adjusting parameters in the direction that reduces error.</p>
+      <p>The <strong>gradient</strong> tells you which direction downhill is. <strong>Backpropagation</strong> is the algorithm that efficiently calculates that gradient across billions of parameters simultaneously, flowing error signals backwards through the network layer by layer. The <strong>Adam optimiser</strong> is the most widely used variant for adapting the learning rate per parameter.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Loss function</span>
+        <span class="concept-tag">Gradient descent</span>
+        <span class="concept-tag">Backpropagation</span>
+        <span class="concept-tag">Learning rate</span>
+        <span class="concept-tag">Adam optimiser</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://www.youtube.com/watch?v=Ilg3gGewQ5U" target="_blank" rel="noopener">3Blue1Brown — Backpropagation explained</a>
+        <a href="https://www.nature.com/articles/323533a0" target="_blank" rel="noopener">Rumelhart et al. 1986 — Original backprop paper</a>
+      </div>
+    </div>
+
+    <div class="topic" id="probability">
+      <h3>Probability &amp; statistics</h3>
+      <p class="topic-sub">Softmax &amp; sampling</p>
+      <p>The final step of every forward pass produces a <strong>probability distribution</strong> — not just "the next word is X" but a ranked list across all ~100,000 tokens in the vocabulary.</p>
+      <p>The <strong>temperature</strong> parameter controls this distribution. At temperature 0, you always pick the highest-probability token (deterministic, repetitive). At temperature 1, you sample proportionally (creative, varied). At temperature 2, the distribution flattens (chaotic).</p>
+      <p><strong>Top-p (nucleus) sampling</strong> is a refinement that samples only from the smallest set of tokens whose cumulative probability exceeds a threshold p — avoiding very low-probability tokens regardless of temperature.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Softmax function</span>
+        <span class="concept-tag">Temperature</span>
+        <span class="concept-tag">Top-p sampling</span>
+        <span class="concept-tag">Top-k sampling</span>
+        <span class="concept-tag">Perplexity</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/1904.09751" target="_blank" rel="noopener">Holtzman et al. 2020 — The Curious Case of Neural Text Degeneration</a>
+        <a href="https://en.wikipedia.org/wiki/Softmax_function" target="_blank" rel="noopener">Wikipedia — Softmax function</a>
+      </div>
+    </div>
+
+    <div class="topic" id="attention">
+      <h3>Self-attention mechanism</h3>
+      <p class="topic-sub">Query / Key / Value</p>
+      <p>The key innovation of the Transformer (Vaswani et al., 2017). Self-attention asks: for every token, which other tokens in the input should I pay attention to when building my understanding of this token?</p>
+      <p>It computes three vectors per token: a <strong>Query</strong> (what am I looking for?), a <strong>Key</strong> (what do I offer?), and a <strong>Value</strong> (what information do I carry?). The attention score between any two tokens is the dot product of their Q and K vectors, scaled and passed through softmax to produce weights. Those weights determine how much each token's Value contributes to the output.</p>
+      <p>This is computed in parallel across all tokens simultaneously — far faster than older recurrent (LSTM) models that processed one token at a time. Modern models use <strong>multi-head attention</strong>, running this process in parallel across many independent heads.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Multi-head attention</span>
+        <span class="concept-tag">Query / Key / Value</span>
+        <span class="concept-tag">Attention weights</span>
+        <span class="concept-tag">Scaled dot-product</span>
+        <span class="concept-tag">Positional encoding</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Vaswani et al. 2017 — Attention Is All You Need</a>
+        <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Jay Alammar — The Illustrated Transformer</a>
+        <a href="https://transformer-circuits.pub/2021/framework/index.html" target="_blank" rel="noopener">Anthropic — Transformer circuits</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TRAINING
+  ══════════════════════════════════ -->
+  <div class="section-group">
+    <div class="section-header">
+      <h2>How LLMs are Trained</h2>
+      <span class="section-tag">Training</span>
+    </div>
+    <p class="section-intro">Training a frontier model is one of the most resource-intensive activities in computing. It happens in sequential stages: data collection → pre-training → instruction tuning → alignment. Training Meta's Llama 3 70B consumed approximately 6.4 million GPU-hours on H100 chips — roughly $30–50M AUD for a single run.</p>
+
+    <div class="topic" id="data">
+      <h3>Data collection &amp; cleaning</h3>
+      <p class="topic-sub">Web crawl, books, code</p>
+      <p>Models are trained on massive text corpora: web crawls (Common Crawl is the most used source), books (Books3, Project Gutenberg), Wikipedia, GitHub code repositories, scientific papers (ArXiv), and more. Meta's Llama 3 was trained on <strong>15 trillion tokens</strong>. OpenAI has never disclosed GPT-4's exact data volume.</p>
+      <p>The raw data is enormous but messy — full of spam, duplicate content, low-quality pages, and toxic material. Significant engineering effort goes into filtering, deduplication, and quality scoring before training begins. The quality of training data arguably matters as much as the architecture itself.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Common Crawl</span>
+        <span class="concept-tag">The Pile</span>
+        <span class="concept-tag">RedPajama</span>
+        <span class="concept-tag">FineWeb</span>
+        <span class="concept-tag">C4 dataset</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://huggingface.co/datasets/HuggingFaceFW/fineweb" target="_blank" rel="noopener">Penedo et al. 2024 — FineWeb dataset</a>
+        <a href="https://arxiv.org/abs/2101.00027" target="_blank" rel="noopener">Gao et al. 2020 — The Pile</a>
+        <a href="https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md" target="_blank" rel="noopener">Meta — Llama 3 Model Card</a>
+      </div>
+    </div>
+
+    <div class="topic" id="pretraining">
+      <h3>Pre-training</h3>
+      <p class="topic-sub">Next token prediction</p>
+      <p>The foundational and most expensive stage. The model starts with random parameters (essentially noise) and learns by reading text, trying to predict the next token, comparing its prediction to the actual token, calculating how wrong it was (the "loss"), and adjusting all parameters slightly to be less wrong. This process repeats billions of times.</p>
+      <p>The result is a <strong>base model</strong> — sometimes called a foundation model — that deeply understands language but is strange to talk to. If you ask "What is the capital of France?", it might continue your text as if it's a quiz, not a question. Base models need further stages to become useful assistants.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Causal language modelling</span>
+        <span class="concept-tag">Next token prediction</span>
+        <span class="concept-tag">Foundation models</span>
+        <span class="concept-tag">Base models</span>
+        <span class="concept-tag">Training loss</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Brown et al. 2020 — GPT-3 paper</a>
+        <a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener">Karpathy — Let's build GPT from scratch</a>
+      </div>
+    </div>
+
+    <div class="topic" id="sft">
+      <h3>Instruction tuning (SFT)</h3>
+      <p class="topic-sub">Supervised fine-tuning</p>
+      <p>After pre-training, supervised fine-tuning (SFT) trains the model on thousands to millions of examples of the desired input-output format: human message → assistant reply → human message → assistant reply.</p>
+      <p>This is where a base model becomes a usable assistant — it learns the conversational format, how to respond helpfully, and basic safety behaviours. SFT is relatively cheap compared to pre-training. Every major model (GPT, Claude, Gemini, Llama-Instruct) goes through this stage. The quality and diversity of the SFT dataset heavily influences the model's personality and instruction-following ability.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Conversational format</span>
+        <span class="concept-tag">FLAN dataset</span>
+        <span class="concept-tag">Alpaca</span>
+        <span class="concept-tag">ShareGPT</span>
+        <span class="concept-tag">Open Hermes</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2109.01652" target="_blank" rel="noopener">Wei et al. 2022 — Finetuned Language Models are Zero-Shot Learners</a>
+        <a href="https://crfm.stanford.edu/2023/03/13/alpaca.html" target="_blank" rel="noopener">Taori et al. 2023 — Stanford Alpaca</a>
+      </div>
+    </div>
+
+    <div class="topic" id="rlhf">
+      <h3>Reinforcement Learning from Human Feedback</h3>
+      <p class="topic-sub">Reward model, PPO</p>
+      <p>The step that defines modern chatbots. Human raters are shown multiple responses to the same prompt and rank them from best to worst. These rankings train a separate <strong>reward model</strong> that learns to predict human preferences.</p>
+      <p>The main LLM is then fine-tuned using reinforcement learning (specifically <strong>PPO — Proximal Policy Optimisation</strong>) to generate responses the reward model scores highly. This gives models their tendency to be helpful, to decline harmful requests, and to structure answers in particular ways.</p>
+      <p>Anthropic's <strong>Constitutional AI</strong> is a variation where the model is also evaluated against a written set of principles — a "constitution" — and the model itself uses these to self-critique and revise responses before human raters see them.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Reward model</span>
+        <span class="concept-tag">PPO optimiser</span>
+        <span class="concept-tag">Constitutional AI</span>
+        <span class="concept-tag">Human preference data</span>
+        <span class="concept-tag">Proximal Policy Optimisation</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Ouyang et al. 2022 — Training language models to follow instructions</a>
+        <a href="https://arxiv.org/abs/2212.08073" target="_blank" rel="noopener">Bai et al. 2022 — Constitutional AI (Anthropic)</a>
+      </div>
+    </div>
+
+    <div class="topic" id="dpo">
+      <h3>DPO — Direct Preference Optimisation</h3>
+      <p class="topic-sub">Direct preference optimisation</p>
+      <p>A more recent and efficient alternative to RLHF that achieves similar alignment results without needing a separate reward model. DPO directly optimises the language model on preference pairs — shown a prompt and a preferred vs rejected response — using a mathematically elegant reformulation that treats the LLM itself as the implicit reward model.</p>
+      <p>Many open-source models use DPO: Mistral models, Zephyr, many Llama fine-tunes, and Tulu. Results are comparable to RLHF for most tasks at significantly lower training cost, making it popular in the research community and for smaller labs that can't afford full RLHF infrastructure.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Preference pairs</span>
+        <span class="concept-tag">Implicit reward model</span>
+        <span class="concept-tag">Zephyr model</span>
+        <span class="concept-tag">Tulu</span>
+        <span class="concept-tag">ORPO variant</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Rafailov et al. 2023 — Direct Preference Optimization paper</a>
+        <a href="https://arxiv.org/abs/2310.16944" target="_blank" rel="noopener">Tunstall et al. 2023 — Zephyr (DPO in practice)</a>
+      </div>
+    </div>
+
+    <div class="topic" id="synthetic">
+      <h3>Synthetic training data</h3>
+      <p class="topic-sub">AI-generated training</p>
+      <p>Models like Claude, GPT-4, and Gemini are now partially trained on data <em>generated by other AI models</em>. Meta used Llama 3 to help generate instruction-following training data for Llama 3. Microsoft's Phi series (Phi-1, Phi-2, Phi-3) is almost entirely trained on high-quality synthetic data generated by GPT-4 — and achieves remarkable performance for its tiny size.</p>
+      <p>This raises interesting questions: can AI quality improve recursively? Research suggests it can — up to a point — but errors and biases compound over generations if synthetic data isn't carefully curated and filtered. It also enables labs to generate specific kinds of training data that are rare or expensive to collect naturally.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Phi-3 (Microsoft)</span>
+        <span class="concept-tag">Orca methodology</span>
+        <span class="concept-tag">WizardLM</span>
+        <span class="concept-tag">Self-Instruct</span>
+        <span class="concept-tag">Magpie dataset</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2404.14219" target="_blank" rel="noopener">Abdin et al. 2024 — Phi-3 Technical Report</a>
+        <a href="https://arxiv.org/abs/2306.02707" target="_blank" rel="noopener">Mukherjee et al. 2023 — Orca paper</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ARCHITECTURES
+  ══════════════════════════════════ -->
+  <div class="section-group">
+    <div class="section-header">
+      <h2>Model Architectures &amp; Families</h2>
+      <span class="section-tag">Architectures</span>
+    </div>
+    <p class="section-intro">Not all LLMs are built the same way. The Transformer (2017) is the universal foundation — but within that, there are major design variants. The AI landscape is also divided between closed models (GPT-4, Claude, Gemini — weights never released) and open weight models (Llama, Mistral, Qwen, DeepSeek — weights publicly available).</p>
+
+    <div class="topic" id="dense">
+      <h3>Dense transformer</h3>
+      <p class="topic-sub">GPT-2, GPT-3 style</p>
+      <p>The classic architecture — every parameter is activated for every token processed. Simple, well-understood, and the foundation of early large models. GPT-2 (2019) and the original GPT-3 (2020) were dense transformers.</p>
+      <p>The limitation: at very large scales, running all parameters for every token becomes prohibitively expensive. A 175B dense model must activate all 175B parameters to process a single token. This drove research into more efficient architectures like Mixture of Experts, where only a fraction of parameters activate per token. Dense models are still widely used for smaller scales (7B–13B) where efficiency is less critical.</p>
+      <div class="concepts">
+        <span class="concepts-label">Examples</span>
+        <span class="concept-tag">GPT-2</span>
+        <span class="concept-tag">BERT</span>
+        <span class="concept-tag">T5</span>
+        <span class="concept-tag">original GPT-3</span>
+        <span class="concept-tag">LLaMA 1</span>
+        <span class="concept-tag">Falcon</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://openai.com/index/better-language-models/" target="_blank" rel="noopener">Radford et al. 2019 — GPT-2 paper</a>
+        <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Brown et al. 2020 — GPT-3 paper</a>
+      </div>
+    </div>
+
+    <div class="topic" id="moe">
+      <h3>Mixture of Experts (MoE)</h3>
+      <p class="topic-sub">Routing &amp; efficiency</p>
+      <p>Now dominant at the frontier. Instead of one large neural network, MoE models have many smaller "expert" networks and a <strong>router</strong> that decides which 2–4 experts should handle each token. You get the total capacity of a very large model while only activating a fraction of parameters per token.</p>
+      <p>Mixtral 8x7B (Mistral AI) has 46.7B total parameters but only activates ~12.9B per token — similar inference cost to a 13B dense model but with much higher knowledge capacity. <strong>GPT-4</strong> is widely believed to be an MoE model (never confirmed by OpenAI). <strong>DeepSeek V3</strong> uses MoE with 671B total but only ~37B active parameters per token.</p>
+      <div class="concepts">
+        <span class="concepts-label">Examples</span>
+        <span class="concept-tag">Mixtral 8x7B</span>
+        <span class="concept-tag">GPT-4 (believed MoE)</span>
+        <span class="concept-tag">Qwen 3.5</span>
+        <span class="concept-tag">DeepSeek V3</span>
+        <span class="concept-tag">Switch Transformer</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2401.04088" target="_blank" rel="noopener">Jiang et al. 2024 — Mixtral of Experts paper</a>
+        <a href="https://arxiv.org/abs/2101.03961" target="_blank" rel="noopener">Fedus et al. 2021 — Switch Transformer</a>
+      </div>
+    </div>
+
+    <div class="topic" id="reasoning">
+      <h3>Reasoning models</h3>
+      <p class="topic-sub">o1, o3, DeepSeek R1</p>
+      <p>A different paradigm: rather than generating an answer immediately, the model produces a long internal "chain of thought" — working through the problem step by step before giving its final answer. This dramatically improves performance on mathematics, logic, and complex coding problems at the cost of being slower and more expensive to run.</p>
+      <p>OpenAI's <strong>o1</strong> (September 2024) and <strong>o3</strong> were the first widely deployed reasoning models. <strong>DeepSeek R1</strong> (January 2025) shocked the industry by matching o1's benchmark performance at a fraction of the training cost — reportedly ~$6M vs hundreds of millions.</p>
+      <div class="concepts">
+        <span class="concepts-label">Examples</span>
+        <span class="concept-tag">OpenAI o1</span>
+        <span class="concept-tag">OpenAI o3</span>
+        <span class="concept-tag">DeepSeek R1</span>
+        <span class="concept-tag">Gemini Thinking</span>
+        <span class="concept-tag">QwQ-32B</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://openai.com/index/openai-o1-system-card/" target="_blank" rel="noopener">OpenAI — o1 System Card</a>
+        <a href="https://github.com/deepseek-ai/DeepSeek-R1" target="_blank" rel="noopener">DeepSeek — DeepSeek-R1 Technical Report</a>
+      </div>
+    </div>
+
+    <div class="topic" id="openai">
+      <h3>OpenAI model family</h3>
+      <p class="topic-sub">GPT-4o, o1, o3</p>
+      <p><strong>GPT-4o</strong> ("omni") — the most widely used commercial model as of 2024–25. Fast, natively multimodal (text, images, and audio processed together), available via ChatGPT and API.</p>
+      <p><strong>o1 / o3</strong> — reasoning-first models that produce internal chain-of-thought before answering. Dramatically better at maths and complex logic. Slower and more expensive. o3 is the current frontier reasoning model.</p>
+      <p><strong>GPT-4.1</strong> — the most recent in the GPT-4 family as of early 2026, optimised for instruction following and long-context coding tasks.</p>
+      <div class="concepts">
+        <span class="concepts-label">Models</span>
+        <span class="concept-tag">GPT-4o</span>
+        <span class="concept-tag">o1</span>
+        <span class="concept-tag">o3</span>
+        <span class="concept-tag">GPT-4.1</span>
+        <span class="concept-tag">ChatGPT</span>
+        <span class="concept-tag">DALL-E 3</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2303.08774" target="_blank" rel="noopener">OpenAI — GPT-4 Technical Report</a>
+        <a href="https://platform.openai.com/docs/models" target="_blank" rel="noopener">OpenAI — Models overview</a>
+      </div>
+    </div>
+
+    <div class="topic" id="anthropic">
+      <h3>Anthropic — Claude models</h3>
+      <p class="topic-sub">Constitutional AI</p>
+      <p>Anthropic was co-founded in 2021 by former OpenAI researchers with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, a 200K context window, and strong coding ability.</p>
+      <p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p>
+      <div class="concepts">
+        <span class="concepts-label">Models</span>
+        <span class="concept-tag">Claude 3.5 Sonnet</span>
+        <span class="concept-tag">Claude 3 Opus</span>
+        <span class="concept-tag">Constitutional AI</span>
+        <span class="concept-tag">claude.ai</span>
+        <span class="concept-tag">Anthropic API</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2212.08073" target="_blank" rel="noopener">Bai et al. 2022 — Constitutional AI paper</a>
+        <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Anthropic — Claude Model Card</a>
+      </div>
+    </div>
+
+    <div class="topic" id="google">
+      <h3>Google DeepMind — Gemini</h3>
+      <p class="topic-sub">Gemini 2.0 family</p>
+      <p>Google's frontier model family, built natively multimodal from the ground up — text, images, audio, and video are treated as equal inputs rather than text being primary with vision bolted on as a separate module.</p>
+      <p><strong>Gemini 2.0 Flash</strong> is notably fast and cost-efficient, widely used in production applications. Google has extended Gemini to a <strong>1 million token context window</strong> — enough to process entire large codebases or long books in a single prompt. Gemini powers Google Search AI Overviews and deep Workspace integrations.</p>
+      <div class="concepts">
+        <span class="concepts-label">Models</span>
+        <span class="concept-tag">Gemini 2.0 Flash</span>
+        <span class="concept-tag">Gemini 2.0 Pro</span>
+        <span class="concept-tag">1M token context</span>
+        <span class="concept-tag">Google AI Studio</span>
+        <span class="concept-tag">Vertex AI</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2312.11805" target="_blank" rel="noopener">Google DeepMind — Gemini Technical Report</a>
+        <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a>
+      </div>
+    </div>
+
+    <div class="topic" id="open-models">
+      <h3>Open weight models</h3>
+      <p class="topic-sub">Llama · Mistral · DeepSeek</p>
+      <p><strong>Meta Llama 3</strong> — fully open weights. Llama 3.3 70B is exceptional for its size and highly competitive with closed models. Being open enables the entire Ollama ecosystem.</p>
+      <p><strong>Mistral AI</strong> (France) — punches above its weight. Mistral 7B outperformed much larger models at launch (2023). Mixtral 8x7B is a landmark open MoE model.</p>
+      <p><strong>DeepSeek</strong> (China) — shocked the world with R1 in January 2025, matching OpenAI o1 for ~$6M training cost. DeepSeek V3 is an exceptional open MoE model. <strong>Qwen</strong> (Alibaba) and <strong>Gemma</strong> (Google) round out the major open families.</p>
+      <div class="concepts">
+        <span class="concepts-label">Models</span>
+        <span class="concept-tag">Llama 3.3 70B</span>
+        <span class="concept-tag">Mistral Large</span>
+        <span class="concept-tag">Mixtral 8x7B</span>
+        <span class="concept-tag">DeepSeek V3</span>
+        <span class="concept-tag">Qwen 3.5</span>
+        <span class="concept-tag">Gemma 3</span>
+        <span class="concept-tag">Phi-4</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://github.com/meta-llama/llama3" target="_blank" rel="noopener">Meta — Llama 3 GitHub</a>
+        <a href="https://mistral.ai/news/" target="_blank" rel="noopener">Mistral AI — Model releases</a>
+        <a href="https://github.com/deepseek-ai/DeepSeek-V3" target="_blank" rel="noopener">DeepSeek — DeepSeek-V3 Technical Report</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PROMPTING
+  ══════════════════════════════════ -->
+  <div class="section-group">
+    <div class="section-header">
+      <h2>Prompting Techniques</h2>
+      <span class="section-tag">Prompting</span>
+    </div>
+    <p class="section-intro">Prompting is often underrated as a skill, but technique has a massive effect on output quality — arguably more impact than switching between similar-sized models. The model has the capability; your job is to activate it precisely. Key principles: be specific about context and goal; specify format explicitly; give the model a role; and use examples.</p>
+
+    <div class="topic" id="cot">
+      <h3>Chain of thought prompting</h3>
+      <p class="topic-sub">Step-by-step reasoning</p>
+      <p>One of the most powerful prompting techniques. Adding "let's think step by step" or "think through this carefully before answering" to a prompt measurably improves performance on reasoning tasks, even in standard (non-reasoning) models.</p>
+      <p>You force the model to generate intermediate reasoning tokens before its conclusion — those intermediate tokens become part of its context, influencing the final answer. Works particularly well for maths, logic, multi-step planning, and complex decision-making.</p>
+      <p>Reasoning models (OpenAI o1, DeepSeek R1) essentially do chain-of-thought automatically and at greater depth, running hundreds or thousands of reasoning tokens internally before producing their visible response.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Zero-shot CoT</span>
+        <span class="concept-tag">Tree of Thoughts</span>
+        <span class="concept-tag">Self-consistency</span>
+        <span class="concept-tag">ReAct prompting</span>
+        <span class="concept-tag">Scratchpad</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener">Wei et al. 2022 — Chain-of-Thought Prompting paper</a>
+        <a href="https://arxiv.org/abs/2305.10601" target="_blank" rel="noopener">Yao et al. 2023 — Tree of Thoughts paper</a>
+      </div>
+    </div>
+
+    <div class="topic" id="fewshot">
+      <h3>Few-shot prompting</h3>
+      <p class="topic-sub">Examples in context</p>
+      <p>Providing examples before your actual request so the model extrapolates the pattern. Rather than "classify this email: [email]", you provide two or three labelled examples first, then your actual input.</p>
+      <p>Especially powerful for: specific output formats, classification tasks, style matching, and any task where showing is clearer than telling. The model doesn't need to be retrained — it pattern-matches from examples in its context window alone. This is called in-context learning, and it was one of the surprising capabilities that emerged from large-scale pre-training.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Zero-shot (no examples)</span>
+        <span class="concept-tag">One-shot (1 example)</span>
+        <span class="concept-tag">Few-shot (2–5 examples)</span>
+        <span class="concept-tag">In-context learning</span>
+        <span class="concept-tag">Format matching</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Brown et al. 2020 — GPT-3 and few-shot learning</a>
+        <a href="https://arxiv.org/abs/2202.12837" target="_blank" rel="noopener">Min et al. 2022 — Rethinking Role of Demonstrations</a>
+      </div>
+    </div>
+
+    <div class="topic" id="system-prompt">
+      <h3>System prompts</h3>
+      <p class="topic-sub">Frames model behaviour</p>
+      <p>The invisible instructions that frame the entire conversation. Every commercial AI product — Claude.ai, ChatGPT, Gemini, Copilot — has a system prompt you don't see that shapes how the model behaves: its persona, what it will and won't do, its output style, and its focus area.</p>
+      <p>When you use the Ollama API, OpenAI API, or Anthropic API directly, you control this fully via the "system" message role. A well-designed system prompt can transform a general model into a focused specialist. "You are a senior contract lawyer reviewing clauses for liability" genuinely shifts outputs toward that expertise domain by activating relevant training patterns.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">OpenAI API "system" role</span>
+        <span class="concept-tag">Ollama Modelfile</span>
+        <span class="concept-tag">Anthropic system param</span>
+        <span class="concept-tag">Persona assignment</span>
+        <span class="concept-tag">Role prompting</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank" rel="noopener">OpenAI — Prompt Engineering Guide</a>
+        <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts" target="_blank" rel="noopener">Anthropic — System prompts guide</a>
+      </div>
+    </div>
+
+    <div class="topic" id="rag">
+      <h3>RAG — Retrieval Augmented Generation</h3>
+      <p class="topic-sub">Retrieval augmented generation</p>
+      <p>Rather than asking the model to recall information from training (unreliable for specific facts), RAG retrieves relevant documents first and injects them into the context window: "Here are relevant sections from these documents. Based only on this, answer: [question]."</p>
+      <p>This is how Perplexity, Microsoft Copilot in Word, and many document tools work. It dramatically reduces hallucination for factual tasks and allows the model to answer questions about content it was never trained on — your private documents, recent news, internal company data.</p>
+      <p>The key components are: a <strong>vector database</strong> (to store document chunks as embeddings), an <strong>embedding model</strong> (to convert query and chunks to vectors for similarity matching), and a <strong>retrieval step</strong> (to find the most relevant chunks before calling the LLM).</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Vector database</span>
+        <span class="concept-tag">LlamaIndex</span>
+        <span class="concept-tag">LangChain</span>
+        <span class="concept-tag">Pinecone</span>
+        <span class="concept-tag">pgvector</span>
+        <span class="concept-tag">Chroma</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">Lewis et al. 2020 — Retrieval-Augmented Generation paper</a>
+        <a href="https://docs.llamaindex.ai" target="_blank" rel="noopener">LlamaIndex documentation</a>
+      </div>
+    </div>
+
+    <div class="topic" id="context-window">
+      <h3>Context window</h3>
+      <p class="topic-sub">128K–1M tokens</p>
+      <p>The maximum amount of text an LLM can "see" at once — its working memory for a single conversation or task. Everything outside the context window is invisible to the model. This is why LLMs have no memory between conversations unless memory is explicitly managed.</p>
+      <p>Context window sizes have grown dramatically: GPT-4o has 128K tokens. Claude 3.5 has 200K. Gemini 1.5 Pro reached 1 million tokens. As context windows grow, the line between "prompting" and "giving the model all relevant information" increasingly blurs — you can now feed entire codebases or books in a single prompt.</p>
+      <p>1 token ≈ 0.75 words, so 128K tokens ≈ a novel-length document. However, model quality degrades in the middle of very long contexts — the "lost in the middle" problem.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key facts</span>
+        <span class="concept-tag">GPT-4o: 128K</span>
+        <span class="concept-tag">Claude 3.5: 200K</span>
+        <span class="concept-tag">Gemini Pro: 1M</span>
+        <span class="concept-tag">Qwen 3.5: 256K</span>
+        <span class="concept-tag">Lost in the middle</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">Liu et al. 2023 — Lost in the Middle paper</a>
+        <a href="https://arxiv.org/abs/2403.05530" target="_blank" rel="noopener">Google — Gemini 1.5 long context</a>
+      </div>
+    </div>
+
+    <div class="topic" id="injection">
+      <h3>Prompt injection attacks</h3>
+      <p class="topic-sub">Security &amp; safety</p>
+      <p>A security risk in AI-powered systems. If an LLM processes untrusted external content — emails, web pages, documents, database entries — that content can contain hidden instructions designed to hijack the model's behaviour.</p>
+      <p><strong>Indirect prompt injection</strong> is particularly dangerous: the attack payload is hidden in content the model retrieves autonomously — a web page the agent visits, a PDF it reads — not in the user's direct input. This is a genuine attack vector in production AI systems, distinct from jailbreaking.</p>
+      <p>Why it's hard to fix: the model fundamentally cannot distinguish between trusted instructions and untrusted injected data if both appear in the same context window as text.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Indirect injection</span>
+        <span class="concept-tag">Direct jailbreak</span>
+        <span class="concept-tag">Data exfiltration</span>
+        <span class="concept-tag">Agent hijacking</span>
+        <span class="concept-tag">LLM firewall</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2302.12173" target="_blank" rel="noopener">Greshake et al. 2023 — Not What You've Signed Up For</a>
+        <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" rel="noopener">OWASP — LLM Top 10 Security Risks</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       BROADER THEMES
+  ══════════════════════════════════ -->
+  <div class="section-group">
+    <div class="section-header">
+      <h2>Broader Themes</h2>
+      <span class="section-tag">Context</span>
+    </div>
+
+    <div class="topic" id="open-closed">
+      <h3>Open vs closed models</h3>
+      <p class="topic-sub">Weights, access, safety</p>
+      <p><strong>Closed models</strong> (GPT-4, Claude, Gemini) — the weights are never released. You can only access them via API at per-token cost. Labs argue this is necessary for safety and commercial sustainability.</p>
+      <p><strong>Open weights</strong> (Llama 3, Mistral, Qwen, DeepSeek) — the actual model file is publicly downloadable. Anyone can run, inspect, study, or fine-tune it. This is what makes Ollama and local AI possible. "Open weights" is subtly different from "open source" — Meta releases Llama's weights but not always all training code or data.</p>
+      <p><strong>Fully open source</strong> (rare) — weights + training code + training data all released. EleutherAI's models and Pythia qualify. Enables full scientific reproducibility.</p>
+      <div class="concepts">
+        <span class="concepts-label">Examples</span>
+        <span class="concept-tag">Meta Llama (open weights)</span>
+        <span class="concept-tag">Mistral (open weights)</span>
+        <span class="concept-tag">EleutherAI GPT-NeoX</span>
+        <span class="concept-tag">Hugging Face</span>
+        <span class="concept-tag">AI2 OLMo</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://arxiv.org/abs/2310.04869" target="_blank" rel="noopener">Bommasani et al. 2023 — Considerations for open foundation models</a>
+        <a href="https://www.eleuther.ai" target="_blank" rel="noopener">EleutherAI — Open source LLM work</a>
+      </div>
+    </div>
+
+    <div class="topic" id="safety">
+      <h3>Safety &amp; alignment</h3>
+      <p class="topic-sub">Hallucination, bias, risk</p>
+      <p><strong>Alignment</strong> is the problem of ensuring AI systems do what humans actually want, not just what they were literally instructed to do at training time. <strong>Safety</strong> is the broader challenge of ensuring AI systems don't cause harm as they become more capable.</p>
+      <p><strong>Hallucination</strong> — where models generate plausible-sounding but false information — is the most common practical safety concern. It occurs because models are pattern-matchers, not fact-databases. RAG, grounding with tool use, and output verification all help.</p>
+      <p><strong>Bias</strong> — models can reflect and amplify biases present in training data. This is an active area of research and the subject of significant regulatory attention globally. Anthropic was founded specifically around AI safety research and their "responsible scaling policy" commits to safety evaluations before deploying more capable models.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">Constitutional AI</span>
+        <span class="concept-tag">RLHF</span>
+        <span class="concept-tag">Red-teaming</span>
+        <span class="concept-tag">Scalable oversight</span>
+        <span class="concept-tag">Mechanistic interpretability</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://www.anthropic.com/news/core-views-on-ai-safety" target="_blank" rel="noopener">Anthropic — Core Views on AI Safety</a>
+        <a href="https://dl.acm.org/doi/10.1145/3442188.3445922" target="_blank" rel="noopener">Bender et al. 2021 — Stochastic Parrots paper</a>
+        <a href="https://arxiv.org/abs/2211.03540" target="_blank" rel="noopener">Bowman et al. 2022 — Measuring Progress on Scalable Oversight</a>
+      </div>
+    </div>
+
+    <div class="topic" id="hardware">
+      <h3>Hardware &amp; infrastructure</h3>
+      <p class="topic-sub">GPUs, CUDA, H100</p>
+      <p>LLMs run on <strong>GPUs</strong> — Graphics Processing Units — because their architecture is optimised for the massively parallel matrix multiplications that neural networks require. NVIDIA dominates the training hardware market, with the <strong>H100</strong> being the current standard chip for frontier model training. Each H100 costs around $30,000 USD and frontier training runs use tens of thousands of them.</p>
+      <p><strong>CUDA</strong> is NVIDIA's programming platform that makes GPUs accessible to AI frameworks like PyTorch. For local inference, <strong>llama.cpp</strong> enables running quantised models on consumer hardware — including Apple Silicon Macs via the Metal Performance Shaders (MPS) backend. Quantisation reduces model precision from 32-bit to 4-bit or 8-bit floats, reducing memory requirements ~8x with modest quality loss.</p>
+      <div class="concepts">
+        <span class="concepts-label">Key concepts</span>
+        <span class="concept-tag">NVIDIA H100</span>
+        <span class="concept-tag">A100</span>
+        <span class="concept-tag">CUDA platform</span>
+        <span class="concept-tag">Google TPU</span>
+        <span class="concept-tag">llama.cpp</span>
+        <span class="concept-tag">GGUF format</span>
+        <span class="concept-tag">Apple Metal (MPS)</span>
+      </div>
+      <div class="sources">
+        <p class="sources-label">Sources</p>
+        <a href="https://www.nvidia.com/en-us/data-center/h100/" target="_blank" rel="noopener">NVIDIA — H100 GPU Overview</a>
+        <a href="https://github.com/ggerganov/llama.cpp" target="_blank" rel="noopener">llama.cpp GitHub</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<div class="cta-band">
+  <h2>Explore the interactive mind map</h2>
+  <p>Navigate all these concepts visually — click any node to expand and explore deeper explanations.</p>
+  <a href="/" class="cta-btn">Open the mind map →</a>
+</div>
+
+<footer>
+  <p><a href="/">LLMs 101</a> · <a href="/guide">Full guide</a> · <a href="mailto:llms.101.contact@gmail.com">Contact</a></p>
+</footer>
+
+</body>
+</html>
