@@ -5,5 +5,12 @@
     "category": "Model Update",
     "summary": "The shift from \"AI that answers questions\" to \"AI that completes tasks\" is the biggest structural change in how we use these tools. Here's what changed, why it matters, and what it means for how you work.",
     "slug": "agentic-ai-explained"
+  },
+  {
+    "title": "Why AI Prices Have Dropped 100x in Two Years",
+    "date": "2026-05-01T00:00:00.000Z",
+    "category": "Explainer",
+    "summary": "The cost of running frontier AI has fallen faster than almost any technology in computing history. GPT-3's 2020 pricing would cost roughly $20 for the same task that costs $0.002 today. Here's what drove it and what it changes.",
+    "slug": "ai-cost-collapse"
   }
 ]
