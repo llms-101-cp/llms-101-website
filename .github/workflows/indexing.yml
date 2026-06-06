@@ -8,7 +8,6 @@ on:
       - 'content/articles/**'
       - 'content/reports/**'
 
-# This block forces GitHub to give the execution runner full write privileges 
 permissions:
   contents: write
 
@@ -20,7 +19,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: main # Explicitly targets your main branch
+          ref: main
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,16 +30,19 @@ jobs:
       - name: Run Index Generator
         run: node scripts/generate-indices.js
 
-      - name: Check for Changes
-        id: git-check
-        run: |
-          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
-
+      # ── FORCE COMMIT AND PUSH LAYER ──
+      # We removed the conditional check so this step runs NO MATTER WHAT
+       Kakao
       - name: Commit and Push Indexes
-        if: steps.git-check.outputs.changes == 'true'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Stage the freshly generated index files
           git add content/articles_index.json content/reports_index.json
-          git commit -m "chore: auto-regenerate content indexes"
+          
+          # Commit the files. If git complains there are no changes, || exit 0 lets it pass gracefully
+          git commit -m "chore: auto-regenerate content indexes" || echo "No structural changes to commit"
+          
+          # Force the push straight into your main branch line
           git push origin main
