@@ -98,3 +98,33 @@ collections:
             widget: "color"
             required: false
             hint: "Overrides the dark brown/accent colors."
+
+  - name: "articles"
+    label: "Articles & Model Updates"
+    folder: "content/articles"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "date" }
+      - { label: "Category", name: "category", widget: "select", options: ["Article", "Model Update", "Deep Dive"] }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Summary Paragraph", name: "summary", widget: "text" }
+      - { label: "Body Content (Markdown allowed)", name: "body", widget: "markdown" }
+
+  - name: "reports"
+    label: "Quarterly Reports"
+    folder: "content/reports"
+    create: true
+    slug: "{{year}}-q{{quarter}}-report"
+    extension: "json"
+    format: "json"
+    fields:
+      - { label: "Report Title", name: "title", widget: "string" }
+      - { label: "Fiscal Year", name: "year", widget: "number" }
+      - { label: "Quarter (1-4)", name: "quarter", widget: "number" }
+      - { label: "Executive Summary", name: "summary", widget: "text" }
+      - { label: "Attach PDF Report", name: "pdf", widget: "file", required: false }
+      - { label: "Raw JSON Financial Data (Optional)", name: "chartData", widget: "text", required: false, hint: "Paste raw data structure here to directly feed Chart.js layouts on the frontend." }
