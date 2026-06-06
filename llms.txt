@@ -1,0 +1,49 @@
+# LLMs 101
+
+> A free interactive mind map, plain-English guide, model directory, monthly tracker, and trends hub for large language models. Designed for anyone — technical or not — who wants to understand modern AI.
+
+## Core pages
+
+- [Mind Map](https://llms101.com/): Interactive mind map covering mathematics, training, model architectures, and prompting techniques. Click any node to expand deeper explanations with citations to primary research papers.
+- [Full Guide](https://llms101.com/guide): Every mind map topic rendered as crawlable plain HTML — 27 topics across 5 sections including linear algebra, self-attention, RLHF, DPO, MoE architectures, RAG, and AI safety.
+- [Model Directory](https://llms101.com/models): Superpower and trade-off profiles for every major frontier AI model family — OpenAI, Anthropic, Google, Meta, DeepSeek, Mistral. Plain English, no benchmarks.
+- [Model Tracker](https://llms101.com/tracker): Monthly updated human preference rankings and cost tier guide for frontier models. Based on Chatbot Arena Elo data with plain-English interpretation.
+- [Trends](https://llms101.com/trends): Short plain-English explainers on the biggest shifts in AI — agentic workflows, cost collapse, reasoning models, open source developments. Published twice monthly.
+- [State of LLMs Q2 2026](https://llms101.com/trends/state-of-llms-q2-2026): Flagship quarterly report covering model landscape, top trends, and what non-technical professionals need to know.
+- [AI for Beginners](https://llms101.com/): Plain-English explanations of foundational AI concepts — what AI is, what LLMs are, how ChatGPT works, what tokens and hallucinations mean.
+- [Learning Resources](https://llms101.com/): Curated list of the best free courses, papers, and tools for learning about LLMs.
+
+## Key topics covered
+
+- What is a Large Language Model (LLM)
+- Transformer architecture and the attention mechanism
+- Tokenisation and context windows
+- Pre-training, fine-tuning, RLHF, DPO, and synthetic data
+- Model families: GPT, Claude, Gemini, LLaMA, Mistral, DeepSeek, Qwen
+- Mixture of Experts (MoE) architecture
+- Reasoning models: OpenAI o1/o3, DeepSeek R1
+- Prompt engineering: zero-shot, few-shot, chain-of-thought, RAG
+- Agentic AI workflows
+- AI cost collapse and pricing trends
+- Open vs closed weight models
+- AI hallucination, bias, and safety
+- Running AI locally with Ollama
+
+## Quarterly reports
+
+- Q2 2026: https://llms101.com/trends/state-of-llms-q2-2026
+- Q1 2026: https://llms101.com/trends/state-of-llms-q1-2026
+- Q4 2025: https://llms101.com/trends/state-of-llms-q4-2025
+
+## Primary sources cited
+
+- Vaswani et al. 2017 — "Attention Is All You Need": https://arxiv.org/abs/1706.03762
+- Brown et al. 2020 — "Language Models are Few-Shot Learners" (GPT-3): https://arxiv.org/abs/2005.14165
+- Ouyang et al. 2022 — "Training language models to follow instructions" (RLHF): https://arxiv.org/abs/2203.02155
+- Rafailov et al. 2023 — "Direct Preference Optimization" (DPO): https://arxiv.org/abs/2305.18290
+- Jiang et al. 2024 — "Mixtral of Experts": https://arxiv.org/abs/2401.04088
+- DeepSeek 2025 — "DeepSeek-R1": https://github.com/deepseek-ai/DeepSeek-R1
+
+## Contact
+
+llms.101.contact@gmail.com
