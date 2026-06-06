@@ -30,9 +30,6 @@ jobs:
       - name: Run Index Generator
         run: node scripts/generate-indices.js
 
-      # ── FORCE COMMIT AND PUSH LAYER ──
-      # We removed the conditional check so this step runs NO MATTER WHAT
-       Kakao
       - name: Commit and Push Indexes
         run: |
           git config --global user.name 'github-actions[bot]'
@@ -41,8 +38,8 @@ jobs:
           # Stage the freshly generated index files
           git add content/articles_index.json content/reports_index.json
           
-          # Commit the files. If git complains there are no changes, || exit 0 lets it pass gracefully
+          # Commit the changes gracefully
           git commit -m "chore: auto-regenerate content indexes" || echo "No structural changes to commit"
           
-          # Force the push straight into your main branch line
+          # Push changes directly back to your main branch
           git push origin main
