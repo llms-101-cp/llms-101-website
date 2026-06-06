@@ -1,50 +1,29 @@
 const fs = require('fs');
 const path = require('path');
 
-// Helper function to dynamically find a folder matching names case-insensitively
-function findFolderCaseInsensitive(basePath, targetName) {
-  if (!fs.existsSync(basePath)) return null;
-  const currentItems = fs.readdirSync(basePath);
-  const match = currentItems.find(item => item.toLowerCase() === targetName.toLowerCase());
-  return match ? path.join(basePath, match) : null;
-}
+function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
+  // process.cwd() forces Node to look exactly at the root repository directory in GitHub Actions
+  const repoRoot = process.cwd();
+  const collectionPath = path.join(repoRoot, 'content', collectionFolder);
+  const destination = path.join(repoRoot, 'content', outputFileName);
 
-function buildIndex(collectionName, outputName, sortKey, reverse = true) {
-  const rootDir = path.join(__dirname, '..');
-  
-  // 1. DYNAMICALLY FIND YOUR CONTENT FOLDER (Handles 'content', 'Content', etc.)
-  let contentPath = findFolderCaseInsensitive(rootDir, 'content');
-  
-  // Backup: Look inside 'Trends' folder just in case
-  if (!contentPath) {
-    const trendsPath = findFolderCaseInsensitive(rootDir, 'trends');
-    if (trendsPath) {
-      contentPath = findFolderCaseInsensitive(trendsPath, 'content') || trendsPath;
-    }
-  }
+  console.log(`Targeting collection path: ${collectionPath}`);
+  console.log(`Targeting destination path: ${destination}`);
 
-  if (!contentPath) {
-    console.error("Could not find a content folder anywhere in the repository root!");
-    return;
-  }
+  // Ensure destination directory structural path exists
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
 
-  // 2. DYNAMICALLY FIND YOUR COLLECTION FOLDER (Handles 'articles', 'Articles', etc.)
-  const collectionPath = findFolderCaseInsensitive(contentPath, collectionName);
-  const destination = path.join(contentPath, outputName);
-
-  // If the folder doesn't exist yet, write an empty index list and exit gracefully
-  if (!collectionPath || !fs.existsSync(collectionPath)) {
-    console.log(`Collection folder for "${collectionName}" not found. Writing empty fallback array.`);
+  if (!fs.existsSync(collectionPath)) {
+    console.log(`Directory not found: ${collectionPath}. Creating empty fallback index.`);
     fs.writeFileSync(destination, JSON.stringify([], null, 2));
     return;
   }
 
-  // 3. READ AND PARSE JON FILES
   const files = fs.readdirSync(collectionPath);
   const indexData = [];
 
   files.forEach(file => {
-    if (path.extname(file) === '.json') {
+    if (path.extname(file) === '.json' && file !== outputFileName) {
       const filePath = path.join(collectionPath, file);
       const rawContent = fs.readFileSync(filePath, 'utf8');
       
@@ -59,18 +38,17 @@ function buildIndex(collectionName, outputName, sortKey, reverse = true) {
     }
   });
 
-  // Sort chronological data array elements
+  // Chronological sort matrix
   indexData.sort((a, b) => {
     const valA = a[sortKey] || '';
     const valB = b[sortKey] || '';
     return reverse ? (valB > valA ? 1 : -1) : (valA > valB ? 1 : -1);
   });
 
-  // Write compiled data cleanly back to the branch tree
   fs.writeFileSync(destination, JSON.stringify(indexData, null, 2));
-  console.log(`Successfully generated index feed at ${destination} (${indexData.length} entries)`);
+  console.log(`Successfully generated index feed. Saved ${indexData.length} entries.`);
 }
 
-// Fire index builds safely across both tracks
+// Fire index builds matching your verified lowercase content folder keys
 buildIndex('articles', 'articles_index.json', 'date', true);
 buildIndex('reports', 'reports_index.json', 'year', true);
