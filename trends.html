@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Trends — Plain-English Explainers · LLMs 101</title>
+<meta name="description" content="Short, plain-English explainers on the biggest shifts in AI — written for non-technical readers. Understand agentic AI, reasoning models, the cost collapse, and more without needing a technical background.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://llms101.com/trends">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://llms101.com/trends">
+<meta property="og:title" content="AI Trends — Plain-English Explainers · LLMs 101">
+<meta property="og:description" content="Short, plain-English explainers on the biggest shifts in AI — agentic AI, reasoning models, the cost collapse, and more. No jargon. No technical background needed.">
+<meta property="og:image" content="https://llms101.com/og-image.png">
+<meta property="og:site_name" content="LLMs 101">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Trends — Plain-English Explainers · LLMs 101">
+<meta name="twitter:image" content="https://llms101.com/og-image.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/favicon-192.png">
+<link rel="alternate" type="application/rss+xml" title="LLMs 101 Trends" href="/trends/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "LLMs 101 Trends",
+  "description": "Plain-English explainers on the biggest shifts in AI — written for non-technical readers.",
+  "url": "https://llms101.com/trends",
+  "isPartOf": {"@type":"WebSite","url":"https://llms101.com/","name":"LLMs 101"},
+  "inLanguage": "en-US",
+  "blogPost": [
+    {
+      "@type": "BlogPosting",
+      "headline": "State of LLMs — Q2 2026",
+      "description": "A complete quarterly overview of the frontier AI landscape — which models lead, what shifted, what the key themes were, and what to watch next quarter.",
+      "url": "https://llms101.com/trends/state-of-llms-q2-2026",
+      "datePublished": "2026-06-01",
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "The Autonomous Agent Era — From Chatbots to AI That Gets Things Done",
+      "description": "What agentic AI actually means, why it matters more than any model release, and how the shift from chat to action changes everything.",
+      "url": "https://llms101.com/trends/agentic-ai-explained",
+      "datePublished": "2026-05-15",
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "BlogPosting",
+      "headline": "Why AI Prices Have Dropped 100x in Two Years",
+      "description": "The cost of running frontier AI has collapsed faster than almost any technology in history. Here is what drove it and what it means for you.",
+      "url": "https://llms101.com/trends/ai-cost-collapse",
+      "datePublished": "2026-05-01",
+      "isAccessibleForFree": true
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --brown:#3d2a18;--gold:#B8860B;--tan:#D2B48C;--cream:#FAF8F4;
+  --muted:#9a7a5e;--light:#F5EDD8;--border:rgba(184,134,11,.18);--white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:300;background:var(--cream);color:var(--brown);line-height:1.7;font-size:16px}
+
+header{position:sticky;top:0;z-index:100;background:rgba(250,248,244,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.site-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--brown);text-decoration:none;letter-spacing:.02em}
+.site-title span{color:var(--gold)}
+nav{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
+nav a{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:.3rem .7rem;border-radius:20px;transition:color .2s,background .2s}
+nav a:hover{color:var(--gold)}
+nav a.active{color:var(--brown);background:var(--light)}
+
+/* hero */
+.hero{padding:4.5rem 2rem 2.5rem;max-width:960px;margin:0 auto;text-align:center}
+.hero-eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:400;color:var(--brown);line-height:1.15;margin-bottom:1rem}
+.hero h1 span{color:var(--gold)}
+.hero-sub{font-size:.95rem;color:var(--muted);max-width:560px;margin:0 auto 1.5rem;line-height:1.75}
+.hero-rule{width:50px;height:2px;background:var(--gold);margin:0 auto}
+
+/* layout */
+.content-wrap{max-width:960px;margin:0 auto;padding:2.5rem 2rem 5rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;align-items:start}
+
+/* featured article */
+.featured{grid-column:1/-1;background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.featured-badge{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+.featured-badge::before{content:'';display:block;width:18px;height:2px;background:var(--gold)}
+.featured-left{padding:2.25rem 2.5rem;display:flex;flex-direction:column;justify-content:space-between}
+.featured-meta{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.featured-tag{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(184,134,11,.1);color:var(--gold);border:1px solid rgba(184,134,11,.25);padding:2px 10px;border-radius:20px}
+.featured-date{font-size:.72rem;color:var(--muted)}
+.featured h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:400;color:var(--brown);line-height:1.2;margin-bottom:.9rem}
+.featured-desc{font-size:.88rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem}
+.read-btn{display:inline-block;font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--brown);background:var(--light);border:1px solid var(--tan);text-decoration:none;padding:.55rem 1.25rem;border-radius:4px;transition:background .2s,color .2s;align-self:flex-start}
+.read-btn:hover{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.featured-right{background:var(--brown);padding:2.25rem 2rem;display:flex;flex-direction:column;gap:1.25rem}
+.featured-right-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tan)}
+.q-item{}
+.q-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--tan);margin-bottom:.3rem}
+.q-text{font-size:.85rem;color:var(--light);line-height:1.6;font-style:italic}
+
+/* articles grid */
+.articles{display:flex;flex-direction:column;gap:1rem}
+.articles-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+/* article card */
+.acard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.375rem;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s;animation:fadeUp .4s ease both}
+.acard:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(61,42,24,.08)}
+.acard:nth-child(2){animation-delay:.06s}
+.acard:nth-child(3){animation-delay:.12s}
+.acard:nth-child(4){animation-delay:.18s}
+.acard:nth-child(5){animation-delay:.24s}
+.acard-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.acard-tag{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px;border:1px solid}
+.tag-trend{color:#1a5c40;background:rgba(45,120,80,.08);border-color:rgba(45,120,80,.2)}
+.tag-explainer{color:#2a4a8a;background:rgba(30,80,180,.07);border-color:rgba(30,80,180,.2)}
+.tag-quarterly{color:var(--gold);background:rgba(184,134,11,.08);border-color:rgba(184,134,11,.25)}
+.tag-deep{color:#6a2a70;background:rgba(120,50,140,.07);border-color:rgba(120,50,140,.2)}
+.acard-date{font-size:.68rem;color:var(--muted)}
+.acard-read{font-size:.68rem;color:var(--tan)}
+.acard h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--brown);line-height:1.3;margin-bottom:.4rem}
+.acard-desc{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:.75rem}
+
+/* before/after inline preview */
+.ba-preview{background:rgba(250,248,244,.7);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ba-col-label{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem}
+.ba-col-label.old{color:var(--muted)}
+.ba-col-label.new{color:var(--gold)}
+.ba-text{font-size:.75rem;color:var(--brown);line-height:1.55}
+
+/* sidebar */
+.sidebar{display:flex;flex-direction:column;gap:1.25rem}
+.sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.sidebar-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--brown);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.sidebar-body{font-size:.8rem;color:var(--muted);line-height:1.65}
+.sidebar-body a{color:var(--gold);text-decoration:none}
+.sidebar-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.sidebar-list li{font-size:.78rem;color:var(--muted);display:flex;align-items:baseline;gap:.5rem;line-height:1.5}
+.sidebar-list li::before{content:'›';color:var(--gold);flex-shrink:0}
+.sidebar-list a{color:var(--brown);text-decoration:none;transition:color .2s}
+.sidebar-list a:hover{color:var(--gold)}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px}
+.tag-pill{font-size:.68rem;background:var(--cream);border:1px solid var(--border);color:var(--muted);padding:3px 10px;border-radius:20px;cursor:pointer;transition:all .2s;text-decoration:none}
+.tag-pill:hover{background:var(--brown);color:var(--light);border-color:var(--brown)}
+
+footer{background:var(--brown);color:var(--muted);text-align:center;padding:1.5rem 2rem;font-size:.78rem;letter-spacing:.04em}
+footer a{color:var(--gold);text-decoration:none}
+
+@media(max-width:700px){
+  header{padding:.75rem 1rem}
+  .hero{padding:3rem 1rem 1.5rem}
+  .content-wrap{grid-template-columns:1fr;padding:1.5rem 1rem 4rem}
+  .featured{grid-template-columns:1fr}
+  .featured-right{display:none}
+  .ba-preview{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="site-title"><span>LLMs</span> 101</a>
+  <nav>
+    <a href="/">Mind Map</a>
+    <a href="/guide">Full Guide</a>
+    <a href="/models">Models</a>
+    <a href="/tracker">Tracker</a>
+    <a href="/trends" class="active">Trends</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <p class="hero-eyebrow">Trends &amp; explainers</p>
+  <h1>What's actually happening<br><span>in AI right now</span></h1>
+  <p class="hero-sub">Short, plain-English explainers on the biggest shifts — written for people who want to understand AI without a technical background.</p>
+  <div class="hero-rule"></div>
+</div>
+
+<div class="content-wrap">
+
+  <!-- ── Featured: Quarterly Report ── -->
+  <div class="featured">
+    <div class="featured-left">
+      <div>
+        <div class="featured-badge">Flagship report</div>
+        <div class="featured-meta">
+          <span class="featured-tag">Quarterly</span>
+          <span class="featured-date">June 2026</span>
+        </div>
+        <h2>State of LLMs — Q2 2026</h2>
+        <p class="featured-desc">A complete quarterly overview of the frontier AI landscape. Which models now lead, what shifted this quarter, the three biggest trends shaping the next three months, and what a non-technical professional actually needs to know right now.</p>
+      </div>
+      <a href="/trends/state-of-llms-q2-2026" class="read-btn">Read the full report →</a>
+    </div>
+    <div class="featured-right">
+      <div class="featured-right-label">Q2 2026 — Key findings</div>
+      <div class="q-item">
+        <div class="q-label">Model of the quarter</div>
+        <div class="q-text">"Claude 4 Opus marks the clearest quality jump in long-form reasoning since GPT-4's original release."</div>
+      </div>
+      <div class="q-item">
+        <div class="q-label">Biggest trend</div>
+        <div class="q-text">"Agentic workflows crossed from experiment to production. AI is no longer just answering questions — it's completing tasks end-to-end."</div>
+      </div>
+      <div class="q-item">
+        <div class="q-label">To watch in Q3</div>
+        <div class="q-text">"Multimodal reasoning — models that see, hear, and read simultaneously — moves from demo to daily tool."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main article list ── -->
+  <div class="articles">
+    <div class="articles-label">Latest explainers</div>
+
+    <!-- Article 1: Agentic AI -->
+    <a class="acard" href="/trends/agentic-ai-explained">
+      <div class="acard-meta">
+        <span class="acard-tag tag-trend">Trend spotlight</span>
+        <span class="acard-date">15 May 2026</span>
+        <span class="acard-read">5 min read</span>
+      </div>
+      <h3>The Autonomous Agent Era — From Chatbots to AI That Gets Things Done</h3>
+      <p class="acard-desc">The shift from "AI that answers questions" to "AI that completes tasks" is the biggest structural change in how we use these tools. Here's what changed, why it matters, and what it means for how you work.</p>
+      <div class="ba-preview">
+        <div>
+          <div class="ba-col-label old">The old way</div>
+          <div class="ba-text">You type a prompt → AI gives you a text response → You copy it into a document → You look up the next fact yourself → Repeat.</div>
+        </div>
+        <div>
+          <div class="ba-col-label new">The new way</div>
+          <div class="ba-text">You give a single goal → AI plans 5 steps → searches the web → writes the content → checks its own facts → delivers a finished result.</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Article 2: Cost collapse -->
+    <a class="acard" href="/trends/ai-cost-collapse">
+      <div class="acard-meta">
+        <span class="acard-tag tag-explainer">Explainer</span>
+        <span class="acard-date">1 May 2026</span>
+        <span class="acard-read">4 min read</span>
+      </div>
+      <h3>Why AI Prices Have Dropped 100x in Two Years</h3>
+      <p class="acard-desc">The cost of running frontier AI has fallen faster than almost any technology in computing history. GPT-3's 2020 pricing would cost roughly $20 for the same task that costs $0.002 today. Here's what drove it and what it changes.</p>
+      <div class="ba-preview">
+        <div>
+          <div class="ba-col-label old">2023 pricing</div>
+          <div class="ba-text">Processing 1 million words via GPT-4 cost roughly $60. Meaningful AI use was expensive enough to require budget approval.</div>
+        </div>
+        <div>
+          <div class="ba-col-label new">2026 pricing</div>
+          <div class="ba-text">The same 1 million words now costs under $1 on most frontier models. At DeepSeek rates: under $0.15. AI cost is now negligible for most tasks.</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Article 3: Reasoning models -->
+    <a class="acard" href="/trends/reasoning-models-explained">
+      <div class="acard-meta">
+        <span class="acard-tag tag-explainer">Explainer</span>
+        <span class="acard-date">15 April 2026</span>
+        <span class="acard-read">4 min read</span>
+      </div>
+      <h3>Why Every Major AI Now Has a "Thinking" Mode</h3>
+      <p class="acard-desc">OpenAI's o1, Claude's extended thinking, Gemini's deep research, DeepSeek R1 — every frontier model now offers a slower, more deliberate mode that reasons through problems before answering. What is it actually doing?</p>
+      <div class="ba-preview">
+        <div>
+          <div class="ba-col-label old">Standard mode</div>
+          <div class="ba-text">Model reads your prompt → immediately predicts the most likely response token by token → delivers answer in seconds. Fast, fluent, occasionally wrong.</div>
+        </div>
+        <div>
+          <div class="ba-col-label new">Reasoning mode</div>
+          <div class="ba-text">Model generates hundreds of "thinking" tokens working through the problem step by step before producing its final answer. Slower. Dramatically more accurate on hard problems.</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Article 4: DeepSeek -->
+    <a class="acard" href="/trends/deepseek-r1-what-it-proved">
+      <div class="acard-meta">
+        <span class="acard-tag tag-deep">Deep dive</span>
+        <span class="acard-date">1 April 2026</span>
+        <span class="acard-read">6 min read</span>
+      </div>
+      <h3>What DeepSeek R1 Actually Proved — And Why It Shook the Industry</h3>
+      <p class="acard-desc">In January 2025, a Chinese lab released an AI model that matched OpenAI's best reasoning model — reportedly trained for $6 million, versus hundreds of millions. The AI industry had a week-long panic. Here's what actually happened and why it matters.</p>
+      <div class="ba-preview">
+        <div>
+          <div class="ba-col-label old">The assumption before R1</div>
+          <div class="ba-text">Frontier AI required hundreds of millions in compute. Only a handful of well-capitalised Western labs could compete at the top. The moat was hardware access.</div>
+        </div>
+        <div>
+          <div class="ba-col-label new">After R1</div>
+          <div class="ba-text">Algorithmic efficiency can substitute for raw compute. The training cost advantage was real. The frontier is more reachable than anyone assumed. The moat is narrowing.</div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Article 5: Context windows -->
+    <a class="acard" href="/trends/context-window-arms-race">
+      <div class="acard-meta">
+        <span class="acard-tag tag-explainer">Explainer</span>
+        <span class="acard-date">15 March 2026</span>
+        <span class="acard-read">3 min read</span>
+      </div>
+      <h3>The Context Window Arms Race — What 1 Million Tokens Actually Means</h3>
+      <p class="acard-desc">Gemini reached a 1 million token context window. Claude supports 200,000. Even the smallest models now handle book-length documents. What changed, and does it actually matter for how most people use AI?</p>
+      <div class="ba-preview">
+        <div>
+          <div class="ba-col-label old">2023 context limits</div>
+          <div class="ba-text">Most models maxed at 4,000–8,000 tokens — a few pages of text. Long documents had to be chunked, summarised, and passed in pieces. RAG was essential.</div>
+        </div>
+        <div>
+          <div class="ba-col-label new">2026 context windows</div>
+          <div class="ba-text">1 million tokens = a 750,000-word novel, or an entire large codebase. Some tasks that required complex RAG pipelines now just need one prompt.</div>
+        </div>
+      </div>
+    </a>
+
+  </div><!-- /articles -->
+
+  <!-- ── Sidebar ── -->
+  <div class="sidebar">
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quarterly reports</div>
+      <ul class="sidebar-list">
+        <li><a href="/trends/state-of-llms-q2-2026">State of LLMs — Q2 2026</a></li>
+        <li><a href="/trends/state-of-llms-q1-2026">State of LLMs — Q1 2026</a></li>
+        <li><a href="/trends/state-of-llms-q4-2025">State of LLMs — Q4 2025</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Browse by topic</div>
+      <div class="tag-cloud">
+        <a class="tag-pill" href="/trends">Agentic AI</a>
+        <a class="tag-pill" href="/trends">Reasoning models</a>
+        <a class="tag-pill" href="/trends">Cost &amp; pricing</a>
+        <a class="tag-pill" href="/trends">Open source</a>
+        <a class="tag-pill" href="/trends">AI safety</a>
+        <a class="tag-pill" href="/trends">Multimodal</a>
+        <a class="tag-pill" href="/trends">Local AI</a>
+        <a class="tag-pill" href="/trends">RAG</a>
+        <a class="tag-pill" href="/trends">DeepSeek</a>
+        <a class="tag-pill" href="/trends">Context windows</a>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">New to AI?</div>
+      <div class="sidebar-body">
+        <p style="margin-bottom:.75rem">Start with the fundamentals before diving into trends.</p>
+        <ul class="sidebar-list">
+          <li><a href="/">Interactive mind map</a></li>
+          <li><a href="/guide">Full text guide</a></li>
+          <li><a href="/models">Model directory</a></li>
+          <li><a href="/tracker">Tracker &amp; rankings</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">About these articles</div>
+      <div class="sidebar-body">
+        <p>Written for non-technical professionals. No benchmark scores. No jargon. Every article uses the Before / After format to make new concepts immediately concrete.</p>
+        <p style="margin-top:.6rem">Published roughly twice a month. Quarterly State of LLMs reports published at the end of each quarter.</p>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /content-wrap -->
+
+<footer>
+  <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
+</footer>
+</body>
+</html>
