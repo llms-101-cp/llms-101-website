@@ -30,33 +30,7 @@
   "description": "Plain-English explainers on the biggest shifts in AI — written for non-technical readers.",
   "url": "https://llms101.com/trends",
   "isPartOf": {"@type":"WebSite","url":"https://llms101.com/","name":"LLMs 101"},
-  "inLanguage": "en-US",
-  "blogPost": [
-    {
-      "@type": "BlogPosting",
-      "headline": "State of LLMs — Q2 2026",
-      "description": "A complete quarterly overview of the frontier AI landscape — which models lead, what shifted, what the key themes were, and what to watch next quarter.",
-      "url": "https://llms101.com/trends/state-of-llms-q2-2026",
-      "datePublished": "2026-06-01",
-      "isAccessibleForFree": true
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "The Autonomous Agent Era — From Chatbots to AI That Gets Things Done",
-      "description": "What agentic AI actually means, why it matters more than any model release, and how the shift from chat to action changes everything.",
-      "url": "https://llms101.com/trends/agentic-ai-explained",
-      "datePublished": "2026-05-15",
-      "isAccessibleForFree": true
-    },
-    {
-      "@type": "BlogPosting",
-      "headline": "Why AI Prices Have Dropped 100x in Two Years",
-      "description": "The cost of running frontier AI has collapsed faster than almost any technology in history. Here is what drove it and what it means for you.",
-      "url": "https://llms101.com/trends/ai-cost-collapse",
-      "datePublished": "2026-05-01",
-      "isAccessibleForFree": true
-    }
-  ]
+  "inLanguage": "en-US"
 }
 </script>
 <style>
@@ -186,158 +160,23 @@ footer a{color:var(--gold);text-decoration:none}
 
 <div class="content-wrap">
 
-  <!-- ── Featured: Quarterly Report ── -->
-  <div class="featured">
-    <div class="featured-left">
-      <div>
-        <div class="featured-badge">Flagship report</div>
-        <div class="featured-meta">
-          <span class="featured-tag">Quarterly</span>
-          <span class="featured-date">June 2026</span>
-        </div>
-        <h2>State of LLMs — Q2 2026</h2>
-        <p class="featured-desc">A complete quarterly overview of the frontier AI landscape. Which models now lead, what shifted this quarter, the three biggest trends shaping the next three months, and what a non-technical professional actually needs to know right now.</p>
-      </div>
-      <a href="/trends/state-of-llms-q2-2026" class="read-btn">Read the full report →</a>
+  <div id="dynamic-featured-container" style="grid-column: 1 / -1;">
     </div>
-    <div class="featured-right">
-      <div class="featured-right-label">Q2 2026 — Key findings</div>
-      <div class="q-item">
-        <div class="q-label">Model of the quarter</div>
-        <div class="q-text">"Claude 4 Opus marks the clearest quality jump in long-form reasoning since GPT-4's original release."</div>
-      </div>
-      <div class="q-item">
-        <div class="q-label">Biggest trend</div>
-        <div class="q-text">"Agentic workflows crossed from experiment to production. AI is no longer just answering questions — it's completing tasks end-to-end."</div>
-      </div>
-      <div class="q-item">
-        <div class="q-label">To watch in Q3</div>
-        <div class="q-text">"Multimodal reasoning — models that see, hear, and read simultaneously — moves from demo to daily tool."</div>
-      </div>
+
+  <div class="articles">
+    <div class="articles-label">Latest explainers</div>
+    
+    <div id="articles-feed">
+      <p style="font-size: 0.85rem; color: var(--muted); padding: 1rem 0;">Loading latest market intelligence analysis stream...</p>
     </div>
   </div>
 
-  <!-- ── Main article list ── -->
-  <div class="articles">
-    <div class="articles-label">Latest explainers</div>
-
-    <!-- Article 1: Agentic AI -->
-    <a class="acard" href="/trends/agentic-ai-explained">
-      <div class="acard-meta">
-        <span class="acard-tag tag-trend">Trend spotlight</span>
-        <span class="acard-date">15 May 2026</span>
-        <span class="acard-read">5 min read</span>
-      </div>
-      <h3>The Autonomous Agent Era — From Chatbots to AI That Gets Things Done</h3>
-      <p class="acard-desc">The shift from "AI that answers questions" to "AI that completes tasks" is the biggest structural change in how we use these tools. Here's what changed, why it matters, and what it means for how you work.</p>
-      <div class="ba-preview">
-        <div>
-          <div class="ba-col-label old">The old way</div>
-          <div class="ba-text">You type a prompt → AI gives you a text response → You copy it into a document → You look up the next fact yourself → Repeat.</div>
-        </div>
-        <div>
-          <div class="ba-col-label new">The new way</div>
-          <div class="ba-text">You give a single goal → AI plans 5 steps → searches the web → writes the content → checks its own facts → delivers a finished result.</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Article 2: Cost collapse -->
-    <a class="acard" href="/trends/ai-cost-collapse">
-      <div class="acard-meta">
-        <span class="acard-tag tag-explainer">Explainer</span>
-        <span class="acard-date">1 May 2026</span>
-        <span class="acard-read">4 min read</span>
-      </div>
-      <h3>Why AI Prices Have Dropped 100x in Two Years</h3>
-      <p class="acard-desc">The cost of running frontier AI has fallen faster than almost any technology in computing history. GPT-3's 2020 pricing would cost roughly $20 for the same task that costs $0.002 today. Here's what drove it and what it changes.</p>
-      <div class="ba-preview">
-        <div>
-          <div class="ba-col-label old">2023 pricing</div>
-          <div class="ba-text">Processing 1 million words via GPT-4 cost roughly $60. Meaningful AI use was expensive enough to require budget approval.</div>
-        </div>
-        <div>
-          <div class="ba-col-label new">2026 pricing</div>
-          <div class="ba-text">The same 1 million words now costs under $1 on most frontier models. At DeepSeek rates: under $0.15. AI cost is now negligible for most tasks.</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Article 3: Reasoning models -->
-    <a class="acard" href="/trends/reasoning-models-explained">
-      <div class="acard-meta">
-        <span class="acard-tag tag-explainer">Explainer</span>
-        <span class="acard-date">15 April 2026</span>
-        <span class="acard-read">4 min read</span>
-      </div>
-      <h3>Why Every Major AI Now Has a "Thinking" Mode</h3>
-      <p class="acard-desc">OpenAI's o1, Claude's extended thinking, Gemini's deep research, DeepSeek R1 — every frontier model now offers a slower, more deliberate mode that reasons through problems before answering. What is it actually doing?</p>
-      <div class="ba-preview">
-        <div>
-          <div class="ba-col-label old">Standard mode</div>
-          <div class="ba-text">Model reads your prompt → immediately predicts the most likely response token by token → delivers answer in seconds. Fast, fluent, occasionally wrong.</div>
-        </div>
-        <div>
-          <div class="ba-col-label new">Reasoning mode</div>
-          <div class="ba-text">Model generates hundreds of "thinking" tokens working through the problem step by step before producing its final answer. Slower. Dramatically more accurate on hard problems.</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Article 4: DeepSeek -->
-    <a class="acard" href="/trends/deepseek-r1-what-it-proved">
-      <div class="acard-meta">
-        <span class="acard-tag tag-deep">Deep dive</span>
-        <span class="acard-date">1 April 2026</span>
-        <span class="acard-read">6 min read</span>
-      </div>
-      <h3>What DeepSeek R1 Actually Proved — And Why It Shook the Industry</h3>
-      <p class="acard-desc">In January 2025, a Chinese lab released an AI model that matched OpenAI's best reasoning model — reportedly trained for $6 million, versus hundreds of millions. The AI industry had a week-long panic. Here's what actually happened and why it matters.</p>
-      <div class="ba-preview">
-        <div>
-          <div class="ba-col-label old">The assumption before R1</div>
-          <div class="ba-text">Frontier AI required hundreds of millions in compute. Only a handful of well-capitalised Western labs could compete at the top. The moat was hardware access.</div>
-        </div>
-        <div>
-          <div class="ba-col-label new">After R1</div>
-          <div class="ba-text">Algorithmic efficiency can substitute for raw compute. The training cost advantage was real. The frontier is more reachable than anyone assumed. The moat is narrowing.</div>
-        </div>
-      </div>
-    </a>
-
-    <!-- Article 5: Context windows -->
-    <a class="acard" href="/trends/context-window-arms-race">
-      <div class="acard-meta">
-        <span class="acard-tag tag-explainer">Explainer</span>
-        <span class="acard-date">15 March 2026</span>
-        <span class="acard-read">3 min read</span>
-      </div>
-      <h3>The Context Window Arms Race — What 1 Million Tokens Actually Means</h3>
-      <p class="acard-desc">Gemini reached a 1 million token context window. Claude supports 200,000. Even the smallest models now handle book-length documents. What changed, and does it actually matter for how most people use AI?</p>
-      <div class="ba-preview">
-        <div>
-          <div class="ba-col-label old">2023 context limits</div>
-          <div class="ba-text">Most models maxed at 4,000–8,000 tokens — a few pages of text. Long documents had to be chunked, summarised, and passed in pieces. RAG was essential.</div>
-        </div>
-        <div>
-          <div class="ba-col-label new">2026 context windows</div>
-          <div class="ba-text">1 million tokens = a 750,000-word novel, or an entire large codebase. Some tasks that required complex RAG pipelines now just need one prompt.</div>
-        </div>
-      </div>
-    </a>
-
-  </div><!-- /articles -->
-
-  <!-- ── Sidebar ── -->
   <div class="sidebar">
 
     <div class="sidebar-card">
       <div class="sidebar-title">Quarterly reports</div>
-      <ul class="sidebar-list">
-        <li><a href="/trends/state-of-llms-q2-2026">State of LLMs — Q2 2026</a></li>
-        <li><a href="/trends/state-of-llms-q1-2026">State of LLMs — Q1 2026</a></li>
-        <li><a href="/trends/state-of-llms-q4-2025">State of LLMs — Q4 2025</a></li>
-      </ul>
+      <ul class="sidebar-list" id="sidebar-reports-list">
+        </ul>
     </div>
 
     <div class="sidebar-card">
@@ -377,12 +216,115 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-  </div><!-- /sidebar -->
-
-</div><!-- /content-wrap -->
-
-<footer>
+  </div></div><footer>
   <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
 </footer>
+
+<script>
+function getTagClass(category) {
+  switch(category) {
+    case 'Model Update': return 'tag-trend';
+    case 'Deep Dive': return 'tag-deep';
+    case 'Quarterly': return 'tag-quarterly';
+    default: return 'tag-explainer';
+  }
+}
+
+async function initializeTrendsAutomation() {
+  // 1. ASSET RETRIEVAL: FLAGSHIP REPORT MODULE & SIDEBAR INDEX DIRECTORY
+  try {
+    const reportRes = await fetch('/content/reports_index.json');
+    const reports = await reportRes.json();
+    
+    if (reports && reports.length > 0) {
+      const latestReport = reports[0];
+      const featuredContainer = document.getElementById('dynamic-featured-container');
+      let summarySnippet = latestReport.summary || "A complete quarterly overview of the frontier AI landscape.";
+      
+      featuredContainer.innerHTML = `
+        <div class="featured">
+          <div class="featured-left">
+            <div>
+              <div class="featured-badge">Flagship report</div>
+              <div class="featured-meta">
+                <span class="featured-tag">Quarterly</span>
+                <span class="featured-date">Q${latestReport.quarter} ${latestReport.year}</span>
+              </div>
+              <h2>${latestReport.title}</h2>
+              <p class="featured-desc">${summarySnippet}</p>
+            </div>
+            <a href="/trends/view-report.html?report=${latestReport.slug}" class="read-btn">Read the full report →</a>
+          </div>
+          <div class="featured-right">
+            <div class="featured-right-label">Q${latestReport.quarter} ${latestReport.year} — Key Insights</div>
+            <div class="q-item">
+              <div class="q-label">Executive Analysis</div>
+              <div class="q-text">"${summarySnippet.length > 140 ? summarySnippet.substring(0, 140) + '...' : summarySnippet}"</div>
+            </div>
+            <div class="q-item">
+              <div class="q-label">Asset Delivery</div>
+              <div class="q-text" style="font-size:0.75rem; color: var(--tan);">Interactive structures, analysis data matrices, and raw PDF profiles loaded.</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const sidebarList = document.getElementById('sidebar-reports-list');
+      sidebarList.innerHTML = '';
+      reports.forEach(rep => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="/trends/view-report.html?report=${rep.slug}">${rep.title}</a>`;
+        sidebarList.appendChild(li);
+      });
+    }
+  } catch (err) {
+    console.error("Error updating layout targets from report manifests:", err);
+  }
+
+  // 2. ASSET RETRIEVAL: CHRONOLOGICAL CARDS INDEX DECOUPLED LOADING
+  try {
+    const articleRes = await fetch('/content/articles_index.json');
+    const articles = await articleRes.json();
+    
+    const feedContainer = document.getElementById('articles-feed');
+    feedContainer.innerHTML = '';
+
+    if (!articles || articles.length === 0) {
+      feedContainer.innerHTML = '<p style="font-size:0.85rem; color:var(--muted)">No insight updates published yet.</p>';
+      return;
+    }
+
+    articles.forEach(article => {
+      const cardAnchor = document.createElement('a');
+      cardAnchor.className = 'acard';
+      cardAnchor.href = `/trends/view-article.html?article=${article.slug}`;
+      
+      const calculatedReadTime = article.readTime || "4 min";
+      const formattedDate = new Date(article.date).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      cardAnchor.innerHTML = `
+        <div class="acard-meta">
+          <span class="acard-tag ${getTagClass(article.category)}">${article.category || 'Explainer'}</span>
+          <span class="acard-date">${formattedDate}</span>
+          <span class="acard-read">${calculatedReadTime} read</span>
+        </div>
+        <h3>${article.title}</h3>
+        <p class="acard-desc">${article.summary}</p>
+      `;
+      
+      feedContainer.appendChild(cardAnchor);
+    });
+  } catch (err) {
+    console.error("Error parsing content registry index streams:", err);
+    document.getElementById('articles-feed').innerText = "Failed to render dynamic trends updates.";
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initializeTrendsAutomation);
+</script>
 </body>
 </html>
