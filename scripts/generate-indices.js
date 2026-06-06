@@ -1,50 +1,65 @@
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Reads a directory of JSON content files, extracts metadata,
- * and writes a sorted index array file.
- */
-function buildIndex(collectionDir, outputJsonPath, sortKey, reverse = true) {
-  const dirPath = path.join(__dirname, '..', collectionDir);
-  const destination = path.join(__dirname, '..', outputJsonPath);
+// Helper function to dynamically find a folder matching names case-insensitively
+function findFolderCaseInsensitive(basePath, targetName) {
+  if (!fs.existsSync(basePath)) return null;
+  const currentItems = fs.readdirSync(basePath);
+  const match = currentItems.find(item => item.toLowerCase() === targetName.toLowerCase());
+  return match ? path.join(basePath, match) : null;
+}
+
+function buildIndex(collectionName, outputName, sortKey, reverse = true) {
+  const rootDir = path.join(__dirname, '..');
   
-  // Ensure the destination directory exists
-  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  // 1. DYNAMICALLY FIND YOUR CONTENT FOLDER (Handles 'content', 'Content', etc.)
+  let contentPath = findFolderCaseInsensitive(rootDir, 'content');
   
-  // Safe Check: If the content collection folder doesn't exist yet,
-  // write an empty index list instead of throwing a fatal execution error.
-  if (!fs.existsSync(dirPath)) {
-    console.log(`Directory "${collectionDir}" does not exist yet. Creating an empty fallback index.`);
+  // Backup: Look inside 'Trends' folder just in case
+  if (!contentPath) {
+    const trendsPath = findFolderCaseInsensitive(rootDir, 'trends');
+    if (trendsPath) {
+      contentPath = findFolderCaseInsensitive(trendsPath, 'content') || trendsPath;
+    }
+  }
+
+  if (!contentPath) {
+    console.error("Could not find a content folder anywhere in the repository root!");
+    return;
+  }
+
+  // 2. DYNAMICALLY FIND YOUR COLLECTION FOLDER (Handles 'articles', 'Articles', etc.)
+  const collectionPath = findFolderCaseInsensitive(contentPath, collectionName);
+  const destination = path.join(contentPath, outputName);
+
+  // If the folder doesn't exist yet, write an empty index list and exit gracefully
+  if (!collectionPath || !fs.existsSync(collectionPath)) {
+    console.log(`Collection folder for "${collectionName}" not found. Writing empty fallback array.`);
     fs.writeFileSync(destination, JSON.stringify([], null, 2));
     return;
   }
 
-  const files = fs.readdirSync(dirPath);
+  // 3. READ AND PARSE JON FILES
+  const files = fs.readdirSync(collectionPath);
   const indexData = [];
 
   files.forEach(file => {
-    // Only parse clean JSON payloads
     if (path.extname(file) === '.json') {
-      const filePath = path.join(dirPath, file);
+      const filePath = path.join(collectionPath, file);
       const rawContent = fs.readFileSync(filePath, 'utf8');
       
       try {
         const parsed = JSON.parse(rawContent);
-        
-        // Remove heavy text bodies or massive data charts to keep the feed index payload light
         const { body, chartData, ...metaData } = parsed;
-        
-        // Capture the slug filename so the frontend knows what file endpoint to query later
         metaData.slug = path.basename(file, '.json');
         indexData.push(metaData);
       } catch (err) {
-        console.error(`Error parsing JSON data file ${file}:`, err);
+        console.error(`Error parsing JSON file ${file}:`, err);
       }
     }
   });
 
-  // Chronological sort tracker
+  // Sort chronological data array elements
   indexData.sort((a, b) => {
     const valA = a[sortKey] || '';
     const valB = b[sortKey] || '';
@@ -53,9 +68,9 @@ function buildIndex(collectionDir, outputJsonPath, sortKey, reverse = true) {
 
   // Write compiled data cleanly back to the branch tree
   fs.writeFileSync(destination, JSON.stringify(indexData, null, 2));
-  console.log(`Successfully generated index feed at ${outputJsonPath} (${indexData.length} entries)`);
+  console.log(`Successfully generated index feed at ${destination} (${indexData.length} entries)`);
 }
 
-// Execute indexing safely across both collections
-buildIndex('content/articles', 'content/articles_index.json', 'date', true);
-buildIndex('content/reports', 'content/reports_index.json', 'year', true);
+// Fire index builds safely across both tracks
+buildIndex('articles', 'articles_index.json', 'date', true);
+buildIndex('reports', 'reports_index.json', 'year', true);
