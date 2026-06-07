@@ -24,6 +24,24 @@
       --serif: 'Libre Baskerville', Georgia, serif;
     }
 
+    /* Password screen covers everything */
+    #password-screen {
+      display: flex;
+      position: fixed;
+      inset: 0;
+      background: #1a1814;
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    /* Main content hidden until authenticated */
+    #main-content {
+      display: none;
+    }
+
     body {
       font-family: var(--mono);
       background: var(--paper);
@@ -32,7 +50,6 @@
       padding: 0;
     }
 
-    /* ─── Header ─── */
     header {
       border-bottom: 2px solid var(--ink);
       padding: 20px 40px;
@@ -43,22 +60,10 @@
       color: var(--paper);
     }
 
-    .site-name {
-      font-family: var(--serif);
-      font-size: 22px;
-      letter-spacing: -0.5px;
-    }
-
+    .site-name { font-family: var(--serif); font-size: 22px; letter-spacing: -0.5px; }
     .site-name span { color: var(--accent); }
+    .header-meta { font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 2px; }
 
-    .header-meta {
-      font-size: 11px;
-      color: var(--ink-faint);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    /* ─── Banner ─── */
     .week-banner {
       background: var(--accent);
       color: white;
@@ -71,12 +76,7 @@
       align-items: center;
     }
 
-    /* ─── Layout ─── */
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px;
-    }
+    main { max-width: 1100px; margin: 0 auto; padding: 40px; }
 
     .section-label {
       font-size: 10px;
@@ -91,13 +91,7 @@
 
     .section-label:first-child { margin-top: 0; }
 
-    /* ─── Draft cards ─── */
-    .draft-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
+    .draft-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     @media (max-width: 780px) { .draft-grid { grid-template-columns: 1fr; } }
 
     .draft-card {
@@ -108,11 +102,7 @@
       transition: border-color 0.2s;
     }
 
-    .draft-card.approved {
-      border-color: var(--success);
-      background: var(--success-light);
-    }
-
+    .draft-card.approved { border-color: var(--success); background: var(--success-light); }
     .draft-card.rejected { border-color: var(--accent); opacity: 0.5; }
 
     .card-head {
@@ -136,24 +126,10 @@
       flex-shrink: 0;
     }
 
-    .card-title {
-      font-family: var(--serif);
-      font-size: 16px;
-      line-height: 1.35;
-      color: var(--ink);
-    }
+    .card-title { font-family: var(--serif); font-size: 16px; line-height: 1.35; color: var(--ink); }
+    .card-tagline { font-size: 12px; color: var(--ink-muted); margin-top: 4px; font-style: italic; }
 
-    .card-tagline {
-      font-size: 12px;
-      color: var(--ink-muted);
-      margin-top: 4px;
-      font-style: italic;
-    }
-
-    /* ─── Content preview ─── */
-    .card-body {
-      padding: 20px;
-    }
+    .card-body { padding: 20px; }
 
     .field-label {
       font-size: 9px;
@@ -186,12 +162,8 @@
       min-height: 80px;
     }
 
-    .field-value.editable:focus {
-      border-color: var(--paper-border);
-      background: var(--paper);
-    }
+    .field-value.editable:focus { border-color: var(--paper-border); background: var(--paper); }
 
-    /* Tags */
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
     .tag {
       font-size: 10px;
@@ -202,7 +174,6 @@
       border: 1px solid var(--paper-border);
     }
 
-    /* ─── Actions ─── */
     .card-actions {
       padding: 14px 20px;
       border-top: 1px solid var(--paper-border);
@@ -223,46 +194,17 @@
       transition: all 0.15s;
     }
 
-    .btn-approve {
-      background: var(--success);
-      border-color: var(--success);
-      color: white;
-    }
-
+    .btn-approve { background: var(--success); border-color: var(--success); color: white; }
     .btn-approve:hover { opacity: 0.85; }
-
-    .btn-reject {
-      background: transparent;
-      border-color: var(--paper-border);
-      color: var(--ink-muted);
-    }
-
+    .btn-reject { background: transparent; border-color: var(--paper-border); color: var(--ink-muted); }
     .btn-reject:hover { border-color: var(--accent); color: var(--accent); }
-
-    .btn-regen {
-      background: transparent;
-      border-color: var(--paper-border);
-      color: var(--ink-muted);
-      margin-left: auto;
-    }
-
+    .btn-regen { background: transparent; border-color: var(--paper-border); color: var(--ink-muted); margin-left: auto; }
     .btn-regen:hover { border-color: var(--ink); color: var(--ink); }
 
-    .status-badge {
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 6px 12px;
-      border-radius: 3px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .status-badge { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 12px; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px; }
     .status-approved { color: var(--success); }
     .status-rejected { color: var(--accent); }
 
-    /* ─── Publish bar ─── */
     .publish-bar {
       position: sticky;
       bottom: 0;
@@ -295,7 +237,6 @@
     .btn-publish:hover { background: transparent; }
     .btn-publish:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* ─── Toast ─── */
     .toast {
       position: fixed;
       top: 24px;
@@ -314,64 +255,96 @@
 
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    /* ─── Raw JSON view ─── */
-    details summary {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      cursor: pointer;
-      padding: 8px 0;
-    }
-
-    details pre {
-      font-size: 11px;
-      line-height: 1.5;
-      background: var(--paper);
-      padding: 12px;
-      border-radius: 3px;
-      overflow-x: auto;
-      border: 1px solid var(--paper-border);
-      margin-top: 8px;
-      color: var(--ink-muted);
-    }
+    details summary { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-faint); cursor: pointer; padding: 8px 0; }
+    details pre { font-size: 11px; line-height: 1.5; background: var(--paper); padding: 12px; border-radius: 3px; overflow-x: auto; border: 1px solid var(--paper-border); margin-top: 8px; color: var(--ink-muted); }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="site-name">llms<span>101</span>.com</div>
-    <div class="header-meta">Editorial review dashboard</div>
-  </header>
-
-  <div class="week-banner">
-    <span id="week-label">Loading drafts...</span>
-    <span id="generated-at"></span>
+  <!-- ─── Password screen ─── -->
+  <div id="password-screen">
+    <div style="font-family:'Libre Baskerville',Georgia,serif;font-size:26px;color:#f5f2ec;">
+      llms<span style="color:#c85a1e;">101</span>.com
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b6760;letter-spacing:3px;text-transform:uppercase;">
+      Editorial dashboard
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:300px;">
+      <input
+        id="password-input"
+        type="password"
+        placeholder="Enter password"
+        autofocus
+        style="font-family:'IBM Plex Mono',monospace;font-size:14px;padding:12px 16px;background:#2a2825;border:1.5px solid #3a3835;border-radius:3px;color:#f5f2ec;outline:none;width:100%;box-sizing:border-box;"
+      >
+      <button
+        onclick="checkPassword()"
+        style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px;background:#c85a1e;border:none;border-radius:3px;color:white;cursor:pointer;width:100%;"
+      >
+        Enter dashboard
+      </button>
+      <div id="password-error" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c85a1e;text-align:center;">
+        Incorrect password — try again
+      </div>
+    </div>
   </div>
 
-  <main>
-    <div class="section-label">This week's drafts — review before publishing</div>
-    <div class="draft-grid" id="draft-grid">
-      <!-- Cards injected by JS -->
+  <!-- ─── Main dashboard (hidden until authenticated) ─── -->
+  <div id="main-content">
+
+    <header>
+      <div class="site-name">llms<span>101</span>.com</div>
+      <div class="header-meta">Editorial review dashboard</div>
+    </header>
+
+    <div class="week-banner">
+      <span id="week-label">Loading drafts...</span>
+      <span id="generated-at"></span>
     </div>
 
-    <div style="height: 80px;"></div>
-  </main>
+    <main>
+      <div class="section-label">This week's drafts — review before publishing</div>
+      <div class="draft-grid" id="draft-grid"></div>
+      <div style="height: 80px;"></div>
+    </main>
 
-  <div class="publish-bar">
-    <div class="publish-count">
-      <strong id="approved-count">0</strong> of <span id="total-count">0</span> approved
+    <div class="publish-bar">
+      <div class="publish-count">
+        <strong id="approved-count">0</strong> of <span id="total-count">0</span> approved
+      </div>
+      <button class="btn-publish" id="publish-btn" disabled onclick="publishApproved()">
+        Publish approved →
+      </button>
     </div>
-    <button class="btn-publish" id="publish-btn" disabled onclick="publishApproved()">
-      Publish approved →
-    </button>
+
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    // ─── Mock data (in production this loads from /drafts/{weekOf}/*.json via your API) ──
+    // ─── PASSWORD — replace ADD PASSWORD with your chosen password ────────────
+    const CORRECT_PASSWORD = 'QvFv29ArbzkMABow8zeH';
 
+    function checkPassword() {
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+      if (input.value === CORRECT_PASSWORD) {
+        sessionStorage.setItem('llms101_auth', 'true');
+        document.getElementById('password-screen').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        render();
+      } else {
+        error.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    // ─── Sample draft data (replaced by real drafts once pipeline runs) ───────
     const WEEK_OF = new URLSearchParams(location.search).get('week') || '2025-09-01';
 
     const MOCK_DRAFTS = [
@@ -382,15 +355,10 @@
         term: 'Retrieval-Augmented Generation (RAG)',
         slug: 'retrieval-augmented-generation-rag',
         tagline: 'How AI looks things up before answering, like an open-book exam.',
-        body: 'Retrieval-Augmented Generation (RAG) is a technique that gives a language model access to external documents before it generates a response. Instead of relying solely on what it learned during training, the model first retrieves relevant passages from a database, then uses those passages as context when composing its answer.\n\nThink of it like the difference between a closed-book and an open-book exam. A standard LLM is closed-book — it can only use what it memorised during training. A RAG-powered system is open-book — it can consult a curated set of documents at the moment you ask a question.\n\nThis matters enormously for real-world applications. LLMs have knowledge cutoffs (they stop learning at a certain date) and can\'t know about your company\'s internal documents or last week\'s news. RAG solves both problems. Your question triggers a search of a private document store, the most relevant chunks are retrieved, and the model uses those chunks to answer — accurately, and with citations.\n\nRAG is now the standard approach for building AI assistants on top of private knowledge bases: customer support bots, internal search tools, document Q&A systems. It\'s also cheaper than fine-tuning, because you\'re not retraining the model — you\'re just giving it better context at inference time.',
+        body: 'Retrieval-Augmented Generation (RAG) is a technique that gives a language model access to external documents before it generates a response. Instead of relying solely on what it learned during training, the model first retrieves relevant passages from a database, then uses those passages as context when composing its answer.\n\nThink of it like the difference between a closed-book and an open-book exam. A standard LLM is closed-book — it can only use what it memorised during training. A RAG-powered system is open-book — it can consult a curated set of documents at the moment you ask a question.\n\nThis matters enormously for real-world applications. LLMs have knowledge cutoffs and cannot know about your company\'s internal documents or last week\'s news. RAG solves both problems.',
         analogy: 'Imagine asking a friend a question. A standard LLM friend answers from memory. A RAG friend quickly Googles your question first, skims the top results, and then answers — using actual sources.',
         related_terms: ['embeddings', 'vector database', 'fine-tuning', 'context window'],
-        further_reading: {
-          title: 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks',
-          url: 'https://arxiv.org/abs/2005.11401',
-          source: 'Lewis et al., Facebook AI Research (2020)'
-        },
-        meta_description: 'RAG (Retrieval-Augmented Generation) explained in plain English — how AI looks things up before answering, and why it matters.'
+        meta_description: 'RAG explained in plain English — how AI looks things up before answering, and why it matters.'
       },
       {
         _filename: 'resource-andrej-karpathy-lets-build-gpt.json',
@@ -403,26 +371,23 @@
         source: 'YouTube',
         category: 'video',
         tags: ['free', 'hands-on', 'coding', 'intermediate'],
-        description: 'A 2-hour video walkthrough in which former OpenAI researcher Andrej Karpathy builds a working GPT model from scratch in Python, explaining every line of code as he goes. It covers tokenisation, the attention mechanism, transformers, and training — all in one sitting. This is the resource for anyone who wants to go beyond conceptual explanations and actually see the maths made concrete. You\'ll need some Python familiarity, but heavy maths background is not required.',
-        why_this_week: "Pairs perfectly with our explainer on RAG — once you understand how GPT is built, you'll understand exactly why retrieval augmentation is such an elegant solution.",
+        description: 'A 2-hour video walkthrough in which Andrej Karpathy builds a working GPT model from scratch in Python, explaining every line of code as he goes. It covers tokenisation, the attention mechanism, transformers, and training — all in one sitting.',
+        why_this_week: 'Pairs perfectly with the RAG explainer — once you understand how GPT is built, you understand exactly why retrieval augmentation is such an elegant solution.',
         difficulty: 'intermediate',
         free: true,
-        meta_description: "Andrej Karpathy builds GPT from scratch in Python — the clearest hands-on introduction to how language models actually work."
+        meta_description: 'Andrej Karpathy builds GPT from scratch — the clearest hands-on introduction to how language models actually work.'
       }
     ];
 
-    // ─── State ───────────────────────────────────────────────────────────────
-
+    // ─── State ────────────────────────────────────────────────────────────────
     const state = {
       drafts: MOCK_DRAFTS.map(d => ({ ...d, _status: 'pending' }))
     };
 
     // ─── Render ───────────────────────────────────────────────────────────────
-
     function renderCard(draft, idx) {
       const isApproved = draft._status === 'approved';
       const isRejected = draft._status === 'rejected';
-
       const bodyField = draft.body || draft.description || draft.overview || draft.intro || '';
       const titleField = draft.term || draft.title || draft.name || draft.week_of || '';
 
@@ -438,19 +403,16 @@
           <div class="card-body">
             <div class="field-label">Content preview</div>
             <textarea class="field-value editable" id="body-${idx}" rows="6">${bodyField}</textarea>
-
             ${draft.analogy ? `
               <div class="field-label">Analogy</div>
               <textarea class="field-value editable" id="analogy-${idx}" rows="2">${draft.analogy}</textarea>
             ` : ''}
-
             ${(draft.tags || draft.related_terms) ? `
               <div class="field-label">${draft.tags ? 'Tags' : 'Related terms'}</div>
               <div class="tags">
                 ${(draft.tags || draft.related_terms).map(t => `<span class="tag">${t}</span>`).join('')}
               </div>
             ` : ''}
-
             <details>
               <summary>Full JSON</summary>
               <pre>${JSON.stringify(draft, null, 2)}</pre>
@@ -475,17 +437,13 @@
     function render() {
       document.getElementById('week-label').textContent = `Week of ${WEEK_OF}`;
       document.getElementById('draft-grid').innerHTML = state.drafts.map(renderCard).join('');
-
       const approved = state.drafts.filter(d => d._status === 'approved').length;
       document.getElementById('approved-count').textContent = approved;
       document.getElementById('total-count').textContent = state.drafts.length;
       document.getElementById('publish-btn').disabled = approved === 0;
     }
 
-    // ─── Actions ──────────────────────────────────────────────────────────────
-
     function setStatus(idx, status) {
-      // Save any edits first
       const bodyEl = document.getElementById(`body-${idx}`);
       const analogyEl = document.getElementById(`analogy-${idx}`);
       if (bodyEl) {
@@ -501,13 +459,10 @@
 
     function regenerate(idx) {
       showToast('Regeneration request sent — check back in 2 minutes.');
-      // In production: POST to /api/regenerate with { filename, weekOf }
     }
 
     function publishApproved() {
       const approved = state.drafts.filter(d => d._status === 'approved');
-      // In production: POST to /api/publish with approved drafts
-      // This moves /drafts/{weekOf}/*.json to /content/{weekOf}/*.json
       showToast(`${approved.length} piece(s) published to llms101.com ✓`);
       document.getElementById('publish-btn').disabled = true;
     }
@@ -519,69 +474,14 @@
       setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // ─── Password protection ──────────────────────────────────────────────────
-
-    const CORRECT_PASSWORD = 'QvFv29ArbzkMABow8zeH';
-
-    function checkPassword() {
-      const overlay = document.getElementById('password-overlay');
-      const input = document.getElementById('password-input');
-      const error = document.getElementById('password-error');
-
-      if (input.value === CORRECT_PASSWORD) {
-        sessionStorage.setItem('llms101_auth', 'true');
-        overlay.style.display = 'none';
-      } else {
-        error.style.display = 'block';
-        input.value = '';
-        input.focus();
-      }
-    }
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && document.getElementById('password-overlay').style.display !== 'none') {
-        checkPassword();
-      }
-    });
-
     // ─── Init ─────────────────────────────────────────────────────────────────
-
-    if (sessionStorage.getItem("llms101_auth") !== "true") {
-      document.getElementById("password-overlay").style.display = "flex";
-    } else {
-      document.getElementById("password-overlay").style.display = "none";
+    // Check session on load
+    if (sessionStorage.getItem('llms101_auth') === 'true') {
+      document.getElementById('password-screen').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      render();
     }
-
-    render();
   </script>
-
-  <!-- Password overlay -->
-  <div id="password-overlay" style="display:none;position:fixed;inset:0;background:#1a1814;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
-    <div style="font-family:'Libre Baskerville',Georgia,serif;font-size:26px;color:#f5f2ec;">
-      llms<span style="color:#c85a1e;">101</span>.com
-    </div>
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b6760;letter-spacing:3px;text-transform:uppercase;">
-      Editorial dashboard
-    </div>
-    <div style="display:flex;flex-direction:column;gap:12px;width:300px;">
-      <input
-        id="password-input"
-        type="password"
-        placeholder="Enter password"
-        autofocus
-        style="font-family:'IBM Plex Mono',monospace;font-size:14px;padding:12px 16px;background:#2a2825;border:1.5px solid #3a3835;border-radius:3px;color:#f5f2ec;outline:none;width:100%;"
-      >
-      <button
-        onclick="checkPassword()"
-        style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px;background:#c85a1e;border:none;border-radius:3px;color:white;cursor:pointer;width:100%;"
-      >
-        Enter dashboard
-      </button>
-      <div id="password-error" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c85a1e;text-align:center;">
-        Incorrect password — try again
-      </div>
-    </div>
-  </div>
 
 </body>
 </html>
