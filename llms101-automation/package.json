@@ -1,0 +1,14 @@
+{
+  "name": "llms101-automation",
+  "version": "1.0.0",
+  "description": "Weekly content automation for llms101.com",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate.js",
+    "generate:dry": "DRY_RUN=true node scripts/generate.js",
+    "calendar": "cat content-calendar/calendar.json | python3 -m json.tool"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}

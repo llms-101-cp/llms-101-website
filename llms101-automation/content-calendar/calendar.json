@@ -1,0 +1,169 @@
+{
+  "description": "llms101.com weekly content calendar. Edit this file to steer what gets generated each week. The automation reads 'weeks[0]' (the next upcoming week) and shifts it to 'completed' after publishing.",
+  "rotation_pattern": ["term + resource", "model + digest", "term + resource", "model + digest"],
+  "weeks": [
+    {
+      "week_of": "2025-09-01",
+      "type_a": {
+        "type": "term",
+        "topic": "Retrieval-Augmented Generation (RAG)",
+        "notes": "Explain how RAG lets LLMs answer questions from live documents. Beginner-friendly."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "Andrej Karpathy — Let's build GPT from scratch",
+        "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY",
+        "notes": "Great for visual learners who want to go deeper than basics."
+      }
+    },
+    {
+      "week_of": "2025-09-08",
+      "type_a": {
+        "type": "model",
+        "topic": "Mistral Large 2",
+        "notes": "Highlight the open-weight angle and compare briefly with GPT-4o class models."
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate from Claude's knowledge of the week's AI news."
+      }
+    },
+    {
+      "week_of": "2025-09-15",
+      "type_a": {
+        "type": "term",
+        "topic": "Fine-tuning",
+        "notes": "Distinguish from pre-training and prompt engineering. Keep it conceptual."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "The Illustrated Transformer — Jay Alammar",
+        "url": "https://jalammar.github.io/illustrated-transformer/",
+        "notes": "Classic resource, still the best visual intro to transformers."
+      }
+    },
+    {
+      "week_of": "2025-09-22",
+      "type_a": {
+        "type": "model",
+        "topic": "Gemini 1.5 Pro",
+        "notes": "Focus on the 1M token context window and what that enables."
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate."
+      }
+    },
+    {
+      "week_of": "2025-09-29",
+      "type_a": {
+        "type": "term",
+        "topic": "Quantisation",
+        "notes": "Explain why it matters for running models locally. Tie to Ollama."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "fast.ai — Practical Deep Learning for Coders",
+        "url": "https://course.fast.ai",
+        "notes": "Best free hands-on course for going from zero to building."
+      }
+    },
+    {
+      "week_of": "2025-10-06",
+      "type_a": {
+        "type": "model",
+        "topic": "LLaMA 3.1 70B",
+        "notes": "Highlight that this is open-weight and runnable locally."
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate."
+      }
+    },
+    {
+      "week_of": "2025-10-13",
+      "type_a": {
+        "type": "term",
+        "topic": "Context window",
+        "notes": "Explain tokens, limits, and what happens when you hit the limit."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "Attention Is All You Need — original transformer paper",
+        "url": "https://arxiv.org/abs/1706.03762",
+        "notes": "For readers ready to go beyond basics. Frame it as a milestone."
+      }
+    },
+    {
+      "week_of": "2025-10-20",
+      "type_a": {
+        "type": "model",
+        "topic": "Claude 3.5 Sonnet",
+        "notes": "Highlight coding and reasoning strengths. Stay objective."
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate."
+      }
+    },
+    {
+      "week_of": "2025-10-27",
+      "type_a": {
+        "type": "term",
+        "topic": "RLHF — Reinforcement Learning from Human Feedback",
+        "notes": "Explain how this is what turns a raw LLM into a helpful assistant."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "DeepLearning.AI — ChatGPT Prompt Engineering for Developers",
+        "url": "https://learn.deeplearning.ai/courses/chatgpt-prompt-eng",
+        "notes": "Practical and free. Good for readers who want to use AI better today."
+      }
+    },
+    {
+      "week_of": "2025-11-03",
+      "type_a": {
+        "type": "model",
+        "topic": "Phi-3 Mini",
+        "notes": "Good angle: small but capable. Why does model size vs quality matter?"
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate."
+      }
+    },
+    {
+      "week_of": "2025-11-10",
+      "type_a": {
+        "type": "term",
+        "topic": "Embeddings",
+        "notes": "Vectors in space — explain semantic similarity with a concrete example."
+      },
+      "type_b": {
+        "type": "resource",
+        "topic": "Hugging Face — NLP Course",
+        "url": "https://huggingface.co/learn/nlp-course",
+        "notes": "Free, structured, covers transformers from scratch with code."
+      }
+    },
+    {
+      "week_of": "2025-11-17",
+      "type_a": {
+        "type": "model",
+        "topic": "GPT-4o",
+        "notes": "Cover the multimodal angle — vision, voice, real-time use cases."
+      },
+      "type_b": {
+        "type": "digest",
+        "topic": "auto",
+        "notes": "Auto-generate."
+      }
+    }
+  ],
+  "completed": []
+}
