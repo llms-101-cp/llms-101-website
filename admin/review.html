@@ -1,1 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Review — llms101.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --ink: #1a1814;
+      --ink-muted: #6b6760;
+      --ink-faint: #b8b5af;
+      --paper: #f5f2ec;
+      --paper-warm: #ede9e1;
+      --paper-border: #d8d3c8;
+      --accent: #c85a1e;
+      --accent-light: #f5e8e1;
+      --success: #2a6b3a;
+      --success-light: #e3f0e7;
+      --mono: 'IBM Plex Mono', monospace;
+      --serif: 'Libre Baskerville', Georgia, serif;
+    }
+
+    body {
+      font-family: var(--mono);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ─── Header ─── */
+    header {
+      border-bottom: 2px solid var(--ink);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .site-name {
+      font-family: var(--serif);
+      font-size: 22px;
+      letter-spacing: -0.5px;
+    }
+
+    .site-name span { color: var(--accent); }
+
+    .header-meta {
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* ─── Banner ─── */
+    .week-banner {
+      background: var(--accent);
+      color: white;
+      padding: 12px 40px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ─── Layout ─── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      border-top: 1px solid var(--paper-border);
+      padding-top: 8px;
+      margin-bottom: 24px;
+      margin-top: 48px;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    /* ─── Draft cards ─── */
+    .draft-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 780px) { .draft-grid { grid-template-columns: 1fr; } }
+
+    .draft-card {
+      border: 1.5px solid var(--paper-border);
+      border-radius: 4px;
+      background: white;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .draft-card.approved {
+      border-color: var(--success);
+      background: var(--success-light);
+    }
+
+    .draft-card.rejected { border-color: var(--accent); opacity: 0.5; }
+
+    .card-head {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--paper-border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .type-pill {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      background: var(--paper-warm);
+      color: var(--ink-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .card-tagline {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ─── Content preview ─── */
+    .card-body {
+      padding: 20px;
+    }
+
+    .field-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px;
+    }
+
+    .field-value {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .field-value.editable {
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 8px;
+      outline: none;
+      resize: vertical;
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink);
+      background: transparent;
+      transition: border-color 0.15s, background 0.15s;
+      min-height: 80px;
+    }
+
+    .field-value.editable:focus {
+      border-color: var(--paper-border);
+      background: var(--paper);
+    }
+
+    /* Tags */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+    .tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 2px;
+      background: var(--paper-warm);
+      color: var(--ink-muted);
+      border: 1px solid var(--paper-border);
+    }
+
+    /* ─── Actions ─── */
+    .card-actions {
+      padding: 14px 20px;
+      border-top: 1px solid var(--paper-border);
+      display: flex;
+      gap: 10px;
+      background: var(--paper-warm);
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 3px;
+      border: 1.5px solid;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-approve {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .btn-approve:hover { opacity: 0.85; }
+
+    .btn-reject {
+      background: transparent;
+      border-color: var(--paper-border);
+      color: var(--ink-muted);
+    }
+
+    .btn-reject:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-regen {
+      background: transparent;
+      border-color: var(--paper-border);
+      color: var(--ink-muted);
+      margin-left: auto;
+    }
+
+    .btn-regen:hover { border-color: var(--ink); color: var(--ink); }
+
+    .status-badge {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-approved { color: var(--success); }
+    .status-rejected { color: var(--accent); }
+
+    /* ─── Publish bar ─── */
+    .publish-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 2px solid var(--accent);
+    }
+
+    .publish-count { font-size: 13px; }
+    .publish-count strong { color: var(--accent); }
+
+    .btn-publish {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      border-radius: 3px;
+      border: 2px solid var(--accent);
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-publish:hover { background: transparent; }
+    .btn-publish:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 12px;
+      padding: 12px 20px;
+      border-radius: 4px;
+      border-left: 4px solid var(--success);
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ─── Raw JSON view ─── */
+    details summary {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      cursor: pointer;
+      padding: 8px 0;
+    }
+
+    details pre {
+      font-size: 11px;
+      line-height: 1.5;
+      background: var(--paper);
+      padding: 12px;
+      border-radius: 3px;
+      overflow-x: auto;
+      border: 1px solid var(--paper-border);
+      margin-top: 8px;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-name">llms<span>101</span>.com</div>
+    <div class="header-meta">Editorial review dashboard</div>
+  </header>
+
+  <div class="week-banner">
+    <span id="week-label">Loading drafts...</span>
+    <span id="generated-at"></span>
+  </div>
+
+  <main>
+    <div class="section-label">This week's drafts — review before publishing</div>
+    <div class="draft-grid" id="draft-grid">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <div style="height: 80px;"></div>
+  </main>
+
+  <div class="publish-bar">
+    <div class="publish-count">
+      <strong id="approved-count">0</strong> of <span id="total-count">0</span> approved
+    </div>
+    <button class="btn-publish" id="publish-btn" disabled onclick="publishApproved()">
+      Publish approved →
+    </button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ─── Mock data (in production this loads from /drafts/{weekOf}/*.json via your API) ──
+
+    const WEEK_OF = new URLSearchParams(location.search).get('week') || '2025-09-01';
+
+    const MOCK_DRAFTS = [
+      {
+        _filename: 'term-retrieval-augmented-generation-rag.json',
+        _generated_at: new Date().toISOString(),
+        type: 'term',
+        term: 'Retrieval-Augmented Generation (RAG)',
+        slug: 'retrieval-augmented-generation-rag',
+        tagline: 'How AI looks things up before answering, like an open-book exam.',
+        body: 'Retrieval-Augmented Generation (RAG) is a technique that gives a language model access to external documents before it generates a response. Instead of relying solely on what it learned during training, the model first retrieves relevant passages from a database, then uses those passages as context when composing its answer.\n\nThink of it like the difference between a closed-book and an open-book exam. A standard LLM is closed-book — it can only use what it memorised during training. A RAG-powered system is open-book — it can consult a curated set of documents at the moment you ask a question.\n\nThis matters enormously for real-world applications. LLMs have knowledge cutoffs (they stop learning at a certain date) and can\'t know about your company\'s internal documents or last week\'s news. RAG solves both problems. Your question triggers a search of a private document store, the most relevant chunks are retrieved, and the model uses those chunks to answer — accurately, and with citations.\n\nRAG is now the standard approach for building AI assistants on top of private knowledge bases: customer support bots, internal search tools, document Q&A systems. It\'s also cheaper than fine-tuning, because you\'re not retraining the model — you\'re just giving it better context at inference time.',
+        analogy: 'Imagine asking a friend a question. A standard LLM friend answers from memory. A RAG friend quickly Googles your question first, skims the top results, and then answers — using actual sources.',
+        related_terms: ['embeddings', 'vector database', 'fine-tuning', 'context window'],
+        further_reading: {
+          title: 'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks',
+          url: 'https://arxiv.org/abs/2005.11401',
+          source: 'Lewis et al., Facebook AI Research (2020)'
+        },
+        meta_description: 'RAG (Retrieval-Augmented Generation) explained in plain English — how AI looks things up before answering, and why it matters.'
+      },
+      {
+        _filename: 'resource-andrej-karpathy-lets-build-gpt.json',
+        _generated_at: new Date().toISOString(),
+        type: 'resource',
+        title: "Andrej Karpathy — Let's build GPT from scratch",
+        slug: 'karpathy-build-gpt-from-scratch',
+        url: 'https://www.youtube.com/watch?v=kCc8FmEb1nY',
+        author: 'Andrej Karpathy',
+        source: 'YouTube',
+        category: 'video',
+        tags: ['free', 'hands-on', 'coding', 'intermediate'],
+        description: 'A 2-hour video walkthrough in which former OpenAI researcher Andrej Karpathy builds a working GPT model from scratch in Python, explaining every line of code as he goes. It covers tokenisation, the attention mechanism, transformers, and training — all in one sitting. This is the resource for anyone who wants to go beyond conceptual explanations and actually see the maths made concrete. You\'ll need some Python familiarity, but heavy maths background is not required.',
+        why_this_week: "Pairs perfectly with our explainer on RAG — once you understand how GPT is built, you'll understand exactly why retrieval augmentation is such an elegant solution.",
+        difficulty: 'intermediate',
+        free: true,
+        meta_description: "Andrej Karpathy builds GPT from scratch in Python — the clearest hands-on introduction to how language models actually work."
+      }
+    ];
+
+    // ─── State ───────────────────────────────────────────────────────────────
+
+    const state = {
+      drafts: MOCK_DRAFTS.map(d => ({ ...d, _status: 'pending' }))
+    };
+
+    // ─── Render ───────────────────────────────────────────────────────────────
+
+    function renderCard(draft, idx) {
+      const isApproved = draft._status === 'approved';
+      const isRejected = draft._status === 'rejected';
+
+      const bodyField = draft.body || draft.description || draft.overview || draft.intro || '';
+      const titleField = draft.term || draft.title || draft.name || draft.week_of || '';
+
+      return `
+        <div class="draft-card ${isApproved ? 'approved' : ''} ${isRejected ? 'rejected' : ''}" id="card-${idx}">
+          <div class="card-head">
+            <div>
+              <div class="card-title">${titleField}</div>
+              ${draft.tagline ? `<div class="card-tagline">${draft.tagline}</div>` : ''}
+            </div>
+            <span class="type-pill">${draft.type}</span>
+          </div>
+          <div class="card-body">
+            <div class="field-label">Content preview</div>
+            <textarea class="field-value editable" id="body-${idx}" rows="6">${bodyField}</textarea>
+
+            ${draft.analogy ? `
+              <div class="field-label">Analogy</div>
+              <textarea class="field-value editable" id="analogy-${idx}" rows="2">${draft.analogy}</textarea>
+            ` : ''}
+
+            ${(draft.tags || draft.related_terms) ? `
+              <div class="field-label">${draft.tags ? 'Tags' : 'Related terms'}</div>
+              <div class="tags">
+                ${(draft.tags || draft.related_terms).map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
+            ` : ''}
+
+            <details>
+              <summary>Full JSON</summary>
+              <pre>${JSON.stringify(draft, null, 2)}</pre>
+            </details>
+          </div>
+          <div class="card-actions">
+            ${isApproved
+              ? `<span class="status-badge status-approved">✓ Approved</span>`
+              : isRejected
+                ? `<span class="status-badge status-rejected">✕ Rejected</span>`
+                : `
+                  <button class="btn btn-approve" onclick="setStatus(${idx}, 'approved')">Approve</button>
+                  <button class="btn btn-reject" onclick="setStatus(${idx}, 'rejected')">Reject</button>
+                `
+            }
+            <button class="btn btn-regen" onclick="regenerate(${idx})">↺ Regenerate</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      document.getElementById('week-label').textContent = `Week of ${WEEK_OF}`;
+      document.getElementById('draft-grid').innerHTML = state.drafts.map(renderCard).join('');
+
+      const approved = state.drafts.filter(d => d._status === 'approved').length;
+      document.getElementById('approved-count').textContent = approved;
+      document.getElementById('total-count').textContent = state.drafts.length;
+      document.getElementById('publish-btn').disabled = approved === 0;
+    }
+
+    // ─── Actions ──────────────────────────────────────────────────────────────
+
+    function setStatus(idx, status) {
+      // Save any edits first
+      const bodyEl = document.getElementById(`body-${idx}`);
+      const analogyEl = document.getElementById(`analogy-${idx}`);
+      if (bodyEl) {
+        const d = state.drafts[idx];
+        if (d.body !== undefined) d.body = bodyEl.value;
+        if (d.description !== undefined) d.description = bodyEl.value;
+        if (d.overview !== undefined) d.overview = bodyEl.value;
+        if (analogyEl) d.analogy = analogyEl.value;
+      }
+      state.drafts[idx]._status = status;
+      render();
+    }
+
+    function regenerate(idx) {
+      showToast('Regeneration request sent — check back in 2 minutes.');
+      // In production: POST to /api/regenerate with { filename, weekOf }
+    }
+
+    function publishApproved() {
+      const approved = state.drafts.filter(d => d._status === 'approved');
+      // In production: POST to /api/publish with approved drafts
+      // This moves /drafts/{weekOf}/*.json to /content/{weekOf}/*.json
+      showToast(`${approved.length} piece(s) published to llms101.com ✓`);
+      document.getElementById('publish-btn').disabled = true;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ─── Init ─────────────────────────────────────────────────────────────────
+    render();
+  </script>
+
+</body>
+</html>
