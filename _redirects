@@ -1,0 +1,20 @@
+# Netlify redirects — serves .html files at clean URLs (no extension needed)
+# Place this file in the repo ROOT alongside index.html
+
+# Trends articles
+/trends/agentic-ai-explained           /trends/agentic-ai-explained.html           200
+/trends/ai-cost-collapse               /trends/ai-cost-collapse.html               200
+/trends/reasoning-models-explained     /trends/reasoning-models-explained.html     200
+/trends/deepseek-r1-what-it-proved     /trends/deepseek-r1-what-it-proved.html     200
+/trends/context-window-arms-race       /trends/context-window-arms-race.html       200
+
+# Quarterly reports
+/trends/state-of-llms-q2-2026          /trends/state-of-llms-q2-2026.html          200
+/trends/state-of-llms-q1-2026          /trends/state-of-llms-q1-2026.html          200
+/trends/state-of-llms-q4-2025          /trends/state-of-llms-q4-2025.html          200
+
+# Other site pages
+/guide                                 /guide.html                                 200
+/models                                /models.html                                200
+/tracker                               /tracker.html                               200
+/trends                                /trends.html                                200
