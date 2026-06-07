@@ -519,9 +519,69 @@
       setTimeout(() => t.classList.remove('show'), 3500);
     }
 
+    // ─── Password protection ──────────────────────────────────────────────────
+
+    const CORRECT_PASSWORD = 'QvFv29ArbzkMABow8zeH';
+
+    function checkPassword() {
+      const overlay = document.getElementById('password-overlay');
+      const input = document.getElementById('password-input');
+      const error = document.getElementById('password-error');
+
+      if (input.value === CORRECT_PASSWORD) {
+        sessionStorage.setItem('llms101_auth', 'true');
+        overlay.style.display = 'none';
+      } else {
+        error.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && document.getElementById('password-overlay').style.display !== 'none') {
+        checkPassword();
+      }
+    });
+
     // ─── Init ─────────────────────────────────────────────────────────────────
+
+    if (sessionStorage.getItem("llms101_auth") !== "true") {
+      document.getElementById("password-overlay").style.display = "flex";
+    } else {
+      document.getElementById("password-overlay").style.display = "none";
+    }
+
     render();
   </script>
+
+  <!-- Password overlay -->
+  <div id="password-overlay" style="display:none;position:fixed;inset:0;background:#1a1814;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+    <div style="font-family:'Libre Baskerville',Georgia,serif;font-size:26px;color:#f5f2ec;">
+      llms<span style="color:#c85a1e;">101</span>.com
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b6760;letter-spacing:3px;text-transform:uppercase;">
+      Editorial dashboard
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:300px;">
+      <input
+        id="password-input"
+        type="password"
+        placeholder="Enter password"
+        autofocus
+        style="font-family:'IBM Plex Mono',monospace;font-size:14px;padding:12px 16px;background:#2a2825;border:1.5px solid #3a3835;border-radius:3px;color:#f5f2ec;outline:none;width:100%;"
+      >
+      <button
+        onclick="checkPassword()"
+        style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px;background:#c85a1e;border:none;border-radius:3px;color:white;cursor:pointer;width:100%;"
+      >
+        Enter dashboard
+      </button>
+      <div id="password-error" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c85a1e;text-align:center;">
+        Incorrect password — try again
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
