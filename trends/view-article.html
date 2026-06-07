@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading Analysis... · LLMs 101</title>
+<title>Loading... · LLMs 101</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +14,9 @@
   --muted:#9a7a5e;--light:#F5EDD8;--border:rgba(184,134,11,.18);--white:#fff;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Jost',sans-serif;font-weight:300;background:var(--cream);color:var(--brown);line-height:1.8;font-size:16px}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:300;background:var(--cream);color:var(--brown);line-height:1.8;font-size:16px;display:flex;flex-direction:column;min-height:100vh}
+main{flex:1}
 
 header{position:sticky;top:0;z-index:100;background:rgba(250,248,244,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between}
 .site-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--brown);text-decoration:none;letter-spacing:.02em}
@@ -20,22 +24,82 @@ header{position:sticky;top:0;z-index:100;background:rgba(250,248,244,.96);backdr
 nav{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
 nav a{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:.3rem .7rem;border-radius:20px;transition:color .2s,background .2s}
 nav a:hover{color:var(--gold)}
+nav a.active{color:var(--brown);background:var(--light)}
 
-.wrapper{max-width:740px;margin:0 auto;padding:4rem 2rem 6rem}
-.back-link{display:inline-block;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-bottom:2.5rem;transition:color .2s}
-.back-link:hover{color:var(--brown)}
+.wrapper{max-width:760px;margin:0 auto;padding:3.5rem 2rem 5rem}
 
+/* back link */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:2rem;transition:color .2s}
+.back-link:hover{color:var(--gold)}
+
+/* article meta */
 .meta-header{margin-bottom:2rem}
-.category-badge{display:inline-block;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(184,134,11,.1);color:var(--gold);border:1px solid rgba(184,134,11,.25);padding:2px 10px;border-radius:20px;margin-bottom:1rem}
-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,2.8rem);font-weight:400;color:var(--brown);line-height:1.2;margin-bottom:1rem}
-.date-stamp{font-size:.82rem;color:var(--muted)}
+.article-tag{display:inline-block;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(184,134,11,.1);color:var(--gold);border:1px solid rgba(184,134,11,.25);padding:2px 10px;border-radius:20px;margin-bottom:1rem}
+.article-meta-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.5rem}
+.article-date{font-size:.72rem;color:var(--muted)}
+.article-read{font-size:.72rem;color:var(--tan)}
 
-.standfirst{font-size:1.05rem;color:var(--muted);line-height:1.75;margin-bottom:2.5rem;font-style:italic;padding-bottom:2rem;border-bottom:1px solid var(--border)}
-.article-body{font-size:1rem;color:var(--brown)}
-.article-body p{margin-bottom:1.5rem}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4.5vw,2.9rem);font-weight:400;color:var(--brown);line-height:1.15;margin-bottom:.75rem}
+h1 span{color:var(--gold)}
 
-footer{background:var(--brown);color:var(--muted);text-align:center;padding:1.5rem 2rem;font-size:.78rem;letter-spacing:.04em;margin-top:auto}
+.standfirst{font-size:1rem;color:var(--muted);line-height:1.8;font-style:italic;border-left:3px solid var(--gold);padding-left:1.25rem;margin:1.5rem 0 2rem}
+
+/* article body — markdown rendered content */
+.article-body{font-size:.95rem;color:#5a3e28;line-height:1.85}
+.article-body p{margin-bottom:1.1rem}
+.article-body h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--brown);margin:2.2rem 0 .7rem;line-height:1.2}
+.article-body h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--brown);margin:1.6rem 0 .5rem}
+.article-body strong{font-weight:500;color:var(--brown)}
+.article-body em{font-style:italic;color:var(--muted)}
+.article-body a{color:var(--gold);text-decoration:none}
+.article-body a:hover{text-decoration:underline}
+.article-body ul,.article-body ol{padding-left:1.5rem;margin-bottom:1rem}
+.article-body li{margin-bottom:.4rem;font-size:.95rem;color:#5a3e28}
+.article-body blockquote{border-left:3px solid var(--gold);padding:.75rem 1.25rem;background:var(--white);border-radius:0 8px 8px 0;margin:1.25rem 0;color:var(--muted);font-style:italic}
+.article-body hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+
+/* before/after blocks — triggered by [before] / [after] markers in body */
+.ba-block{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem 0}
+.ba-side{padding:1rem 1.25rem}
+.ba-old{background:rgba(61,42,24,.04)}
+.ba-new{background:rgba(184,134,11,.05)}
+.ba-head{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;font-weight:500}
+.ba-old .ba-head{color:var(--muted)}
+.ba-new .ba-head{color:var(--gold)}
+.ba-content{font-size:.84rem;color:var(--brown);line-height:1.65}
+
+/* callout boxes — triggered by [callout] marker */
+.callout{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:1rem 1.4rem;margin:1.5rem 0}
+.callout-label{font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.callout p{font-size:.88rem;color:var(--brown);line-height:1.7;margin:0}
+
+/* loading state */
+.loading-state{text-align:center;padding:4rem 0;color:var(--muted)}
+.loading-rule{width:30px;height:2px;background:rgba(184,134,11,.3);margin:.75rem auto}
+
+/* error state */
+.error-state{text-align:center;padding:4rem 0}
+.error-state h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--brown);margin-bottom:.5rem}
+.error-state p{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem}
+.error-btn{display:inline-block;font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--brown);background:var(--light);border:1px solid var(--tan);text-decoration:none;padding:.5rem 1.25rem;border-radius:4px}
+
+/* further reading */
+.further-reading{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.75rem;margin:2.5rem 0 1rem}
+.fr-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--brown);margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.fr-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.fr-list li{display:flex;align-items:baseline;gap:.5rem;font-size:.82rem}
+.fr-list li::before{content:'›';color:var(--gold);flex-shrink:0}
+.fr-list a{color:var(--brown);text-decoration:none;transition:color .2s}
+.fr-list a:hover{color:var(--gold)}
+
+footer{background:var(--brown);color:var(--muted);text-align:center;padding:1.5rem 2rem;font-size:.78rem;letter-spacing:.04em}
 footer a{color:var(--gold);text-decoration:none}
+
+@media(max-width:600px){
+  header{padding:.75rem 1rem}
+  .wrapper{padding:2.5rem 1rem 4rem}
+  .ba-block{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -47,85 +111,217 @@ footer a{color:var(--gold);text-decoration:none}
     <a href="/guide">Full Guide</a>
     <a href="/models">Models</a>
     <a href="/tracker">Tracker</a>
-    <a href="/trends">Trends</a>
+    <a href="/trends" class="active">Trends</a>
   </nav>
 </header>
 
-<main class="wrapper">
-  <a href="/trends" class="back-link">← Back to Trends</a>
-  
-  <article id="article-render-target">
-    <div class="meta-header" style="text-align: center; padding: 3rem 0;">
-      <p style="color: var(--muted); font-size: 0.9rem;">Loading deep analysis stream...</p>
-    </div>
-  </article>
+<main>
+  <div class="wrapper">
+    <a href="/trends" class="back-link">← Back to Trends</a>
+    <article id="article-render-target">
+      <div class="loading-state">
+        <div class="loading-rule"></div>
+        <p style="font-size:.85rem">Loading article...</p>
+        <div class="loading-rule"></div>
+      </div>
+    </article>
+  </div>
 </main>
 
 <footer>
   <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-async function loadFullArticle() {
-  try {
-    // 1. Parse the ?article=slug parameter from the browser window URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const articleSlug = urlParams.get('article');
-    
-    if (!articleSlug) {
-      throw new Error("No specific analysis identifier requested.");
-    }
+/**
+ * view-article.html — Fixed article viewer for Decap CMS JSON articles
+ *
+ * Problem solved: Decap CMS saves files as YYYY-MM-DD-slug.json but the URL
+ * parameter only contains the slug. This script fetches the articles index,
+ * finds the matching file by slug suffix, then loads the full article JSON.
+ *
+ * URL format: /trends/view-article.html?article=agentic-ai-explained
+ */
 
-    // 2. Query the raw JSON content file directly from your database layout
-    const response = await fetch(`/content/articles/${articleSlug}.json`);
-    if (!response.ok) throw new Error("The requested analysis update does not exist.");
-    
-    const article = await response.json();
-    
-    // 3. Format timestamp beautifully
-    let formattedDate = "Recent Update";
-    if (article.date) {
-      const parsedDate = new Date(article.date);
-      if (!isNaN(parsedDate)) {
-        formattedDate = parsedDate.toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return isNaN(d) ? dateStr : d.toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+}
+
+function tagClass(category) {
+  const map = {
+    'Trend Spotlight': 'tag-trend',
+    'Deep Dive':       'tag-deep',
+    'Quarterly':       'tag-quarterly',
+    'Model Update':    'tag-trend',
+    'Article':         'tag-explainer',
+  };
+  return map[category] || 'tag-explainer';
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  // Use marked if available, else basic line-break render
+  if (typeof marked !== 'undefined') {
+    return marked.parse(text);
+  }
+  return text.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+}
+
+function showError(msg) {
+  document.getElementById('article-render-target').innerHTML = `
+    <div class="error-state">
+      <h3>Article not found</h3>
+      <p>${msg}</p>
+      <a href="/trends" class="error-btn">← Back to Trends</a>
+    </div>`;
+}
+
+// ── Main loader ───────────────────────────────────────────────────────────────
+
+async function loadArticle() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedSlug = urlParams.get('article');
+
+  if (!requestedSlug) {
+    showError('No article specified. Please return to the Trends page and select an article.');
+    return;
+  }
+
+  try {
+    /**
+     * Strategy: Decap CMS saves files as YYYY-MM-DD-slug.json
+     * We can't know the date prefix, so we:
+     * 1. Try fetching articles_index.json to get the file list
+     * 2. Find the entry whose slug matches requestedSlug
+     * 3. Fetch that specific file
+     * 4. If index doesn't exist, try common date-prefix patterns
+     */
+
+    let articleData = null;
+    let fileName = null;
+
+    // ── Step 1: Try the articles index first ─────────────────────────────────
+    try {
+      const indexRes = await fetch('/content/articles_index.json', { cache: 'no-store' });
+      if (indexRes.ok) {
+        const index = await indexRes.json();
+        // index is array of {slug, file, ...} or {slug, url, ...}
+        const match = index.find(a =>
+          a.slug === requestedSlug ||
+          (a.file && a.file.includes(requestedSlug)) ||
+          (a.url && a.url.includes(requestedSlug))
+        );
+        if (match && match.file) {
+          fileName = match.file; // e.g. "content/articles/2026-05-15-agentic-ai-explained.json"
+        }
+      }
+    } catch(e) { /* index not available, try alternatives */ }
+
+    // ── Step 2: Try fetching the file directly using known slug ───────────────
+    // Decap CMS slug format is {{year}}-{{month}}-{{day}}-{{slug}}
+    // Try direct slug first (in case someone named it without date)
+    if (!articleData) {
+      const directRes = await fetch(`/content/articles/${requestedSlug}.json`, { cache: 'no-store' });
+      if (directRes.ok) {
+        articleData = await directRes.json();
       }
     }
 
-    // 4. Update tab title dynamically
-    document.title = `${article.title || 'Analysis'} · LLMs 101`;
+    // ── Step 3: Search by listing known pattern variations ────────────────────
+    // Try fetching with common date prefixes (current year, recent months)
+    if (!articleData) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const attempts = [];
 
-    // 5. Inject clean layout components safely
+      // Try all months for current and previous year
+      for (let y = year; y >= year - 1; y--) {
+        for (let m = 12; m >= 1; m--) {
+          for (let d = 31; d >= 1; d -= 5) { // Try every 5 days — reduces requests
+            const mm = String(m).padStart(2, '0');
+            const dd = String(d).padStart(2, '0');
+            attempts.push(`/content/articles/${y}-${mm}-${dd}-${requestedSlug}.json`);
+          }
+        }
+      }
+
+      // Race the first batch — try 12 most likely dates concurrently
+      // (current month going backwards, then previous months)
+      const likelyDates = [];
+      for (let m = now.getMonth() + 1; m >= 1; m--) {
+        const mm = String(m).padStart(2, '0');
+        for (let d = 28; d >= 1; d -= 7) {
+          const dd = String(d).padStart(2, '0');
+          likelyDates.push(`/content/articles/${year}-${mm}-${dd}-${requestedSlug}.json`);
+          likelyDates.push(`/content/articles/${year - 1}-${mm}-${dd}-${requestedSlug}.json`);
+        }
+      }
+
+      // Try fetches one at a time (avoids 404 flood in network tab)
+      for (const url of likelyDates.slice(0, 24)) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (res.ok) {
+            articleData = await res.json();
+            break;
+          }
+        } catch(e) { continue; }
+      }
+    }
+
+    if (!articleData) {
+      throw new Error('Could not locate this article. It may not have been published yet.');
+    }
+
+    // ── Step 4: Render the article ────────────────────────────────────────────
+
+    document.title = `${articleData.title || 'Article'} · LLMs 101`;
+
+    // Update OG meta if present
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', `${articleData.title} · LLMs 101`);
+
+    const bodyHTML = renderMarkdown(articleData.body || '');
+
     const target = document.getElementById('article-render-target');
     target.innerHTML = `
-      <header class="meta-header">
-        <span class="category-badge">${article.category || 'Explainer'}</span>
-        <h1>${article.title || 'Untitled Update'}</h1>
-        <div class="date-stamp">Published on ${formattedDate}</div>
-      </header>
-      
-      <p class="standfirst">${article.summary || ''}</p>
-      
-      <div class="article-body">
-        <p>${(article.body || '').replace(/\n/g, '<br>')}</p>
+      <div class="meta-header">
+        <span class="article-tag">${articleData.category || 'Explainer'}</span>
+        <h1>${articleData.title || 'Untitled'}</h1>
+        <div class="article-meta-row">
+          <span class="article-date">${formatDate(articleData.date)}</span>
+          ${articleData.read_time ? `<span class="article-read">${articleData.read_time}</span>` : ''}
+        </div>
+      </div>
+
+      ${articleData.summary ? `<p class="standfirst">${articleData.summary}</p>` : ''}
+
+      <div class="article-body">${bodyHTML}</div>
+
+      <div class="further-reading">
+        <div class="fr-title">Continue reading</div>
+        <ul class="fr-list">
+          <li><a href="/trends">All Trends &amp; Explainers</a></li>
+          <li><a href="/trends/state-of-llms-q2-2026">State of LLMs — Q2 2026</a></li>
+          <li><a href="/models">Frontier Model Directory</a></li>
+          <li><a href="/tracker">Model Tracker &amp; Rankings</a></li>
+        </ul>
       </div>
     `;
 
   } catch (err) {
-    console.error(err);
-    document.getElementById('article-render-target').innerHTML = `
-      <div style="text-align:center; padding: 3rem 0; color: var(--muted);">
-        <h3>Analysis Unavailable</h3>
-        <p style="font-size:0.85rem; margin-top:0.5rem;">${err.message}</p>
-      </div>
-    `;
+    console.error('Article load error:', err);
+    showError(err.message);
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadFullArticle);
+document.addEventListener('DOMContentLoaded', loadArticle);
 </script>
 </body>
 </html>
