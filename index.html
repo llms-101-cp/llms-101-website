@@ -357,6 +357,21 @@ nav ul{padding:.1rem 0 .4rem}
 .tag-pill{display:inline-block;padding:2px 9px;border-radius:20px;background:var(--tan-pale);border:1px solid var(--border);font-size:.7rem;color:var(--muted);margin:.15rem}
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--tan),transparent);margin:2rem 0;opacity:.5}
 
+/* ── Footer ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:1.5rem;
+  text-align:center;
+  font-size:.75rem;
+  color:var(--muted);
+  font-family:'Jost',sans-serif;
+  font-weight:300;
+  letter-spacing:.02em;
+}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent;transition:color .15s,border-color .15s}
+footer a:hover{color:var(--brown);border-bottom-color:var(--tan)}
+footer .footer-sep{margin:0 .6rem;opacity:.4}
+
 /* scrollbar */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -389,7 +404,6 @@ nav ul{padding:.1rem 0 .4rem}
     <ul>
       <li><a href="#" onclick="showPage('beginners',this)" tabindex="0"><span class="nav-icon">💡</span>AI for Beginners</a></li>
       <li><a href="#" class="active" onclick="showPage('mindmap',this)" tabindex="0"><span class="nav-icon">🗺</span>LLMs 101 Mind Map</a></li>
-      <li><a href="/guide" tabindex="0"><span class="nav-icon">📖</span>Full Text Guide</a></li>
       <li><a href="#" onclick="showPage('resources',this)" tabindex="0"><span class="nav-icon">📚</span>Interesting Resources</a></li>
     </ul>
     <div class="nav-section-label">Explore</div>
@@ -2291,5 +2305,15 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSidebar(); c
     });
   }
 </script>
+<footer>
+  <span>© 2025 LLMs 101</span>
+  <span class="footer-sep">·</span>
+  <a href="/guide">Full Text Guide</a>
+  <span class="footer-sep">·</span>
+  <a href="#" onclick="showPage('about',this)">About</a>
+  <span class="footer-sep">·</span>
+  <a href="#" onclick="showPage('contact',this)">Contact</a>
+</footer>
+
 </body>
 </html>
