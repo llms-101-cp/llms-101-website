@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading Report... · LLMs 101</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown:#3d2a18;--gold:#B8860B;--tan:#D2B48C;--cream:#FAF8F4;
+  --muted:#9a7a5e;--light:#F5EDD8;--border:rgba(184,134,11,.18);--white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:300;background:var(--cream);color:var(--brown);line-height:1.8;font-size:16px;display:flex;flex-direction:column;min-height:100vh}
+main{flex:1}
+header{position:sticky;top:0;z-index:100;background:rgba(250,248,244,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.site-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--brown);text-decoration:none;letter-spacing:.02em}
+.site-title span{color:var(--gold)}
+nav{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
+nav a{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:.3rem .7rem;border-radius:20px;transition:color .2s,background .2s}
+nav a:hover{color:var(--gold)}
+nav a.active{color:var(--brown);background:var(--light)}
+.wrapper{max-width:760px;margin:0 auto;padding:3.5rem 2rem 5rem}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;margin-bottom:2rem;transition:color .2s}
+.back-link:hover{color:var(--gold)}
+.article-tag{display:inline-block;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(184,134,11,.1);color:var(--gold);border:1px solid rgba(184,134,11,.25);padding:2px 10px;border-radius:20px;margin-bottom:1rem}
+.article-date{font-size:.72rem;color:var(--muted);display:block;margin-top:.4rem}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4.5vw,2.9rem);font-weight:400;color:var(--brown);line-height:1.15;margin-bottom:.75rem}
+h1 span{color:var(--gold)}
+.standfirst{font-size:1rem;color:var(--muted);line-height:1.8;font-style:italic;border-left:3px solid var(--gold);padding-left:1.25rem;margin:1.5rem 0 2rem}
+.summary-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1.75rem;margin:2rem 0}
+.summary-box-title{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.summary-box-title::before{content:'';display:block;width:18px;height:2px;background:var(--gold)}
+.article-body{font-size:.95rem;color:#5a3e28;line-height:1.85}
+.article-body p{margin-bottom:1.1rem}
+.article-body h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--brown);margin:2.2rem 0 .7rem;line-height:1.2}
+.article-body h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--brown);margin:1.6rem 0 .5rem}
+.article-body strong{font-weight:500;color:var(--brown)}
+.article-body a{color:var(--gold);text-decoration:none}
+.article-body a:hover{text-decoration:underline}
+.article-body ul,.article-body ol{padding-left:1.5rem;margin-bottom:1rem}
+.article-body li{margin-bottom:.4rem;font-size:.95rem}
+.article-body blockquote{border-left:3px solid var(--gold);padding:.75rem 1.25rem;background:var(--white);border-radius:0 8px 8px 0;margin:1.25rem 0;color:var(--muted);font-style:italic}
+.article-body hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+.pdf-link{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;letter-spacing:.04em;color:var(--brown);background:var(--light);border:1px solid var(--tan);text-decoration:none;padding:.6rem 1.25rem;border-radius:6px;margin:1rem 0;transition:background .2s}
+.pdf-link:hover{background:var(--tan)}
+.further-reading{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.75rem;margin:2.5rem 0 1rem}
+.fr-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--brown);margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.fr-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.fr-list li{display:flex;align-items:baseline;gap:.5rem;font-size:.82rem}
+.fr-list li::before{content:'›';color:var(--gold);flex-shrink:0}
+.fr-list a{color:var(--brown);text-decoration:none;transition:color .2s}
+.fr-list a:hover{color:var(--gold)}
+.loading-state{text-align:center;padding:4rem 0;color:var(--muted)}
+.loading-rule{width:30px;height:2px;background:rgba(184,134,11,.3);margin:.75rem auto}
+.error-state{text-align:center;padding:4rem 0}
+.error-state h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--brown);margin-bottom:.5rem}
+.error-state p{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem}
+.error-btn{display:inline-block;font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;color:var(--brown);background:var(--light);border:1px solid var(--tan);text-decoration:none;padding:.5rem 1.25rem;border-radius:4px}
+footer{background:var(--brown);color:var(--muted);text-align:center;padding:1.5rem 2rem;font-size:.78rem;letter-spacing:.04em}
+footer a{color:var(--gold);text-decoration:none}
+@media(max-width:600px){
+  header{padding:.75rem 1rem}
+  .wrapper{padding:2.5rem 1rem 4rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="site-title"><span>LLMs</span> 101</a>
+  <nav>
+    <a href="/">Mind Map</a>
+    <a href="/guide">Full Guide</a>
+    <a href="/models">Models</a>
+    <a href="/tracker">Tracker</a>
+    <a href="/trends" class="active">Trends</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrapper">
+    <a href="/trends" class="back-link">← Back to Trends</a>
+    <article id="report-render-target">
+      <div class="loading-state">
+        <div class="loading-rule"></div>
+        <p style="font-size:.85rem">Loading report...</p>
+        <div class="loading-rule"></div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer>
+  <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+/**
+ * view-report.html — Dynamic viewer for quarterly State of LLMs reports
+ *
+ * Decap CMS config: reports saved to content/reports/
+ * Slug pattern: {{year}}-q{{quarter}}-report
+ * URL format: /trends/view-report.html?report=2026-q2-report
+ *             /trends/view-report.html?year=2026&quarter=2
+ */
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return isNaN(d) ? dateStr : d.toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  if (typeof marked !== 'undefined') return marked.parse(text);
+  return '<p>' + text.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+}
+
+function showError(msg) {
+  document.getElementById('report-render-target').innerHTML = `
+    <div class="error-state">
+      <h3>Report not found</h3>
+      <p>${msg}</p>
+      <a href="/trends" class="error-btn">← Back to Trends</a>
+    </div>`;
+}
+
+async function loadReport() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Support two URL formats:
+  // ?report=2026-q2-report  (direct slug)
+  // ?year=2026&quarter=2    (friendly params)
+  let slug = urlParams.get('report');
+  if (!slug) {
+    const year = urlParams.get('year');
+    const quarter = urlParams.get('quarter');
+    if (year && quarter) {
+      slug = `${year}-q${quarter}-report`;
+    }
+  }
+
+  if (!slug) {
+    showError('No report specified. Please return to the Trends page and select a report.');
+    return;
+  }
+
+  try {
+    let reportData = null;
+
+    // ── Try direct slug fetch ─────────────────────────────────────────────────
+    // Decap CMS saves as: content/reports/{{year}}-q{{quarter}}-report.json
+    const directRes = await fetch(`/content/reports/${slug}.json`, { cache: 'no-store' });
+    if (directRes.ok) {
+      reportData = await directRes.json();
+    }
+
+    // ── Try reports_index.json as fallback ────────────────────────────────────
+    if (!reportData) {
+      try {
+        const indexRes = await fetch('/content/reports_index.json', { cache: 'no-store' });
+        if (indexRes.ok) {
+          const index = await indexRes.json();
+          const match = index.find(r =>
+            r.slug === slug ||
+            (r.url && r.url.includes(slug))
+          );
+          if (match) reportData = match;
+        }
+      } catch(e) {}
+    }
+
+    if (!reportData) {
+      throw new Error(`Could not find the report "${slug}". It may not have been published yet.`);
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+
+    const quarterLabel = reportData.quarter
+      ? `Q${reportData.quarter} ${reportData.year || ''}`
+      : (reportData.title || 'Quarterly Report');
+
+    document.title = `${reportData.title || quarterLabel} · LLMs 101`;
+
+    const bodyHTML = renderMarkdown(reportData.body || reportData.summary || '');
+
+    const pdfSection = reportData.pdf
+      ? `<a href="${reportData.pdf}" class="pdf-link" target="_blank" rel="noopener">
+           📄 Download full PDF report
+         </a>`
+      : '';
+
+    document.getElementById('report-render-target').innerHTML = `
+      <div class="meta-header">
+        <span class="article-tag">Quarterly Report</span>
+        <h1>${reportData.title || 'State of LLMs'}</h1>
+        ${reportData.date ? `<span class="article-date">${formatDate(reportData.date)}</span>` : ''}
+      </div>
+
+      ${reportData.summary ? `<p class="standfirst">${reportData.summary}</p>` : ''}
+
+      ${pdfSection}
+
+      <div class="article-body">${bodyHTML}</div>
+
+      <div class="further-reading">
+        <div class="fr-title">More quarterly reports</div>
+        <ul class="fr-list">
+          <li><a href="/trends/view-report.html?report=2026-q2-report">State of LLMs — Q2 2026</a></li>
+          <li><a href="/trends/view-report.html?report=2026-q1-report">State of LLMs — Q1 2026</a></li>
+          <li><a href="/trends/view-report.html?report=2025-q4-report">State of LLMs — Q4 2025</a></li>
+          <li><a href="/trends">All Trends &amp; Explainers</a></li>
+        </ul>
+      </div>
+    `;
+
+  } catch(err) {
+    console.error('Report load error:', err);
+    showError(err.message);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadReport);
+</script>
+</body>
+</html>
