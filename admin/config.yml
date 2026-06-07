@@ -1,0 +1,157 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "mindmap_nodes"
+    label: "Mind Map Nodes"
+    folder: "content/nodes"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    fields:
+      - {label: "ID (e.g., math, linear-algebra)", name: "id", widget: "string"}
+      - {label: "Label (Short Title)", name: "label", widget: "string"}
+      - {label: "Subtitle", name: "sub", widget: "string", required: false}
+      - {label: "Tag (e.g., Branch, Overview)", name: "tag", widget: "string"}
+      - {label: "Theme Color", name: "theme", widget: "select", options: ["root", "math", "train", "arch", "prompt", "theme"]}
+      - {label: "Has Children?", name: "hasChildren", widget: "boolean", default: false}
+      - {label: "Sidebar Title", name: "title", widget: "string"}
+      - {label: "Sidebar Body Paragraphs (HTML allowed)", name: "body", widget: "text"}
+
+  - name: "pages"
+    label: "Website Pages"
+    files:
+      - file: "content/pages/beginners.json"
+        label: "AI for Beginners"
+        name: "beginners"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "AI for beginners"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/resources.json"
+        label: "Interesting Resources"
+        name: "resources"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "Interesting Resources"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/about.json"
+        label: "About this site"
+        name: "about"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "About this site"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+      - file: "content/pages/contact.json"
+        label: "Contact"
+        name: "contact"
+        fields:
+          - {label: "Page Title", name: "title", widget: "string", default: "Contact"}
+          - {label: "Page Content", name: "body", widget: "markdown"}
+
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - file: "content/settings/theme.json"
+        label: "Theme Colors"
+        name: "theme"
+        fields:
+          - label: "Base Theme Preset"
+            name: "preset"
+            widget: "select"
+            default: "Sahel (Default)"
+            options:
+              - "Sahel (Default)"
+              - "Dark Mode"
+              - "Ocean"
+              - "Forest"
+              - "HC Light"
+              - "HC Dark"
+              - "Midnight Blue"
+              - "Sunset"
+              - "Cherry Blossom"
+              - "Cyberpunk"
+              - "Monochrome"
+              - "Autumn"
+              - "Lavender"
+              - "Coffee House"
+              - "Mint Chocolate"
+              - "Slate & Copper"
+              - "Vintage Rose"
+              - "Deep Purple"
+              - "Arctic Ice"
+              - "Solarized Dark"
+          - label: "Override: Main Text Color"
+            name: "text_override"
+            widget: "color"
+            required: false
+            hint: "Leave blank to use the theme's default text color."
+          - label: "Override: Background Color"
+            name: "bg_override"
+            widget: "color"
+            required: false
+            hint: "Leave blank to use the theme's default background."
+          - label: "Override: Accent/Header Color"
+            name: "brown_override"
+            widget: "color"
+            required: false
+            hint: "Overrides the dark brown/accent colors."
+
+  - name: "articles"
+    label: "Articles & Trend Explainers"
+    folder: "content/articles"
+    create: true
+    # FIXED: slug no longer includes date prefix so view-article.html can find files by slug alone
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    # Preview in Decap CMS admin links directly to view-article.html
+    preview_path: "trends/view-article.html?article={{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "URL Slug (use-hyphens-no-spaces)", name: "slug", widget: "string", hint: "e.g. agentic-ai-explained — this becomes the URL parameter" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Read Time (e.g. 5 min read)", name: "read_time", widget: "string", default: "5 min read", required: false }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - "Trend Spotlight"
+          - "Explainer"
+          - "Deep Dive"
+          - "Model Update"
+          - "Quarterly"
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Summary / Standfirst (1-2 sentences shown in card and at top of article)", name: "summary", widget: "text" }
+      - { label: "Before Label (e.g. The old way)", name: "before_label", widget: "string", required: false, default: "Before" }
+      - { label: "Before Content (shown in card preview)", name: "before", widget: "text", required: false }
+      - { label: "After Label (e.g. The new way)", name: "after_label", widget: "string", required: false, default: "After" }
+      - { label: "After Content (shown in card preview)", name: "after", widget: "text", required: false }
+      - { label: "Body Content (Markdown — use ## for headings, **bold**, > for callouts)", name: "body", widget: "markdown" }
+
+  - name: "reports"
+    label: "Quarterly Reports — State of LLMs"
+    folder: "content/reports"
+    create: true
+    # FIXED: slug pattern matches what view-report.html expects
+    slug: "{{year}}-q{{fields.quarter}}-report"
+    extension: "json"
+    format: "json"
+    preview_path: "trends/view-report.html?report={{year}}-q{{fields.quarter}}-report"
+    fields:
+      - { label: "Report Title (e.g. State of LLMs — Q2 2026)", name: "title", widget: "string" }
+      - { label: "Year", name: "year", widget: "number", value_type: "int" }
+      - { label: "Quarter (1–4)", name: "quarter", widget: "number", value_type: "int", min: 1, max: 4 }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Executive Summary / Standfirst (2-3 sentences)", name: "summary", widget: "text" }
+      - label: "Key Findings"
+        name: "insights"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Label (e.g. Model of the quarter)", name: "label", widget: "string" }
+          - { label: "Finding (quoted sentence)", name: "text", widget: "text" }
+      - { label: "Body Content (Markdown)", name: "body", widget: "markdown" }
+      - { label: "Attach PDF Report (optional)", name: "pdf", widget: "file", required: false }
