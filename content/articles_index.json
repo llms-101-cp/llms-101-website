@@ -1,5 +1,12 @@
 [
   {
+    "title": "Test Test Test",
+    "date": "2026-06-21T06:29:32.282Z",
+    "category": "Resource Pick",
+    "summary": "A hands-on, line-by-line walkthrough of how GPT actually works.",
+    "slug": "test-test-test"
+  },
+  {
     "title": "Andrej Karpathy — Let's build GPT from scratch",
     "date": "2026-06-21T06:29:32.282Z",
     "category": "Resource Pick",
