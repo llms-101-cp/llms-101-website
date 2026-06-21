@@ -1,14 +1,5 @@
 [
   {
-    "title": "Andrej Karpathy — Let's build GPT from scratch",
-    "date": "2026-06-21T06:29:32.282Z",
-    "category": "Resource Pick",
-    "summary": "A hands-on, line-by-line walkthrough of how GPT actually works.",
-    "slug": "karpathy-build-gpt-from-scratch",
-    "file": "content/articles/karpathy-build-gpt-from-scratch.json",
-    "url": "/trends/view-article.html?article=karpathy-build-gpt-from-scratch"
-  },
-  {
     "title": "The Autonomous Agent Era — From Chatbots to AI That Gets Things Done",
     "date": "2026-05-15T00:00:00.000Z",
     "category": "Model Update",
