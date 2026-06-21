@@ -1,67 +1,51 @@
 [
   {
-    "slug": "agentic-ai-explained",
-    "url": "/trends/agentic-ai-explained",
+    "title": "Andrej Karpathy — Let's build GPT from scratch",
+    "date": "2026-06-21T06:29:32.282Z",
+    "category": "Resource Pick",
+    "summary": "A hands-on, line-by-line walkthrough of how GPT actually works.",
+    "slug": "karpathy-build-gpt-from-scratch"
+  },
+  {
+    "title": "Retrieval-Augmented Generation (RAG)",
+    "date": "2026-06-21T06:29:32.281Z",
+    "category": "Concept Explainer",
+    "summary": "How AI looks things up before answering, like an open-book exam.",
+    "slug": "retrieval-augmented-generation-rag"
+  },
+  {
     "title": "The Autonomous Agent Era — From Chatbots to AI That Gets Things Done",
-    "category": "Trend Spotlight",
-    "date": "2026-05-15",
-    "read_time": "5 min read",
+    "date": "2026-05-15T00:00:00.000Z",
+    "category": "Model Update",
     "summary": "The shift from \"AI that answers questions\" to \"AI that completes tasks\" is the biggest structural change in how we use these tools. Here's what changed, why it matters, and what it means for how you work.",
-    "before_label": "The old way",
-    "before": "You type a prompt → AI gives you a text response → You copy it into a document → You look up the next fact yourself → Repeat.",
-    "after_label": "The new way",
-    "after": "You give a single goal → AI plans 5 steps → searches the web → writes the content → checks its own facts → delivers a finished result."
+    "slug": "agentic-ai-explained"
   },
   {
-    "slug": "ai-cost-collapse",
-    "url": "/trends/ai-cost-collapse",
     "title": "Why AI Prices Have Dropped 100x in Two Years",
+    "date": "2026-05-01T00:00:00.000Z",
     "category": "Explainer",
-    "date": "2026-05-01",
-    "read_time": "4 min read",
     "summary": "The cost of running frontier AI has fallen faster than almost any technology in computing history. GPT-3's 2020 pricing would cost roughly $20 for the same task that costs $0.002 today. Here's what drove it and what it changes.",
-    "before_label": "2023 pricing",
-    "before": "Processing 1 million words via GPT-4 cost roughly $60. Meaningful AI use was expensive enough to require budget approval.",
-    "after_label": "2026 pricing",
-    "after": "The same 1 million words now costs under $1 on most frontier models. At DeepSeek rates: under $0.15. AI cost is now negligible for most tasks."
+    "slug": "ai-cost-collapse"
   },
   {
-    "slug": "reasoning-models-explained",
-    "url": "/trends/reasoning-models-explained",
     "title": "Why Every Major AI Now Has a \"Thinking\" Mode",
+    "date": "2026-04-15T00:00:00.000Z",
     "category": "Explainer",
-    "date": "2026-04-15",
-    "read_time": "4 min read",
     "summary": "OpenAI's o1, Claude's extended thinking, Gemini's deep research, DeepSeek R1 — every frontier model now offers a slower, more deliberate mode that reasons through problems before answering. What is it actually doing?",
-    "before_label": "Standard mode",
-    "before": "Model reads your prompt → immediately predicts the most likely response → delivers answer in seconds. Fast, fluent, occasionally wrong.",
-    "after_label": "Reasoning mode",
-    "after": "Model generates hundreds of \"thinking\" tokens working through the problem step by step before producing its final answer. Slower. Dramatically more accurate on hard problems."
+    "slug": "reasoning-models-explained"
   },
   {
-    "slug": "deepseek-r1-what-it-proved",
-    "url": "/trends/deepseek-r1-what-it-proved",
     "title": "What DeepSeek R1 Actually Proved — And Why It Shook the Industry",
+    "date": "2026-04-01T00:00:00.000Z",
     "category": "Deep Dive",
-    "date": "2026-04-01",
-    "read_time": "6 min read",
     "summary": "In January 2025, a Chinese lab released an AI model that matched OpenAI's best reasoning model — reportedly trained for $6 million, versus hundreds of millions. The AI industry had a week-long panic. Here's what actually happened and why it matters.",
-    "before_label": "The assumption before R1",
-    "before": "Frontier AI required hundreds of millions in compute. Only well-capitalised Western labs could compete at the top. The moat was hardware access.",
-    "after_label": "After R1",
-    "after": "Algorithmic efficiency can substitute for raw compute. The training cost advantage was real. The frontier is more reachable than assumed. The moat is narrowing."
+    "slug": "deepseek-r1-what-it-proved"
   },
   {
-    "slug": "context-window-arms-race",
-    "url": "/trends/context-window-arms-race",
     "title": "The Context Window Arms Race — What 1 Million Tokens Actually Means",
+    "date": "2026-03-15T00:00:00.000Z",
     "category": "Explainer",
-    "date": "2026-03-15",
-    "read_time": "3 min read",
     "summary": "Gemini reached a 1 million token context window. Claude supports 200,000. Even the smallest models now handle book-length documents. What changed, and does it actually matter for how most people use AI?",
-    "before_label": "2023 context limits",
-    "before": "Most models maxed at 4,000–8,000 tokens — a few pages of text. Long documents had to be chunked and passed in pieces. RAG was essential.",
-    "after_label": "2026 context windows",
-    "after": "1 million tokens = a 750,000-word novel, or an entire large codebase. Tasks that required complex RAG pipelines now just need one prompt."
+    "slug": "context-window-arms-race"
   }
 ]
