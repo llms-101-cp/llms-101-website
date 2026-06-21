@@ -1,0 +1,12 @@
+{
+  "name": "llms101-automation",
+  "version": "3.0.0",
+  "description": "Two-track weekly content automation for llms101.com",
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}
