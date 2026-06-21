@@ -1,7 +1,0 @@
-{
-  "title": "The Context Window Arms Race — What 1 Million Tokens Actually Means",
-  "date": "2026-03-15T00:00:00.000Z",
-  "category": "Explainer",
-  "summary": "Gemini reached a 1 million token context window. Claude supports 200,000. Even the smallest models now handle book-length documents. What changed, and does it actually matter for how most people use AI?",
-  "body": "This article was migrated automatically. You can edit this full analysis text body directly from your Decap admin panel at llms101.com/admin!"
-}
