@@ -90,10 +90,24 @@ async function generateHTML(prompt, label) {
   log(`[Track 2] Generating: ${label}`);
   const message = await client.messages.create({
     model: 'claude-opus-4-5',
-    max_tokens: 4000,
+    // Full HTML articles need significantly more headroom than JSON content:
+    // the repeated CSS template alone runs ~1500-2000 tokens before any article
+    // content begins, plus a genuine 700-900 word article with multiple content
+    // blocks. 4000 was too low and caused silent mid-tag truncation — raised to
+    // 8000 to give comfortable headroom for the largest expected output.
+    max_tokens: 8000,
     system: prompt.system,
     messages: [{ role: 'user', content: prompt.user }]
   });
+
+  // Flag if the response was cut off before finishing, so we never silently
+  // ship a truncated article again.
+  if (message.stop_reason === 'max_tokens') {
+    log(`WARNING: HTML generation for "${label}" hit the token limit and was truncated.`);
+    await saveError(label, message.content[0].text + '\n\n[TRUNCATED — stop_reason: max_tokens]');
+    throw new Error(`Generation truncated for ${label} — hit max_tokens limit`);
+  }
+
   const raw = message.content[0].text.trim();
   // Strip markdown fences if Claude added them despite instructions
   const cleaned = raw.replace(/^```(?:html)?\n?/, '').replace(/\n?```$/, '').trim();
@@ -101,6 +115,15 @@ async function generateHTML(prompt, label) {
   if (!cleaned.startsWith('<!DOCTYPE') && !cleaned.startsWith('<div')) {
     log(`WARNING: HTML output for "${label}" doesn't start as expected — flagging for manual review`);
   }
+
+  // Basic sanity check: a complete article must close its own html tag.
+  // This catches truncation even in the rare case stop_reason doesn't flag it.
+  if (cleaned.startsWith('<!DOCTYPE') && !cleaned.includes('</html>')) {
+    log(`ERROR: HTML output for "${label}" is missing closing </html> — likely truncated.`);
+    await saveError(label, cleaned + '\n\n[INCOMPLETE — missing closing </html> tag]');
+    throw new Error(`Generation appears incomplete for ${label} — no closing </html> tag found`);
+  }
+
   return cleaned;
 }
 
