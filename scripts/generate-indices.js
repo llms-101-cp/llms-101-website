@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
   // process.cwd() forces Node to look exactly at the root repository directory in GitHub Actions
@@ -35,8 +35,8 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
         // FIX: write the full relative file path so view-article.html's
         // Step 1 index lookup actually succeeds. Without this field, the
         // viewer always falls through to the fragile date-guessing cascade
-        // (see view-article.html Step 3), which silently fails for any
-        // article not published on the 7th/14th/21st/28th of a recent month.
+        // (the old Step 3), which silently failed for any article not
+        // published on the 7th/14th/21st/28th of a recent month.
         metaData.file = `content/${collectionFolder}/${file}`;
 
         // Also write a stable url field using the clean slug (no date
