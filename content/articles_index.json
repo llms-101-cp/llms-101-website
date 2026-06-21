@@ -7,14 +7,5 @@
     "slug": "reasoning-models-explained",
     "file": "content/articles/reasoning-models-explained.json",
     "url": "/trends/view-article.html?article=reasoning-models-explained"
-  },
-  {
-    "title": "What DeepSeek R1 Actually Proved — And Why It Shook the Industry",
-    "date": "2026-04-01T00:00:00.000Z",
-    "category": "Deep Dive",
-    "summary": "In January 2025, a Chinese lab released an AI model that matched OpenAI's best reasoning model — reportedly trained for $6 million, versus hundreds of millions. The AI industry had a week-long panic. Here's what actually happened and why it matters.",
-    "slug": "deepseek-r1-what-it-proved",
-    "file": "content/articles/deepseek-r1-what-it-proved.json",
-    "url": "/trends/view-article.html?article=deepseek-r1-what-it-proved"
   }
 ]
