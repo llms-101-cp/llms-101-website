@@ -1,14 +1,18 @@
 /**
- * llms101.com — Weekly Content Generation (Two-Track System)
+ * llms101.com — Weekly Content Generation (Two-Track System, v5)
  *
- * TRACK 1 (low risk): Mind Map nodes + static pages → JSON files,
- *   auto-saved as drafts, reviewed in dashboard, dropped into content/nodes/
- *   or content/pages/ once approved. Matches the site's existing dynamic loader.
+ * TRACK 1 (low risk): Mind Map nodes + static pages → JSON files.
  *
- * TRACK 2 (higher risk): Trends articles + Model cards → HTML,
- *   generated from strict templates, MUST be visually previewed before use.
- *   Trends downloads as a standalone file. Model cards are copy-paste only —
- *   never auto-spliced into the shared models.html file.
+ * TRACK 2 (rebuilt): Trends articles now generate as a SINGLE JSON file
+ *   matching the real, confirmed-working Decap CMS schema:
+ *     content/articles/{slug}.json
+ *   This is picked up automatically by the existing indexing.yml workflow,
+ *   which rebuilds articles_index.json, which trends.html and
+ *   view-article.html both read. No HTML generation, no CSS template to
+ *   reproduce, no truncation risk — just a JSON object.
+ *
+ *   Model cards remain a single HTML block, copy-paste only, since
+ *   models.html is a genuinely different shared-file situation.
  *
  * Run: node scripts/generate.js
  * Env: ANTHROPIC_API_KEY, RESEND_API_KEY, REVIEW_EMAIL
@@ -18,23 +22,24 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
-import { buildNodePrompt, buildPagePrompt, buildResourceAdditionPrompt } from '../prompts/track1-json.js';
-import { buildTrendsArticlePrompt, buildModelCardPrompt } from '../prompts/track2-html.js';
+import { buildNodePrompt, buildPagePrompt } from '../prompts/track1-json.js';
+import { buildTrendsArticlePrompt, buildModelCardPrompt } from '../prompts/track2-trends.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Existing real Trends articles — used for "Further reading" links so we never
-// generate broken cross-links to articles that don't exist.
-const EXISTING_TRENDS_ARTICLES = [
-  '/trends/agentic-ai-explained',
-  '/trends/ai-cost-collapse',
-  '/trends/context-window-arms-race',
-  '/trends/deepseek-r1-what-it-proved',
-  '/trends/reasoning-models-explained',
-  '/trends/state-of-llms-q2-2026'
+// Real, currently-existing standalone Trends articles in trends/ — used so
+// Claude can reference them by name in prose where relevant. These are
+// separate from the JSON-driven articles and unaffected by this pipeline.
+const EXISTING_TRENDS_SLUGS = [
+  'agentic-ai-explained',
+  'ai-cost-collapse',
+  'context-window-arms-race',
+  'deepseek-r1-what-it-proved',
+  'reasoning-models-explained',
+  'state-of-llms-q2-2026'
 ];
 
 function log(msg) {
@@ -44,9 +49,9 @@ function log(msg) {
 function slugify(str) {
   return (str || 'untitled')
     .toLowerCase()
-    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '') // strip accents
-    .replace(/['']/g, '')                                // strip curly/straight apostrophes
-    .replace(/[—–]/g, '-')                                // em/en dash -> hyphen
+    .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['']/g, '')
+    .replace(/[—–]/g, '-')
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-');
@@ -67,63 +72,48 @@ async function writeCalendar(calendar) {
 
 // ─── Claude API calls ─────────────────────────────────────────────────────────
 
-async function generateJSON(prompt, label) {
-  log(`[Track 1] Generating: ${label}`);
+async function generateJSON(prompt, label, maxTokens = 2500) {
+  log(`Generating: ${label}`);
   const message = await client.messages.create({
     model: 'claude-opus-4-5',
-    max_tokens: 2000,
+    max_tokens: maxTokens,
     system: prompt.system,
     messages: [{ role: 'user', content: prompt.user }]
   });
   const raw = message.content[0].text.trim();
   const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+
+  if (message.stop_reason === 'max_tokens') {
+    log(`WARNING: "${label}" hit the token limit and may be truncated.`);
+    await saveError(label, raw + '\n\n[POSSIBLY TRUNCATED — stop_reason: max_tokens]');
+  }
+
   try {
     return JSON.parse(cleaned);
   } catch (err) {
-    log(`ERROR: JSON parse failed for "${label}" — saving raw output for inspection`);
+    log(`ERROR: JSON parse failed for "${label}"`);
     await saveError(label, raw);
     throw err;
   }
 }
 
 async function generateHTML(prompt, label) {
-  log(`[Track 2] Generating: ${label}`);
+  log(`Generating: ${label}`);
   const message = await client.messages.create({
     model: 'claude-opus-4-5',
-    // Full HTML articles need significantly more headroom than JSON content:
-    // the repeated CSS template alone runs ~1500-2000 tokens before any article
-    // content begins, plus a genuine 700-900 word article with multiple content
-    // blocks. 4000 was too low and caused silent mid-tag truncation — raised to
-    // 8000 to give comfortable headroom for the largest expected output.
     max_tokens: 8000,
     system: prompt.system,
     messages: [{ role: 'user', content: prompt.user }]
   });
 
-  // Flag if the response was cut off before finishing, so we never silently
-  // ship a truncated article again.
   if (message.stop_reason === 'max_tokens') {
     log(`WARNING: HTML generation for "${label}" hit the token limit and was truncated.`);
     await saveError(label, message.content[0].text + '\n\n[TRUNCATED — stop_reason: max_tokens]');
-    throw new Error(`Generation truncated for ${label} — hit max_tokens limit`);
+    throw new Error(`Generation truncated for ${label}`);
   }
 
   const raw = message.content[0].text.trim();
-  // Strip markdown fences if Claude added them despite instructions
   const cleaned = raw.replace(/^```(?:html)?\n?/, '').replace(/\n?```$/, '').trim();
-
-  if (!cleaned.startsWith('<!DOCTYPE') && !cleaned.startsWith('<div')) {
-    log(`WARNING: HTML output for "${label}" doesn't start as expected — flagging for manual review`);
-  }
-
-  // Basic sanity check: a complete article must close its own html tag.
-  // This catches truncation even in the rare case stop_reason doesn't flag it.
-  if (cleaned.startsWith('<!DOCTYPE') && !cleaned.includes('</html>')) {
-    log(`ERROR: HTML output for "${label}" is missing closing </html> — likely truncated.`);
-    await saveError(label, cleaned + '\n\n[INCOMPLETE — missing closing </html> tag]');
-    throw new Error(`Generation appears incomplete for ${label} — no closing </html> tag found`);
-  }
-
   return cleaned;
 }
 
@@ -136,6 +126,8 @@ async function saveError(label, raw) {
     'utf8'
   );
 }
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ─── Track 1: JSON drafts ─────────────────────────────────────────────────────
 
@@ -155,7 +147,8 @@ async function runTrack1(weekOf, calendarEntry) {
         contentType: 'node',
         targetPath: `content/nodes/${calendarEntry.node.id}.json`,
         filename: `${calendarEntry.node.id}.json`,
-        data: content
+        data: content,
+        extraStep: `Also add '${calendarEntry.node.id}' to the correct TREE.{branch} array in index.html, or it won't appear on the map.`
       });
     } catch (err) {
       log(`ERROR generating node: ${err.message}`);
@@ -183,27 +176,28 @@ async function runTrack1(weekOf, calendarEntry) {
   return drafts;
 }
 
-// ─── Track 2: HTML drafts ─────────────────────────────────────────────────────
+// ─── Track 2: Trends articles (single JSON) + Model cards (HTML block) ──────
 
 async function runTrack2(weekOf, calendarEntry) {
   const drafts = [];
 
   if (calendarEntry.trendsArticle) {
+    const topic = calendarEntry.trendsArticle.topic;
+    const notes = calendarEntry.trendsArticle.notes;
+
     try {
-      const prompt = buildTrendsArticlePrompt(
-        calendarEntry.trendsArticle.topic,
-        calendarEntry.trendsArticle.notes,
-        EXISTING_TRENDS_ARTICLES
-      );
-      const html = await generateHTML(prompt, `trends: ${calendarEntry.trendsArticle.topic}`);
-      const slug = slugify(calendarEntry.trendsArticle.topic);
+      const prompt = buildTrendsArticlePrompt(topic, notes, EXISTING_TRENDS_SLUGS);
+      const articleData = await generateJSON(prompt, `trends article: ${topic}`, 3000);
+      const slug = articleData.slug || slugify(topic);
+
       drafts.push({
         track: 2,
         contentType: 'trends-article',
-        targetPath: `trends/${slug}.html`,
-        filename: `${slug}.html`,
-        html,
-        requiresVisualReview: true
+        targetPath: `content/articles/${slug}.json`,
+        filename: `${slug}.json`,
+        data: articleData,
+        requiresVisualReview: true,
+        note: 'Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.'
       });
     } catch (err) {
       log(`ERROR generating trends article: ${err.message}`);
@@ -237,38 +231,44 @@ async function runTrack2(weekOf, calendarEntry) {
   return drafts;
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
 // ─── Save drafts ───────────────────────────────────────────────────────────────
 
 async function saveDrafts(weekOf, drafts) {
   const dir = path.join(ROOT, 'drafts', weekOf);
   await fs.mkdir(dir, { recursive: true });
 
+  const manifestEntries = [];
+
   for (const draft of drafts) {
-    const filePath = path.join(dir, draft.filename);
-    if (draft.track === 1) {
-      await fs.writeFile(filePath, JSON.stringify(draft.data, null, 2), 'utf8');
+    if (draft.track === 1 || draft.contentType === 'trends-article') {
+      await fs.writeFile(path.join(dir, draft.filename), JSON.stringify(draft.data, null, 2), 'utf8');
+      log(`Saved: drafts/${weekOf}/${draft.filename}`);
+      manifestEntries.push({
+        track: draft.track,
+        contentType: draft.contentType,
+        targetPath: draft.targetPath,
+        filename: draft.filename,
+        requiresVisualReview: draft.requiresVisualReview || false,
+        extraStep: draft.extraStep || null,
+        note: draft.note || null
+      });
     } else {
-      await fs.writeFile(filePath, draft.html, 'utf8');
+      await fs.writeFile(path.join(dir, draft.filename), draft.html, 'utf8');
+      log(`Saved: drafts/${weekOf}/${draft.filename}`);
+      manifestEntries.push({
+        track: 2,
+        contentType: draft.contentType,
+        targetPath: draft.targetPath,
+        filename: draft.filename,
+        requiresVisualReview: draft.requiresVisualReview || false,
+        requiresManualPaste: draft.requiresManualPaste || false
+      });
     }
-    log(`Saved: drafts/${weekOf}/${draft.filename}`);
   }
 
-  // Write a manifest so the dashboard knows what's in this week's batch
   await fs.writeFile(
     path.join(dir, '_manifest.json'),
-    JSON.stringify(
-      drafts.map(d => ({
-        track: d.track,
-        contentType: d.contentType,
-        targetPath: d.targetPath,
-        filename: d.filename,
-        requiresVisualReview: d.requiresVisualReview || false,
-        requiresManualPaste: d.requiresManualPaste || false
-      })),
-      null, 2
-    ),
+    JSON.stringify(manifestEntries, null, 2),
     'utf8'
   );
 }
@@ -281,21 +281,17 @@ async function sendReviewEmail(weekOf, drafts) {
     return;
   }
 
-  const track1Items = drafts.filter(d => d.track === 1);
-  const track2Items = drafts.filter(d => d.track === 2);
+  const lines = drafts.map(d => `  • ${d.contentType}: ${d.filename} → ${d.targetPath}`);
 
   const body = `
 Your weekly llms101.com content is ready for review.
 
 Week of: ${weekOf}
 
-TRACK 1 — JSON content (low risk, ready to drop in once approved):
-${track1Items.map(d => `  • ${d.contentType}: ${d.filename} → ${d.targetPath}`).join('\n') || '  (none this week)'}
+${lines.join('\n') || '(no drafts generated)'}
 
-TRACK 2 — HTML content (REQUIRES VISUAL REVIEW before use):
-${track2Items.map(d => `  • ${d.contentType}: ${d.filename} → ${d.targetPath}`).join('\n') || '  (none this week)'}
-
-${track2Items.length > 0 ? '⚠ Track 2 items must be visually previewed in the dashboard before downloading or pasting. Do not skip the preview step.' : ''}
+Trends articles are now a single JSON file — upload to content/articles/
+and the existing indexing.yml workflow handles the rest automatically.
 
 Review here: https://llms101.com/admin/review?week=${weekOf}
 
@@ -311,7 +307,7 @@ This is an automated message from the llms101 content pipeline.
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Weekly content ready — ${track1Items.length} JSON + ${track2Items.length} HTML`,
+      subject: `[llms101] Weekly content ready — ${drafts.length} item(s)`,
       text: body
     })
   });
@@ -323,7 +319,7 @@ This is an automated message from the llms101 content pipeline.
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  log('Starting weekly content generation (two-track system)');
+  log('Starting weekly content generation (v5 — Trends articles as JSON)');
 
   const calendar = await readCalendar();
   if (calendar.weeks.length === 0) {
@@ -340,7 +336,7 @@ async function main() {
   const allDrafts = [...track1Drafts, ...track2Drafts];
 
   if (allDrafts.length === 0) {
-    log('WARNING: No drafts were generated this week — check calendar entry structure.');
+    log('WARNING: No drafts were generated this week.');
   } else {
     await saveDrafts(weekOf, allDrafts);
   }
@@ -352,7 +348,7 @@ async function main() {
 
   await sendReviewEmail(weekOf, allDrafts);
 
-  log(`Done. ${track1Drafts.length} Track 1 (JSON) + ${track2Drafts.length} Track 2 (HTML) drafts generated.`);
+  log(`Done. ${allDrafts.length} draft item(s) generated for week of ${weekOf}.`);
 }
 
 main().catch(err => {
