@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "title": "Why Every Lab Is Racing to Build Coding Agents",
+    "slug": "why-every-lab-is-racing-to-build-coding-agents",
+    "date": "2026-06-29",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "Coding assistants used to suggest the next line. Now they open pull requests. Here's why AI labs see autonomous coding as the killer app.",
+    "before_label": "2023: Autocomplete",
+    "before": "AI suggests code snippets as you type. You review each suggestion, accept or reject, and do the actual work of building features.",
+    "after_label": "2026: Coding Agents",
+    "after": "AI reads your issue, writes the code, runs tests, and opens a pull request. You review the finished work, not individual suggestions.",
+    "file": "content/articles/why-every-lab-is-racing-to-build-coding-agents.json",
+    "url": "/trends/view-article.html?article=why-every-lab-is-racing-to-build-coding-agents"
+  }
+]
