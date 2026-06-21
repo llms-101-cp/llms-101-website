@@ -1,9 +1,0 @@
-{
-  "title": "Test Article - Verifying the Fixed Article Viewer",
-  "slug": "test-article-verify-viewer",
-  "date": "2026-06-21",
-  "category": "Explainer",
-  "read_time": "1 min read",
-  "summary": "A short test article created to verify the fixed view-article.html pipeline works end to end, from index lookup through to rendering.",
-  "body": "## This is a test\n\nIf you can read this paragraph rendered with proper formatting on the live site, the fix worked.\n\nThis confirms three things at once: the index lookup in view-article.html found this file correctly, the markdown body rendered properly through marked.js, and the whole chain from content/articles/ through articles_index.json to the viewer page is working.\n\n**This file can be safely deleted** once you've confirmed it displays correctly."
-}
