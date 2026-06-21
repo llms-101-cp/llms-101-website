@@ -1,0 +1,41 @@
+name: Weekly Content Generation
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./llms101-automation
+
+      - name: Generate weekly content (Track 1 JSON + Track 2 HTML)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+        run: node scripts/generate.js
+        working-directory: ./llms101-automation
+
+      - name: Commit drafts to repo
+        run: |
+          git config user.name "llms101-bot"
+          git config user.email "bot@llms101.com"
+          git add llms101-automation/content-calendar/calendar.json
+          git add llms101-automation/drafts/
+          git diff --staged --quiet || git commit -m "chore: weekly content drafts $(date +%Y-%m-%d)"
+          git push
