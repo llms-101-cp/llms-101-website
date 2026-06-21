@@ -9,6 +9,16 @@
     "url": "/trends/view-article.html?article=karpathy-build-gpt-from-scratch"
   },
   {
+    "title": "Test Article - Verifying the Fixed Article Viewer",
+    "slug": "test-article-verify-viewer",
+    "date": "2026-06-21",
+    "category": "Explainer",
+    "read_time": "1 min read",
+    "summary": "A short test article created to verify the fixed view-article.html pipeline works end to end, from index lookup through to rendering.",
+    "file": "content/articles/test-article-verify-viewer.json",
+    "url": "/trends/view-article.html?article=test-article-verify-viewer"
+  },
+  {
     "title": "The Autonomous Agent Era — From Chatbots to AI That Gets Things Done",
     "date": "2026-05-15T00:00:00.000Z",
     "category": "Model Update",
