@@ -1,0 +1,8 @@
+{
+  "title": "Test Test Test",
+  "date": "2026-06-21T06:29:32.282Z",
+  "category": "Resource Pick",
+  "summary": "A hands-on, line-by-line walkthrough of how GPT actually works.",
+  "body": "A 2-hour video walkthrough in which Andrej Karpathy builds a working GPT model from scratch in Python, explaining every line of code as he goes. It covers tokenisation, the attention mechanism, transformers, and training — all in one sitting. This is the resource for anyone who wants to go beyond conceptual explanations and actually see the maths made concrete.",
+  "slug": "test_test_test"
+}
