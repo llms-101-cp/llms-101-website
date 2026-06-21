@@ -451,8 +451,14 @@ function buildArticleCard(article) {
       </div>
     </div>` : '';
 
+  // FIXED: link through the dynamic article viewer instead of expecting a
+  // standalone HTML file at /trends/{slug}. The index now always includes
+  // a "url" field pointing to view-article.html?article={slug} — written
+  // by generate-indices.js — so this falls back the same way either way.
+  const articleUrl = article.url || `/trends/view-article.html?article=${article.slug}`;
+
   return `
-  <a class="acard" href="${article.url || '/trends/' + article.slug}">
+  <a class="acard" href="${articleUrl}">
     <div class="acard-meta">
       <span class="acard-tag ${tagClass(article.category)}">${article.category || 'Explainer'}</span>
       <span class="acard-date">${formatDate(article.date)}</span>
