@@ -6,6 +6,7 @@
 <title>Content Review — llms101.com</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -39,6 +40,7 @@ main{max-width:1100px;margin:0 auto;padding:40px}
 .draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 @media(max-width:780px){.draft-grid{grid-template-columns:1fr}}
 .draft-card{border:1.5px solid var(--paper-border);border-radius:4px;background:white;overflow:hidden}
+.draft-card.wide{grid-column:1/-1}
 .draft-card.approved{border-color:var(--success);background:var(--success-light)}
 .draft-card.t2{border-color:var(--warn)}
 .card-head{padding:16px 20px 14px;border-bottom:1px solid var(--paper-border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -48,11 +50,22 @@ main{max-width:1100px;margin:0 auto;padding:40px}
 .card-body{padding:20px}
 .field-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
 .field-value.editable{border:1px solid var(--paper-border);border-radius:3px;padding:8px;outline:none;resize:vertical;width:100%;font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--paper);margin-bottom:14px;min-height:70px}
-.preview-frame-wrap{border:2px solid var(--warn);border-radius:6px;overflow:hidden;margin-bottom:14px}
-.preview-frame-label{background:var(--warn);color:white;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;display:flex;justify-content:space-between;align-items:center}
-.preview-frame-label button{font-family:var(--mono);font-size:9px;background:white;color:var(--warn);border:none;padding:3px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px}
-iframe.preview{width:100%;height:420px;border:none;display:block;background:white}
+.note-box{background:var(--success-light);border:1px solid var(--success);border-radius:4px;padding:10px 14px;font-size:11px;color:#1a4a2a;margin-bottom:14px;line-height:1.6}
+.extra-step-note{background:#e8f0fc;border:1px solid #4a7ab8;border-radius:4px;padding:10px 14px;font-size:11px;color:#1a3a6b;margin-bottom:14px;line-height:1.6}
 .visual-review-required{background:#fdeaea;border:1.5px solid #c85a1e;border-radius:4px;padding:10px 14px;font-size:11px;color:#8a3a10;margin-bottom:14px;line-height:1.6}
+.rendered-preview-wrap{border:2px solid var(--warn);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.rendered-preview-label{background:var(--warn);color:white;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;display:flex;justify-content:space-between;align-items:center}
+.rendered-preview-label button{font-family:var(--mono);font-size:9px;background:white;color:var(--warn);border:none;padding:3px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px}
+.rendered-preview{padding:32px 36px;background:#FAF8F4;max-height:480px;overflow-y:auto;font-family:'Jost',sans-serif}
+.rendered-preview .ap-tag{display:inline-block;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(184,134,11,.1);color:#B8860B;border:1px solid rgba(184,134,11,.25);padding:2px 10px;border-radius:20px;margin-bottom:1rem;font-family:var(--mono)}
+.rendered-preview h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.9rem;font-weight:400;color:#3d2a18;line-height:1.15;margin-bottom:.5rem}
+.rendered-preview .ap-meta{font-size:.72rem;color:#9a7a5e;margin-bottom:1rem;font-family:var(--mono)}
+.rendered-preview .ap-summary{font-size:.95rem;color:#9a7a5e;line-height:1.7;font-style:italic;border-left:3px solid #B8860B;padding-left:1rem;margin-bottom:1.5rem}
+.rendered-preview .ap-body{font-size:.92rem;color:#5a3e28;line-height:1.8}
+.rendered-preview .ap-body h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:400;color:#3d2a18;margin:1.6rem 0 .6rem}
+.rendered-preview .ap-body strong{font-weight:500;color:#3d2a18}
+.rendered-preview .ap-body p{margin-bottom:.9rem}
+.rendered-preview .ap-body ul,.rendered-preview .ap-body ol{padding-left:1.4rem;margin-bottom:.9rem}
 .card-actions{padding:14px 20px;border-top:1px solid var(--paper-border);display:flex;gap:10px;background:var(--paper-warm);flex-wrap:wrap}
 .btn{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:3px;border:1.5px solid;cursor:pointer}
 .btn-approve{background:var(--success);border-color:var(--success);color:white}
@@ -63,7 +76,7 @@ iframe.preview{width:100%;height:420px;border:none;display:block;background:whit
 .status-badge{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:3px}
 .status-approved{color:var(--success)}
 .manual-paste-note{background:var(--warn-light);border:1px solid var(--warn);border-radius:4px;padding:10px 14px;font-size:11px;color:#6b5a2a;margin-bottom:14px;line-height:1.6}
-.toast{position:fixed;top:24px;right:24px;background:var(--ink);color:var(--paper);font-size:12px;padding:12px 20px;border-radius:4px;border-left:4px solid var(--success);transform:translateY(-20px);opacity:0;transition:all .3s;z-index:1000;max-width:320px;line-height:1.5}
+.toast{position:fixed;top:24px;right:24px;background:var(--ink);color:var(--paper);font-size:12px;padding:12px 20px;border-radius:4px;border-left:4px solid var(--success);transform:translateY(-20px);opacity:0;transition:all .3s;z-index:1000;max-width:340px;line-height:1.5}
 .toast.show{transform:translateY(0);opacity:1}
 </style>
 </head>
@@ -87,10 +100,10 @@ iframe.preview{width:100%;height:420px;border:none;display:block;background:whit
   </header>
 
   <div class="track-banner t1">
-    <strong>Track 1 (JSON):</strong> low risk. Approve, download, drag the file into the matching content/ folder on GitHub.
+    <strong>Track 1 (JSON):</strong> low risk. Approve, download, drag the file into the matching content/ folder. Some nodes need an extra manual step — check the blue note if shown.
   </div>
   <div class="track-banner t2">
-    <strong>Track 2 (HTML):</strong> higher risk. You MUST click "Mark as visually reviewed" before approving.
+    <strong>Track 2:</strong> Trends articles are now a single JSON file uploaded to content/articles/ — the existing indexing.yml workflow handles the rest. Model cards remain a manual copy-paste HTML block. Visual review is mandatory before approving.
   </div>
 
   <div class="week-selector">
@@ -111,12 +124,10 @@ iframe.preview{width:100%;height:420px;border:none;display:block;background:whit
 <script>
 const CORRECT_PASSWORD = 'QvFv29ArbzkMABow8zeH';
 
-// ─── GitHub repo config ─────────────────────────────────────────────────────
 const GITHUB_OWNER = 'llms-101-cp';
 const GITHUB_REPO = 'llms-101-website';
 const GITHUB_BRANCH = 'main';
 const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
-const API_BASE = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
 
 function checkPassword(){
   const input = document.getElementById('password-input');
@@ -141,7 +152,6 @@ function initWeek(){
     input.value = urlWeek;
     loadWeek();
   } else {
-    // Default to most recent Monday
     const today = new Date();
     const day = today.getDay();
     const diff = day === 0 ? 6 : day - 1;
@@ -163,31 +173,27 @@ async function loadWeek(){
   container.innerHTML = '<div class="loading-state">Fetching drafts from GitHub...</div>';
 
   try {
-    // 1. Fetch the manifest for this week
     const manifestUrl = `${RAW_BASE}/llms101-automation/drafts/${weekOf}/_manifest.json`;
     const manifestRes = await fetch(manifestUrl + '?cb=' + Date.now());
 
     if(!manifestRes.ok){
-      throw new Error(`No drafts found for week ${weekOf} (manifest fetch returned ${manifestRes.status}). Check the date matches a folder in llms101-automation/drafts/ on GitHub.`);
+      throw new Error(`No drafts found for week ${weekOf} (manifest fetch returned ${manifestRes.status}).`);
     }
 
     const manifest = await manifestRes.json();
 
-    // 2. Fetch each file listed in the manifest
     const drafts = await Promise.all(manifest.map(async (entry) => {
       const fileUrl = `${RAW_BASE}/llms101-automation/drafts/${weekOf}/${entry.filename}?cb=${Date.now()}`;
       const fileRes = await fetch(fileUrl);
       if(!fileRes.ok){
         return { ...entry, _fetchError: `Could not fetch ${entry.filename} (${fileRes.status})` };
       }
-
-      if(entry.track === 1){
-        const data = await fileRes.json();
-        return { ...entry, data, _status: 'pending' };
-      } else {
+      if(entry.contentType === 'model-card'){
         const html = await fileRes.text();
         return { ...entry, html, _status: 'pending', _visuallyReviewed: false };
       }
+      const data = await fileRes.json();
+      return { ...entry, data, _status: 'pending', _visuallyReviewed: entry.contentType === 'node' || entry.contentType === 'page' };
     }));
 
     state.drafts = drafts;
@@ -196,15 +202,15 @@ async function loadWeek(){
 
   } catch (err) {
     status.textContent = 'Error';
-    container.innerHTML = `<div class="error-state"><strong>Could not load drafts.</strong><br><br>${err.message}<br><br>Common causes: the week date doesn't match an existing folder, or the GitHub Action for that week hasn't run yet.</div>`;
+    container.innerHTML = `<div class="error-state"><strong>Could not load drafts.</strong><br><br>${err.message}</div>`;
   }
 }
 
-function renderTrack1Card(draft, idx){
-  const d = draft.data;
+function renderJSONCard(draft, idx){
   if(draft._fetchError){
     return `<div class="draft-card"><div class="card-body"><div class="error-state" style="margin:0;">${draft._fetchError}</div></div></div>`;
   }
+  const d = draft.data;
   const label = d.label || d.title || draft.filename;
   return `
     <div class="draft-card ${draft._status==='approved'?'approved':''}" id="card-${idx}">
@@ -216,6 +222,7 @@ function renderTrack1Card(draft, idx){
         <span class="type-pill">${draft.contentType}</span>
       </div>
       <div class="card-body">
+        ${draft.extraStep ? `<div class="extra-step-note">📌 Extra step: ${draft.extraStep}</div>` : ''}
         <div class="field-label">Body</div>
         <textarea class="field-value editable" id="body-${idx}" rows="6">${(d.body||'').replace(/<[^>]+>/g,'')}</textarea>
         <details><summary style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);cursor:pointer;padding:8px 0;">Full JSON</summary>
@@ -232,7 +239,57 @@ function renderTrack1Card(draft, idx){
   `;
 }
 
-function renderTrack2Card(draft, idx){
+function renderTrendsArticleCard(draft, idx){
+  if(draft._fetchError){
+    return `<div class="draft-card wide"><div class="card-body"><div class="error-state" style="margin:0;">${draft._fetchError}</div></div></div>`;
+  }
+  const d = draft.data;
+  const reviewed = draft._visuallyReviewed;
+  const bodyHtml = (typeof marked !== 'undefined' && d.body) ? marked.parse(d.body) : (d.body || '').replace(/\n/g,'<br>');
+
+  return `
+    <div class="draft-card wide ${draft._status==='approved'?'approved':''}" id="card-${idx}">
+      <div class="card-head">
+        <div>
+          <div class="card-title">${d.title}</div>
+          <div class="target-path">→ ${draft.targetPath}</div>
+        </div>
+        <span class="type-pill">trends-article</span>
+      </div>
+      <div class="card-body">
+        <div class="note-box">📄 Single JSON file. Upload directly to content/articles/ — the existing indexing.yml workflow rebuilds the index automatically, and the article appears on /trends within a minute or two.</div>
+        ${!reviewed ? `<div class="visual-review-required">⚠ Visual review required before this can be approved.</div>` : ''}
+
+        <div class="rendered-preview-wrap">
+          <div class="rendered-preview-label">
+            <span>Rendered preview (matches live article styling)</span>
+            <button onclick="markReviewed(${idx})">${reviewed ? '✓ Reviewed' : 'Mark as visually reviewed'}</button>
+          </div>
+          <div class="rendered-preview">
+            <span class="ap-tag">${d.category || 'Explainer'}</span>
+            <h1>${d.title || 'Untitled'}</h1>
+            <div class="ap-meta">${d.date || ''} · ${d.read_time || ''}</div>
+            ${d.summary ? `<div class="ap-summary">${d.summary}</div>` : ''}
+            <div class="ap-body">${bodyHtml}</div>
+          </div>
+        </div>
+
+        <details><summary style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);cursor:pointer;padding:8px 0;">Full JSON</summary>
+          <pre style="font-size:11px;background:var(--paper);padding:10px;border-radius:3px;overflow-x:auto;max-height:240px;">${JSON.stringify(d,null,2)}</pre>
+        </details>
+      </div>
+      <div class="card-actions">
+        ${draft._status==='approved'
+          ? `<span class="status-badge status-approved">✓ Approved</span><button class="btn btn-download" onclick="downloadJSON(${idx})">⬇ Download JSON</button>`
+          : `<button class="btn btn-approve" onclick="approve(${idx})" ${reviewed?'':'disabled'}>Approve</button>
+             <button class="btn btn-reject" onclick="reject(${idx})">Reject</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function renderModelCard(draft, idx){
   if(draft._fetchError){
     return `<div class="draft-card t2"><div class="card-body"><div class="error-state" style="margin:0;">${draft._fetchError}</div></div></div>`;
   }
@@ -247,14 +304,14 @@ function renderTrack2Card(draft, idx){
         <span class="type-pill">${draft.contentType}</span>
       </div>
       <div class="card-body">
-        ${draft.requiresManualPaste ? `<div class="manual-paste-note">⚠ This is a single HTML block, not a full page. After review, copy it and manually paste it inside &lt;div id="model-grid"&gt; in models.html on GitHub.</div>` : ''}
+        <div class="manual-paste-note">⚠ Single HTML block, not a full page. Copy and paste inside &lt;div id="model-grid"&gt; in models.html on GitHub.</div>
         ${!reviewed ? `<div class="visual-review-required">⚠ Visual review required before this can be approved.</div>` : ''}
-        <div class="preview-frame-wrap">
-          <div class="preview-frame-label">
+        <div class="rendered-preview-wrap">
+          <div class="rendered-preview-label">
             <span>Live preview</span>
             <button onclick="markReviewed(${idx})">${reviewed ? '✓ Reviewed' : 'Mark as visually reviewed'}</button>
           </div>
-          <iframe class="preview" srcdoc="${draft.html.replace(/"/g,'&quot;')}"></iframe>
+          <iframe style="width:100%;height:380px;border:none;display:block;background:white" srcdoc="${draft.html.replace(/"/g,'&quot;')}"></iframe>
         </div>
         <details><summary style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);cursor:pointer;padding:8px 0;">Raw HTML</summary>
           <pre style="font-size:10px;background:var(--paper);padding:10px;border-radius:3px;overflow-x:auto;max-height:200px;">${draft.html.replace(/</g,'&lt;')}</pre>
@@ -262,10 +319,7 @@ function renderTrack2Card(draft, idx){
       </div>
       <div class="card-actions">
         ${draft._status==='approved'
-          ? `<span class="status-badge status-approved">✓ Approved</span>
-             ${draft.requiresManualPaste
-               ? `<button class="btn btn-copy" onclick="copyHTML(${idx})">📋 Copy HTML block</button>`
-               : `<button class="btn btn-download" onclick="downloadHTML(${idx})">⬇ Download HTML file</button>`}`
+          ? `<span class="status-badge status-approved">✓ Approved</span><button class="btn btn-copy" onclick="copyHTML(${idx})">📋 Copy HTML block</button>`
           : `<button class="btn btn-approve" onclick="approve(${idx})" ${reviewed?'':'disabled'}>Approve</button>
              <button class="btn btn-reject" onclick="reject(${idx})">Reject</button>`
         }
@@ -281,12 +335,16 @@ function render(){
 
   if(track1.length){
     html += `<div class="section-label">Track 1 — JSON content <span class="track-pill t1">low risk</span></div><div class="draft-grid">`;
-    html += track1.map((d)=>renderTrack1Card(d, state.drafts.indexOf(d))).join('');
+    html += track1.map((d)=>renderJSONCard(d, state.drafts.indexOf(d))).join('');
     html += `</div>`;
   }
   if(track2.length){
-    html += `<div class="section-label">Track 2 — HTML content <span class="track-pill t2">visual review required</span></div><div class="draft-grid">`;
-    html += track2.map((d)=>renderTrack2Card(d, state.drafts.indexOf(d))).join('');
+    html += `<div class="section-label">Track 2 — Trends articles &amp; model cards <span class="track-pill t2">visual review required</span></div><div class="draft-grid">`;
+    html += track2.map((d)=>{
+      const idx = state.drafts.indexOf(d);
+      if(d.contentType === 'trends-article') return renderTrendsArticleCard(d, idx);
+      return renderModelCard(d, idx);
+    }).join('');
     html += `</div>`;
   }
   document.getElementById('draft-container').innerHTML = html || '<p style="color:var(--ink-muted);padding:24px 0;">No drafts found for this week.</p>';
@@ -295,7 +353,7 @@ function render(){
 function markReviewed(idx){
   state.drafts[idx]._visuallyReviewed = true;
   render();
-  showToast('Marked as visually reviewed — you can now approve this item.');
+  showToast('Marked as visually reviewed — you can now approve.');
 }
 
 function approve(idx){
@@ -317,19 +375,12 @@ function downloadJSON(idx){
   const draft = state.drafts[idx];
   const blob = new Blob([JSON.stringify(draft.data,null,2)], {type:'application/json'});
   triggerDownload(blob, draft.filename);
-  showToast(`Downloaded ${draft.filename} — drag into ${draft.targetPath.split('/').slice(0,-1).join('/')}/ on GitHub`);
-}
-
-function downloadHTML(idx){
-  const draft = state.drafts[idx];
-  const blob = new Blob([draft.html], {type:'text/html'});
-  triggerDownload(blob, draft.filename);
-  showToast(`Downloaded ${draft.filename} — upload to trends/ on GitHub`);
+  showToast(`Downloaded ${draft.filename} — upload to ${draft.targetPath.split('/').slice(0,-1).join('/')}/ on GitHub`);
 }
 
 function copyHTML(idx){
   navigator.clipboard.writeText(state.drafts[idx].html);
-  showToast('Copied — paste inside the model-grid div in models.html on GitHub');
+  showToast('Copied — paste inside the model-grid div in models.html');
 }
 
 function triggerDownload(blob, filename){
@@ -343,7 +394,7 @@ function triggerDownload(blob, filename){
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 4000);
+  setTimeout(()=>t.classList.remove('show'), 4500);
 }
 
 if(sessionStorage.getItem('llms101_auth')==='true'){
