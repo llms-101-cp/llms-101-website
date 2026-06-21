@@ -1,0 +1,59 @@
+{
+  "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard): trendsArticle now generates a single JSON file for content/articles/; modelCard remains a manual-paste HTML block.",
+  "weeks": [
+    {
+      "week_of": "2026-06-29-v5test",
+      "trendsArticle": {
+        "topic": "Why Every Lab Is Racing to Build Coding Agents",
+        "notes": "Cover the shift from autocomplete-style coding assistants to fully autonomous coding agents that open PRs. Mention Claude Code, Cursor, GitHub Copilot Workspace."
+      }
+    },
+    {
+      "week_of": "2026-07-06",
+      "page": {
+        "id": "resources",
+        "updateBrief": "Add one new resource: Simon Willison's blog (simonwillison.net) — practical, technically sharp commentary on LLM developments, good for readers who want depth without academic papers."
+      },
+      "modelCard": {
+        "name": "Grok",
+        "maker": "xAI",
+        "notes": "Closed model, real-time X/Twitter data access is the key differentiator. Be honest about mixed reasoning benchmark performance relative to GPT/Claude."
+      }
+    },
+    {
+      "week_of": "2026-07-13",
+      "node": {
+        "id": "knowledge-distillation",
+        "parentContext": "Training process branch",
+        "theme": "train"
+      },
+      "trendsArticle": {
+        "topic": "The Open Source AI Models Closing the Gap",
+        "notes": "Cover Llama, Mistral, DeepSeek, Qwen catching up to closed frontier models in 2026. Balanced, not hype-driven."
+      }
+    }
+  ],
+  "completed": [
+    {
+      "week_of": "2026-06-29",
+      "node": {
+        "id": "fine-tuning",
+        "parentContext": "Training process branch",
+        "theme": "train"
+      },
+      "trendsArticle": {
+        "topic": "Why Every Lab Is Racing to Build Coding Agents",
+        "notes": "Cover the shift from autocomplete-style coding assistants to fully autonomous coding agents that open PRs. Mention Claude Code, Cursor, GitHub Copilot Workspace."
+      },
+      "_completed_at": "2026-06-21T10:09:26.693Z"
+    },
+    {
+      "week_of": "2026-06-29-retry",
+      "trendsArticle": {
+        "topic": "Why Every Lab Is Racing to Build Coding Agents",
+        "notes": "Cover the shift from autocomplete-style coding assistants to fully autonomous coding agents that open PRs. Mention Claude Code, Cursor, GitHub Copilot Workspace."
+      },
+      "_completed_at": "2026-06-21T10:52:05.744Z"
+    }
+  ]
+}
