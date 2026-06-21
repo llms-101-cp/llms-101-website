@@ -20,7 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./llms101-automation
 
       - name: Generate weekly content (Track 1 JSON + Track 2 HTML)
