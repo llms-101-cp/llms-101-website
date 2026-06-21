@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Review — llms101.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1814;--ink-muted:#6b6760;--ink-faint:#b8b5af;
+  --paper:#f5f2ec;--paper-warm:#ede9e1;--paper-border:#d8d3c8;
+  --accent:#c85a1e;--success:#2a6b3a;--success-light:#e3f0e7;
+  --warn:#b8860b;--warn-light:#fdf3e0;
+  --mono:'IBM Plex Mono',monospace;--serif:'Libre Baskerville',Georgia,serif;
+}
+#password-screen{display:flex;position:fixed;inset:0;background:#1a1814;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+#main-content{display:none}
+body{font-family:var(--mono);background:var(--paper);color:var(--ink);min-height:100vh}
+header{border-bottom:2px solid var(--ink);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:var(--paper)}
+.site-name{font-family:var(--serif);font-size:22px}
+.site-name span{color:var(--accent)}
+.header-meta{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:2px}
+.track-banner{padding:14px 40px;font-size:12px;line-height:1.6;border-bottom:1px solid var(--paper-border)}
+.track-banner.t1{background:var(--success-light);color:#1a4a2a}
+.track-banner.t2{background:var(--warn-light);color:#6b5a2a}
+.week-selector{padding:14px 40px;border-bottom:1px solid var(--paper-border);display:flex;align-items:center;gap:12px;background:white}
+.week-selector input{font-family:var(--mono);font-size:13px;padding:8px 12px;border:1px solid var(--paper-border);border-radius:3px;background:var(--paper)}
+.week-selector button{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:3px;border:1.5px solid var(--ink);background:var(--ink);color:white;cursor:pointer}
+.loading-state{padding:60px 40px;text-align:center;color:var(--ink-muted);font-size:13px}
+.error-state{padding:24px 40px;background:#fdeaea;border:1px solid var(--accent);border-radius:4px;margin:24px 40px;color:#8a3a10;font-size:12px;line-height:1.7}
+main{max-width:1100px;margin:0 auto;padding:40px}
+.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-muted);border-top:1px solid var(--paper-border);padding-top:8px;margin-bottom:24px;margin-top:48px;display:flex;align-items:center;gap:10px}
+.section-label:first-child{margin-top:0}
+.track-pill{font-size:9px;padding:2px 8px;border-radius:10px;letter-spacing:1px}
+.track-pill.t1{background:var(--success);color:white}
+.track-pill.t2{background:var(--warn);color:white}
+.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:780px){.draft-grid{grid-template-columns:1fr}}
+.draft-card{border:1.5px solid var(--paper-border);border-radius:4px;background:white;overflow:hidden}
+.draft-card.approved{border-color:var(--success);background:var(--success-light)}
+.draft-card.t2{border-color:var(--warn)}
+.card-head{padding:16px 20px 14px;border-bottom:1px solid var(--paper-border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.type-pill{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:2px;background:var(--paper-warm);color:var(--ink-muted);white-space:nowrap}
+.card-title{font-family:var(--serif);font-size:16px;line-height:1.35}
+.target-path{font-size:11px;color:var(--ink-faint);margin-top:4px;font-style:italic}
+.card-body{padding:20px}
+.field-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+.field-value.editable{border:1px solid var(--paper-border);border-radius:3px;padding:8px;outline:none;resize:vertical;width:100%;font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--paper);margin-bottom:14px;min-height:70px}
+.preview-frame-wrap{border:2px solid var(--warn);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.preview-frame-label{background:var(--warn);color:white;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;display:flex;justify-content:space-between;align-items:center}
+.preview-frame-label button{font-family:var(--mono);font-size:9px;background:white;color:var(--warn);border:none;padding:3px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px}
+iframe.preview{width:100%;height:420px;border:none;display:block;background:white}
+.visual-review-required{background:#fdeaea;border:1.5px solid #c85a1e;border-radius:4px;padding:10px 14px;font-size:11px;color:#8a3a10;margin-bottom:14px;line-height:1.6}
+.card-actions{padding:14px 20px;border-top:1px solid var(--paper-border);display:flex;gap:10px;background:var(--paper-warm);flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:3px;border:1.5px solid;cursor:pointer}
+.btn-approve{background:var(--success);border-color:var(--success);color:white}
+.btn-approve:disabled{background:var(--ink-faint);border-color:var(--ink-faint);cursor:not-allowed}
+.btn-reject{background:transparent;border-color:var(--paper-border);color:var(--ink-muted)}
+.btn-download{background:var(--ink);border-color:var(--ink);color:var(--paper);margin-left:auto}
+.btn-copy{background:var(--ink);border-color:var(--ink);color:var(--paper);margin-left:auto}
+.status-badge{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border-radius:3px}
+.status-approved{color:var(--success)}
+.manual-paste-note{background:var(--warn-light);border:1px solid var(--warn);border-radius:4px;padding:10px 14px;font-size:11px;color:#6b5a2a;margin-bottom:14px;line-height:1.6}
+.toast{position:fixed;top:24px;right:24px;background:var(--ink);color:var(--paper);font-size:12px;padding:12px 20px;border-radius:4px;border-left:4px solid var(--success);transform:translateY(-20px);opacity:0;transition:all .3s;z-index:1000;max-width:320px;line-height:1.5}
+.toast.show{transform:translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div id="password-screen">
+  <div style="font-family:'Libre Baskerville',Georgia,serif;font-size:26px;color:#f5f2ec;">llms<span style="color:#c85a1e;">101</span>.com</div>
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6b6760;letter-spacing:3px;text-transform:uppercase;">Editorial dashboard</div>
+  <div style="display:flex;flex-direction:column;gap:12px;width:300px;">
+    <input id="password-input" type="password" placeholder="Enter password" autofocus
+      style="font-family:'IBM Plex Mono',monospace;font-size:14px;padding:12px 16px;background:#2a2825;border:1.5px solid #3a3835;border-radius:3px;color:#f5f2ec;outline:none;width:100%;box-sizing:border-box;">
+    <button onclick="checkPassword()" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:12px;background:#c85a1e;border:none;border-radius:3px;color:white;cursor:pointer;width:100%;">Enter dashboard</button>
+    <div id="password-error" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#c85a1e;text-align:center;">Incorrect password — try again</div>
+  </div>
+</div>
+
+<div id="main-content">
+  <header>
+    <div class="site-name">llms<span>101</span>.com</div>
+    <div class="header-meta">Editorial review dashboard</div>
+  </header>
+
+  <div class="track-banner t1">
+    <strong>Track 1 (JSON):</strong> low risk. Approve, download, drag the file into the matching content/ folder on GitHub.
+  </div>
+  <div class="track-banner t2">
+    <strong>Track 2 (HTML):</strong> higher risk. You MUST click "Mark as visually reviewed" before approving.
+  </div>
+
+  <div class="week-selector">
+    <span style="font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:1px;">Week of</span>
+    <input id="week-input" type="text" placeholder="YYYY-MM-DD">
+    <button onclick="loadWeek()">Load drafts</button>
+    <span id="load-status" style="font-size:11px;color:var(--ink-muted);"></span>
+  </div>
+
+  <main>
+    <div id="draft-container"></div>
+    <div style="height:60px;"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CORRECT_PASSWORD = 'QvFv29ArbzkMABow8zeH';
+
+// ─── GitHub repo config ─────────────────────────────────────────────────────
+const GITHUB_OWNER = 'llms-101-cp';
+const GITHUB_REPO = 'llms-101-website';
+const GITHUB_BRANCH = 'main';
+const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
+const API_BASE = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
+
+function checkPassword(){
+  const input = document.getElementById('password-input');
+  const error = document.getElementById('password-error');
+  if(input.value === CORRECT_PASSWORD){
+    sessionStorage.setItem('llms101_auth','true');
+    document.getElementById('password-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    initWeek();
+  } else {
+    error.style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+document.addEventListener('keydown', e => { if(e.key === 'Enter' && document.getElementById('password-screen').style.display !== 'none') checkPassword(); });
+
+function initWeek(){
+  const urlWeek = new URLSearchParams(location.search).get('week');
+  const input = document.getElementById('week-input');
+  if(urlWeek){
+    input.value = urlWeek;
+    loadWeek();
+  } else {
+    // Default to most recent Monday
+    const today = new Date();
+    const day = today.getDay();
+    const diff = day === 0 ? 6 : day - 1;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - diff);
+    input.value = monday.toISOString().split('T')[0];
+  }
+}
+
+let state = { drafts: [] };
+
+async function loadWeek(){
+  const weekOf = document.getElementById('week-input').value.trim();
+  if(!weekOf){ showToast('Enter a week date first'); return; }
+
+  const status = document.getElementById('load-status');
+  const container = document.getElementById('draft-container');
+  status.textContent = 'Loading...';
+  container.innerHTML = '<div class="loading-state">Fetching drafts from GitHub...</div>';
+
+  try {
+    // 1. Fetch the manifest for this week
+    const manifestUrl = `${RAW_BASE}/llms101-automation/drafts/${weekOf}/_manifest.json`;
+    const manifestRes = await fetch(manifestUrl + '?cb=' + Date.now());
+
+    if(!manifestRes.ok){
+      throw new Error(`No drafts found for week ${weekOf} (manifest fetch returned ${manifestRes.status}). Check the date matches a folder in llms101-automation/drafts/ on GitHub.`);
+    }
+
+    const manifest = await manifestRes.json();
+
+    // 2. Fetch each file listed in the manifest
+    const drafts = await Promise.all(manifest.map(async (entry) => {
+      const fileUrl = `${RAW_BASE}/llms101-automation/drafts/${weekOf}/${entry.filename}?cb=${Date.now()}`;
+      const fileRes = await fetch(fileUrl);
+      if(!fileRes.ok){
+        return { ...entry, _fetchError: `Could not fetch ${entry.filename} (${fileRes.status})` };
+      }
+
+      if(entry.track === 1){
+        const data = await fileRes.json();
+        return { ...entry, data, _status: 'pending' };
+      } else {
+        const html = await fileRes.text();
+        return { ...entry, html, _status: 'pending', _visuallyReviewed: false };
+      }
+    }));
+
+    state.drafts = drafts;
+    status.textContent = `Loaded ${drafts.length} draft(s)`;
+    render();
+
+  } catch (err) {
+    status.textContent = 'Error';
+    container.innerHTML = `<div class="error-state"><strong>Could not load drafts.</strong><br><br>${err.message}<br><br>Common causes: the week date doesn't match an existing folder, or the GitHub Action for that week hasn't run yet.</div>`;
+  }
+}
+
+function renderTrack1Card(draft, idx){
+  const d = draft.data;
+  if(draft._fetchError){
+    return `<div class="draft-card"><div class="card-body"><div class="error-state" style="margin:0;">${draft._fetchError}</div></div></div>`;
+  }
+  const label = d.label || d.title || draft.filename;
+  return `
+    <div class="draft-card ${draft._status==='approved'?'approved':''}" id="card-${idx}">
+      <div class="card-head">
+        <div>
+          <div class="card-title">${label}</div>
+          <div class="target-path">→ ${draft.targetPath}</div>
+        </div>
+        <span class="type-pill">${draft.contentType}</span>
+      </div>
+      <div class="card-body">
+        <div class="field-label">Body</div>
+        <textarea class="field-value editable" id="body-${idx}" rows="6">${(d.body||'').replace(/<[^>]+>/g,'')}</textarea>
+        <details><summary style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);cursor:pointer;padding:8px 0;">Full JSON</summary>
+          <pre style="font-size:11px;background:var(--paper);padding:10px;border-radius:3px;overflow-x:auto;">${JSON.stringify(d,null,2)}</pre>
+        </details>
+      </div>
+      <div class="card-actions">
+        ${draft._status==='approved'
+          ? `<span class="status-badge status-approved">✓ Approved</span><button class="btn btn-download" onclick="downloadJSON(${idx})">⬇ Download JSON</button>`
+          : `<button class="btn btn-approve" onclick="approve(${idx})">Approve</button><button class="btn btn-reject" onclick="reject(${idx})">Reject</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function renderTrack2Card(draft, idx){
+  if(draft._fetchError){
+    return `<div class="draft-card t2"><div class="card-body"><div class="error-state" style="margin:0;">${draft._fetchError}</div></div></div>`;
+  }
+  const reviewed = draft._visuallyReviewed;
+  return `
+    <div class="draft-card t2 ${draft._status==='approved'?'approved':''}" id="card-${idx}">
+      <div class="card-head">
+        <div>
+          <div class="card-title">${draft.filename}</div>
+          <div class="target-path">→ ${draft.targetPath}</div>
+        </div>
+        <span class="type-pill">${draft.contentType}</span>
+      </div>
+      <div class="card-body">
+        ${draft.requiresManualPaste ? `<div class="manual-paste-note">⚠ This is a single HTML block, not a full page. After review, copy it and manually paste it inside &lt;div id="model-grid"&gt; in models.html on GitHub.</div>` : ''}
+        ${!reviewed ? `<div class="visual-review-required">⚠ Visual review required before this can be approved.</div>` : ''}
+        <div class="preview-frame-wrap">
+          <div class="preview-frame-label">
+            <span>Live preview</span>
+            <button onclick="markReviewed(${idx})">${reviewed ? '✓ Reviewed' : 'Mark as visually reviewed'}</button>
+          </div>
+          <iframe class="preview" srcdoc="${draft.html.replace(/"/g,'&quot;')}"></iframe>
+        </div>
+        <details><summary style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faint);cursor:pointer;padding:8px 0;">Raw HTML</summary>
+          <pre style="font-size:10px;background:var(--paper);padding:10px;border-radius:3px;overflow-x:auto;max-height:200px;">${draft.html.replace(/</g,'&lt;')}</pre>
+        </details>
+      </div>
+      <div class="card-actions">
+        ${draft._status==='approved'
+          ? `<span class="status-badge status-approved">✓ Approved</span>
+             ${draft.requiresManualPaste
+               ? `<button class="btn btn-copy" onclick="copyHTML(${idx})">📋 Copy HTML block</button>`
+               : `<button class="btn btn-download" onclick="downloadHTML(${idx})">⬇ Download HTML file</button>`}`
+          : `<button class="btn btn-approve" onclick="approve(${idx})" ${reviewed?'':'disabled'}>Approve</button>
+             <button class="btn btn-reject" onclick="reject(${idx})">Reject</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function render(){
+  const track1 = state.drafts.filter(d=>d.track===1);
+  const track2 = state.drafts.filter(d=>d.track===2);
+  let html = '';
+
+  if(track1.length){
+    html += `<div class="section-label">Track 1 — JSON content <span class="track-pill t1">low risk</span></div><div class="draft-grid">`;
+    html += track1.map((d)=>renderTrack1Card(d, state.drafts.indexOf(d))).join('');
+    html += `</div>`;
+  }
+  if(track2.length){
+    html += `<div class="section-label">Track 2 — HTML content <span class="track-pill t2">visual review required</span></div><div class="draft-grid">`;
+    html += track2.map((d)=>renderTrack2Card(d, state.drafts.indexOf(d))).join('');
+    html += `</div>`;
+  }
+  document.getElementById('draft-container').innerHTML = html || '<p style="color:var(--ink-muted);padding:24px 0;">No drafts found for this week.</p>';
+}
+
+function markReviewed(idx){
+  state.drafts[idx]._visuallyReviewed = true;
+  render();
+  showToast('Marked as visually reviewed — you can now approve this item.');
+}
+
+function approve(idx){
+  const draft = state.drafts[idx];
+  if(draft.track===2 && !draft._visuallyReviewed){
+    showToast('Visual review required first.');
+    return;
+  }
+  draft._status = 'approved';
+  render();
+}
+
+function reject(idx){
+  state.drafts[idx]._status = 'rejected';
+  render();
+}
+
+function downloadJSON(idx){
+  const draft = state.drafts[idx];
+  const blob = new Blob([JSON.stringify(draft.data,null,2)], {type:'application/json'});
+  triggerDownload(blob, draft.filename);
+  showToast(`Downloaded ${draft.filename} — drag into ${draft.targetPath.split('/').slice(0,-1).join('/')}/ on GitHub`);
+}
+
+function downloadHTML(idx){
+  const draft = state.drafts[idx];
+  const blob = new Blob([draft.html], {type:'text/html'});
+  triggerDownload(blob, draft.filename);
+  showToast(`Downloaded ${draft.filename} — upload to trends/ on GitHub`);
+}
+
+function copyHTML(idx){
+  navigator.clipboard.writeText(state.drafts[idx].html);
+  showToast('Copied — paste inside the model-grid div in models.html on GitHub');
+}
+
+function triggerDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+if(sessionStorage.getItem('llms101_auth')==='true'){
+  document.getElementById('password-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+  initWeek();
+}
+</script>
+</body>
+</html>
