@@ -16,14 +16,5 @@
     "slug": "deepseek-r1-what-it-proved",
     "file": "content/articles/deepseek-r1-what-it-proved.json",
     "url": "/trends/view-article.html?article=deepseek-r1-what-it-proved"
-  },
-  {
-    "title": "The Context Window Arms Race — What 1 Million Tokens Actually Means",
-    "date": "2026-03-15T00:00:00.000Z",
-    "category": "Explainer",
-    "summary": "Gemini reached a 1 million token context window. Claude supports 200,000. Even the smallest models now handle book-length documents. What changed, and does it actually matter for how most people use AI?",
-    "slug": "context-window-arms-race",
-    "file": "content/articles/context-window-arms-race.json",
-    "url": "/trends/view-article.html?article=context-window-arms-race"
   }
 ]
