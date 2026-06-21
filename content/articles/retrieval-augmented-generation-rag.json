@@ -1,7 +1,0 @@
-{
-  "title": "Retrieval-Augmented Generation (RAG)",
-  "date": "2026-06-21T06:29:32.281Z",
-  "category": "Concept Explainer",
-  "summary": "How AI looks things up before answering, like an open-book exam.",
-  "body": "Retrieval-Augmented Generation (RAG) is a technique that gives a language model access to external documents before it generates a response. Instead of relying solely on what it learned during training, the model first retrieves relevant passages from a database, then uses those passages as context when composing its answer.\n\nThink of it like the difference between a closed-book and an open-book exam. A standard LLM is closed-book — it can only use what it memorised during training. A RAG-powered system is open-book — it can consult a curated set of documents at the moment you ask a question.\n\nThis matters enormously for real-world applications. LLMs have knowledge cutoffs and cannot know about your company's internal documents or last week's news. RAG solves both problems."
-}
