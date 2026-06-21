@@ -2,18 +2,6 @@
   "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard) is higher-risk HTML requiring visual review. Not every week needs all four — pick what's relevant.",
   "weeks": [
     {
-      "week_of": "2026-06-29",
-      "node": {
-        "id": "fine-tuning",
-        "parentContext": "Training process branch",
-        "theme": "train"
-      },
-      "trendsArticle": {
-        "topic": "Why Every Lab Is Racing to Build Coding Agents",
-        "notes": "Cover the shift from autocomplete-style coding assistants to fully autonomous coding agents that open PRs. Mention Claude Code, Cursor, GitHub Copilot Workspace."
-      }
-    },
-    {
       "week_of": "2026-07-06",
       "page": {
         "id": "resources",
@@ -38,5 +26,19 @@
       }
     }
   ],
-  "completed": []
+  "completed": [
+    {
+      "week_of": "2026-06-29",
+      "node": {
+        "id": "fine-tuning",
+        "parentContext": "Training process branch",
+        "theme": "train"
+      },
+      "trendsArticle": {
+        "topic": "Why Every Lab Is Racing to Build Coding Agents",
+        "notes": "Cover the shift from autocomplete-style coding assistants to fully autonomous coding agents that open PRs. Mention Claude Code, Cursor, GitHub Copilot Workspace."
+      },
+      "_completed_at": "2026-06-21T10:09:26.693Z"
+    }
+  ]
 }

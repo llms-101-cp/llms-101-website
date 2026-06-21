@@ -1,0 +1,18 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/fine-tuning.json",
+    "filename": "fine-tuning.json",
+    "requiresVisualReview": false,
+    "requiresManualPaste": false
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "trends/why-every-lab-is-racing-to-build-coding-agents.html",
+    "filename": "why-every-lab-is-racing-to-build-coding-agents.html",
+    "requiresVisualReview": true,
+    "requiresManualPaste": false
+  }
+]
