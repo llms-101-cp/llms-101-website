@@ -1,0 +1,19 @@
+[
+  {
+    "track": 1,
+    "contentType": "page",
+    "targetPath": "content/pages/resources.json",
+    "filename": "resources.json",
+    "requiresVisualReview": false,
+    "extraStep": null,
+    "note": null
+  },
+  {
+    "track": 2,
+    "contentType": "model-card",
+    "targetPath": "models.html (manual paste into #model-grid)",
+    "filename": "model-card-grok.html",
+    "requiresVisualReview": true,
+    "requiresManualPaste": true
+  }
+]
