@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
+// Fields every Trends article JSON must have for trends.html / view-article.html
+// to render correctly. If any of these are missing, the live card shows literal
+// "undefined" text instead of failing loudly — so we catch it here instead.
+const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'body'];
+
 function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
   // process.cwd() forces Node to look exactly at the root repository directory in GitHub Actions
   const repoRoot = process.cwd();
@@ -16,11 +21,12 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
   if (!fs.existsSync(collectionPath)) {
     console.log(`Directory not found: ${collectionPath}. Creating empty fallback index.`);
     fs.writeFileSync(destination, JSON.stringify([], null, 2));
-    return;
+    return false;
   }
 
   const files = fs.readdirSync(collectionPath);
   const indexData = [];
+  let hadValidationError = false;
 
   files.forEach(file => {
     if (path.extname(file) === '.json' && file !== outputFileName) {
@@ -47,9 +53,32 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
           metaData.url = `/trends/view-article.html?article=${metaData.slug.replace(/^\d{4}-\d{2}-\d{2}-/, '')}`;
         }
 
+        // VALIDATION: articles only. Reports use a different schema and
+        // aren't covered by REQUIRED_ARTICLE_FIELDS.
+        if (collectionFolder === 'articles') {
+          const fullRecord = { ...metaData, body };
+          const missing = REQUIRED_ARTICLE_FIELDS.filter(
+            f => fullRecord[f] === undefined || fullRecord[f] === null || String(fullRecord[f]).trim() === ''
+          );
+
+          if (missing.length > 0) {
+            // ::error:: annotation makes this show up as a red, top-level
+            // failure in the GitHub Actions run (and in any email/Slack
+            // notification tied to workflow failures) — not just buried
+            // in a log line.
+            console.error(
+              `::error::content/${collectionFolder}/${file} is missing required field(s): ${missing.join(', ')}. ` +
+              `Excluded from ${outputFileName} until fixed — it will not appear on the live site.`
+            );
+            hadValidationError = true;
+            return; // skip — do not push into the index
+          }
+        }
+
         indexData.push(metaData);
       } catch (err) {
-        console.error(`Error parsing JSON file ${file}:`, err);
+        console.error(`::error::Error parsing JSON file ${file}: ${err.message}`);
+        hadValidationError = true;
       }
     }
   });
@@ -63,8 +92,15 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
 
   fs.writeFileSync(destination, JSON.stringify(indexData, null, 2));
   console.log(`Successfully generated index feed. Saved ${indexData.length} entries.`);
+  return hadValidationError;
 }
 
 // Fire index builds matching your verified lowercase content folder keys
-buildIndex('articles', 'articles_index.json', 'date', true);
-buildIndex('reports', 'reports_index.json', 'year', true);
+const articlesHadErrors = buildIndex('articles', 'articles_index.json', 'date', true);
+const reportsHadErrors = buildIndex('reports', 'reports_index.json', 'year', true);
+
+if (articlesHadErrors || reportsHadErrors) {
+  console.error('\nOne or more content files failed validation — see ::error annotations above.');
+  console.error('The index was still written, but invalid files were excluded from it.');
+  process.exit(1); // makes the GitHub Action run show as failed
+}
