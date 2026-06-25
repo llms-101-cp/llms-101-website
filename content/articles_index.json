@@ -1,5 +1,15 @@
 [
   {
+    "title": "Interesting Resources — LLMs 101",
+    "slug": "resources",
+    "date": "2026-07-06",
+    "category": "Explainer",
+    "read_time": "5 min read",
+    "summary": "A curated list of the best places to go deeper on LLMs — foundational papers, courses, newsletters, and playgrounds worth your time.",
+    "file": "content/articles/resources.json",
+    "url": "/trends/view-article.html?article=resources"
+  },
+  {
     "title": "Why Every Lab Is Racing to Build Coding Agents",
     "slug": "why-every-lab-is-racing-to-build-coding-agents",
     "date": "2026-06-29",
@@ -12,11 +22,5 @@
     "after": "AI reads your issue, writes the code, runs tests, and opens a pull request. You review the finished work, not individual suggestions.",
     "file": "content/articles/why-every-lab-is-racing-to-build-coding-agents.json",
     "url": "/trends/view-article.html?article=why-every-lab-is-racing-to-build-coding-agents"
-  },
-  {
-    "title": "Interesting Resources — LLMs 101",
-    "slug": "resources",
-    "file": "content/articles/resources.json",
-    "url": "/trends/view-article.html?article=resources"
   }
 ]
