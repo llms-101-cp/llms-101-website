@@ -1,7 +1,7 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-06-21, via direct Claude Code repo inspection + live testing.**
+**Last verified: 2026-06-25, via direct Claude Code repo inspection + live testing.**
 
 This document exists because a lot of today's work was wasted rediscovering
 things that should have been known upfront. Don't repeat that — read this,
@@ -64,6 +64,19 @@ content type is what caused most of today's problems.
   syntax (`import`/`export`), NOT CommonJS (`require`). The repo's
   `package.json` has `"type": "module"`, which makes `require()` crash
   with `ReferenceError: require is not defined in ES module scope`.
+- **CRITICAL GOTCHA #3 (fixed 2026-06-25):** A `content/articles/{slug}.json`
+  file missing required fields (`date`, `category`, `read_time`, `summary`)
+  used to fail completely silently. `generate-indices.js` just copied
+  whatever keys existed, and `trends.html` has no fallback for `date` or
+  `summary` specifically, so a missing field rendered the literal string
+  `undefined` directly on the live `/trends` card. **Fixed:**
+  `generate-indices.js` now validates every article against
+  `REQUIRED_ARTICLE_FIELDS` (`title`, `date`, `category`, `read_time`,
+  `summary`, `body`), excludes any file that fails from the index, prints
+  a `::error::` annotation naming the missing fields, and exits non-zero
+  so the GitHub Action shows red. `indexing.yml`'s commit step now has
+  `if: always()` so valid articles still get indexed even when an invalid
+  one is sitting in the same push.
 - **The 5 hardcoded fallback cards in trends.html** (Agentic AI, AI Cost
   Collapse, Reasoning Models, DeepSeek R1, Context Window) are real,
   permanent, hand-built standalone HTML files in `trends/`. They are NOT
@@ -86,6 +99,16 @@ content type is what caused most of today's problems.
   bigger, riskier change than it's worth without a clear reason.
 - When generating a new card via automation, it must be reviewed visually
   and pasted in manually — never auto-spliced into the shared file.
+- **STALENESS RISK (confirmed 2026-06-25):** `generate.js` calls the
+  Anthropic API with no `web_search` tool attached, so model-card content
+  is generated purely from training knowledge and can already be stale by
+  review time. A generated Grok card referenced a "Grok-2 / Grok-2 mini /
+  Grok-3" lineup when the actual current flagship was Grok 4.3 — caught
+  only by manually web-searching before pasting it in. Always verify
+  model-specific facts (current version names, pricing, context windows)
+  independently before approving a model-card draft. The existing OpenAI,
+  Anthropic, and Google cards likely have the same staleness problem
+  (GPT-4o/o3, Claude 4, Gemini 2.5) — not yet refreshed, known gap.
 
 ---
 
@@ -131,6 +154,35 @@ llms101-automation/
   lists the real standalone HTML articles so Claude can reference them by
   name. If you add a new permanent hardcoded article to `trends/`, add its
   slug here too, or future-generated articles won't know it exists.
+- **`week_of` in `calendar.json` is a queue label, not a real date
+  (confirmed 2026-06-25).** `generate.js` doesn't check it against today's
+  date — it always pops `calendar.weeks[0]` and tags the output folder
+  with whatever `week_of` string that entry happens to carry, whenever the
+  script is run (manually or via cron). On 2026-06-21, several weeks were
+  drained back-to-back during testing, including one labeled
+  `2026-07-06` — so a "future-dated" drafts folder can sit in the repo
+  for days before that date, unreviewed, and an old review-notification
+  email can still link straight to it. Don't infer anything about when a
+  batch was actually generated or reviewed from its `week_of` label —
+  check `_completed_at` in `calendar.json`'s `completed[]` array instead.
+- **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
+  superficially identical (confirmed 2026-06-25).** Both are JSON files
+  with plausible-sounding filenames, and a calendar week doesn't always
+  have a `trendsArticle` entry at all. A `page` draft meant for
+  `content/pages/{id}.json` was mistakenly uploaded to
+  `content/articles/{id}.json` (the Trends folder) because nothing about
+  the filename itself signalled which folder it belonged in. The dashboard
+  *does* show the correct `targetPath` on each card and in the download
+  toast — read it every time, don't assume from the filename or content
+  topic alone.
+- **KNOWN GAP, not yet fixed:** `admin/review.html`'s rendered preview for
+  Trends articles uses quiet fallbacks (`d.summary ? ... : ''`,
+  `d.date || ''`) that hide missing fields instead of surfacing them.
+  `trends.html` on the live site has no such fallback for `date` or
+  `summary`, so a draft can pass visual review looking complete and still
+  break in production (see Trends articles CRITICAL GOTCHA #3 above for
+  the index-level fix — the dashboard preview itself still doesn't match
+  live rendering and would benefit from the same field-checking logic).
 
 ---
 
@@ -196,3 +248,38 @@ is protected separately via Netlify Identity login. Neither needs
 **Verified live end-to-end:** Mind Map node (Fine-tuning) and Trends
 article (Why Every Lab Is Racing to Build Coding Agents) both published
 successfully through the fixed pipeline.
+
+---
+
+## What got fixed today (2026-06-25), in order
+
+1. Added schema validation to `scripts/generate-indices.js` for Trends
+   articles — files missing `date`/`category`/`read_time`/`summary`/
+   `title`/`body` are now excluded from `articles_index.json` with a loud
+   `::error::` annotation instead of silently rendering `undefined` on
+   `/trends`
+2. Added `if: always()` to `indexing.yml`'s commit step so one invalid
+   article no longer blocks valid ones from being indexed in the same push
+3. Diagnosed a content mix-up: a Track 1 `page` draft (Resources page
+   update) had been uploaded to `content/articles/resources.json` instead
+   of `content/pages/resources.json`, making a static-page update look
+   like a malformed Trends article
+4. Added Simon Willison's blog to the real `content/pages/resources.json`,
+   matching the existing `resource-card` HTML styling — completed the
+   `week_of: 2026-07-06` calendar task that had been sitting unreviewed
+   since 2026-06-21
+5. Added an accurate Grok model card to `models.html` (current as of
+   2026-06-25: Grok 4.3, 1M-token context) — the originally generated
+   draft referenced a stale Grok-2/Grok-3 lineup, caught by web search
+   before pasting it in
+6. Deleted the misplaced `content/articles/resources.json` Trends article
+   once the real Resources-page fix (step 4) was confirmed live
+7. Documented the `week_of` queue-label behavior, the `generate.js`
+   web-search staleness gap, and the dashboard's too-forgiving preview as
+   known issues (see relevant sections above)
+
+**Verified live end-to-end:** `content/pages/resources.json` and
+`models.html` both confirmed correct after a mid-session file mix-up;
+`generate-indices.js`'s new validation logic tested against both a
+deliberately broken file (correctly excluded) and the real repo content
+(0 errors, clean index rebuild).
