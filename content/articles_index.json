@@ -12,5 +12,11 @@
     "after": "AI reads your issue, writes the code, runs tests, and opens a pull request. You review the finished work, not individual suggestions.",
     "file": "content/articles/why-every-lab-is-racing-to-build-coding-agents.json",
     "url": "/trends/view-article.html?article=why-every-lab-is-racing-to-build-coding-agents"
+  },
+  {
+    "title": "Interesting Resources — LLMs 101",
+    "slug": "resources",
+    "file": "content/articles/resources.json",
+    "url": "/trends/view-article.html?article=resources"
   }
 ]
