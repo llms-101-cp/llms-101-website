@@ -1,0 +1,277 @@
+diff --git a/ARCHITECTURE.md b/ARCHITECTURE.md
+index a3d9850..161e314 100644
+--- a/ARCHITECTURE.md
++++ b/ARCHITECTURE.md
+@@ -112,19 +112,61 @@ content type is what caused most of today's problems.
+ 
+ ---
+ 
+-## Quarterly Reports — confirmed broken, not yet fixed
++## Quarterly Reports — pipeline fixed 2026-06-26, awaiting first real report
+ 
+ - **Storage:** `content/reports/{slug}.json` (collection exists in Decap
+   config, indexed by `generate-indices.js` into `reports_index.json`)
+-- **Reality:** `content/reports/` is currently empty. `reports_index.json`
+-  is always `[]`. The featured section and reports sidebar on `trends.html`
+-  always show hardcoded placeholder content because the array is empty.
+-- **`view-report.html`** likely exists (referenced in Decap config
+-  `preview_path`) but was NOT verified or read during today's session.
+-  Check it before building anything for reports.
+-- This is a known gap, not yet addressed. Either build a real reports
+-  generation workflow, or remove the quarterly reports UI from
+-  `trends.html` if it's not going to be used.
++- **Status as of 2026-06-26:** `content/reports/` is still empty — no real
++  report has been authored through the dynamic system yet (the current
++  quarter, Q2 2026, is already covered by the legacy standalone page below).
++  But the pipeline itself is now fixed and ready for the first real entry,
++  whenever Craig publishes one via Decap (likely Q3 2026, after quarter end).
++- **The 3 existing quarterly reports are real, permanent standalone HTML
++  pages** in `trends/` (`state-of-llms-q2-2026.html`, `-q1-2026.html`,
++  `-q4-2025.html`) — same pattern and same reasoning as the 5 permanent
++  hardcoded Trends articles. They predate the dynamic system, were never
++  given `content/reports/*.json` entries, and don't need to be — they work
++  fine as-is. **Do not delete or "migrate" them.**
++- **Bugs found and fixed during this pass (none caused a live failure yet,
++  because no real dynamic report had ever been added — but every one of
++  them would have broken on the first real report):**
++  1. `generate-indices.js` always built a `view-article.html` URL for the
++     `url` field regardless of collection — a real report would have linked
++     to the wrong viewer entirely. Now branches by `collectionFolder`.
++  2. `generate-indices.js` sorted reports by `year` alone — Q1/Q2/Q3/Q4 of
++     the same year would sort in arbitrary (directory-read) order, not
++     chronological. Now sorts on a computed `_sort_key` (`year-quarter`).
++  3. `generate-indices.js` had no required-field validation for reports —
++     the same "renders literal `undefined` on the live page" bug already
++     fixed for articles on 2026-06-25 was never extended to reports. Added
++     `REQUIRED_REPORT_FIELDS` validation, same pattern as articles.
++  4. `trends.html`'s `loadCMSContent()` used to unconditionally **replace**
++     the featured block and the entire sidebar report list the moment
++     `reports_index.json` had *any* entries — the exact "replace instead of
++     merge" mistake that once deleted the 5 real Trends articles. Fixed:
++     sidebar now prepends dynamic reports above the 3 legacy ones; the
++     featured slot only swaps if the newest dynamic report's `date` is
++     actually more recent than the hardcoded fallback's real date
++     (`data-fallback-date="2026-06-01"` on `#featured-section`).
++  5. `view-report.html`'s "More quarterly reports" footer linked all 3
++     legacy reports through `/trends/view-report.html?report={slug}` — a
++     route that 404s with "Report not found" for all three, since no
++     `content/reports/{slug}.json` backs them. Fixed to link to the real
++     standalone pages, and made the list dynamic (merges `reports_index.json`
++     with the legacy list, excluding whichever report is currently open).
++- **Tested:** `generate-indices.js` changes verified against fixtures (3
++  out-of-order reports sorted correctly, one deliberately broken report —
++  missing `summary` — correctly excluded with a loud `::error::` and
++  non-zero exit). The `trends.html`/`view-report.html` JS changes were
++  syntax-checked and logic-reviewed but **not yet verified live** — that
++  needs a real (or deliberately temporary/throwaway) entry in
++  `content/reports/` pushed through the actual pipeline once these changes
++  are merged.
++- **Not yet done:** no automation/generation track exists for reports (no
++  `EXISTING_REPORTS`-style awareness in `llms101-automation/`, unlike
++  articles' `EXISTING_TRENDS_SLUGS`). Given the quarterly (not weekly)
++  cadence, this may not be worth automating — reports are rare enough to
++  author by hand in Decap. Revisit only if that assumption stops holding.
+ 
+ ---
+ 
+diff --git a/scripts/generate-indices.js b/scripts/generate-indices.js
+index 55fb239..6440a8c 100644
+--- a/scripts/generate-indices.js
++++ b/scripts/generate-indices.js
+@@ -6,6 +6,11 @@ import path from 'path';
+ // "undefined" text instead of failing loudly — so we catch it here instead.
+ const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'body'];
+ 
++// Same idea, for Quarterly Reports. trends.html's buildFeatured() and
++// view-report.html both assume title/date/summary/body exist (year/quarter
++// are used for sorting and the slug pattern, not just cosmetic).
++const REQUIRED_REPORT_FIELDS = ['title', 'year', 'quarter', 'date', 'summary', 'body'];
++
+ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
+   // process.cwd() forces Node to look exactly at the root repository directory in GitHub Actions
+   const repoRoot = process.cwd();
+@@ -45,19 +50,29 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
+         // published on the 7th/14th/21st/28th of a recent month.
+         metaData.file = `content/${collectionFolder}/${file}`;
+ 
+-        // Also write a stable url field using the clean slug (no date
+-        // prefix) so trends.html and any other consumer can link directly
+-        // to view-article.html?article={slug} without needing to know the
+-        // Decap-generated filename pattern.
++        // Also write a stable url field so trends.html and view-report.html/
++        // view-article.html can link directly without needing to know the
++        // Decap-generated filename pattern. BUG FIX: this used to always
++        // build a view-article.html URL regardless of collection, which
++        // would have silently sent every report to the wrong viewer the
++        // moment a real one was added.
+         if (!metaData.url) {
+-          metaData.url = `/trends/view-article.html?article=${metaData.slug.replace(/^\d{4}-\d{2}-\d{2}-/, '')}`;
++          if (collectionFolder === 'reports') {
++            metaData.url = `/trends/view-report.html?report=${metaData.slug}`;
++          } else {
++            metaData.url = `/trends/view-article.html?article=${metaData.slug.replace(/^\d{4}-\d{2}-\d{2}-/, '')}`;
++          }
+         }
+ 
+-        // VALIDATION: articles only. Reports use a different schema and
+-        // aren't covered by REQUIRED_ARTICLE_FIELDS.
+-        if (collectionFolder === 'articles') {
++        // VALIDATION: articles and reports both get checked now. Reports
++        // were previously unvalidated, so a report missing e.g. `summary`
++        // would have rendered literal "undefined" on the live featured
++        // card and sidebar — the exact bug already fixed for articles on
++        // 2026-06-25, just not extended to reports at the time.
++        if (collectionFolder === 'articles' || collectionFolder === 'reports') {
++          const requiredFields = collectionFolder === 'articles' ? REQUIRED_ARTICLE_FIELDS : REQUIRED_REPORT_FIELDS;
+           const fullRecord = { ...metaData, body };
+-          const missing = REQUIRED_ARTICLE_FIELDS.filter(
++          const missing = requiredFields.filter(
+             f => fullRecord[f] === undefined || fullRecord[f] === null || String(fullRecord[f]).trim() === ''
+           );
+ 
+@@ -75,6 +90,15 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
+           }
+         }
+ 
++        // SORT KEY: reports need to sort by year+quarter together, not just
++        // year — otherwise Q1/Q2/Q3/Q4 of the same year sort arbitrarily
++        // (object key insertion order from readdirSync, which is NOT
++        // chronological). This computed field is index-only; it's never
++        // part of the saved content/reports/{slug}.json itself.
++        if (collectionFolder === 'reports' && metaData.year != null && metaData.quarter != null) {
++          metaData._sort_key = `${metaData.year}-${String(metaData.quarter).padStart(2, '0')}`;
++        }
++
+         indexData.push(metaData);
+       } catch (err) {
+         console.error(`::error::Error parsing JSON file ${file}: ${err.message}`);
+@@ -84,9 +108,10 @@ function buildIndex(collectionFolder, outputFileName, sortKey, reverse = true) {
+   });
+ 
+   // Chronological sort matrix
++  const effectiveSortKey = collectionFolder === 'reports' ? '_sort_key' : sortKey;
+   indexData.sort((a, b) => {
+-    const valA = a[sortKey] || '';
+-    const valB = b[sortKey] || '';
++    const valA = a[effectiveSortKey] || '';
++    const valB = b[effectiveSortKey] || '';
+     return reverse ? (valB > valA ? 1 : -1) : (valA > valB ? 1 : -1);
+   });
+ 
+diff --git a/trends.html b/trends.html
+index e807cc8..b341b1b 100644
+--- a/trends.html
++++ b/trends.html
+@@ -174,7 +174,7 @@ footer a{color:var(--gold);text-decoration:none}
+ 
+ <div class="content-wrap">
+ 
+-  <div id="featured-section" style="grid-column:1/-1">
++  <div id="featured-section" style="grid-column:1/-1" data-fallback-date="2026-06-01">
+     <div class="featured">
+       <div class="featured-left">
+         <div>
+@@ -462,12 +462,33 @@ async function loadCMSContent() {
+     if (res.ok) {
+       const reports = await res.json();
+       if (Array.isArray(reports) && reports.length > 0) {
+-        document.getElementById('featured-section').innerHTML = buildFeatured(reports[0]);
++        // BUG FIX: this used to unconditionally overwrite the featured
++        // block with reports[0], and unconditionally overwrite the entire
++        // sidebar list — the same "replace instead of merge" mistake that
++        // once silently deleted the 5 real Trends articles (see
++        // ARCHITECTURE.md). The 3 hardcoded quarterly reports are real,
++        // permanent content (standalone pages in trends/), not placeholders
++        // — they must never be blindly wiped just because the dynamic
++        // system has *some* entries.
++
++        // Featured slot: only take over if the newest dynamic report is
++        // actually more recent than the hardcoded fallback's real date.
++        const featuredEl = document.getElementById('featured-section');
++        const fallbackDate = featuredEl?.dataset.fallbackDate;
++        const newestDynamic = reports[0];
++        if (!fallbackDate || (newestDynamic.date && newestDynamic.date > fallbackDate)) {
++          featuredEl.innerHTML = buildFeatured(newestDynamic);
++        }
++
++        // Sidebar: prepend dynamic reports above the existing hardcoded
++        // ones instead of replacing them, exactly like buildArticleCard's
++        // afterbegin insert above.
+         const sidebar = document.getElementById('sidebar-reports');
+         if (sidebar) {
+-          sidebar.innerHTML = reports.map(r =>
++          const dynamicHTML = reports.map(r =>
+             `<li><a href="${r.url || '/trends/' + r.slug}">${r.title}</a></li>`
+           ).join('');
++          sidebar.insertAdjacentHTML('afterbegin', dynamicHTML);
+         }
+       }
+     }
+diff --git a/trends/view-report.html b/trends/view-report.html
+index a6329d1..9af16f0 100644
+--- a/trends/view-report.html
++++ b/trends/view-report.html
+@@ -117,6 +117,21 @@ function formatDate(dateStr) {
+   });
+ }
+ 
++// These 3 reports are real, permanent standalone HTML pages in trends/ —
++// they predate the dynamic JSON pipeline and were never given content/reports/
++// JSON entries (and don't need to be; they work fine as-is, same as the 5
++// permanent hardcoded Trends articles documented in ARCHITECTURE.md).
++//
++// BUG FIX: this list used to link to /trends/view-report.html?report={slug}
++// for all three — a route that 404s with "Report not found" because no
++// content/reports/{slug}.json file backs them. Fixed to link straight to
++// the real standalone pages instead.
++const LEGACY_REPORTS = [
++  { slug: '2026-q2-report', title: 'State of LLMs — Q2 2026', url: '/trends/state-of-llms-q2-2026' },
++  { slug: '2026-q1-report', title: 'State of LLMs — Q1 2026', url: '/trends/state-of-llms-q1-2026' },
++  { slug: '2025-q4-report', title: 'State of LLMs — Q4 2025', url: '/trends/state-of-llms-q4-2025' },
++];
++
+ function renderMarkdown(text) {
+   if (!text) return '';
+   if (typeof marked !== 'undefined') return marked.parse(text);
+@@ -197,6 +212,30 @@ async function loadReport() {
+          </a>`
+       : '';
+ 
++    // ── Build "More quarterly reports" list ─────────────────────────────────
++    // Merge any real dynamic reports with the 3 legacy permanent ones,
++    // excluding whichever report is currently on screen. This was previously
++    // a static, slightly-wrong-by-design list (see LEGACY_REPORTS comment
++    // above) that never reflected newly published reports at all.
++    let otherReports = [];
++    try {
++      const indexRes = await fetch('/content/reports_index.json', { cache: 'no-store' });
++      if (indexRes.ok) {
++        const index = await indexRes.json();
++        if (Array.isArray(index)) {
++          otherReports = index
++            .filter(r => r.slug !== slug)
++            .map(r => ({ slug: r.slug, title: r.title, url: r.url || `/trends/view-report.html?report=${r.slug}` }));
++        }
++      }
++    } catch (e) {}
++
++    const legacyOthers = LEGACY_REPORTS.filter(
++      r => r.slug !== slug && !otherReports.some(o => o.slug === r.slug)
++    );
++    const furtherList = [...otherReports, ...legacyOthers];
++    const furtherHTML = furtherList.map(r => `<li><a href="${r.url}">${r.title}</a></li>`).join('');
++
+     document.getElementById('report-render-target').innerHTML = `
+       <div class="meta-header">
+         <span class="article-tag">Quarterly Report</span>
+@@ -213,9 +252,7 @@ async function loadReport() {
+       <div class="further-reading">
+         <div class="fr-title">More quarterly reports</div>
+         <ul class="fr-list">
+-          <li><a href="/trends/view-report.html?report=2026-q2-report">State of LLMs — Q2 2026</a></li>
+-          <li><a href="/trends/view-report.html?report=2026-q1-report">State of LLMs — Q1 2026</a></li>
+-          <li><a href="/trends/view-report.html?report=2025-q4-report">State of LLMs — Q4 2025</a></li>
++          ${furtherHTML}
+           <li><a href="/trends">All Trends &amp; Explainers</a></li>
+         </ul>
+       </div>
