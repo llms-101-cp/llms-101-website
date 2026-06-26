@@ -217,14 +217,23 @@ llms101-automation/
   *does* show the correct `targetPath` on each card and in the download
   toast — read it every time, don't assume from the filename or content
   topic alone.
-- **KNOWN GAP, not yet fixed:** `admin/review.html`'s rendered preview for
-  Trends articles uses quiet fallbacks (`d.summary ? ... : ''`,
-  `d.date || ''`) that hide missing fields instead of surfacing them.
-  `trends.html` on the live site has no such fallback for `date` or
-  `summary`, so a draft can pass visual review looking complete and still
-  break in production (see Trends articles CRITICAL GOTCHA #3 above for
-  the index-level fix — the dashboard preview itself still doesn't match
-  live rendering and would benefit from the same field-checking logic).
+- **Fixed 2026-06-26:** `admin/review.html`'s rendered preview for Trends
+  articles used to use quiet fallbacks (`d.summary ? ... : ''`, `d.date || ''`,
+  `d.category || 'Explainer'`) that hid missing required fields instead of
+  surfacing them. The real live consequence of a missing required field isn't
+  "renders a bit thin" — `generate-indices.js` excludes the entry from
+  `articles_index.json` entirely, so it never appears on `/trends` at all and
+  the indexing GitHub Action fails loudly. The dashboard preview now mirrors
+  that: a `REQUIRED_ARTICLE_FIELDS` constant (kept in manual sync with the one
+  in `scripts/generate-indices.js` — no shared import is possible between
+  these two environments) drives a loud `⛔ Missing required field(s)` banner
+  naming exactly which fields are absent and what will happen if uploaded
+  as-is. Fallback values that previously masked gaps (`'Explainer'`,
+  `'Untitled'`, empty strings) were replaced with explicit
+  `[MISSING: fieldname]` markers in the preview itself. `approve()` and the
+  Approve button are both now gated on zero missing fields, not just the
+  visual-review checkbox, so an incomplete draft can no longer be approved
+  and uploaded only to silently vanish on the live site.
 
 ---
 

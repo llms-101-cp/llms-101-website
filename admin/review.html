@@ -53,6 +53,8 @@ main{max-width:1100px;margin:0 auto;padding:40px}
 .note-box{background:var(--success-light);border:1px solid var(--success);border-radius:4px;padding:10px 14px;font-size:11px;color:#1a4a2a;margin-bottom:14px;line-height:1.6}
 .extra-step-note{background:#e8f0fc;border:1px solid #4a7ab8;border-radius:4px;padding:10px 14px;font-size:11px;color:#1a3a6b;margin-bottom:14px;line-height:1.6}
 .visual-review-required{background:#fdeaea;border:1.5px solid #c85a1e;border-radius:4px;padding:10px 14px;font-size:11px;color:#8a3a10;margin-bottom:14px;line-height:1.6}
+.validation-error{background:#fdeaea;border:2px solid #c85a1e;border-radius:4px;padding:12px 14px;font-size:11px;color:#8a3a10;margin-bottom:14px;line-height:1.7;font-weight:500}
+.field-missing{color:#c85a1e;font-weight:600}
 .rendered-preview-wrap{border:2px solid var(--warn);border-radius:6px;overflow:hidden;margin-bottom:14px}
 .rendered-preview-label{background:var(--warn);color:white;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;display:flex;justify-content:space-between;align-items:center}
 .rendered-preview-label button{font-family:var(--mono);font-size:9px;background:white;color:var(--warn);border:none;padding:3px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px}
@@ -163,6 +165,24 @@ function initWeek(){
 
 let state = { drafts: [] };
 
+// Mirrors REQUIRED_ARTICLE_FIELDS in scripts/generate-indices.js exactly.
+// KEEP THESE IN SYNC MANUALLY — this file has no build step and can't import
+// from the real indexing script, so if that list changes, update this one too.
+// This is the whole point of this section: without it, a draft can look
+// complete here and still get silently excluded from the live site.
+const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'body'];
+
+function getMissingFields(d, requiredFields){
+  return requiredFields.filter(f =>
+    d[f] === undefined || d[f] === null || String(d[f]).trim() === ''
+  );
+}
+
+function fieldOrMissing(value, label){
+  const has = value !== undefined && value !== null && String(value).trim() !== '';
+  return has ? value : `<span class="field-missing">[MISSING: ${label}]</span>`;
+}
+
 async function loadWeek(){
   const weekOf = document.getElementById('week-input').value.trim();
   if(!weekOf){ showToast('Enter a week date first'); return; }
@@ -245,19 +265,30 @@ function renderTrendsArticleCard(draft, idx){
   }
   const d = draft.data;
   const reviewed = draft._visuallyReviewed;
+  const missing = getMissingFields(d, REQUIRED_ARTICLE_FIELDS);
+  const canApprove = reviewed && missing.length === 0;
   const bodyHtml = (typeof marked !== 'undefined' && d.body) ? marked.parse(d.body) : (d.body || '').replace(/\n/g,'<br>');
 
   return `
     <div class="draft-card wide ${draft._status==='approved'?'approved':''}" id="card-${idx}">
       <div class="card-head">
         <div>
-          <div class="card-title">${d.title}</div>
+          <div class="card-title">${d.title || '(untitled draft)'}</div>
           <div class="target-path">→ ${draft.targetPath}</div>
         </div>
         <span class="type-pill">trends-article</span>
       </div>
       <div class="card-body">
         <div class="note-box">📄 Single JSON file. Upload directly to content/articles/ — the existing indexing.yml workflow rebuilds the index automatically, and the article appears on /trends within a minute or two.</div>
+        ${missing.length > 0 ? `
+          <div class="validation-error">
+            ⛔ Missing required field(s): <strong>${missing.join(', ')}</strong>.
+            This isn't just a preview gap — generate-indices.js will exclude this
+            article from articles_index.json entirely if uploaded as-is. It will
+            <strong>not appear on /trends at all</strong>, and the indexing
+            GitHub Action will fail (red X) until this is fixed.
+          </div>
+        ` : ''}
         ${!reviewed ? `<div class="visual-review-required">⚠ Visual review required before this can be approved.</div>` : ''}
 
         <div class="rendered-preview-wrap">
@@ -266,11 +297,11 @@ function renderTrendsArticleCard(draft, idx){
             <button onclick="markReviewed(${idx})">${reviewed ? '✓ Reviewed' : 'Mark as visually reviewed'}</button>
           </div>
           <div class="rendered-preview">
-            <span class="ap-tag">${d.category || 'Explainer'}</span>
-            <h1>${d.title || 'Untitled'}</h1>
-            <div class="ap-meta">${d.date || ''} · ${d.read_time || ''}</div>
-            ${d.summary ? `<div class="ap-summary">${d.summary}</div>` : ''}
-            <div class="ap-body">${bodyHtml}</div>
+            <span class="ap-tag">${fieldOrMissing(d.category, 'category')}</span>
+            <h1>${fieldOrMissing(d.title, 'title')}</h1>
+            <div class="ap-meta">${fieldOrMissing(d.date, 'date')} · ${fieldOrMissing(d.read_time, 'read_time')}</div>
+            <div class="ap-summary">${fieldOrMissing(d.summary, 'summary')}</div>
+            <div class="ap-body">${d.body ? bodyHtml : '<span class="field-missing">[MISSING: body]</span>'}</div>
           </div>
         </div>
 
@@ -281,7 +312,7 @@ function renderTrendsArticleCard(draft, idx){
       <div class="card-actions">
         ${draft._status==='approved'
           ? `<span class="status-badge status-approved">✓ Approved</span><button class="btn btn-download" onclick="downloadJSON(${idx})">⬇ Download JSON</button>`
-          : `<button class="btn btn-approve" onclick="approve(${idx})" ${reviewed?'':'disabled'}>Approve</button>
+          : `<button class="btn btn-approve" onclick="approve(${idx})" ${canApprove?'':'disabled'}>Approve</button>
              <button class="btn btn-reject" onclick="reject(${idx})">Reject</button>`
         }
       </div>
@@ -361,6 +392,13 @@ function approve(idx){
   if(draft.track===2 && !draft._visuallyReviewed){
     showToast('Visual review required first.');
     return;
+  }
+  if(draft.contentType === 'trends-article'){
+    const missing = getMissingFields(draft.data, REQUIRED_ARTICLE_FIELDS);
+    if(missing.length > 0){
+      showToast(`Cannot approve — missing required field(s): ${missing.join(', ')}. This would be silently excluded from the live site.`);
+      return;
+    }
   }
   draft._status = 'approved';
   render();
