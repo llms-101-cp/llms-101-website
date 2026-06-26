@@ -112,19 +112,61 @@ content type is what caused most of today's problems.
 
 ---
 
-## Quarterly Reports — confirmed broken, not yet fixed
+## Quarterly Reports — pipeline fixed 2026-06-26, awaiting first real report
 
 - **Storage:** `content/reports/{slug}.json` (collection exists in Decap
   config, indexed by `generate-indices.js` into `reports_index.json`)
-- **Reality:** `content/reports/` is currently empty. `reports_index.json`
-  is always `[]`. The featured section and reports sidebar on `trends.html`
-  always show hardcoded placeholder content because the array is empty.
-- **`view-report.html`** likely exists (referenced in Decap config
-  `preview_path`) but was NOT verified or read during today's session.
-  Check it before building anything for reports.
-- This is a known gap, not yet addressed. Either build a real reports
-  generation workflow, or remove the quarterly reports UI from
-  `trends.html` if it's not going to be used.
+- **Status as of 2026-06-26:** `content/reports/` is still empty — no real
+  report has been authored through the dynamic system yet (the current
+  quarter, Q2 2026, is already covered by the legacy standalone page below).
+  But the pipeline itself is now fixed and ready for the first real entry,
+  whenever Craig publishes one via Decap (likely Q3 2026, after quarter end).
+- **The 3 existing quarterly reports are real, permanent standalone HTML
+  pages** in `trends/` (`state-of-llms-q2-2026.html`, `-q1-2026.html`,
+  `-q4-2025.html`) — same pattern and same reasoning as the 5 permanent
+  hardcoded Trends articles. They predate the dynamic system, were never
+  given `content/reports/*.json` entries, and don't need to be — they work
+  fine as-is. **Do not delete or "migrate" them.**
+- **Bugs found and fixed during this pass (none caused a live failure yet,
+  because no real dynamic report had ever been added — but every one of
+  them would have broken on the first real report):**
+  1. `generate-indices.js` always built a `view-article.html` URL for the
+     `url` field regardless of collection — a real report would have linked
+     to the wrong viewer entirely. Now branches by `collectionFolder`.
+  2. `generate-indices.js` sorted reports by `year` alone — Q1/Q2/Q3/Q4 of
+     the same year would sort in arbitrary (directory-read) order, not
+     chronological. Now sorts on a computed `_sort_key` (`year-quarter`).
+  3. `generate-indices.js` had no required-field validation for reports —
+     the same "renders literal `undefined` on the live page" bug already
+     fixed for articles on 2026-06-25 was never extended to reports. Added
+     `REQUIRED_REPORT_FIELDS` validation, same pattern as articles.
+  4. `trends.html`'s `loadCMSContent()` used to unconditionally **replace**
+     the featured block and the entire sidebar report list the moment
+     `reports_index.json` had *any* entries — the exact "replace instead of
+     merge" mistake that once deleted the 5 real Trends articles. Fixed:
+     sidebar now prepends dynamic reports above the 3 legacy ones; the
+     featured slot only swaps if the newest dynamic report's `date` is
+     actually more recent than the hardcoded fallback's real date
+     (`data-fallback-date="2026-06-01"` on `#featured-section`).
+  5. `view-report.html`'s "More quarterly reports" footer linked all 3
+     legacy reports through `/trends/view-report.html?report={slug}` — a
+     route that 404s with "Report not found" for all three, since no
+     `content/reports/{slug}.json` backs them. Fixed to link to the real
+     standalone pages, and made the list dynamic (merges `reports_index.json`
+     with the legacy list, excluding whichever report is currently open).
+- **Tested:** `generate-indices.js` changes verified against fixtures (3
+  out-of-order reports sorted correctly, one deliberately broken report —
+  missing `summary` — correctly excluded with a loud `::error::` and
+  non-zero exit). The `trends.html`/`view-report.html` JS changes were
+  syntax-checked and logic-reviewed but **not yet verified live** — that
+  needs a real (or deliberately temporary/throwaway) entry in
+  `content/reports/` pushed through the actual pipeline once these changes
+  are merged.
+- **Not yet done:** no automation/generation track exists for reports (no
+  `EXISTING_REPORTS`-style awareness in `llms101-automation/`, unlike
+  articles' `EXISTING_TRENDS_SLUGS`). Given the quarterly (not weekly)
+  cadence, this may not be worth automating — reports are rare enough to
+  author by hand in Decap. Revisit only if that assumption stops holding.
 
 ---
 

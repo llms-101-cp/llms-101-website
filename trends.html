@@ -174,7 +174,7 @@ footer a{color:var(--gold);text-decoration:none}
 
 <div class="content-wrap">
 
-  <div id="featured-section" style="grid-column:1/-1">
+  <div id="featured-section" style="grid-column:1/-1" data-fallback-date="2026-06-01">
     <div class="featured">
       <div class="featured-left">
         <div>
@@ -462,12 +462,33 @@ async function loadCMSContent() {
     if (res.ok) {
       const reports = await res.json();
       if (Array.isArray(reports) && reports.length > 0) {
-        document.getElementById('featured-section').innerHTML = buildFeatured(reports[0]);
+        // BUG FIX: this used to unconditionally overwrite the featured
+        // block with reports[0], and unconditionally overwrite the entire
+        // sidebar list — the same "replace instead of merge" mistake that
+        // once silently deleted the 5 real Trends articles (see
+        // ARCHITECTURE.md). The 3 hardcoded quarterly reports are real,
+        // permanent content (standalone pages in trends/), not placeholders
+        // — they must never be blindly wiped just because the dynamic
+        // system has *some* entries.
+
+        // Featured slot: only take over if the newest dynamic report is
+        // actually more recent than the hardcoded fallback's real date.
+        const featuredEl = document.getElementById('featured-section');
+        const fallbackDate = featuredEl?.dataset.fallbackDate;
+        const newestDynamic = reports[0];
+        if (!fallbackDate || (newestDynamic.date && newestDynamic.date > fallbackDate)) {
+          featuredEl.innerHTML = buildFeatured(newestDynamic);
+        }
+
+        // Sidebar: prepend dynamic reports above the existing hardcoded
+        // ones instead of replacing them, exactly like buildArticleCard's
+        // afterbegin insert above.
         const sidebar = document.getElementById('sidebar-reports');
         if (sidebar) {
-          sidebar.innerHTML = reports.map(r =>
+          const dynamicHTML = reports.map(r =>
             `<li><a href="${r.url || '/trends/' + r.slug}">${r.title}</a></li>`
           ).join('');
+          sidebar.insertAdjacentHTML('afterbegin', dynamicHTML);
         }
       }
     }

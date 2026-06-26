@@ -117,6 +117,21 @@ function formatDate(dateStr) {
   });
 }
 
+// These 3 reports are real, permanent standalone HTML pages in trends/ —
+// they predate the dynamic JSON pipeline and were never given content/reports/
+// JSON entries (and don't need to be; they work fine as-is, same as the 5
+// permanent hardcoded Trends articles documented in ARCHITECTURE.md).
+//
+// BUG FIX: this list used to link to /trends/view-report.html?report={slug}
+// for all three — a route that 404s with "Report not found" because no
+// content/reports/{slug}.json file backs them. Fixed to link straight to
+// the real standalone pages instead.
+const LEGACY_REPORTS = [
+  { slug: '2026-q2-report', title: 'State of LLMs — Q2 2026', url: '/trends/state-of-llms-q2-2026' },
+  { slug: '2026-q1-report', title: 'State of LLMs — Q1 2026', url: '/trends/state-of-llms-q1-2026' },
+  { slug: '2025-q4-report', title: 'State of LLMs — Q4 2025', url: '/trends/state-of-llms-q4-2025' },
+];
+
 function renderMarkdown(text) {
   if (!text) return '';
   if (typeof marked !== 'undefined') return marked.parse(text);
@@ -197,6 +212,30 @@ async function loadReport() {
          </a>`
       : '';
 
+    // ── Build "More quarterly reports" list ─────────────────────────────────
+    // Merge any real dynamic reports with the 3 legacy permanent ones,
+    // excluding whichever report is currently on screen. This was previously
+    // a static, slightly-wrong-by-design list (see LEGACY_REPORTS comment
+    // above) that never reflected newly published reports at all.
+    let otherReports = [];
+    try {
+      const indexRes = await fetch('/content/reports_index.json', { cache: 'no-store' });
+      if (indexRes.ok) {
+        const index = await indexRes.json();
+        if (Array.isArray(index)) {
+          otherReports = index
+            .filter(r => r.slug !== slug)
+            .map(r => ({ slug: r.slug, title: r.title, url: r.url || `/trends/view-report.html?report=${r.slug}` }));
+        }
+      }
+    } catch (e) {}
+
+    const legacyOthers = LEGACY_REPORTS.filter(
+      r => r.slug !== slug && !otherReports.some(o => o.slug === r.slug)
+    );
+    const furtherList = [...otherReports, ...legacyOthers];
+    const furtherHTML = furtherList.map(r => `<li><a href="${r.url}">${r.title}</a></li>`).join('');
+
     document.getElementById('report-render-target').innerHTML = `
       <div class="meta-header">
         <span class="article-tag">Quarterly Report</span>
@@ -213,9 +252,7 @@ async function loadReport() {
       <div class="further-reading">
         <div class="fr-title">More quarterly reports</div>
         <ul class="fr-list">
-          <li><a href="/trends/view-report.html?report=2026-q2-report">State of LLMs — Q2 2026</a></li>
-          <li><a href="/trends/view-report.html?report=2026-q1-report">State of LLMs — Q1 2026</a></li>
-          <li><a href="/trends/view-report.html?report=2025-q4-report">State of LLMs — Q4 2025</a></li>
+          ${furtherHTML}
           <li><a href="/trends">All Trends &amp; Explainers</a></li>
         </ul>
       </div>
