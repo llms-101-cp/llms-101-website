@@ -120,6 +120,28 @@ export function applyTrackerUpdate(currentHTML, rows, todayISO) {
   return updated;
 }
 
+// ─── Extract the first complete [...] array from text, tracking bracket depth ─
+// A greedy regex like /(\[[\s\S]*\])/ mis-extracts when the model appends
+// trailing citation-style brackets after the JSON array (plausible with
+// web_search enabled). This walks the string character-by-character so it
+// stops at exactly the closing bracket that matches the opening one.
+
+function extractJsonArray(text) {
+  const start = text.indexOf('[');
+  if (start === -1) return null;
+  let depth = 0, inString = false, escapeNext = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escapeNext) { escapeNext = false; continue; }
+    if (ch === '\\' && inString) { escapeNext = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '[') depth++;
+    else if (ch === ']') { depth--; if (depth === 0) return text.slice(start, i + 1); }
+  }
+  return null;
+}
+
 // ─── Anthropic API call with web_search enabled ─────────────────────────────
 
 async function generateTrackerRows(previousRowsSummary) {
@@ -148,9 +170,10 @@ async function generateTrackerRows(previousRowsSummary) {
   const textBlocks = message.content.filter(b => b.type === 'text').map(b => b.text);
   const lastText = (textBlocks[textBlocks.length - 1] ?? '').trim();
   const fenceStripped = lastText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
-  // Belt-and-suspenders: if any leading/trailing prose survived, pull out the [...] array.
-  const arrayMatch = fenceStripped.match(/(\[[\s\S]*\])/);
-  const cleaned = arrayMatch ? arrayMatch[1] : fenceStripped;
+  // Belt-and-suspenders: if any leading/trailing prose survived, extract the array
+  // using bracket-depth counting rather than a greedy regex (which would mis-extract
+  // if the model appends citation-style brackets after the JSON array closes).
+  const cleaned = extractJsonArray(fenceStripped) ?? fenceStripped;
 
   let rows;
   try {
