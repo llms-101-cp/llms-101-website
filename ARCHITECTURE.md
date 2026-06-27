@@ -237,6 +237,49 @@ llms101-automation/
 
 ---
 
+## Model Tracker (`tracker.html`) — STATIC, no dynamic system exists ⚠️ refreshed 2026-06-27
+
+- **Storage:** Hardcoded `<div class="trow">` blocks directly inside
+  `tracker.html`, inside `<div id="tracker-list">`. Same hand-coded pattern
+  as `models.html`'s `#model-grid` — confirmed via direct repo inspection
+  on 2026-06-27, not assumed from a prior session's summary.
+- **No dynamic loading, no JSON, no CMS integration of any kind.** A
+  full-repo grep for "tracker" across `scripts/`, `llms101-automation/`,
+  all GitHub workflows, and `admin/config.yml` returned zero matches
+  outside the page itself — there is no scaffolding to build on here,
+  unlike Trends articles or model cards which had partial groundwork
+  already.
+- **STALENESS RISK (same root cause as models.html, confirmed 2026-06-27):**
+  All 8 rows were stale, including one entry (GPT-4o) referencing a model
+  that had been fully discontinued (deprecated February 2026) rather than
+  merely superseded. Refreshed via independent live web search against
+  each lab's own announcement or docs pages — not training-data memory —
+  to current flagships: Claude Opus 4.8, GPT-5.5 (Thinking/Pro) +
+  GPT-5.5 Instant, Gemini 3.1 Pro + Gemini 3.5 Flash, Grok 4.3 (newly added
+  as a 9th row, for consistency with the Grok card already on
+  `models.html`), DeepSeek V4, Claude Sonnet 4.6, Llama 4 Maverick.
+- **Removed the ↑/↓/→ "change" indicators in this refresh.** They implied
+  real month-over-month tracking that never existed — they were
+  hand-authored vibes with no historical data behind them. Restoring them
+  with *real* data is one of the strongest arguments for the Model Tracker
+  automation decision below, once a pipeline exists that can actually diff
+  month N against month N-1.
+- **Automation decision: proposed 2026-06-27, not yet decided.** Static
+  copy-paste (mirroring `models.html`) vs. dynamic JSON-driven (mirroring
+  Trends articles) were evaluated. Recommendation: static, same pattern as
+  `models.html` — but only *after* fixing the real blocker, which applies
+  to both options equally: `llms101-automation/scripts/generate.js` has no
+  `web_search` tool attached (see staleness risk under Model cards above).
+  A dynamic pipeline without that fix just automates the production of
+  confidently-wrong rankings faster, not slower. Revisit the dynamic option
+  only if the page outgrows "8-9 rows, refreshed monthly" into something
+  with real historical trend data worth querying — same "revisit if that
+  assumption stops holding" framing already used for Reports automation
+  above. **Do not build either pipeline without Craig's explicit go-ahead
+  on direction.**
+
+---
+
 ## Two completely separate "scripts" locations — do not confuse them
 
 - **`/scripts/`** (repo root) — pre-existing site infrastructure.
