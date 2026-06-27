@@ -52,6 +52,7 @@ export function renderTrackerRow(row) {
   const tierLabelEsc = escapeHtml(row.tier_label);
   const tierBadgeText = row.tier_emoji ? `${row.tier_emoji} ${tierLabelEsc}` : tierLabelEsc;
   const nameEsc = escapeHtml(row.name);
+  const urlEsc = escapeHtml(row.homepage_url);
   const familyEsc = escapeHtml(row.family);
   const flagshipEsc = escapeHtml(row.flagship);
   const bestForEsc = escapeHtml(row.best_for);
@@ -62,7 +63,7 @@ export function renderTrackerRow(row) {
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">${familyEsc}</div>
-          <div class="model-name">${nameEsc}</div>
+          <div class="model-name"><a href="${urlEsc}" target="_blank" rel="noopener">${nameEsc}</a></div>
           <div class="model-flagship">${flagshipEsc}</div>
           <span class="tier-badge ${row.tier_class}">${tierBadgeText}</span>
         </div>
@@ -204,7 +205,9 @@ async function saveError(raw) {
 // re-researching from a blank slate every month.
 
 function extractCurrentRowsSummary(html) {
-  const names = [...html.matchAll(/<div class="model-name">([^<]*)<\/div>/g)].map(m => m[1]);
+  // model-name may contain a plain text node or <a href="...">name</a> — strip any inner tags
+  const names = [...html.matchAll(/<div class="model-name">([\s\S]*?)<\/div>/g)]
+    .map(m => m[1].replace(/<[^>]+>/g, '').trim());
   const families = [...html.matchAll(/<div class="model-family">([^<]*)<\/div>/g)].map(m => m[1]);
   return families.map((f, i) => `- ${f}: ${names[i]}`).join('\n');
 }

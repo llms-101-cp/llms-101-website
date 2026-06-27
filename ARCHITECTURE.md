@@ -291,6 +291,102 @@ llms101-automation/
   costs about 30 seconds per month; if trust builds over several clean
   runs, full auto-merge is a one-line addition — but that decision belongs
   to Craig after watching a few PRs prove themselves.
+- **Debugging history, 2026-06-27 (same day as the build).** Six real bugs
+  were found and fixed between building the pipeline and getting one clean
+  end-to-end run, in this order:
+  1. `applyTrackerUpdate`'s splice logic duplicated a blank line on every
+     run (non-idempotent — would have grown by 2 newlines per month
+     forever). Found via byte-diff testing against the real file before any
+     live run. Fixed in the same PR that built the pipeline.
+  2. `generateTrackerRows` joined ALL text content blocks from the
+     `web_search`-enabled response, including the model's early
+     "I'll research..." planning narration before its first search — so
+     `JSON.parse` choked on leading prose. First real production failure.
+     Fixed in `e49aee7`: use only the last text block.
+  3. The fix for #2 introduced a `ReferenceError` in the catch block
+     (`saveError(raw)` referenced a variable that no longer existed after
+     the rename) — meaning the diagnostic file was never written when
+     parsing failed, so the actual failure content was lost. Fixed in
+     `9687b3c`: `saveError(lastText)`.
+  4. The fix for #2 used a greedy regex (`/(\[[\s\S]*\])/`) to extract the
+     JSON array, which mis-extracts if the model appends citation-style
+     trailing brackets after the array closes (plausible given
+     `web_search`'s whole purpose is citations) — it would grab everything
+     up to the LAST `]` in the text, swallowing trailing prose into invalid
+     JSON. Fixed in `c139866`: replaced with `extractJsonArray()`, a
+     bracket-depth-counting walker that stops at the bracket matching the
+     opener, ignoring anything after.
+  5. Re-triggering the workflow on the same calendar day (this debugging
+     session re-ran it many times in a few hours) collided with the
+     existing dated branch name — `git push` was rejected as non-fast-
+     forward. Fixed in `4cd08e7`: `git push --force` to the bot's own
+     disposable branch (safe — never touches `main` or a human branch),
+     plus check `gh pr list` first and skip `gh pr create` if a PR for
+     that branch is already open, so re-runs update the existing PR's diff
+     instead of erroring or duplicating.
+  6. The fix for #5 used `gh pr list ... -q '.[0].number'`, which renders
+     as the literal string `"null"` (not empty) when no PR exists — making
+     `[ -n "$EXISTING_PR" ]` true and **silently skipping `gh pr create` on
+     every normal month** where no PR exists yet, the single most common
+     case. This would have made the automation look healthy (no error)
+     while quietly never opening a PR, ever, going forward. Fixed in
+     `63e7125`: `.[0].number // empty`, the standard jq idiom for this.
+  All six fixes were committed directly to `main` rather than through a PR
+  (despite being asked to route at least one through a PR) — worth a
+  conscious decision on whether that's fine for script-only changes
+  specifically, or whether to actually enforce PR-for-everything going
+  forward, rather than leaving it to keep happening by default.
+- **Current pipeline status (as of 2026-06-27, end of day): the "PR already
+  exists, skip create" path has been verified live. The "cold create" path
+  — a genuinely fresh month with no existing PR — has NOT yet been
+  empirically tested**, because every real run so far happened on the same
+  calendar day as an already-open PR (#3). The very first real cold-create
+  test will be either next month's natural cron firing, or a manual
+  `workflow_dispatch` trigger run on a day with no open tracker PR.
+- **OPEN, UNRESOLVED as of 2026-06-27: a curation pattern in the generated
+  rankings, not a technical bug.** Across both real `web_search`-driven
+  generations this session, Anthropic occupied 3 of 9 rows (Opus 4.8,
+  Sonnet 4.6, Haiku 4.5) and Meta/Llama had zero representation, despite
+  the prompt explicitly listing Llama as a valid open-weight option
+  alongside DeepSeek. This is consistent across both runs, not a one-off.
+  Schema validation cannot catch this category of issue — every row was
+  individually valid and defensible, the pattern is about aggregate
+  balance, which only a human reviewing the full set can judge. PR #3 is
+  open and **deliberately not yet merged** pending a decision on this.
+  Three options were on the table, none chosen yet:
+  1. Merge PR #3 as-is (each row defensible on its own merits) and leave
+     the prompt unchanged.
+  2. Hold PR #3 and adjust `buildModelTrackerPrompt` first — e.g. cap rows
+     per maker, or make the open-weight category language stickier so it
+     doesn't get silently swapped for a same-maker row.
+  3. Merge PR #3 now, treat the prompt adjustment as a separate follow-up
+     for next month, decoupling "is this month's content fine" from
+     "should curation logic change going forward."
+- **Pipeline changes landed 2026-06-27 (next-cycle, not retroactive to PR #3).**
+  Two changes shipped together, bundled by timing not dependency:
+  1. **12-row expansion.** `TRACKER_ROW_COUNT` raised from 9 to 12.
+     Category guidance updated to match: 3-4 closed frontier Tier 1 models,
+     2-3 open-weight frontier models (explicitly plural — the old "1 open-weight"
+     language was part of why Llama got zero representation across both real
+     runs), 1-2 mid-tier/best-value, 1-2 budget/speed, 1-2 specialized or
+     emerging. A per-maker cap was explicitly considered and explicitly rejected
+     — nothing in the guidance limits how many rows any one company can have.
+     Whether the expanded category language actually broadens coverage is
+     unverified; watch the first couple of real runs.
+  2. **Model-name hyperlinks.** Each tracker row now links the model name to
+     its official homepage. Added `homepage_url` field to the JSON schema
+     (required, validated: must start with `https://` and pass `new URL()`).
+     The prompt instructs the model to verify the URL via `web_search` rather
+     than guessing from memory. `renderTrackerRow` wraps the name in
+     `<a href="..." target="_blank" rel="noopener">`. CSS added to
+     `tracker.html`: `.model-name a{color:inherit;text-decoration:none}` /
+     `.model-name a:hover{color:var(--gold);text-decoration:underline}`.
+     Known limitation: validation confirms the URL is well-formed and starts
+     with `https://` but does NOT live-fetch it — a plausible-looking URL
+     can still 404. Also fixed `extractCurrentRowsSummary` in
+     `generate-tracker.js` to strip inner tags when reading back model names
+     (the old `[^<]*` regex would have silently produced empty strings for
+     every name once rows contained `<a href="...">name</a>`).
 
 ---
 

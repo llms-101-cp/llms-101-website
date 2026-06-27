@@ -203,7 +203,7 @@ no explanation, no surrounding page HTML. Start directly with <div class="mcard"
  * stale, not because the prompt is bad.
  */
 
-export const TRACKER_ROW_COUNT = 9;
+export const TRACKER_ROW_COUNT = 12;
 
 export const VALID_COST_CLASSES = ['cost-free', 'cost-low', 'cost-standard', 'cost-premium'];
 export const VALID_TIER_CLASSES = ['tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5'];
@@ -239,14 +239,21 @@ cadence; check whether any of the above models have been superseded,
 discontinued, or had a successor released. Also check whether a model that
 isn't on last month's list now belongs there.
 
-Cover this same spread of categories (adjust which specific model fills each
-slot based on what you find — do not just relabel last month's models):
+Cover this same spread of categories, scaled up for ${TRACKER_ROW_COUNT}
+rows (adjust which specific model fills each slot based on what you find —
+do not just relabel last month's models):
 - 3-4 closed frontier "Tier 1" models (the current best from OpenAI,
   Anthropic, Google, and optionally xAI)
-- 1 open-weight model that's genuinely competitive at the frontier
-  (DeepSeek, Llama, Qwen, or whichever currently leads open-weight quality)
+- 2-3 open-weight models genuinely competitive at the frontier -- don't
+  reduce the open-weight ecosystem to a single representative; cover more
+  than one of DeepSeek, Llama, Qwen, Mistral, or whichever else currently
+  leads open-weight quality
 - 1 mid-tier "best value" closed model per major lab as relevant
-- 1 budget/speed-optimised model for high-volume use cases
+- 1-2 budget/speed-optimised models for high-volume use cases
+- 1-2 notable specialized or emerging models that don't fit neatly into
+  the above -- e.g. a strong coding-specialized model, or a competitive
+  model from a lab not otherwise represented in this list (Mistral,
+  Cohere, Perplexity, or similar)
 
 Do NOT include any model whose access is currently suspended, restricted to
 a small preview group, or otherwise not generally available to a typical
@@ -270,7 +277,8 @@ markdown fences, no preamble. Each object must have exactly these fields:
   "cost_label": "<one of: Free*, Ultra-low, Low, Standard, Premium>",
   "cost_class": "<one of: cost-free, cost-low, cost-standard, cost-premium — cost-low covers both Ultra-low and Low labels>",
   "open_badge": "<one of: 'Closed API', 'Open weights'>",
-  "tags": "<space-separated subset of: top writing coding cheap open — used for the page's filter buttons, include 'top' only for genuinely top-tier rows>"
+  "tags": "<space-separated subset of: top writing coding cheap open — used for the page's filter buttons, include 'top' only for genuinely top-tier rows>",
+  "homepage_url": "<the official product/model page on the maker's own website, verified via web_search -- don't guess from memory. Prefer a page dedicated specifically to this model if one exists (verified example: https://www.anthropic.com/claude/opus is Anthropic's actual current page for Opus); fall back to the maker's general product-family page otherwise. Must be the maker's own domain, not a news article, review, or third-party aggregator. Must start with https://>"
 }
 
 Do not use em dashes or curly quotes in any text field — plain hyphens and
@@ -296,7 +304,7 @@ export function validateTrackerRows(rows) {
   const requiredFields = [
     'rank', 'family', 'name', 'flagship', 'tier_emoji', 'tier_label',
     'tier_class', 'is_top3', 'best_for', 'cost_label', 'cost_class',
-    'open_badge', 'tags'
+    'open_badge', 'tags', 'homepage_url'
   ];
 
   rows.forEach((row, i) => {
@@ -315,6 +323,14 @@ export function validateTrackerRows(rows) {
     }
     if (row.best_for.length > 280) {
       throw new Error(`Row ${i} (rank ${row.rank}) best_for is ${row.best_for.length} chars — too long, likely a generation error`);
+    }
+    if (!row.homepage_url.startsWith('https://')) {
+      throw new Error(`Row ${i} (rank ${row.rank}) homepage_url must start with https://: "${row.homepage_url}"`);
+    }
+    try {
+      new URL(row.homepage_url);
+    } catch {
+      throw new Error(`Row ${i} (rank ${row.rank}) homepage_url is not a well-formed URL: "${row.homepage_url}"`);
     }
   });
 
