@@ -419,6 +419,66 @@ llms101-automation/
 
 ---
 
+## Site-wide staleness audit (started 2026-06-27)
+
+Prompted by how stale `tracker.html` and `models.html` both turned out to
+be: if hand-coded pages drift that badly, the rest of the site's static
+text — the Mind Map (`index.html`), `guide.html`, static `content/pages/*`
+— was worth checking too, not assumed fine by default.
+
+**Division of labor that worked well:** Claude Code did inventory and
+mechanical edits; a chat session did live-search verification before
+anything was trusted. Worth repeating this split for the remaining work
+below, rather than letting either side skip the other's part.
+
+**Process note:** the first pass at this skipped the verify-before-edit
+checkpoint — Claude Code went straight to making content edits instead of
+stopping after inventory to report back first, as instructed. The edits
+themselves then needed a full retroactive fact-check before they could be
+trusted, including catching and fixing two real errors that had already
+landed (see below). No content went live unverified, but the checkpoint
+existed for a reason and got skipped once. Worth being explicit about that
+boundary again if delegating this kind of audit further.
+
+**Completed 2026-06-27 — `index.html` + `guide.html`, OpenAI/Anthropic/
+Google/context-window sections (PR #5, merged 11:31 UTC):**
+- GPT-4o/o1/o3/GPT-4.1 → GPT-5 family (GPT-5.5 flagship, GPT-5.4 workhorse,
+  o-series folded into GPT-5.4 Thinking mode).
+- Claude 3.5 Sonnet/Claude 3 Opus → current Claude 4.x lineup (Opus 4.8,
+  Sonnet 4.6, Haiku 4.5).
+- Gemini 2.0 family → Gemini 3.1 Pro / 3.5 Flash.
+- Context-window figures updated to reflect the ~1M-token convergence
+  across frontier models.
+- Two errors caught and fixed only because they were independently
+  verified rather than trusted on the first pass: the correction round
+  itself introduced "GPT-5.3 Instant" as the current ChatGPT default,
+  which was already stale by ~7 weeks (GPT-5.5 Instant replaced it
+  2026-05-05) — a reminder that "default model" claims are exactly the
+  kind of fact that flips on a specific date and is easy to land one
+  generation behind on. Separately, Fable 5 was initially described as
+  "the most capable publicly available model," which was false at time of
+  writing — Fable 5 and Mythos 5 have been suspended for all users since
+  2026-06-12 under a US export-control directive, not restored as of this
+  writing. Both fixed before merge; Claude Opus 4.8 is correctly identified
+  as the most capable model currently accessible to the public.
+
+**Outstanding — `models.html`'s remaining stale cards.** Every card except
+Grok (refreshed 2026-06-25) is still stale: OpenAI, Anthropic, Google,
+Llama, DeepSeek, Mistral. Same per-card research-and-verify approach as
+above. Worth specifically checking, per the lesson just learned: is the
+model actually *currently accessible*, not just whether it was announced
+as current — and double-check any "default" or "current flagship" framing
+against a live source, not memory.
+
+**Not yet touched:** `content/pages/*.json` (about, beginners, contact,
+resources) and the broader Mind Map node content beyond the four sections
+above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
+despite `index.html` clearly containing far more node content than that;
+where the rest of it actually lives was never fully resolved this session
+and is worth pinning down before assuming the audit's scope is complete.
+
+---
+
 ## Two completely separate "scripts" locations — do not confuse them
 
 - **`/scripts/`** (repo root) — pre-existing site infrastructure.
