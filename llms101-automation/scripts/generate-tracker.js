@@ -157,7 +157,7 @@ async function generateTrackerRows(previousRowsSummary) {
     rows = JSON.parse(cleaned);
   } catch (err) {
     log('ERROR: JSON parse failed. Raw response saved to drafts/errors/.');
-    await saveError(raw);
+    await saveError(lastText);
     throw err;
   }
 
