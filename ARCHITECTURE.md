@@ -336,32 +336,25 @@ llms101-automation/
   conscious decision on whether that's fine for script-only changes
   specifically, or whether to actually enforce PR-for-everything going
   forward, rather than leaving it to keep happening by default.
-- **Current pipeline status (as of 2026-06-27, end of day): the "PR already
-  exists, skip create" path has been verified live. The "cold create" path
-  — a genuinely fresh month with no existing PR — has NOT yet been
-  empirically tested**, because every real run so far happened on the same
-  calendar day as an already-open PR (#3). The very first real cold-create
-  test will be either next month's natural cron firing, or a manual
-  `workflow_dispatch` trigger run on a day with no open tracker PR.
-- **OPEN, UNRESOLVED as of 2026-06-27: a curation pattern in the generated
-  rankings, not a technical bug.** Across both real `web_search`-driven
-  generations this session, Anthropic occupied 3 of 9 rows (Opus 4.8,
-  Sonnet 4.6, Haiku 4.5) and Meta/Llama had zero representation, despite
-  the prompt explicitly listing Llama as a valid open-weight option
-  alongside DeepSeek. This is consistent across both runs, not a one-off.
-  Schema validation cannot catch this category of issue — every row was
-  individually valid and defensible, the pattern is about aggregate
-  balance, which only a human reviewing the full set can judge. PR #3 is
-  open and **deliberately not yet merged** pending a decision on this.
-  Three options were on the table, none chosen yet:
-  1. Merge PR #3 as-is (each row defensible on its own merits) and leave
-     the prompt unchanged.
-  2. Hold PR #3 and adjust `buildModelTrackerPrompt` first — e.g. cap rows
-     per maker, or make the open-weight category language stickier so it
-     doesn't get silently swapped for a same-maker row.
-  3. Merge PR #3 now, treat the prompt adjustment as a separate follow-up
-     for next month, decoupling "is this month's content fine" from
-     "should curation logic change going forward."
+- **Pipeline status (updated 2026-06-27, end of day): both PR-creation
+  paths are now verified live.** The "PR already exists, skip create" path
+  was verified during the PR #3 debugging cycle. The "cold create" path —
+  a genuinely fresh branch with no existing PR — was verified for the
+  first time during the PR #4 run (see below): `gh pr create` fired
+  successfully on a clean branch once PR #3 had been merged. Both halves
+  of the force-push/skip-or-create logic added in `4cd08e7` / `63e7125`
+  have now actually been exercised, not just reasoned about.
+- **RESOLVED 2026-06-27: curation pattern in the generated rankings.**
+  Across both real `web_search`-driven generations that day, Anthropic
+  occupied 3 of 9 rows (Opus 4.8, Sonnet 4.6, Haiku 4.5) and Meta/Llama had
+  zero representation, despite the prompt explicitly listing Llama as a
+  valid open-weight option. Decision: option 3 — merged PR #3 as-is (every
+  row individually defensible; the pattern was about aggregate balance,
+  which schema validation can't catch and only a human read of the full
+  set can), and treated the prompt fix as a separate follow-up rather than
+  blocking the merge. A per-maker cap was explicitly considered and
+  explicitly rejected as the fix — see the PR #4 bullet below for what was
+  actually changed instead and whether it worked.
 - **Pipeline changes landed 2026-06-27 (next-cycle, not retroactive to PR #3).**
   Two changes shipped together, bundled by timing not dependency:
   1. **12-row expansion.** `TRACKER_ROW_COUNT` raised from 9 to 12.
@@ -387,6 +380,42 @@ llms101-automation/
      `generate-tracker.js` to strip inner tags when reading back model names
      (the old `[^<]*` regex would have silently produced empty strings for
      every name once rows contained `<a href="...">name</a>`).
+- **PR #4 — first real run of the expanded pipeline, 2026-06-27.** Before
+  any live API call: 8/8 mock tests passed (valid rows, wrong row count,
+  missing `homepage_url`, `http://` instead of `https://`, `javascript:`
+  scheme, malformed URL, `&`-escaping, link structure). `extractCurrentRowsSummary`
+  was also fixed in the same change — the old `[^<]*` regex for reading
+  back model names would have silently produced empty strings for every
+  name once `model-name` divs contain `<a href="...">name</a>` instead of
+  plain text; switched to `[\s\S]*?` plus stripping inner tags, verified
+  against real content.
+
+  Real run result: 12 rows generated, all names hyperlinked, open-weight
+  coverage broadened from 1 row to 3 — DeepSeek V4-Pro, Kimi K2.6 (Moonshot
+  AI), Qwen3.6-27B (Alibaba) — genuine diversification across three
+  different labs rather than the same concentration at a larger scale.
+  Anthropic's share moved from 3/9 (33%) to 3/12 (25%) — same absolute row
+  count, smaller proportion, with three entirely new labs (Moonshot,
+  Qwen, Mistral) appearing for the first time. One real data point, not a
+  guarantee this holds every month — worth watching, not assuming fixed.
+
+  PR #4 reviewed and merged the same day. Two non-blocking quality notes
+  from that review, independently verified (both models are real, current,
+  non-hallucinated releases — the issue is relevance/specificity, not
+  factual accuracy), worth tightening in the prompt next cycle rather than
+  re-litigating now:
+  - The OpenAI "budget" slot picked GPT-5.4 mini (real, but an
+    older-generation, more developer/API-focused model) over GPT-5.5
+    Instant — correctly used for the same slot last cycle, and OpenAI's
+    actual current ChatGPT default. Worth nudging the prompt to prefer
+    whichever sibling of the current flagship generation is most current,
+    not just whichever happens to satisfy "budget/speed-optimised."
+  - GPT-5.4 mini's `homepage_url` pointed to a generic docs index page
+    (`platform.openai.com/docs/models`) when a model-specific page
+    (`platform.openai.com/docs/models/gpt-5.4-mini`) existed and would
+    have satisfied the "prefer the most specific page" instruction better.
+    Worth emphasizing "most specific, not just any page that technically
+    qualifies" more strongly in the prompt.
 
 ---
 
