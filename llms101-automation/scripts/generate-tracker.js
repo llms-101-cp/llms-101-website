@@ -102,7 +102,7 @@ export function applyTrackerUpdate(currentHTML, rows, todayISO) {
   if (!listRegex.test(currentHTML)) {
     throw new Error('Could not find tracker-list block in tracker.html — has the page structure changed?');
   }
-  const newListInner = '\n\n' + renderTrackerList(rows) + '\n\n';
+  const newListInner = '\n\n' + renderTrackerList(rows);
   let updated = currentHTML.replace(listRegex, (_, open, _content, close) => open + newListInner + close);
 
   // Replace the per-row animation-delay rules. They live as a contiguous
