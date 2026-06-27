@@ -875,25 +875,25 @@ let NODE_DATA = {
     sources:[{label:'OpenAI — o1 System Card',url:'https://openai.com/index/openai-o1-system-card/'},{label:'DeepSeek — DeepSeek-R1 Technical Report',url:'https://github.com/deepseek-ai/DeepSeek-R1'}]
   },
   openai:{
-    label:'OpenAI models',sub:'GPT-4o, o1, o3',tag:'Model family',theme:'arch',hasChildren:false,
+    label:'OpenAI models',sub:'GPT-5 family',tag:'Model family',theme:'arch',hasChildren:false,
     title:'OpenAI model family',
-    body:`<p><strong>GPT-4o</strong> ("omni") — the most widely used commercial model as of 2024–25. Fast, natively multimodal (text, images, and audio processed together), available via ChatGPT and API. The "o" stands for omni, reflecting native multimodal processing rather than bolted-on vision.</p><p><strong>o1 / o3</strong> — reasoning-first models that produce internal chain-of-thought before answering. Dramatically better at maths and complex logic. Slower and more expensive. o3 is the current frontier reasoning model.</p><p><strong>GPT-4.1</strong> — the most recent in the GPT-4 family as of early 2026, optimised for instruction following and long-context coding tasks.</p>`,
-    examples:['GPT-4o','o1','o3','GPT-4.1','ChatGPT','OpenAI API','DALL-E 3'],
-    sources:[{label:'OpenAI — GPT-4 Technical Report',url:'https://arxiv.org/abs/2303.08774'},{label:'OpenAI — Models overview',url:'https://platform.openai.com/docs/models'}]
+    body:`<p>OpenAI's current generation is the <strong>GPT-5 family</strong>. <strong>GPT-5.5</strong> is the current flagship, used for the most demanding tasks. <strong>GPT-5.4</strong> is the everyday workhorse — available in Pro, Thinking, mini, and nano variants. <strong>GPT-5.3 Instant</strong> is the free-tier default on ChatGPT.</p><p>Reasoning capability — previously a separate "o-series" (o1, o3, o4-mini) — is now integrated into <strong>GPT-5.4 Thinking</strong> mode rather than a standalone model line. The o-series and the entire GPT-4 family (including GPT-4o and GPT-4.1) were retired from ChatGPT's model picker in early-to-mid 2026.</p><p>GPT-4o (2024) and o1/o3 were pivotal milestones — GPT-4o introduced native multimodality; o1 and o3 established the reasoning paradigm that is now mainstream across the industry. They remain important reference points even though they are no longer the current offerings.</p>`,
+    examples:['GPT-5.5','GPT-5.4','GPT-5.3 Instant','ChatGPT','OpenAI API','DALL-E 3'],
+    sources:[{label:'OpenAI — Introducing GPT-5.5',url:'https://openai.com/index/introducing-gpt-5-5/'},{label:'OpenAI — Models overview',url:'https://platform.openai.com/docs/models'}]
   },
   'anthropic-model':{
     label:'Anthropic / Claude',sub:'Constitutional AI',tag:'Model family',theme:'arch',hasChildren:false,
     title:'Anthropic — Claude models',
-    body:`<p>Anthropic was co-founded in 2021 by former OpenAI researchers (including Dario and Daniela Amodei) with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, a 200K context window, and strong coding ability.</p><p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p><p><strong>Claude 3.5 Sonnet</strong> is widely recognised as one of the best coding assistants available. Claude 3 Opus remains strong for complex reasoning tasks.</p>`,
-    examples:['Claude 3.5 Sonnet','Claude 3 Opus','Constitutional AI','claude.ai','Anthropic API'],
+    body:`<p>Anthropic was co-founded in 2021 by former OpenAI researchers (including Dario and Daniela Amodei) with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, and strong coding ability.</p><p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p><p>Current lineup (mid-2026): <strong>Fable 5</strong> is Anthropic's most capable publicly available model. <strong>Claude Opus 4.8</strong> is the flagship for complex reasoning and long-horizon agentic tasks. <strong>Claude Sonnet 4.6</strong> is the recommended starting point for most development and enterprise use. <strong>Claude Haiku 4.5</strong> is optimised for speed and cost at scale.</p>`,
+    examples:['Claude Opus 4.8','Claude Sonnet 4.6','Claude Haiku 4.5','Fable 5','Constitutional AI','claude.ai','Anthropic API'],
     sources:[{label:'Bai et al. 2022 — Constitutional AI paper',url:'https://arxiv.org/abs/2212.08073'},{label:'Anthropic — Claude Model Card',url:'https://www.anthropic.com/claude'},{label:'Anthropic — Core Views on AI Safety',url:'https://www.anthropic.com/news/core-views-on-ai-safety'}]
   },
   'google-model':{
-    label:'Google DeepMind',sub:'Gemini 2.0 family',tag:'Model family',theme:'arch',hasChildren:false,
+    label:'Google DeepMind',sub:'Gemini 3.x family',tag:'Model family',theme:'arch',hasChildren:false,
     title:'Google DeepMind — Gemini',
-    body:`<p>Google's frontier model family, built natively multimodal from the ground up — text, images, audio, and video are treated as equal inputs rather than text being primary with vision bolted on as a separate module.</p><p><strong>Gemini 2.0 Flash</strong> is notably fast and cost-efficient, widely used in production applications. <strong>Gemini 2.0 Pro</strong> is the higher-capability variant. Google has extended Gemini to a <strong>1 million token context window</strong> — enough to process entire large codebases or long books in a single prompt. Gemini powers Google Search AI Overviews and deep Workspace integrations.</p>`,
-    examples:['Gemini 2.0 Flash','Gemini 2.0 Pro','1M token context','Google AI Studio','Vertex AI','Gemini API'],
-    sources:[{label:'Google DeepMind — Gemini Technical Report',url:'https://arxiv.org/abs/2312.11805'},{label:'Google AI Studio',url:'https://aistudio.google.com'}]
+    body:`<p>Google's frontier model family, built natively multimodal from the ground up — text, images, audio, and video are treated as equal inputs rather than text being primary with vision bolted on as a separate module.</p><p><strong>Gemini 3.5 Flash</strong> (released May 2026) is the newest model — optimised for agentic tasks, beating Gemini 3.1 Pro on several coding and agent benchmarks at a fraction of the cost. <strong>Gemini 3.1 Pro</strong> is the advanced high-reasoning flagship. Google's extended context window — reaching into the millions of tokens — remains a key differentiator. Gemini powers Google Search AI Overviews and deep Workspace integrations.</p>`,
+    examples:['Gemini 3.5 Flash','Gemini 3.1 Pro','1M token context','Google AI Studio','Vertex AI','Gemini API'],
+    sources:[{label:'Google DeepMind — Gemini 3.5 Flash',url:'https://deepmind.google/models/gemini/flash/'},{label:'Google AI — Gemini models overview',url:'https://ai.google.dev/gemini-api/docs/models'}]
   },
   'open-models':{
     label:'Open weight models',sub:'Llama · Mistral · DeepSeek',tag:'Model family',theme:'arch',hasChildren:false,
@@ -933,11 +933,11 @@ let NODE_DATA = {
     sources:[{label:'Lewis et al. 2020 — Retrieval-Augmented Generation paper',url:'https://arxiv.org/abs/2005.11401'},{label:'LlamaIndex documentation',url:'https://docs.llamaindex.ai'}]
   },
   'context-window':{
-    label:'Context window',sub:'128K–1M tokens',tag:'Prompting',theme:'prompt',hasChildren:false,
+    label:'Context window',sub:'~1M tokens at the frontier',tag:'Prompting',theme:'prompt',hasChildren:false,
     title:'Context window',
-    body:`<p>The maximum amount of text an LLM can "see" at once — its working memory for a single conversation or task. Everything outside the context window is invisible to the model. This is why LLMs have no memory between conversations unless memory is explicitly managed.</p><p>Context window sizes have grown dramatically: GPT-4o has 128K tokens. Claude 3.5 has 200K. Gemini 1.5 Pro reached 1 million tokens. Qwen 3.5 has 256K. As context windows grow, the line between "prompting" and "giving the model all relevant information" increasingly blurs — you can now feed entire codebases or books in a single prompt.</p><p>1 token ≈ 0.75 words, so 128K tokens ≈ a novel-length document. However, model quality degrades in the middle of very long contexts — the "lost in the middle" problem.</p>`,
-    examples:['GPT-4o: 128K','Claude 3.5: 200K','Gemini Pro: 1M','Qwen 3.5: 256K','Lost in the middle'],
-    sources:[{label:'Liu et al. 2023 — Lost in the Middle paper',url:'https://arxiv.org/abs/2307.03172'},{label:'Google — Gemini 1.5 long context',url:'https://arxiv.org/abs/2403.05530'}]
+    body:`<p>The maximum amount of text an LLM can "see" at once — its working memory for a single conversation or task. Everything outside the context window is invisible to the model. This is why LLMs have no memory between conversations unless memory is explicitly managed.</p><p>Context windows have grown dramatically and frontier models have now largely converged near 1 million tokens: GPT-5.4 supports up to ~1M tokens, Claude Opus 4.8 and Sonnet 4.6 offer 1M tokens via the API, and Gemini 3.1 Pro has a 1,048,576-token context window. The constraint that once sharply distinguished models — 128K vs 200K vs 1M — has largely dissolved at the frontier.</p><p>1 token ≈ 0.75 words, so 1M tokens ≈ several large novels or an entire mid-sized codebase in a single prompt. However, model quality degrades in the middle of very long contexts — the "lost in the middle" problem — so raw context size is not the only factor.</p>`,
+    examples:['GPT-5.4: ~1M','Claude 4.x: 1M API','Gemini 3.1 Pro: 1M','Lost in the middle'],
+    sources:[{label:'Liu et al. 2023 — Lost in the Middle paper',url:'https://arxiv.org/abs/2307.03172'},{label:'Gemini 3.1 Pro — Model Card (Google DeepMind)',url:'https://deepmind.google/models/model-cards/gemini-3-1-pro/'},{label:'Claude context windows — Anthropic docs',url:'https://platform.claude.com/docs/en/build-with-claude/context-windows'}]
   },
   injection:{
     label:'Prompt injection',sub:'security & safety',tag:'Prompting',theme:'prompt',hasChildren:false,
@@ -1434,25 +1434,20 @@ let EXAMPLE_DATA = {
     body: `<p>Alibaba's open-weight reasoning model, proving that strong internal chain-of-thought can be embedded in relatively small 32-billion parameter networks.</p><p>It brings the test-time compute paradigm to local hardware, allowing developers to run advanced logical solvers natively on high-end consumer GPUs.</p>`, 
     sources: [{label: `Qwen — QwQ Release`, url: `https://qwenlm.github.io/blog/qwq-32b-preview/`}]
   },
-  'GPT-4o': {
-    title: `GPT-4o (Omni)`, 
-    body: `<p>OpenAI's flagship multimodal model. It processes audio, vision, and text natively in the same network, allowing for real-time voice conversations without latency.</p><p>Unlike previous versions that converted audio to text, fed the text to the LLM, and converted the text back to audio, GPT-4o processes the raw audio wave directly, allowing it to understand tone, emotion, and interruptions.</p>`, 
-    sources: [{label: `OpenAI — Hello GPT-4o`, url: `https://openai.com/index/hello-gpt-4o/`}]
+  'GPT-5.5': {
+    title: `GPT-5.5`,
+    body: `<p>OpenAI's current flagship model as of mid-2026. Designed for the most demanding tasks — complex reasoning, frontier coding, and research-grade work. The most capable model in OpenAI's GPT-5 generation.</p>`,
+    sources: [{label: `OpenAI — Introducing GPT-5.5`, url: `https://openai.com/index/introducing-gpt-5-5/`}]
   },
-  'o1': {
-    title: `o1 Model Family`, 
-    body: `<p>The overarching class of OpenAI models that trade off speed for accuracy, spending inference compute to think rather than just relying on pre-trained memory.</p><p>These models represent a paradigm shift in scaling laws, suggesting that giving models more time to compute during inference is as valuable as giving them more data during training.</p>`, 
-    sources: [{label: `OpenAI — Learning to Reason`, url: `https://openai.com/index/learning-to-reason-with-llms/`}]
+  'GPT-5.4': {
+    title: `GPT-5.4`,
+    body: `<p>OpenAI's workhorse generation, available in multiple variants: Pro (research-grade), Thinking (deep reasoning, replaces the standalone o-series), mini (cost-efficient), and nano (fastest/cheapest). GPT-5.4 Thinking absorbed the use case previously served by o1 and o3.</p><p>Supports a context window of up to ~1M tokens.</p>`,
+    sources: [{label: `OpenAI — Introducing GPT-5.4`, url: `https://openai.com/index/introducing-gpt-5-4/`}]
   },
-  'o3': {
-    title: `o3 Model Family`, 
-    body: `<p>The most advanced iteration of OpenAI's reasoning models, optimized for software engineering and complex mathematics.</p><p>They feature adjustable reasoning constraints, allowing API users to dial up or down the amount of thinking tokens the model is allowed to consume before returning an answer.</p>`, 
-    sources: [{label: `OpenAI API Docs`, url: `https://platform.openai.com/docs/guides/reasoning`}]
-  },
-  'GPT-4.1': {
-    title: `GPT-4.1`, 
-    body: `<p>Incremental updates to the base GPT-4 architecture, heavily optimized for context length and strict instruction following.</p><p>These iterative updates often quietly replace older API endpoints, constantly reducing latency and cost per token for enterprise users.</p>`, 
-    sources: [{label: `OpenAI API Pricing`, url: `https://openai.com/api/pricing/`}]
+  'GPT-5.3 Instant': {
+    title: `GPT-5.3 Instant`,
+    body: `<p>The default model on ChatGPT's free tier as of mid-2026. Fast and capable for everyday tasks, available to all users without a subscription.</p>`,
+    sources: [{label: `OpenAI — Models overview`, url: `https://platform.openai.com/docs/models`}]
   },
   'ChatGPT': {
     title: `ChatGPT`, 
@@ -1469,15 +1464,25 @@ let EXAMPLE_DATA = {
     body: `<p>OpenAI's image generation model, notable for utilizing an LLM under the hood to perfectly parse and execute complex user image prompts.</p><p>When a user types a prompt into ChatGPT, the LLM expands and enriches the prompt before passing it to the diffusion model, resulting in highly accurate image generation.</p>`, 
     sources: [{label: `OpenAI — DALL-E 3`, url: `https://openai.com/index/dall-e-3/`}]
   },
-  'Claude 3.5 Sonnet': {
-    title: `Claude 3.5 Sonnet`, 
-    body: `<p>Anthropic's mid-sized model that consistently beats much larger models at coding and formatting tasks, currently considered an industry best-in-class tool for developers.</p><p>It operates at extremely high speeds while maintaining nuanced context over 200,000 tokens, making it a favorite for complex multi-file codebase refactoring.</p>`, 
-    sources: [{label: `Anthropic — Claude 3.5 Release`, url: `https://www.anthropic.com/news/claude-3-5-sonnet`}]
+  'Claude Opus 4.8': {
+    title: `Claude Opus 4.8`,
+    body: `<p>Anthropic's most capable Opus-tier model. Best suited for the most demanding tasks: complex reasoning, long-horizon agentic coding, and high-autonomy workflows where quality matters more than speed or cost.</p><p>Part of the Claude 4.x generation. Supports a 1M token context window via the Anthropic API.</p>`,
+    sources: [{label: `Anthropic — Claude models overview`, url: `https://www.anthropic.com/claude`}]
   },
-  'Claude 3 Opus': {
-    title: `Claude 3 Opus`, 
-    body: `<p>Anthropic's largest, most expensive model. Slower than Sonnet, but excels at highly complex, deeply nuanced multi-step reasoning tasks.</p><p>It is generally utilized for heavy analytical workloads, legal text review, and creative writing where maintaining complex logical consistency is paramount.</p>`, 
-    sources: [{label: `Anthropic — Claude Model Family`, url: `https://www.anthropic.com/claude`}]
+  'Claude Sonnet 4.6': {
+    title: `Claude Sonnet 4.6`,
+    body: `<p>Anthropic's balanced mid-tier model — the recommended default for most development, writing, analysis, and enterprise API use cases. Combines strong capability with practical speed and cost.</p><p>Successor to Claude 3.5 Sonnet, which was widely recognised as a leading coding assistant. Supports a 1M token context window via the Anthropic API.</p>`,
+    sources: [{label: `Anthropic — Claude models overview`, url: `https://www.anthropic.com/claude`}]
+  },
+  'Claude Haiku 4.5': {
+    title: `Claude Haiku 4.5`,
+    body: `<p>Anthropic's fastest, most cost-efficient model. Designed for high-concurrency, low-latency, and cost-sensitive applications where throughput matters more than peak reasoning ability.</p>`,
+    sources: [{label: `Anthropic — Claude models overview`, url: `https://www.anthropic.com/claude`}]
+  },
+  'Fable 5': {
+    title: `Claude Fable 5`,
+    body: `<p>Anthropic's newest and most capable publicly available model as of June 2026, sitting above the traditional Opus/Sonnet/Haiku three-tier structure. The first model in the Mythos class, with state-of-the-art results on frontier coding and reasoning benchmarks.</p><p>Its advantage over Opus 4.8 widens on longer and more complex tasks.</p>`,
+    sources: [{label: `Anthropic — Claude models overview`, url: `https://www.anthropic.com/claude`}]
   },
   'claude.ai': {
     title: `Claude.ai`, 
@@ -1489,15 +1494,15 @@ let EXAMPLE_DATA = {
     body: `<p>The developer platform for accessing Claude models, highly regarded for its strict adherence to system prompts and structured XML parsing.</p><p>Anthropic highly encourages the use of XML tags in prompts to clearly delineate context, instructions, and data, a practice deeply ingrained in their models' training.</p>`, 
     sources: [{label: `Anthropic API Docs`, url: `https://docs.anthropic.com/en/api/getting-started`}]
   },
-  'Gemini 2.0 Flash': {
-    title: `Gemini 2.0 Flash`, 
-    body: `<p>Google's incredibly fast, highly capable model designed for high-volume production tasks and real-time multimodal processing.</p><p>By unifying multimodal inputs directly into the core architecture, it handles video and audio reasoning at speeds previously impossible with bolted-on vision modules.</p>`, 
-    sources: [{label: `Google — Gemini 2.0 Release`, url: `https://blog.google/technology/ai/google-gemini-next-generation-model-update/`}]
+  'Gemini 3.5 Flash': {
+    title: `Gemini 3.5 Flash`,
+    body: `<p>Google's newest Gemini model as of June 2026 (released May 2026). Optimised for agentic tasks and outperforms Gemini 3.1 Pro on several coding and agent benchmarks while costing significantly less. The first public release in the 3.5 family.</p>`,
+    sources: [{label: `Google DeepMind — Gemini 3.5 Flash`, url: `https://deepmind.google/models/gemini/flash/`}]
   },
-  'Gemini 2.0 Pro': {
-    title: `Gemini 2.0 Pro`, 
-    body: `<p>Google's heavyweight model designed for the most demanding reasoning, coding, and long-context summarization tasks.</p><p>It is deeply integrated into Google Workspace and Cloud environments, providing enterprise-grade analytical capabilities across massive datasets.</p>`, 
-    sources: [{label: `Google Cloud — Gemini`, url: `https://cloud.google.com/gemini`}]
+  'Gemini 3.1 Pro': {
+    title: `Gemini 3.1 Pro`,
+    body: `<p>Google's advanced reasoning flagship as of mid-2026. Delivers the highest scores on complex multi-step reasoning and agentic workflows in the Gemini family, with a 1,048,576-token context window supporting text, audio, images, video, PDFs, and entire code repositories.</p>`,
+    sources: [{label: `Google AI — Gemini models`, url: `https://ai.google.dev/gemini-api/docs/models`}]
   },
   '1M token context': {
     title: `1 Million Token Context`, 
@@ -1681,25 +1686,20 @@ let EXAMPLE_DATA = {
     body: `<p>A lightweight, open-source vector database that runs locally, making it the default choice for developers building and prototyping RAG apps on their laptops.</p><p>It is incredibly easy to set up via Python, requiring zero cloud configuration to start ingesting and querying document embeddings.</p>`, 
     sources: [{label: `Chroma Docs`, url: `https://docs.trychroma.com/`}]
   },
-  'GPT-4o: 128K': {
-    title: `128K Context Window`, 
-    body: `<p>GPT-4o's context limit. 128,000 tokens is roughly equivalent to a 300-page book, allowing the model to analyze entire documents in a single prompt.</p><p>Maxing out this context window carries significant API costs, as users are billed per token processed during every single prompt interaction.</p>`, 
-    sources: [{label: `OpenAI Pricing`, url: `https://openai.com/api/pricing/`}]
+  'GPT-5.4: ~1M': {
+    title: `GPT-5.4 context window`,
+    body: `<p>GPT-5.4 supports approximately 1 million tokens of context (922K input + 128K output), a dramatic expansion from GPT-4o's 128K. Available across all GPT-5.4 variants via the OpenAI API as of mid-2026.</p>`,
+    sources: [{label: `OpenAI — Introducing GPT-5.4`, url: `https://openai.com/index/introducing-gpt-5-4/`}]
   },
-  'Claude 3.5: 200K': {
-    title: `200K Context Window`, 
-    body: `<p>Claude 3.5's context limit, allowing for massive codebases or multiple heavy PDF documents to be processed flawlessly in one go.</p><p>Anthropic models are highly regarded for their needle-in-a-haystack recall, reliably finding precise facts buried deep within this massive 200K window.</p>`, 
-    sources: [{label: `Anthropic — Context Windows`, url: `https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/long-context`}]
+  'Claude 4.x: 1M API': {
+    title: `Claude 4.x context window`,
+    body: `<p>Claude Opus 4.8 and Sonnet 4.6 both support 1 million token context windows via the Anthropic API, Amazon Bedrock, and Google Cloud. The claude.ai web interface supports 500K tokens on paid plans. Anthropic eliminated long-context surcharges in March 2026 — the 1M window is included at standard pricing.</p>`,
+    sources: [{label: `Anthropic — Context windows`, url: `https://platform.claude.com/docs/en/build-with-claude/context-windows`}]
   },
-  'Gemini Pro: 1M': {
-    title: `1M+ Context Window`, 
-    body: `<p>Google's breakthrough. A 1 million token window can process hours of video, massive audio files, and entire libraries of code simultaneously.</p><p>This virtually eliminates the need for complex RAG pipelines in many enterprise applications, as users can simply dump their entire corporate knowledge base into the prompt.</p>`, 
-    sources: [{label: `Google — Gemini 1.5 Context Window`, url: `https://arxiv.org/abs/2403.05530`}]
-  },
-  'Qwen 3.5: 256K': {
-    title: `256K Open Context`, 
-    body: `<p>Open-weight models like Qwen now support massive context windows locally, though running 256K tokens requires massive amounts of GPU VRAM.</p><p>For local users, the context window is primarily constrained by hardware memory; expanding the KV cache for a 256K context requires multiple high-end 24GB GPUs.</p>`, 
-    sources: [{label: `QwenLM Blog`, url: `https://qwenlm.github.io/blog/`}]
+  'Gemini 3.1 Pro: 1M': {
+    title: `Gemini 3.1 Pro context window`,
+    body: `<p>Gemini 3.1 Pro has a 1,048,576-token context window with support for text, audio, images, video, PDFs, and entire code repositories as input. Google has maintained a frontier-level context window since Gemini 1.5 Pro.</p>`,
+    sources: [{label: `Gemini 3.1 Pro — Model Card`, url: `https://deepmind.google/models/model-cards/gemini-3-1-pro/`}]
   },
   'Lost in the middle': {
     title: `Lost in the Middle Phenomenon`, 
