@@ -141,12 +141,16 @@ async function generateTrackerRows(previousRowsSummary) {
     throw new Error('Generation hit max_tokens — likely truncated. Not safe to parse.');
   }
 
-  // With web_search enabled, content blocks include server_tool_use and
-  // web_search_tool_result blocks alongside the final text block(s) — pull
-  // out only the text, not just content[0] (that may be a tool-use block).
+  // With web_search enabled the model emits an early text block ("I'll research...")
+  // before its first tool call, then the final JSON in a later text block after
+  // all searches complete. Use only the LAST text block so we don't prepend prose
+  // to the JSON, then strip any code-fence wrapper and extract the bare array.
   const textBlocks = message.content.filter(b => b.type === 'text').map(b => b.text);
-  const raw = textBlocks.join('\n').trim();
-  const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  const lastText = (textBlocks[textBlocks.length - 1] ?? '').trim();
+  const fenceStripped = lastText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  // Belt-and-suspenders: if any leading/trailing prose survived, pull out the [...] array.
+  const arrayMatch = fenceStripped.match(/(\[[\s\S]*\])/);
+  const cleaned = arrayMatch ? arrayMatch[1] : fenceStripped;
 
   let rows;
   try {
