@@ -877,14 +877,14 @@ let NODE_DATA = {
   openai:{
     label:'OpenAI models',sub:'GPT-5 family',tag:'Model family',theme:'arch',hasChildren:false,
     title:'OpenAI model family',
-    body:`<p>OpenAI's current generation is the <strong>GPT-5 family</strong>. <strong>GPT-5.5</strong> is the current flagship, used for the most demanding tasks. <strong>GPT-5.4</strong> is the everyday workhorse — available in Pro, Thinking, mini, and nano variants. <strong>GPT-5.3 Instant</strong> is the free-tier default on ChatGPT.</p><p>Reasoning capability — previously a separate "o-series" (o1, o3, o4-mini) — is now integrated into <strong>GPT-5.4 Thinking</strong> mode rather than a standalone model line. The o-series and the entire GPT-4 family (including GPT-4o and GPT-4.1) were retired from ChatGPT's model picker in early-to-mid 2026.</p><p>GPT-4o (2024) and o1/o3 were pivotal milestones — GPT-4o introduced native multimodality; o1 and o3 established the reasoning paradigm that is now mainstream across the industry. They remain important reference points even though they are no longer the current offerings.</p>`,
-    examples:['GPT-5.5','GPT-5.4','GPT-5.3 Instant','ChatGPT','OpenAI API','DALL-E 3'],
+    body:`<p>OpenAI's current generation is the <strong>GPT-5 family</strong>. <strong>GPT-5.5</strong> is the current flagship, used for the most demanding tasks. <strong>GPT-5.4</strong> is the everyday workhorse — available in Pro, Thinking, mini, and nano variants. <strong>GPT-5.5 Instant</strong> is the default for all ChatGPT users as of May 2026.</p><p>Reasoning capability — previously a separate "o-series" (o1, o3, o4-mini) — is now integrated into <strong>GPT-5.4 Thinking</strong> mode rather than a standalone model line. The o-series and the entire GPT-4 family (including GPT-4o and GPT-4.1) were retired from ChatGPT's model picker in early-to-mid 2026.</p><p>GPT-4o (2024) and o1/o3 were pivotal milestones — GPT-4o introduced native multimodality; o1 and o3 established the reasoning paradigm that is now mainstream across the industry. They remain important reference points even though they are no longer the current offerings.</p>`,
+    examples:['GPT-5.5','GPT-5.4','GPT-5.5 Instant','ChatGPT','OpenAI API','DALL-E 3'],
     sources:[{label:'OpenAI — Introducing GPT-5.5',url:'https://openai.com/index/introducing-gpt-5-5/'},{label:'OpenAI — Models overview',url:'https://platform.openai.com/docs/models'}]
   },
   'anthropic-model':{
     label:'Anthropic / Claude',sub:'Constitutional AI',tag:'Model family',theme:'arch',hasChildren:false,
     title:'Anthropic — Claude models',
-    body:`<p>Anthropic was co-founded in 2021 by former OpenAI researchers (including Dario and Daniela Amodei) with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, and strong coding ability.</p><p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p><p>Current lineup (mid-2026): <strong>Fable 5</strong> is Anthropic's most capable publicly available model. <strong>Claude Opus 4.8</strong> is the flagship for complex reasoning and long-horizon agentic tasks. <strong>Claude Sonnet 4.6</strong> is the recommended starting point for most development and enterprise use. <strong>Claude Haiku 4.5</strong> is optimised for speed and cost at scale.</p>`,
+    body:`<p>Anthropic was co-founded in 2021 by former OpenAI researchers (including Dario and Daniela Amodei) with a specific focus on AI safety research. Their models are known for strong writing, nuanced instruction following, and strong coding ability.</p><p><strong>Constitutional AI</strong> is Anthropic's key differentiator: rather than purely human feedback, Claude is also trained against a written set of principles — a "constitution" — that the model itself uses to self-critique and revise its own responses before human raters evaluate them. This allows more scalable and principled alignment.</p><p>Current lineup (mid-2026): <strong>Claude Opus 4.8</strong> is the most capable model currently available to the public — the flagship for complex reasoning and long-horizon agentic tasks. <strong>Claude Sonnet 4.6</strong> is the recommended starting point for most development and enterprise use. <strong>Claude Haiku 4.5</strong> is optimised for speed and cost at scale. <strong>Fable 5</strong> is Anthropic's most capable model overall, but has been suspended for all users since June 12, 2026 under a US export-control directive and is not currently accessible.</p>`,
     examples:['Claude Opus 4.8','Claude Sonnet 4.6','Claude Haiku 4.5','Fable 5','Constitutional AI','claude.ai','Anthropic API'],
     sources:[{label:'Bai et al. 2022 — Constitutional AI paper',url:'https://arxiv.org/abs/2212.08073'},{label:'Anthropic — Claude Model Card',url:'https://www.anthropic.com/claude'},{label:'Anthropic — Core Views on AI Safety',url:'https://www.anthropic.com/news/core-views-on-ai-safety'}]
   },
@@ -1444,10 +1444,10 @@ let EXAMPLE_DATA = {
     body: `<p>OpenAI's workhorse generation, available in multiple variants: Pro (research-grade), Thinking (deep reasoning, replaces the standalone o-series), mini (cost-efficient), and nano (fastest/cheapest). GPT-5.4 Thinking absorbed the use case previously served by o1 and o3.</p><p>Supports a context window of up to ~1M tokens.</p>`,
     sources: [{label: `OpenAI — Introducing GPT-5.4`, url: `https://openai.com/index/introducing-gpt-5-4/`}]
   },
-  'GPT-5.3 Instant': {
-    title: `GPT-5.3 Instant`,
-    body: `<p>The default model on ChatGPT's free tier as of mid-2026. Fast and capable for everyday tasks, available to all users without a subscription.</p>`,
-    sources: [{label: `OpenAI — Models overview`, url: `https://platform.openai.com/docs/models`}]
+  'GPT-5.5 Instant': {
+    title: `GPT-5.5 Instant`,
+    body: `<p>The default model for all ChatGPT users as of May 5, 2026, when it replaced GPT-5.3 Instant. Fast and capable for everyday tasks, available across free and paid tiers.</p>`,
+    sources: [{label: `OpenAI — Introducing GPT-5.5`, url: `https://openai.com/index/introducing-gpt-5-5/`}]
   },
   'ChatGPT': {
     title: `ChatGPT`, 
@@ -1481,7 +1481,7 @@ let EXAMPLE_DATA = {
   },
   'Fable 5': {
     title: `Claude Fable 5`,
-    body: `<p>Anthropic's newest and most capable publicly available model as of June 2026, sitting above the traditional Opus/Sonnet/Haiku three-tier structure. The first model in the Mythos class, with state-of-the-art results on frontier coding and reasoning benchmarks.</p><p>Its advantage over Opus 4.8 widens on longer and more complex tasks.</p>`,
+    body: `<p>The first model in Anthropic's Mythos class, sitting above the traditional Opus/Sonnet/Haiku tier structure. It achieved state-of-the-art results on frontier coding and reasoning benchmarks, with its advantage over Opus 4.8 widening on longer and more complex tasks.</p><p><strong>Currently suspended:</strong> Fable 5 has been unavailable to all users since June 12, 2026 under a US export-control directive. Claude Opus 4.8 is the most capable Anthropic model currently accessible to the public. Fable 5's availability will depend on regulatory developments.</p>`,
     sources: [{label: `Anthropic — Claude models overview`, url: `https://www.anthropic.com/claude`}]
   },
   'claude.ai': {
@@ -1693,7 +1693,7 @@ let EXAMPLE_DATA = {
   },
   'Claude 4.x: 1M API': {
     title: `Claude 4.x context window`,
-    body: `<p>Claude Opus 4.8 and Sonnet 4.6 both support 1 million token context windows via the Anthropic API, Amazon Bedrock, and Google Cloud. The claude.ai web interface supports 500K tokens on paid plans. Anthropic eliminated long-context surcharges in March 2026 — the 1M window is included at standard pricing.</p>`,
+    body: `<p>Claude Opus 4.8 and Sonnet 4.6 both support 1 million token context windows via the Anthropic API, Amazon Bedrock, and Google Cloud. The claude.ai web interface applies a lower limit than the API (the exact cap varies by plan tier). Anthropic eliminated long-context surcharges in March 2026 — the 1M window is included at standard API pricing.</p>`,
     sources: [{label: `Anthropic — Context windows`, url: `https://platform.claude.com/docs/en/build-with-claude/context-windows`}]
   },
   'Gemini 3.1 Pro: 1M': {
