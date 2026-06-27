@@ -177,3 +177,152 @@ no explanation, no surrounding page HTML. Start directly with <div class="mcard"
     `.trim()
   };
 }
+
+/**
+ * TRACK 2C: Model Tracker rows (tracker.html) — structured JSON, NOT raw HTML
+ *
+ * Deliberately follows the Trends-article lesson, not the Model-card lesson:
+ * ARCHITECTURE.md already documents that asking Claude to reproduce a full
+ * HTML/CSS template exactly (Track 2 v1-v4, early Trends attempts) was
+ * fragile — required exact CSS reproduction, risked truncation, needed
+ * manual layout judgment calls. Model cards get away with raw-HTML output
+ * because it's a single one-off block reviewed visually every time. Tracker
+ * rows are a 9-row REPEATING structure refreshed on a schedule with no
+ * guaranteed human visual review before the PR is opened — so this asks for
+ * structured JSON per row, and a deterministic JS template (see
+ * renderTrackerRow in generate-tracker.js) renders the actual HTML. This
+ * makes row count, required fields, and CSS class names independently
+ * checkable in code before anything is written to tracker.html.
+ *
+ * CRITICAL: requires the web_search tool enabled on this API call — this is
+ * the one thing that actually fixes the staleness problem this script
+ * exists to prevent (see ARCHITECTURE.md "STALENESS RISK" notes, both under
+ * Model cards and under Model Tracker). Without it, this script reproduces
+ * the exact bug that caused the 2026-06-27 tracker.html refresh in the
+ * first place — confidently wrong because the underlying knowledge is
+ * stale, not because the prompt is bad.
+ */
+
+export const TRACKER_ROW_COUNT = 9;
+
+export const VALID_COST_CLASSES = ['cost-free', 'cost-low', 'cost-standard', 'cost-premium'];
+export const VALID_TIER_CLASSES = ['tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5'];
+export const VALID_OPEN_BADGES = ['Closed API', 'Open weights'];
+
+export function buildModelTrackerPrompt(previousRowsSummary) {
+  return {
+    system: `
+You are researching and writing content for llms101.com's Model Tracker page —
+a beginner-friendly, human-preference-based ranking of current frontier AI
+models. Audience is smart but non-technical. Voice: clear, direct, honest
+about trade-offs, no hype.
+
+You MUST use the web_search tool to verify the current state of frontier
+models before writing anything. Do not rely on your training data for model
+names, version numbers, release dates, pricing, or context window sizes —
+this space changes weekly and your training data will be stale. Search for
+each lab's current flagship model specifically (OpenAI, Anthropic, Google
+DeepMind, xAI, DeepSeek, Meta) before writing its row. If a model you
+considered including was deprecated, superseded, or access-restricted since
+your training cutoff, do not include it — search to confirm current status.
+`.trim(),
+    user: `
+Research and produce exactly ${TRACKER_ROW_COUNT} rows for the Model Tracker
+page, ranking current frontier AI models.
+
+Last time this page was refreshed, the lineup was:
+${previousRowsSummary}
+
+Re-verify all of this against live search — do not assume last month's
+lineup is still current. Labs ship new versions on a roughly monthly
+cadence; check whether any of the above models have been superseded,
+discontinued, or had a successor released. Also check whether a model that
+isn't on last month's list now belongs there.
+
+Cover this same spread of categories (adjust which specific model fills each
+slot based on what you find — do not just relabel last month's models):
+- 3-4 closed frontier "Tier 1" models (the current best from OpenAI,
+  Anthropic, Google, and optionally xAI)
+- 1 open-weight model that's genuinely competitive at the frontier
+  (DeepSeek, Llama, Qwen, or whichever currently leads open-weight quality)
+- 1 mid-tier "best value" closed model per major lab as relevant
+- 1 budget/speed-optimised model for high-volume use cases
+
+Do NOT include any model whose access is currently suspended, restricted to
+a small preview group, or otherwise not generally available to a typical
+paying customer — this page is about what people can actually use today.
+
+═══════════════════════════════════════════════════════════════
+
+Return ONLY a valid JSON array of exactly ${TRACKER_ROW_COUNT} objects, no
+markdown fences, no preamble. Each object must have exactly these fields:
+
+{
+  "rank": <integer 1-${TRACKER_ROW_COUNT}, must be sequential with no gaps or repeats>,
+  "family": "<maker name, e.g. 'Anthropic', 'Google DeepMind', 'xAI'>",
+  "name": "<model name as shown to readers, e.g. 'Claude Opus 4.8'>",
+  "flagship": "<short tagline under 40 chars, e.g. 'Flagship intelligence model'>",
+  "tier_emoji": "<🏆 for rank 1, 🥈 for rank 2, 🥉 for rank 3, empty string for rank 4+>",
+  "tier_label": "<e.g. 'Tier 1 — Top', 'Tier 2 — Best value Claude' — your honest qualitative judgment>",
+  "tier_class": "<one of: tier-1, tier-2, tier-3, tier-4, tier-5 — use tier-1 for closed frontier top-tier (gold), tier-2 for solid all-rounder/balanced (neutral), tier-3 for open-weight or disruptor/value plays (green), tier-4 for speed/cost-leader (blue), tier-5 unused unless you have a 5th distinct category>",
+  "is_top3": <true only for ranks 1-3, controls gold rank-number styling>,
+  "best_for": "<1-2 sentences, factual, specific, under 220 characters — what should a reader actually use this model for>",
+  "cost_label": "<one of: Free*, Ultra-low, Low, Standard, Premium>",
+  "cost_class": "<one of: cost-free, cost-low, cost-standard, cost-premium — cost-low covers both Ultra-low and Low labels>",
+  "open_badge": "<one of: 'Closed API', 'Open weights'>",
+  "tags": "<space-separated subset of: top writing coding cheap open — used for the page's filter buttons, include 'top' only for genuinely top-tier rows>"
+}
+
+Do not use em dashes or curly quotes in any text field — plain hyphens and
+straight quotes only, to avoid encoding issues when this is saved as JSON.
+    `.trim()
+  };
+}
+
+/**
+ * Validates a parsed tracker-rows response before it's allowed anywhere near
+ * tracker.html. Throws with a specific reason on failure — callers should
+ * treat any throw here as "do not write this to disk", same pattern as
+ * generate-indices.js's REQUIRED_ARTICLE_FIELDS validation.
+ */
+export function validateTrackerRows(rows) {
+  if (!Array.isArray(rows)) {
+    throw new Error(`Expected a JSON array, got ${typeof rows}`);
+  }
+  if (rows.length !== TRACKER_ROW_COUNT) {
+    throw new Error(`Expected exactly ${TRACKER_ROW_COUNT} rows, got ${rows.length}`);
+  }
+
+  const requiredFields = [
+    'rank', 'family', 'name', 'flagship', 'tier_emoji', 'tier_label',
+    'tier_class', 'is_top3', 'best_for', 'cost_label', 'cost_class',
+    'open_badge', 'tags'
+  ];
+
+  rows.forEach((row, i) => {
+    const missing = requiredFields.filter(f => row[f] === undefined || row[f] === null);
+    if (missing.length > 0) {
+      throw new Error(`Row ${i} (rank ${row.rank}) missing field(s): ${missing.join(', ')}`);
+    }
+    if (!VALID_TIER_CLASSES.includes(row.tier_class)) {
+      throw new Error(`Row ${i} (rank ${row.rank}) has invalid tier_class: "${row.tier_class}"`);
+    }
+    if (!VALID_COST_CLASSES.includes(row.cost_class)) {
+      throw new Error(`Row ${i} (rank ${row.rank}) has invalid cost_class: "${row.cost_class}"`);
+    }
+    if (!VALID_OPEN_BADGES.includes(row.open_badge)) {
+      throw new Error(`Row ${i} (rank ${row.rank}) has invalid open_badge: "${row.open_badge}"`);
+    }
+    if (row.best_for.length > 280) {
+      throw new Error(`Row ${i} (rank ${row.rank}) best_for is ${row.best_for.length} chars — too long, likely a generation error`);
+    }
+  });
+
+  const ranks = rows.map(r => r.rank).sort((a, b) => a - b);
+  const expected = Array.from({ length: TRACKER_ROW_COUNT }, (_, i) => i + 1);
+  if (JSON.stringify(ranks) !== JSON.stringify(expected)) {
+    throw new Error(`Ranks are not exactly 1..${TRACKER_ROW_COUNT} with no gaps/repeats: got [${ranks.join(',')}]`);
+  }
+
+  return true; // all checks passed
+}
