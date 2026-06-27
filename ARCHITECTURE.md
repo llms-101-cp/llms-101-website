@@ -264,19 +264,33 @@ llms101-automation/
   with *real* data is one of the strongest arguments for the Model Tracker
   automation decision below, once a pipeline exists that can actually diff
   month N against month N-1.
-- **Automation decision: proposed 2026-06-27, not yet decided.** Static
-  copy-paste (mirroring `models.html`) vs. dynamic JSON-driven (mirroring
-  Trends articles) were evaluated. Recommendation: static, same pattern as
-  `models.html` — but only *after* fixing the real blocker, which applies
-  to both options equally: `llms101-automation/scripts/generate.js` has no
-  `web_search` tool attached (see staleness risk under Model cards above).
-  A dynamic pipeline without that fix just automates the production of
-  confidently-wrong rankings faster, not slower. Revisit the dynamic option
-  only if the page outgrows "8-9 rows, refreshed monthly" into something
-  with real historical trend data worth querying — same "revisit if that
-  assumption stops holding" framing already used for Reports automation
-  above. **Do not build either pipeline without Craig's explicit go-ahead
-  on direction.**
+- **Automation decision: built 2026-06-27.** Static file format kept (no new
+  JSON schema, no new index, no new fetch logic in `tracker.html` itself —
+  matches `models.html`'s pattern), but generation, insertion, and PR
+  creation are now fully automated via `.github/workflows/monthly-tracker-refresh.yml`
+  (cron: 1st of each month) and `llms101-automation/scripts/generate-tracker.js`.
+  This is a new, more-automated pattern than Track 1/2's existing
+  draft-for-manual-paste flow: the script writes directly to `tracker.html`
+  on a fresh branch, and the workflow opens a PR. **The one thing not
+  automated is the merge** — every other Track 1/2 content type requires
+  manual review-and-upload via `admin/review.html`; Tracker requires only a
+  PR review-and-merge click. `generate-tracker.js` is the only generation
+  script in this repo that calls the Anthropic API with the `web_search`
+  tool enabled — this is the actual fix for the staleness problem, not just
+  a publishing-automation upgrade. If this script's API calls ever start
+  failing with a model-not-found error, check whether `claude-opus-4-8` has
+  been superseded (Anthropic ships new Opus versions roughly every 6-10
+  weeks) and update the model string in `generateTrackerRows()`.
+- **Why the merge checkpoint stays.** The site's established principle is
+  "nothing auto-publishes without a human look" — this pipeline extends
+  that rather than departing from it. Even with `web_search` enabled,
+  search results can be stale, contradictory, or SEO-noise, and a wrong
+  public AI-model ranking is both a likely failure mode (the landscape
+  changes weekly) and a visible one. Schema validation catches malformed
+  output but cannot catch plausible-but-wrong content. The human check
+  costs about 30 seconds per month; if trust builds over several clean
+  runs, full auto-merge is a one-line addition — but that decision belongs
+  to Craig after watching a few PRs prove themselves.
 
 ---
 
