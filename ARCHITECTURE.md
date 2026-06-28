@@ -484,6 +484,23 @@ back to linear without understanding this — it would misrepresent
 open/efficient models. Muse Spark's Speed and Cost bars are genuinely
 0-width (no speed or pricing data exists yet, not a research gap).
 
+**Completed 2026-06-27 — Mind Map node fixes (`index.html`'s `NODE_DATA`):**
+Reviewed all 34 remaining nodes (4 — `openai`, `anthropic-model`,
+`google-model`, `context-window` — were already fixed in an earlier pass).
+Found most genuinely evergreen (math/concept nodes, career-role nodes,
+`dense`'s historical architecture reference). Four nodes had genuine
+current-state staleness: `open-models` (full rewrite — Llama 3/DeepSeek
+V3/generic Qwen presented as current, same pattern as the stale
+`models.html` cards), `open-closed`/`reasoning`/`moe` (example-list updates
+only, core concept explanations were already evergreen). Deliberately left
+`training`/`data`/`synthetic`'s specific illustrative figures (Llama 3
+training cost, data volume, GPT-4/Phi-3 synthetic-data relationship)
+untouched — these are order-of-magnitude examples, not "current state"
+claims, and don't need to track every model generation.
+
+Also checked all 11 external links in `content/pages/resources.json` for
+link rot — none found, no changes made.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
