@@ -851,6 +851,13 @@ let NODE_DATA = {
     examples:['Phi-3 (Microsoft)','Orca methodology','WizardLM','Self-Instruct','Magpie dataset'],
     sources:[{label:'Abdin et al. 2024 — Phi-3 Technical Report',url:'https://arxiv.org/abs/2404.14219'},{label:'Mukherjee et al. 2023 — Orca paper',url:'https://arxiv.org/abs/2306.02707'}]
   },
+  'fine-tuning':{
+    label:'Fine-tuning',sub:'Adapting pre-trained models',tag:'Training',theme:'train',hasChildren:false,
+    title:'Fine-tuning: Specialising a General-Purpose Model',
+    body:`<p><strong>Fine-tuning</strong> is the process of taking an already-trained model and training it a bit more on a smaller, more focused dataset. The base model has learned general language patterns from massive amounts of text — fine-tuning narrows this broad capability toward specific tasks or behaviours.</p><p>The mechanics are straightforward: you continue the same training process, but with different data and usually a lower learning rate (smaller adjustments to the model's weights). This preserves most of what the model already knows while shifting its tendencies. Fine-tuning on medical literature makes the model better at medical language; fine-tuning on customer service conversations shapes how it handles support queries.</p><p>Fine-tuning matters because it's far cheaper than training from scratch. A company can take an open model and adapt it to their domain in days rather than spending months and millions on full training. This is how many specialised AI applications work — they're not built from zero, they're adapted from existing foundations.</p>`,
+    examples:['LoRA (Low-Rank Adaptation)','Domain adaptation','Instruction tuning','Task-specific datasets','Transfer learning'],
+    sources:[{label:'Hu et al. — LoRA: Low-Rank Adaptation of Large Language Models',url:'https://arxiv.org/abs/2106.09685'},{label:'OpenAI Fine-tuning Documentation',url:'https://platform.openai.com/docs/guides/fine-tuning'}]
+  },
 
   /* ARCHITECTURE CHILDREN */
   dense:{
