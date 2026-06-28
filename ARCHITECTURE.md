@@ -501,6 +501,28 @@ claims, and don't need to track every model generation.
 Also checked all 11 external links in `content/pages/resources.json` for
 link rot — none found, no changes made.
 
+**Completed 2026-06-28 — Q2 quarterly report rewrite
+(`trends/state-of-llms-q2-2026.html`):** The original June 1 article was
+describing Claude 4 Opus, o3, GPT-4o, and Gemini 2.5 Pro as current, with
+Llama 4/Qwen 3 as "next quarter" watch items — all stale by late June.
+Treated as a genuine end-of-quarter retrospective. Three real stories that
+defined the actual quarter: (1) Fable 5 launched June 9, suspended
+worldwide June 12 by US Commerce Department export-control directive —
+the first time a government order reached a live commercial AI API rather
+than chips or weights; (2) open-weight field (DeepSeek V4, Qwen3.6,
+Kimi K2.6/K2.7 Code) reached genuine near-frontier parity on independent
+benchmarks; (3) Meta reversed its open-weights strategy with Muse Spark.
+All dates and model names verified via live web search before writing, not
+carried over from training data. Also updated JSON-LD `dateModified` and
+`about` array, and meta/og description tags.
+
+**Not yet audited — the other 8 static Trends articles** (Q1/Q4 quarterly
+reports and 5 explainer pieces: agentic-ai-explained, ai-cost-collapse,
+reasoning-models-explained, and 2 others). These are hand-coded HTML
+outside both the dynamic JSON pipeline and the GitHub Action automation —
+same staleness risk as the Q2 report was before this pass. Worth a
+dedicated audit session, same research-then-rewrite approach used here.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
