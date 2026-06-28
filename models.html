@@ -33,7 +33,7 @@
   "educationalLevel": "Beginner",
   "isAccessibleForFree": true,
   "inLanguage": "en-US",
-  "dateModified": "2026-06-01"
+  "dateModified": "2026-06-27"
 }
 </script>
 <style>
@@ -87,6 +87,10 @@ nav a.active{color:var(--brown);background:var(--light)}
 .mcard:nth-child(4){animation-delay:.20s}
 .mcard:nth-child(5){animation-delay:.25s}
 .mcard:nth-child(6){animation-delay:.30s}
+.mcard:nth-child(7){animation-delay:.35s}
+.mcard:nth-child(8){animation-delay:.40s}
+.mcard:nth-child(9){animation-delay:.45s}
+.mcard:nth-child(10){animation-delay:.50s}
 .mcard.hidden{display:none}
 
 .mcard-header{padding:1.25rem 1.25rem .9rem;border-bottom:1px solid var(--border)}
@@ -99,6 +103,8 @@ nav a.active{color:var(--brown);background:var(--light)}
 .status-disruptor{background:rgba(30,100,180,.1);color:#1a4a90;border:1px solid rgba(30,100,180,.25)}
 
 .mcard-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:400;color:var(--brown);line-height:1.1;margin-bottom:.2rem}
+.mcard-name a{color:inherit;text-decoration:none}
+.mcard-name a:hover{color:var(--gold);text-decoration:underline}
 .mcard-models{font-size:.72rem;color:var(--muted);letter-spacing:.02em}
 
 .mcard-body{padding:1rem 1.25rem}
@@ -186,29 +192,29 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">OpenAI</span>
         <span class="status-badge status-dominant">Market leader</span>
       </div>
-      <div class="mcard-name">GPT &amp; o-Series</div>
-      <div class="mcard-models">GPT-4o · GPT-4.1 · o3 · o4-mini</div>
+      <div class="mcard-name"><a href="https://openai.com/" target="_blank" rel="noopener">GPT &amp; o-Series</a></div>
+      <div class="mcard-models">GPT-5.5 (Thinking / Pro) &middot; GPT-5.5 Instant &middot; GPT-5.4</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Versatile excellence across almost every task — the safe, proven default for business use</div>
+      <div class="superpower">Versatile excellence across almost every task — the safe, proven default for business use, now with reasoning built into every model via Thinking mode</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Premium cost at scale; o3 is slow and expensive for heavy reasoning tasks</div>
+      <div class="tradeoff">Premium cost at scale; the old standalone o-series reasoning models are being phased out in favor of a Thinking-mode toggle within GPT-5.x, so historical o1/o3 benchmarks don't carry over directly</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:80%"></div></div>
-          <span class="bar-score">8/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:52%"></div></div>
+          <span class="bar-score">5.2/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
-          <span class="bar-score">9.5/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:94%"></div></div>
+          <span class="bar-score">9.4/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:55%"></div></div>
-          <span class="bar-score">Standard</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:5%"></div></div>
+          <span class="bar-score">Premium</span>
         </div>
       </div>
       <div class="bestfor">
@@ -218,17 +224,13 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div>
         </div>
-        <span class="cost-tier-name">Standard</span>
+        <span class="cost-tier-name">Premium</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>OpenAI's GPT-4o and o-series models are the most widely deployed large language models in the world. GPT-4o provides fast, multimodal responses combining text, image, and audio understanding. The o3 and o4-mini reasoning models use extended chain-of-thought processing to achieve near-expert performance on mathematics, coding, and complex logic tasks. GPT-4.1 is optimised for long-context coding and instruction following. Available via the OpenAI API and ChatGPT.</p>
+      <p>OpenAI's GPT-5.5 is the current flagship, available in Thinking and Pro variants for the hardest reasoning and coding tasks. GPT-5.5 Instant has been the default model across ChatGPT since May 5, 2026. GPT-5.4 remains available as a capable, lower-cost workhorse tier. Reasoning that was once handled by separate o-series models (o1, o3, o4-mini) is now built into GPT-5.x via a Thinking mode rather than offered as standalone models — most of the o-series has been retired from ChatGPT, with o3 itself on a sunset path through August 2026. Available via the OpenAI API and ChatGPT.</p>
     </div>
   </div>
 
@@ -239,28 +241,28 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">Anthropic</span>
         <span class="status-badge status-dominant">Dominant in writing</span>
       </div>
-      <div class="mcard-name">Claude</div>
-      <div class="mcard-models">Claude 4 Opus · Claude 4 Sonnet · Claude Haiku</div>
+      <div class="mcard-name"><a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude</a></div>
+      <div class="mcard-models">Claude Opus 4.8 &middot; Claude Sonnet 4.6 &middot; Claude Haiku 4.5</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Elite long-form writing, nuanced reasoning, and complex multi-step document workflows</div>
+      <div class="superpower">Elite long-form writing, nuanced reasoning, and complex multi-step document workflows — now with a 1-million-token context window at flat API rates, no long-context surcharge</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Opus tier is premium-priced; occasionally over-cautious on edge-case content requests</div>
+      <div class="tradeoff">Opus tier is premium-priced; Anthropic's most capable model overall, Fable 5, has been suspended for all users since June 12, 2026 under a US export-control directive — Opus 4.8 is the most capable Claude model currently accessible</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:75%"></div></div>
-          <span class="bar-score">7.5/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:32%"></div></div>
+          <span class="bar-score">3.2/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:93%"></div></div>
-          <span class="bar-score">9/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+          <span class="bar-score">9.5/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:45%"></div></div>
+          <div class="bar-track"><div class="bar-fill cost" style="width:16%"></div></div>
           <span class="bar-score">Premium</span>
         </div>
       </div>
@@ -271,17 +273,13 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div>
         </div>
         <span class="cost-tier-name">Premium</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Anthropic's Claude models are built with Constitutional AI, a safety training approach that makes Claude unusually reliable and honest. Claude 4 Opus offers the highest capability for complex reasoning and writing tasks. Claude 4 Sonnet balances capability and cost for everyday professional use. Claude Haiku is optimised for speed and cost efficiency. Claude models support a 200,000 token context window — large enough to process entire books or codebases in a single conversation.</p>
+      <p>Anthropic's Claude models are built with Constitutional AI, a safety training approach that makes Claude unusually reliable and honest. Claude Opus 4.8 offers the highest accessible capability for complex reasoning and writing tasks. Claude Sonnet 4.6 balances capability and cost for everyday professional use. Claude Haiku 4.5 is optimised for speed and cost efficiency. Anthropic eliminated its long-context pricing surcharge in March 2026, so Opus 4.8 and Sonnet 4.6 now support a 1-million-token context window at flat per-token rates via the API. Anthropic's newest and most capable model, Fable 5, remains suspended for all users as of this writing under a US export-control directive.</p>
     </div>
   </div>
 
@@ -292,19 +290,19 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">Google DeepMind</span>
         <span class="status-badge status-strong">Highly competitive</span>
       </div>
-      <div class="mcard-name">Gemini</div>
-      <div class="mcard-models">Gemini 2.5 Pro · Gemini 2.0 Flash · Gemini Ultra</div>
+      <div class="mcard-name"><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a></div>
+      <div class="mcard-models">Gemini 3.1 Pro &middot; Gemini 3.5 Flash</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Handling enormous inputs — full video files, 1M-token codebases, entire document archives at once</div>
+      <div class="superpower">Handling enormous inputs — full video files, 1M-token codebases, entire document archives at once — and the fastest output speed of any major lab</div>
       <div class="tradeoff-label">Key trade-off</div>
       <div class="tradeoff">Personality and writing style feel less refined than Claude; Pro tier pricing has caught up with competitors</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:88%"></div></div>
-          <span class="bar-score">8.8/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:100%"></div></div>
+          <span class="bar-score">10/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
@@ -313,8 +311,8 @@ footer a{color:var(--gold);text-decoration:none}
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:65%"></div></div>
-          <span class="bar-score">Value</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:64%"></div></div>
+          <span class="bar-score">Standard</span>
         </div>
       </div>
       <div class="bestfor">
@@ -324,17 +322,13 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div>
         </div>
-        <span class="cost-tier-name">Value</span>
+        <span class="cost-tier-name">Standard</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Google DeepMind's Gemini models are natively multimodal, processing text, images, audio, and video as equal first-class inputs. Gemini 2.5 Pro features the largest publicly available context window — 1 million tokens — enabling analysis of entire large codebases or lengthy video content. Gemini 2.0 Flash is optimised for speed and cost efficiency in production applications. Gemini powers Google Search AI Overviews and is deeply integrated into Google Workspace products including Docs, Gmail, and Sheets.</p>
+      <p>Google DeepMind's Gemini models are natively multimodal, processing text, images, audio, and video as equal first-class inputs. Gemini 3.1 Pro supports a 1-million-token context window, enabling analysis of entire large codebases or lengthy video content. Gemini 3.5 Flash is optimised for speed and cost efficiency in production applications, and measures as the fastest output speed of any major frontier model. Gemini powers Google Search AI Overviews and is deeply integrated into Google Workspace products including Docs, Gmail, and Sheets.</p>
     </div>
   </div>
 
@@ -345,7 +339,7 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">xAI</span>
         <span class="status-badge status-disruptor">Fast-moving challenger</span>
       </div>
-      <div class="mcard-name">Grok</div>
+      <div class="mcard-name"><a href="https://x.ai/grok" target="_blank" rel="noopener">Grok</a></div>
       <div class="mcard-models">Grok 4.3 · Grok 4.1 · Grok 4 Fast</div>
     </div>
     <div class="mcard-body">
@@ -398,28 +392,28 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">Meta AI</span>
         <span class="status-badge status-rising">Open weight leader</span>
       </div>
-      <div class="mcard-name">Llama</div>
-      <div class="mcard-models">Llama 3.3 70B · Llama 3.1 405B · Llama 3.2</div>
+      <div class="mcard-name"><a href="https://www.llama.com/" target="_blank" rel="noopener">Llama</a></div>
+      <div class="mcard-models">Llama 4 Maverick &middot; Llama 4 Scout &middot; Llama 3.3 70B</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Fully open weights — download and run privately on your own hardware, free forever with no API costs</div>
+      <div class="superpower">Fully open weights — download and run privately on your own hardware, free forever with no API costs; Llama 4 Scout's 10-million-token context window is the largest of any openly available model</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Requires technical setup to run locally; cloud versions via third parties still incur cost</div>
+      <div class="tradeoff">Meta has shifted its frontier investment to a new proprietary model (Muse Spark, below) — Llama remains available but is expected to see maintenance updates rather than continued frontier development, and now trails closed frontier models by a wider margin than before</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:82%"></div></div>
-          <span class="bar-score">8/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:73%"></div></div>
+          <span class="bar-score">7.3/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
-          <span class="bar-score">8.5/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:48%"></div></div>
+          <span class="bar-score">4.8/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:95%"></div></div>
+          <div class="bar-track"><div class="bar-fill cost" style="width:96%"></div></div>
           <span class="bar-score">Free*</span>
         </div>
       </div>
@@ -430,17 +424,62 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
         </div>
         <span class="cost-tier-name">Free (self-hosted)</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Meta's Llama 3 series are the most capable openly available large language models. Llama 3.3 70B delivers performance competitive with proprietary frontier models at zero licensing cost. Llama 3.1 405B approaches GPT-4 class performance and is available for local deployment. The open weights enable the Ollama ecosystem, allowing anyone to run AI locally on consumer hardware including Apple Silicon Macs. Llama models can be fine-tuned on private data without exposing that data to any third party.</p>
+      <p>Meta's Llama 4 family remains the most widely deployed open-weight AI ecosystem. Llama 4 Maverick is a natively multimodal Mixture-of-Experts model with a 1-million-token context window. Llama 4 Scout offers the same multimodal capability with a 10-million-token context window — the largest of any openly available model. Llama 3.3 70B remains a widely-deployed practical text-only option. In April 2026, Meta Superintelligence Labs launched a new proprietary model, Muse Spark, as the engine behind Meta AI — a strategic pivot away from Llama as Meta's frontier effort, though existing Llama models remain open and available for self-hosting via Ollama, Hugging Face, and every major inference framework.</p>
+    </div>
+  </div>
+
+  <!-- Muse Spark -->
+  <div class="mcard" data-tags="closed reasoning">
+    <div class="mcard-header">
+      <div class="mcard-top">
+        <span class="mcard-company">Meta Superintelligence Labs</span>
+        <span class="status-badge status-rising">New, narrowing the gap</span>
+      </div>
+      <div class="mcard-name"><a href="https://meta.ai/" target="_blank" rel="noopener">Muse Spark</a></div>
+      <div class="mcard-models">Muse Spark</div>
+    </div>
+    <div class="mcard-body">
+      <div class="superpower-label">Core superpower</div>
+      <div class="superpower">Natively multimodal reasoning with tiered Instant / Thinking / Contemplating modes, standout performance on health and visual-understanding tasks, built using roughly 10x less compute than Meta's previous Llama 4 Maverick flagship</div>
+      <div class="tradeoff-label">Key trade-off</div>
+      <div class="tradeoff">Proprietary and closed — a reversal of Meta's open-weights strategy — with API access currently limited to a private preview; independent benchmarks (run with early access provided by Meta) place it behind the very top closed models from OpenAI, Anthropic, and Google</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Speed</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:0%"></div></div>
+          <span class="bar-score">Not yet measured</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Reasoning</span>
+          <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+          <span class="bar-score">8.5/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Cost</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:0%"></div></div>
+          <span class="bar-score">Not priced</span>
+        </div>
+      </div>
+      <div class="bestfor">
+        <div class="bestfor-label">Best non-technical use</div>
+        <div class="bestfor-text">Health-related questions (nutrition analysis from food photos, exercise breakdowns) and visual tasks through the Meta AI app or smart glasses</div>
+      </div>
+      <div class="cost-tier">
+        <span class="cost-label">Cost tier</span>
+        <div class="cost-dots">
+          <div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
+        </div>
+        <span class="cost-tier-name">Not yet publicly priced</span>
+      </div>
+    </div>
+    <div class="seo-content">
+      <p>Muse Spark launched April 8, 2026 as the first model from Meta Superintelligence Labs, the division Mark Zuckerberg built after a $14.3 billion stake in Scale AI brought in Alexandr Wang as chief AI officer. It replaced Llama as the model powering the Meta AI assistant across WhatsApp, Instagram, Facebook, Messenger, the meta.ai website, and Meta's smart glasses. Unlike Llama, Muse Spark's weights are not open — Meta says it hopes to open-source future versions. It is currently accessible through the Meta AI app and meta.ai website, with API access limited to a private preview for select developers.</p>
     </div>
   </div>
 
@@ -451,49 +490,143 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">DeepSeek</span>
         <span class="status-badge status-disruptor">Market disruptor</span>
       </div>
-      <div class="mcard-name">DeepSeek</div>
-      <div class="mcard-models">DeepSeek V3 · DeepSeek R1 · DeepSeek-Coder</div>
+      <div class="mcard-name"><a href="https://www.deepseek.com/" target="_blank" rel="noopener">DeepSeek</a></div>
+      <div class="mcard-models">DeepSeek V4 Pro &middot; DeepSeek V4 Flash</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">o1-level reasoning performance at a fraction of the cost — the most significant price disruption in AI history</div>
+      <div class="superpower">Frontier-competitive reasoning at a small fraction of closed-model pricing — still the most significant price disruption in AI history</div>
       <div class="tradeoff-label">Key trade-off</div>
       <div class="tradeoff">Chinese-operated; some content restrictions; data privacy considerations for sensitive enterprise use</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:72%"></div></div>
-          <span class="bar-score">7/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:54%"></div></div>
+          <span class="bar-score">5.4/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:92%"></div></div>
-          <span class="bar-score">9/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:86%"></div></div>
+          <span class="bar-score">8.6/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:98%"></div></div>
+          <div class="bar-track"><div class="bar-fill cost" style="width:100%"></div></div>
           <span class="bar-score">Ultra-low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">High-volume automation where cost-per-prompt needs to be near zero; advanced coding tasks where quality needs to match OpenAI at 10x lower cost</div>
+        <div class="bestfor-text">High-volume automation where cost-per-prompt needs to be near zero; advanced coding tasks where quality needs to match closed frontier models at a fraction of the cost</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
         </div>
         <span class="cost-tier-name">Ultra-low cost</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>DeepSeek's January 2025 release of R1 shocked the AI industry by matching OpenAI o1's reasoning benchmark performance at approximately $6 million training cost versus hundreds of millions. DeepSeek V3 is a 671-billion parameter Mixture of Experts model that activates only 37 billion parameters per token, achieving frontier performance at dramatically lower inference cost. DeepSeek R1 uses chain-of-thought reasoning and is available as open weights. DeepSeek-Coder is specialised for software development tasks.</p>
+      <p>DeepSeek's January 2025 release of R1 shocked the AI industry by matching OpenAI o1's reasoning benchmark performance at a fraction of the training cost of Western frontier labs. DeepSeek V4 Pro is the current flagship, a Mixture of Experts model achieving frontier-competitive reasoning scores at dramatically lower inference cost than closed alternatives. DeepSeek V4 Flash trades some capability for speed and even lower cost. Both are available as open weights and via the DeepSeek API.</p>
+    </div>
+  </div>
+
+  <!-- Qwen -->
+  <div class="mcard" data-tags="open budget reasoning">
+    <div class="mcard-header">
+      <div class="mcard-top">
+        <span class="mcard-company">Alibaba</span>
+        <span class="status-badge status-rising">Broad open-weight range</span>
+      </div>
+      <div class="mcard-name"><a href="https://qwen.ai/" target="_blank" rel="noopener">Qwen</a></div>
+      <div class="mcard-models">Qwen3.6-Max-Preview &middot; Qwen3.6-Plus &middot; Qwen3.6-27B</div>
+    </div>
+    <div class="mcard-body">
+      <div class="superpower-label">Core superpower</div>
+      <div class="superpower">Alibaba's open-weight lineup spans from a frontier-competitive flagship (Max-Preview) down to a dense, self-hostable coding model (27B) — genuine range across sizes and budgets, not just one model</div>
+      <div class="tradeoff-label">Key trade-off</div>
+      <div class="tradeoff">Chinese-operated, same data/content considerations as DeepSeek; the Plus/Max-Preview/27B naming across releases is genuinely confusing for newcomers comparing options</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Speed</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:37%"></div></div>
+          <span class="bar-score">3.7/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Reasoning</span>
+          <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+          <span class="bar-score">8.2/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Cost</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:94%"></div></div>
+          <span class="bar-score">Ultra-low</span>
+        </div>
+      </div>
+      <div class="bestfor">
+        <div class="bestfor-label">Best non-technical use</div>
+        <div class="bestfor-text">Self-hosted coding and automation workloads where you want to pick a model size that matches your hardware budget rather than a one-size-fits-all option</div>
+      </div>
+      <div class="cost-tier">
+        <span class="cost-label">Cost tier</span>
+        <div class="cost-dots">
+          <div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
+        </div>
+        <span class="cost-tier-name">Ultra-low cost</span>
+      </div>
+    </div>
+    <div class="seo-content">
+      <p>Alibaba's Qwen3.6 family spans multiple sizes released across early-to-mid 2026: Qwen3.6-Max-Preview and Qwen3.6-Plus as cloud-served flagship-tier options, and Qwen3.6-27B as a dense, self-hostable model aimed at coding and agentic tasks. All are available as open weights, with strong performance on coding and multilingual benchmarks. Qwen's open-weight ecosystem has become one of the most actively used on Hugging Face, alongside DeepSeek and Llama.</p>
+    </div>
+  </div>
+
+  <!-- Kimi -->
+  <div class="mcard" data-tags="open budget reasoning">
+    <div class="mcard-header">
+      <div class="mcard-top">
+        <span class="mcard-company">Moonshot AI</span>
+        <span class="status-badge status-rising">Agentic coding specialist</span>
+      </div>
+      <div class="mcard-name"><a href="https://www.kimi.com/" target="_blank" rel="noopener">Kimi</a></div>
+      <div class="mcard-models">Kimi K2.6 &middot; Kimi K2.7 Code &middot; Kimi K2.5</div>
+    </div>
+    <div class="mcard-body">
+      <div class="superpower-label">Core superpower</div>
+      <div class="superpower">Strong agentic coding and long-horizon tool-use performance, with a dedicated specialized coding variant (K2.7 Code) released June 2026 alongside the general-purpose flagship</div>
+      <div class="tradeoff-label">Key trade-off</div>
+      <div class="tradeoff">Chinese-operated, same considerations as DeepSeek and Qwen; output speed is noticeably slower than other open-weight options, and there's less Western ecosystem tooling and documentation than Llama or Mistral</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Speed</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:24%"></div></div>
+          <span class="bar-score">2.4/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Reasoning</span>
+          <div class="bar-track"><div class="bar-fill" style="width:76%"></div></div>
+          <span class="bar-score">7.6/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Cost</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:88%"></div></div>
+          <span class="bar-score">Low</span>
+        </div>
+      </div>
+      <div class="bestfor">
+        <div class="bestfor-label">Best non-technical use</div>
+        <div class="bestfor-text">Long, multi-step agentic tasks — research, multi-tool workflows, autonomous coding sessions — where the model needs to keep working reliably over many steps rather than respond instantly</div>
+      </div>
+      <div class="cost-tier">
+        <span class="cost-label">Cost tier</span>
+        <div class="cost-dots">
+          <div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
+        </div>
+        <span class="cost-tier-name">Low cost</span>
+      </div>
+    </div>
+    <div class="seo-content">
+      <p>Moonshot AI's Kimi K2.6, released April 2026, is a Mixture-of-Experts model built for agentic coding and long tool-use chains, open-sourced under a modified MIT license. Kimi K2.7 Code, released June 2026, is a dedicated coding-specialized variant alongside the general-purpose K2.6 flagship. Both are available through Moonshot's own platform, via API, or self-hosted using Hugging Face weights. Kimi has built a strong reputation specifically for autonomous, multi-step agent tasks rather than fast conversational response.</p>
     </div>
   </div>
 
@@ -504,29 +637,29 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">Mistral AI</span>
         <span class="status-badge status-rising">European challenger</span>
       </div>
-      <div class="mcard-name">Mistral</div>
-      <div class="mcard-models">Mistral Large · Mixtral 8x7B · Mistral 7B</div>
+      <div class="mcard-name"><a href="https://mistral.ai/" target="_blank" rel="noopener">Mistral</a></div>
+      <div class="mcard-models">Mistral Medium 3.5 &middot; Mistral Large 3 &middot; Mistral Small 4</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Punches far above its weight — small efficient models that outperform much larger competitors</div>
+      <div class="superpower">Fast, efficient models with a genuinely strong price-to-performance ratio, and a unified Vibe agent now handling both research and coding tasks across web, IDE, and terminal</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Smaller company means slower release cadence; less ecosystem tooling than OpenAI or Meta</div>
+      <div class="tradeoff">The lineup has gotten genuinely complex — Medium 3.5 is the newest release and now the default in Mistral's own tools, but Large 3 remains the largest model for the heaviest workloads, so "which Mistral model" isn't a one-line answer anymore</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:90%"></div></div>
-          <span class="bar-score">9/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:95%"></div></div>
+          <span class="bar-score">9.5/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:80%"></div></div>
-          <span class="bar-score">8/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+          <span class="bar-score">7.1/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:88%"></div></div>
-          <span class="bar-score">Low</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:78%"></div></div>
+          <span class="bar-score">Standard</span>
         </div>
       </div>
       <div class="bestfor">
@@ -536,17 +669,13 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
         <div class="cost-dots">
-          <div class="cost-dot active"></div>
-          <div class="cost-dot active"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
-          <div class="cost-dot"></div>
+          <div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div>
         </div>
-        <span class="cost-tier-name">Low cost</span>
+        <span class="cost-tier-name">Standard</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Mistral AI, founded in France in 2023, created a stir with Mistral 7B which outperformed much larger models at launch. Mixtral 8x7B is an open-weight Mixture of Experts model with 46.7 billion total parameters activating only 12.9 billion per token — delivering strong performance at low inference cost. Mistral Large competes with GPT-4 class models. Mistral is a strong advocate for open-source AI and European digital sovereignty. Models are available via the Mistral API or as open weights for local deployment.</p>
+      <p>Mistral AI, founded in France in 2023, has shipped a rapid succession of releases through 2026. Mistral Medium 3.5 is the newest, a 128-billion-parameter dense model released as open weights and now the default in Mistral's own Vibe and Le Chat tools. Mistral Large 3 remains the largest model in the lineup, a Mixture-of-Experts model released under Apache 2.0. Mistral Small 4 unifies the company's previously separate reasoning, multimodal, and coding models into a single configurable model. Mistral is a strong advocate for open-source AI and European digital sovereignty. Models are available via the Mistral API or as open weights for local deployment.</p>
     </div>
   </div>
 

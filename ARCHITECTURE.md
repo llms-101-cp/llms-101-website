@@ -462,13 +462,27 @@ Google/context-window sections (PR #5, merged 11:31 UTC):**
   writing. Both fixed before merge; Claude Opus 4.8 is correctly identified
   as the most capable model currently accessible to the public.
 
-**Outstanding — `models.html`'s remaining stale cards.** Every card except
-Grok (refreshed 2026-06-25) is still stale: OpenAI, Anthropic, Google,
-Llama, DeepSeek, Mistral. Same per-card research-and-verify approach as
-above. Worth specifically checking, per the lesson just learned: is the
-model actually *currently accessible*, not just whether it was announced
-as current — and double-check any "default" or "current flagship" framing
-against a live source, not memory.
+**Completed 2026-06-27 — `models.html` refresh + expansion (PR #6):**
+7 cards → 10. 6 cards refreshed (OpenAI, Anthropic, Google, Llama,
+DeepSeek, Mistral); Grok got a hyperlink added only (content already
+refreshed 2026-06-25); 3 new cards added: Muse Spark (Meta's new
+proprietary model — distinct from Llama, needed its own card to explain
+the open→closed pivot), Qwen (Alibaba's open-weight range), Kimi (Moonshot
+AI, agentic coding specialist).
+
+Speed/Reasoning/Cost bars are wired to a single Artificial Analysis
+Intelligence Index snapshot (fetched 2026-06-27) using a consistent
+methodology across every card: Reasoning = sqrt(Intelligence Index) ×
+(9.5 / sqrt(max index in set)), **square-root-compressed** rather than
+raw-linear so models well behind the literal frontier (e.g. Llama,
+Intelligence Index 14) don't visually read as "barely functional" on a
+benchmark deliberately built from the hardest academic tests. Speed =
+tokens/sec normalised to Gemini 3.5 Flash at 174 t/s. Cost width = 5 +
+95 × (max price − this price) / (max price − min price), bounded by
+DeepSeek ($0.18/1M) and OpenAI ($4.35/1M). Do not "fix" the compression
+back to linear without understanding this — it would misrepresent
+open/efficient models. Muse Spark's Speed and Cost bars are genuinely
+0-width (no speed or pricing data exists yet, not a research gap).
 
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
