@@ -554,10 +554,9 @@ clean and left untouched.
   historical comparison, not a current-state claim.
 
 **Audit lesson:** lede framing alone is not a reliable staleness signal.
-`why-every-lab-is-racing-to-build-coding-agents.html` has no dateable
-claims at all; `state-of-llms-q4-2025.html` had stale *internal* bugs
-invisible from the lede. Body content needs an actual read, not just a
-lede scan.
+`agentic-ai-explained.html` had an evergreen-looking lede but a stale
+body (o3/Claude 4 Opus/Gemini 2.5 Pro in the reasoning models list).
+Body content needs an actual read, not just a lede scan.
 
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
