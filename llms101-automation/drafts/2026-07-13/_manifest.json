@@ -1,0 +1,20 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/knowledge-distillation.json",
+    "filename": "knowledge-distillation.json",
+    "requiresVisualReview": false,
+    "extraStep": "Also add 'knowledge-distillation' to the correct TREE.{branch} array in index.html, or it won't appear on the map.",
+    "note": null
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/open-source-ai-models-closing-gap.json",
+    "filename": "open-source-ai-models-closing-gap.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]

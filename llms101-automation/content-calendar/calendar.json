@@ -1,19 +1,6 @@
 {
   "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard): trendsArticle now generates a single JSON file for content/articles/; modelCard remains a manual-paste HTML block.",
-  "weeks": [
-    {
-      "week_of": "2026-07-13",
-      "node": {
-        "id": "knowledge-distillation",
-        "parentContext": "Training process branch",
-        "theme": "train"
-      },
-      "trendsArticle": {
-        "topic": "The Open Source AI Models Closing the Gap",
-        "notes": "Cover Llama, Mistral, DeepSeek, Qwen catching up to closed frontier models in 2026. Balanced, not hype-driven."
-      }
-    }
-  ],
+  "weeks": [],
   "completed": [
     {
       "week_of": "2026-06-29",
@@ -56,6 +43,19 @@
         "notes": "Closed model, real-time X/Twitter data access is the key differentiator. Be honest about mixed reasoning benchmark performance relative to GPT/Claude."
       },
       "_completed_at": "2026-06-21T22:16:46.342Z"
+    },
+    {
+      "week_of": "2026-07-13",
+      "node": {
+        "id": "knowledge-distillation",
+        "parentContext": "Training process branch",
+        "theme": "train"
+      },
+      "trendsArticle": {
+        "topic": "The Open Source AI Models Closing the Gap",
+        "notes": "Cover Llama, Mistral, DeepSeek, Qwen catching up to closed frontier models in 2026. Balanced, not hype-driven."
+      },
+      "_completed_at": "2026-06-28T22:04:20.041Z"
     }
   ]
 }
