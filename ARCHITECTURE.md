@@ -516,12 +516,48 @@ All dates and model names verified via live web search before writing, not
 carried over from training data. Also updated JSON-LD `dateModified` and
 `about` array, and meta/og description tags.
 
-**Not yet audited — the other 8 static Trends articles** (Q1/Q4 quarterly
-reports and 5 explainer pieces: agentic-ai-explained, ai-cost-collapse,
-reasoning-models-explained, and 2 others). These are hand-coded HTML
-outside both the dynamic JSON pipeline and the GitHub Action automation —
-same staleness risk as the Q2 report was before this pass. Worth a
-dedicated audit session, same research-then-rewrite approach used here.
+**Completed 2026-06-28 — static Trends articles audit (PR #10,
+`trends-audit-2026-06-28`):** Audited all 8 remaining hand-coded HTML
+articles in `trends/` (the ones outside the dynamic JSON pipeline and
+GitHub Action automation). 5 were stale and updated; 3 were confirmed
+clean and left untouched.
+
+*Fixed (5):*
+- `context-window-arms-race.html` — lede and BA block updated to reflect
+  tri-lab convergence at 1M tokens (GPT-5.5/Claude Opus 4.8/Gemini 3.1
+  Pro); Anthropic long-context pricing elimination noted; growth figure
+  corrected to 250x in three years.
+- `reasoning-models-explained.html` — reframed from separate o-series
+  model line to built-in Thinking mode; o3 sunset path noted; model list
+  updated to current lineup (GPT-5.5, Claude Opus 4.8/Sonnet 4.6, Gemini
+  3.1 Pro, DeepSeek V4).
+- `ai-cost-collapse.html` — GPT-4o (retired Feb 2026) replaced with
+  GPT-5.4 nano pricing; parenthetical added noting the retirement as a
+  data point in the cost-collapse story. **Known deferred item:** three
+  inconsistent multipliers remain in this article (title says "100x in two
+  years", body now says "300x+ in under three years", lede implies
+  10,000x). Reconciling them was scoped out of this pass — they are
+  internally inconsistent but none is actively wrong.
+- `state-of-llms-q4-2025.html` — three factual bugs fixed: summary box
+  wrongly said "Q1 2026 at a glance"; lede treated DeepSeek R1 as
+  upcoming (it released Jan 2025, not Jan 2026); DeepSeek R1 shadow
+  section had internal contradiction describing R1 as both upcoming and
+  already-happened.
+- `agentic-ai-explained.html` — reasoning models list updated from
+  o3/Claude 4 Opus/Gemini 2.5 Pro to current Thinking mode framing.
+
+*Confirmed clean, no changes (3):*
+- `state-of-llms-q1-2026.html` — consistently past-tense retrospective.
+- `why-every-lab-is-racing-to-build-coding-agents.html` — zero specific
+  model/date references; genuinely evergreen.
+- `deepseek-r1-what-it-proved.html` — one GPT-4o mention is legitimate
+  historical comparison, not a current-state claim.
+
+**Audit lesson:** lede framing alone is not a reliable staleness signal.
+`why-every-lab-is-racing-to-build-coding-agents.html` has no dateable
+claims at all; `state-of-llms-q4-2025.html` had stale *internal* bugs
+invisible from the lede. Body content needs an actual read, not just a
+lede scan.
 
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
