@@ -635,6 +635,44 @@ it as the Mind Map node count — not a general overestimate.
   `CUDA platform`, etc.) were confirmed intact and untouched — 157 entries
   total unchanged.
 
+**Completed 2026-06-29 — Mind Map search feature (`index.html`, branch
+`mindmap-search-2026-06-29`):** Full-text search across 189 concepts (41
+`NODE_DATA` nodes + 148 reachable `EXAMPLE_DATA` entries). Scoped to the
+Mind Map only — Tracker/Directory (small enough for filter buttons) and
+Trends (different full-text-search problem) deliberately excluded.
+
+Implementation: search box (`#map-search`) positioned top-left of
+`#page-mindmap-inner` (separate from the existing bottom-right
+`.map-controls`); `buildSearchIndex()` called after `loadCMSData()` in
+the init sequence so the index reflects any CMS-merged node updates;
+`jumpToNode()` reuses the existing `expandedNodes`/`visibleNodes`/
+`collapseNode`/`updateExpandHint` state rather than a parallel mechanism;
+`centerOnNode()` computes pan offset from `POS[id]`/`W`/`H`/`mapScale`
+following the same transform math `updateTransform()` uses; arrow-key
+navigation, Escape-to-close, and click-outside-to-close all wired.
+Matches against node ID as well as display text (`searchConcepts` filters
+on `item.id` too, so "mcp" finds "Model Context Protocol" correctly).
+Placeholder text set dynamically from real index length, not hardcoded.
+
+**9 orphaned `EXAMPLE_DATA` entries — known gap, deferred:** these keys
+exist in `EXAMPLE_DATA` but no node's `examples` array references them,
+so they're unreachable from any example pill AND excluded from the search
+index. Most are likely stale from earlier staleness fixes that updated
+`examples` arrays to current model names without removing the old detail
+entries. The 9 keys: `Qwen 3.5`, `DeepSeek V3`, `OpenAI o1`, `OpenAI
+o3`, `DeepSeek R1`, `Gemini Thinking`, `Llama 3.3 70B`, `Mistral Large`,
+`Phi-4`. Whether to re-link them or delete them is a content decision —
+not fixed here, listed explicitly so they don't need rediscovering.
+
+**Live browser check still needed before trusting fully:** data/logic
+verified; on-screen rendering (search box visual placement, dropdown
+positioning on mobile, centering math landing correctly, theme-row nodes
+highlighting on canvas after jump) has not been confirmed in an actual
+browser. Theme-row nodes (`hardware`, `evaluation`, `open-closed`,
+`safety`) handled defensively (`jumpToNode` adds target to `visibleNodes`
+unconditionally, sidebar opens regardless), but canvas highlight for
+those nodes specifically warrants a look.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)

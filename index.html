@@ -251,6 +251,69 @@ nav ul{padding:.1rem 0 .4rem}
 }
 .map-controls button:hover{background:var(--tan-pale)}
 
+/* Map Search */
+.map-search{
+  position:absolute;
+  top:1rem;
+  left:1rem;
+  z-index:101;
+  width:min(320px, calc(100% - 2rem));
+}
+.map-search input{
+  width:100%;
+  box-sizing:border-box;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--brown);
+  font-family:'Jost',sans-serif;
+  font-size:0.85rem;
+  padding:0.6rem 0.9rem;
+  border-radius:6px;
+  box-shadow:0 2px 8px rgba(102,66,40,0.08);
+  outline:none;
+  transition:border-color 0.15s;
+}
+.map-search input:focus{border-color:var(--gold)}
+.map-search-results{
+  display:none;
+  position:absolute;
+  top:calc(100% + 0.3rem);
+  left:0;
+  width:100%;
+  max-height:280px;
+  overflow-y:auto;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:6px;
+  box-shadow:0 4px 16px rgba(102,66,40,0.15);
+}
+.map-search-results.show{display:block}
+.search-result-item{
+  padding:0.55rem 0.9rem;
+  font-size:0.82rem;
+  color:var(--brown);
+  cursor:pointer;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:0.5rem;
+}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover,.search-result-item.active{background:var(--tan-pale)}
+.search-result-tag{
+  font-size:0.68rem;
+  color:var(--muted);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.search-no-results{
+  padding:0.6rem 0.9rem;
+  font-size:0.8rem;
+  color:var(--muted);
+  font-style:italic;
+}
+
 /* ── Node boxes ── */
 @keyframes pulse-glow {
   0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4); }
@@ -459,6 +522,10 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
   <!-- SEO: describe the mind map for crawlers since the interactive canvas isn't indexable -->
   <p style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Interactive mind map covering: Mathematics of LLMs (vectors, embeddings, attention scores), Training process (pre-training, fine-tuning, RLHF), Model architectures (GPT, BERT, LLaMA, Mistral, Gemini, Claude), and Prompting techniques (zero-shot, few-shot, chain-of-thought, RAG). Click any node to expand and explore deeper explanations with citations to primary research papers.</p>
   <div id="page-mindmap-inner">
+    <div class="map-search" id="map-search">
+      <input type="text" id="map-search-input" placeholder="Search concepts…" autocomplete="off" aria-label="Search Mind Map concepts" oninput="handleSearchInput(this.value)" onkeydown="handleSearchKeydown(event)">
+      <div id="map-search-results" class="map-search-results" role="listbox" aria-label="Search results"></div>
+    </div>
     <div id="map-canvas">
       <svg id="connector-svg"></svg>
     </div>
@@ -2169,6 +2236,166 @@ function updateExpandHint(id, expanded){
 }
 
 /* ══════════════════════════════════════════════
+   MIND MAP SEARCH
+   Covers both NODE_DATA (main nodes) and EXAMPLE_DATA
+   (the 157+ deep-dive popups reachable from example pills) —
+   most named concepts on this site live in EXAMPLE_DATA, not
+   NODE_DATA, so search needs to cover both to be useful.
+══════════════════════════════════════════════ */
+let SEARCH_INDEX = [];
+let searchActiveIndex = -1;
+
+function buildSearchIndex(){
+  const index = [];
+  Object.entries(NODE_DATA).forEach(([id, d]) => {
+    index.push({ text: d.label || d.title, id, type: 'node', parentId: null });
+  });
+  // Map each EXAMPLE_DATA key to whichever node's `examples` list first
+  // references it, so a result on an example can open its parent node.
+  const exampleParent = {};
+  Object.entries(NODE_DATA).forEach(([id, d]) => {
+    (d.examples || []).forEach(ex => {
+      if (EXAMPLE_DATA[ex] && !(ex in exampleParent)) exampleParent[ex] = id;
+    });
+  });
+  // Only index examples that some node's `examples` array actually
+  // references — an entry with no resolvable parent would show as a
+  // clickable result that silently does nothing when selected. (A handful
+  // of these exist already, mostly leftover from examples-list updates
+  // that swapped in newer model names without removing the old detail
+  // entry — see ARCHITECTURE.md.)
+  Object.entries(EXAMPLE_DATA).forEach(([key, d]) => {
+    if (!exampleParent[key]) return;
+    index.push({ text: d.title || key, id: key, type: 'example', parentId: exampleParent[key] || null });
+  });
+  SEARCH_INDEX = index;
+  const input = document.getElementById('map-search-input');
+  if (input) input.placeholder = `Search ${index.length} concepts…`;
+}
+
+function searchConcepts(query){
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return SEARCH_INDEX.filter(item =>
+    item.text.toLowerCase().includes(q) || item.id.toLowerCase().includes(q)
+  ).slice(0, 12); // cap results so the dropdown stays scannable
+}
+
+function handleSearchInput(value){
+  searchActiveIndex = -1;
+  const resultsEl = document.getElementById('map-search-results');
+  const results = searchConcepts(value);
+  if (!value.trim()) { resultsEl.classList.remove('show'); resultsEl.innerHTML = ''; return; }
+  if (!results.length) {
+    resultsEl.innerHTML = `<div class="search-no-results">No matches</div>`;
+    resultsEl.classList.add('show');
+    return;
+  }
+  resultsEl.innerHTML = results.map((r, i) =>
+    `<div class="search-result-item" role="option" data-index="${i}" onclick='selectSearchResult(${i})'>
+      <span>${r.text.replace(/</g,'&lt;')}</span>
+      <span class="search-result-tag">${r.type === 'example' ? 'detail' : 'node'}</span>
+    </div>`
+  ).join('');
+  resultsEl.dataset.results = JSON.stringify(results);
+  resultsEl.classList.add('show');
+}
+
+function handleSearchKeydown(e){
+  const resultsEl = document.getElementById('map-search-results');
+  const results = resultsEl.dataset.results ? JSON.parse(resultsEl.dataset.results) : [];
+  if (!results.length) return;
+  const items = resultsEl.querySelectorAll('.search-result-item');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    searchActiveIndex = Math.min(searchActiveIndex + 1, results.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    searchActiveIndex = Math.max(searchActiveIndex - 1, 0);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (searchActiveIndex >= 0) selectSearchResult(searchActiveIndex);
+    return;
+  } else if (e.key === 'Escape') {
+    resultsEl.classList.remove('show');
+    document.getElementById('map-search-input').blur();
+    return;
+  } else { return; }
+  items.forEach((el, i) => el.classList.toggle('active', i === searchActiveIndex));
+  items[searchActiveIndex]?.scrollIntoView({ block: 'nearest' });
+}
+
+function selectSearchResult(i){
+  const resultsEl = document.getElementById('map-search-results');
+  const results = JSON.parse(resultsEl.dataset.results || '[]');
+  const r = results[i];
+  if (!r) return;
+  resultsEl.classList.remove('show');
+  document.getElementById('map-search-input').value = '';
+  if (r.type === 'node') {
+    jumpToNode(r.id);
+  } else if (r.parentId) {
+    jumpToNode(r.parentId);
+    openExampleDetail(r.id, r.parentId);
+  } else {
+    // Example with no resolvable parent (shouldn't normally happen, since
+    // the index only includes EXAMPLE_DATA entries an example list
+    // actually references) — fail safely rather than silently doing nothing.
+    console.warn('Search result has no parent node:', r);
+  }
+}
+
+/* Expand whichever branch contains `id` (collapsing any other open
+   root-level branch, matching toggleChildren's existing single-branch-open
+   behaviour), make the node visible, center the view on it, then open its
+   sidebar. Reuses the same state (expandedNodes/visibleNodes) and the same
+   collapseNode/updateExpandHint functions the normal click-to-expand flow
+   already uses, rather than introducing a parallel mechanism. */
+function jumpToNode(id){
+  if (!NODE_DATA[id]) return;
+  let targetBranch = null;
+  if (TREE.root.includes(id)) {
+    targetBranch = id;
+  } else {
+    for (const branchId of TREE.root) {
+      if ((TREE[branchId] || []).includes(id)) { targetBranch = branchId; break; }
+    }
+  }
+  if (targetBranch && targetBranch !== id) {
+    TREE.root.forEach(otherId => {
+      if (otherId !== targetBranch && expandedNodes.has(otherId)) collapseNode(otherId);
+    });
+    if (!expandedNodes.has(targetBranch)) {
+      expandedNodes.add(targetBranch);
+      (TREE[targetBranch] || []).forEach(cid => {
+        visibleNodes.add(cid);
+        document.getElementById(`node-${cid}`)?.classList.add('visible');
+      });
+      updateExpandHint(targetBranch, true);
+    }
+  }
+  // Defensive: ensure the target itself is marked visible even for
+  // theme-row nodes, which render via a separate fixed-position mechanism
+  // rather than the branch-expand flow above.
+  visibleNodes.add(id);
+  document.getElementById(`node-${id}`)?.classList.add('visible');
+  syncLines();
+  centerOnNode(id);
+  openSidebar(id);
+}
+
+function centerOnNode(id){
+  const pos = POS[id];
+  const container = document.getElementById('page-mindmap-inner');
+  if (!pos || !container) return;
+  const viewWidth = container.offsetWidth;
+  const viewHeight = container.offsetHeight;
+  panX = viewWidth/2 - (pos.x + W/2) * mapScale;
+  panY = viewHeight/2 - (pos.y + H/2) * mapScale;
+  updateTransform();
+}
+
+/* ══════════════════════════════════════════════
    CONNECTOR LOGIC (SNAP FIX)
 ══════════════════════════════════════════════ */
 const syncLines = () => {
@@ -2315,12 +2542,20 @@ function showPage(name, el){
 window.addEventListener('load', async () => {
   // 1. Try to fetch dynamic CMS data (if available)
   await loadCMSData();
-  
-  // 2. Build the map layout
+
+  // 2. Build the searchable index now that NODE_DATA reflects any CMS merges
+  buildSearchIndex();
+
+  // 3. Build the map layout
   initLayout();
   renderNodes();
   drawConnectors();
   initInteractivity(); 
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.map-search')) {
+    document.getElementById('map-search-results')?.classList.remove('show');
+  }
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSidebar(); closeNav(); }});
 </script>
