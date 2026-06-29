@@ -589,6 +589,52 @@ to `index.html`'s inline `NODE_DATA` and `TREE` objects (the static/inline
 path), not the dynamic JSON file path. Both require the same two-part edit
 (data + TREE), but via different mechanisms.
 
+**EXAMPLE_DATA discovery — critical: do not delete "orphaned-looking" entries
+without checking this object first.** `index.html` contains a *third*
+relevant inline object, `let EXAMPLE_DATA = {...}` (around line 1047),
+separate from both `NODE_DATA` and `TREE`. Every node's `examples` array
+renders as clickable pills in the sidebar; clicking a pill calls
+`openExampleDetail(exampleText, parentId)`, which looks up
+`EXAMPLE_DATA[exampleText]` — keyed by the **exact example text string**,
+not a slug. This powers per-example "deep dive" popups. The entries look
+identical to `NODE_DATA` entries at a glance, use quoted-string keys with
+spaces rather than slug-style IDs, and do NOT appear in `TREE` (they don't
+need to — they're popup detail, not top-level nodes). **Before deleting
+anything that looks like an orphaned node, confirm which object it lives
+in.** Deleting an `EXAMPLE_DATA` entry silently breaks the corresponding
+example pill's popup and falls back to a generic "is a specialized
+technical concept..." message with no error. `EXAMPLE_DATA` has exactly
+157 entries as of 2026-06-29 — use this as a sanity-check after any edit
+to confirm nothing was accidentally removed.
+
+**Correction to the earlier "independent review overstated node count"
+note:** the review cited 157 Mind Map nodes. The actual `NODE_DATA` count
+at that time was around 37-38. It is now confirmed the review almost
+certainly found `EXAMPLE_DATA` (157 entries, exact match) and mislabeled
+it as the Mind Map node count — not a general overestimate.
+
+**Completed 2026-06-29 — Evaluation & Benchmarks node + hardware body fix
+(`index.html`, branch `evaluation-hardware-fix-2026-06-29`):**
+
+- New `evaluation` node added to `TREE.themes` alongside `open-closed`,
+  `safety`, and `hardware`. Content covers what a benchmark is, saturation
+  (MMLU/HumanEval/GSM8K all at ~90%+ across frontier models), contamination,
+  human-preference arenas (tied explicitly to this site's own Model Tracker
+  Elo scores), and LLM-as-a-judge. Deliberately avoided citing precise
+  current benchmark percentages — described saturation as a structural fact
+  rather than a "current score" to avoid the node needing monthly revisiting.
+  NODE_DATA count: 40→41.
+
+- `hardware` node body was a broken placeholder visible to any visitor
+  (`<p>LLMs run on GPUs... (keeping your existing text) ...reducing memory
+  requirements ~8x with modest quality loss.</p>`) since the file's earliest
+  commits. Written from scratch: covers GPUs/Tensor Cores/CUDA lock-in,
+  Google TPUs as a real alternative, quantization/GGUF/llama.cpp for
+  consumer hardware, and Apple Silicon's unified-memory advantage. The 7
+  `EXAMPLE_DATA` entries for the hardware node (`NVIDIA H100`, `A100`,
+  `CUDA platform`, etc.) were confirmed intact and untouched — 157 entries
+  total unchanged.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
