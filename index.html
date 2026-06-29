@@ -530,6 +530,7 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
       <svg id="connector-svg"></svg>
     </div>
     <div class="map-controls">
+      <button onclick="resetMapView()" title="Back to full overview" aria-label="Reset view">⌂</button>
       <button onclick="zoomMap(0.1)" title="Zoom In" aria-label="Zoom In">+</button>
       <button onclick="zoomMap(-0.1)" title="Zoom Out" aria-label="Zoom Out">−</button>
     </div>
@@ -2066,6 +2067,13 @@ function initLayout(){
   themeIds.forEach((id, i) => {
     const tStartX = (cw - (themeIds.length * W + (themeIds.length-1)*GAP*2))/2;
     POS[id] = {x: tStartX + i*(W+GAP*2), y: themeY};
+    // Theme-row nodes render via this fixed-position row, not the normal
+    // click-to-expand branch flow — but the .node-box CSS still requires
+    // the `.visible` class (driven by visibleNodes) to actually show at
+    // all (default opacity:0, pointer-events:none). Nothing else ever
+    // added them, so they were invisible and unclickable from first load
+    // until a search jump happened to add the searched-for one defensively.
+    visibleNodes.add(id);
   });
 
   const canvasH = themeY + H + 100;
@@ -2139,6 +2147,22 @@ function zoomMap(delta) {
 function updateTransform() {
   const canvas = document.getElementById('map-canvas');
   if(canvas) canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
+}
+
+/* Collapses any expanded branch, closes the sidebar, and restores the
+   exact initial pan/zoom this page loads with (mirrors the math in
+   initInteractivity) — the "back to full overview" control raised as
+   missing after using search to jump deep into a specific node. */
+function resetMapView(){
+  TREE.root.forEach(id => { if (expandedNodes.has(id)) collapseNode(id); });
+  closeSidebar();
+  const container = document.getElementById('page-mindmap-inner');
+  const viewWidth = container ? container.offsetWidth : 1400;
+  mapScale = viewWidth < 768 ? 0.6 : 0.85;
+  panX = (viewWidth - 1400 * mapScale) / 2;
+  panY = 0;
+  updateTransform();
+  syncLines();
 }
 
 /* ═══════════════════════════════════════════
