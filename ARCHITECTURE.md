@@ -558,6 +558,37 @@ clean and left untouched.
 body (o3/Claude 4 Opus/Gemini 2.5 Pro in the reasoning models list).
 Body content needs an actual read, not just a lede scan.
 
+**Completed 2026-06-28 — AI Agents + MCP nodes added to Mind Map
+(`index.html`, branch `agents-mcp-nodes-2026-06-28`):** Two new leaf nodes
+added under the Prompting branch: `agents` ("AI Agents: How They Actually
+Work") and `mcp` ("Model Context Protocol (MCP): Why It Matters"). Both
+nodes explain mechanics that were previously only mentioned in passing in
+other nodes' `examples` arrays — `ReAct prompting` in `cot`,
+`Agent hijacking` in `injection` — but were never actually explained
+anywhere. Total Mind Map node count went from 38 to 40.
+
+**TREE discovery — standing checklist item for any future node addition:**
+`NODE_DATA` entries have no `children` field. Parent-child relationships for
+the visual Mind Map are defined in a completely separate object,
+`const TREE = {...}`, a few hundred lines further down in `index.html`.
+**Adding a node to `NODE_DATA` alone does not make it reachable from the
+Mind Map — it also has to be added to the relevant array in `TREE`, or it's
+orphaned and invisible.** For these two nodes: both added to `NODE_DATA`
+(after `injection`, completing the `prompt` theme cluster) AND to
+`TREE.prompting`'s children array.
+
+Note: `themes` is a legitimate exception to the TREE pattern — it's
+rendered via a fixed-position `themeY` mechanism, not the click-to-expand
+branch pattern. Not a bug, just a different rendering path for that
+category.
+
+This is distinct from the existing CRITICAL GOTCHA in the "Mind Map nodes —
+DYNAMIC, JSON-driven" section above, which concerns adding a new
+`content/nodes/{id}.json` file to the dynamic system. These two edits were
+to `index.html`'s inline `NODE_DATA` and `TREE` objects (the static/inline
+path), not the dynamic JSON file path. Both require the same two-part edit
+(data + TREE), but via different mechanisms.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)

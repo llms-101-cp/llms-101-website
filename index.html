@@ -954,6 +954,22 @@ let NODE_DATA = {
     sources:[{label:'Greshake et al. 2023 — Not What You\'ve Signed Up For (injection paper)',url:'https://arxiv.org/abs/2302.12173'},{label:'OWASP — LLM Top 10 Security Risks',url:'https://owasp.org/www-project-top-10-for-large-language-model-applications/'}]
   },
 
+  agents:{
+    label:'AI Agents',sub:'from chatbot to autonomous system',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'AI Agents: How They Actually Work',
+    body:`<p>A standard chatbot does one thing: you send a message, it generates a response, and that's the end of the exchange. It has no way to check whether its answer was right, take an action in the world, or recover if something goes wrong mid-task.</p><p>An <strong>agent</strong> adds a loop around that single exchange. At each step, the model can either answer directly or request a tool call — generating a structured request (not unlike filling in a form) naming a specific function and its arguments. The model itself never runs anything; the surrounding application executes the requested tool, then feeds the result back into the conversation as a new message. The model reads that result and decides what to do next: call another tool, or give a final answer. This cycle — act, observe, decide — repeats until the model stops requesting tools.</p><p>This pattern was first formalised as <strong>ReAct</strong> (Reasoning + Acting) in 2022, interleaving the model's reasoning with its actions so each could inform the other. For more complex tasks, a "plan-and-execute" variant separates the two: a planner sketches the whole task upfront, rather than re-reasoning from scratch at every single step — fewer model calls, but less able to adapt mid-task if something unexpected comes up.</p>`,
+    examples:['ReAct (Reason + Act)','Tool / function calling','Plan-and-execute','Multi-agent orchestration','Claude Code, AI coding assistants'],
+    sources:[{label:'Yao et al. 2022 — ReAct: Synergizing Reasoning and Acting',url:'https://arxiv.org/abs/2210.03629'},{label:'Schick et al. 2023 — Toolformer paper',url:'https://arxiv.org/abs/2302.04761'}]
+  },
+
+  mcp:{
+    label:'Model Context Protocol',sub:'the universal connector for AI tools',tag:'Prompting',theme:'prompt',hasChildren:false,
+    title:'Model Context Protocol (MCP): Why It Matters',
+    body:`<p>Before MCP, every AI application that needed to connect to every external tool or data source required its own custom integration — N applications times M tools meant building close to N×M separate connectors. MCP collapses that into a single standard: build one server for a tool, and any compliant AI application can use it without bespoke wiring.</p><p>Anthropic introduced MCP as an open standard in November 2024. It works as a client-server system: an MCP <strong>host</strong> (the AI application — Claude Desktop, Claude Code, an IDE) embeds an MCP <strong>client</strong>, which connects to one or more MCP <strong>servers</strong>. Each server exposes tools (actions it can take), resources (read-only data it can supply), and prompts (reusable templates) over a standard interface — so a single Postgres or GitHub server, once built, works with any MCP-compatible model or application.</p><p>By 2026, MCP had become genuine cross-industry infrastructure rather than an Anthropic-only effort: OpenAI adopted it across ChatGPT in March 2025, Google DeepMind and Microsoft followed within the year, and in December 2025 Anthropic handed governance to a vendor-neutral Linux Foundation body. Tens of thousands of public MCP servers now exist. The protocol's security model places access control in the host application rather than the protocol itself — worth knowing if you're connecting a community-built server to anything holding real credentials, since not every server in the ecosystem implements authentication carefully.</p>`,
+    examples:['Anthropic — introduced MCP, Nov 2024','OpenAI — adopted across ChatGPT, Mar 2025','Google DeepMind, Microsoft — also adopted','Linux Foundation — governs MCP since Dec 2025','Claude Code, Cursor, VS Code — MCP-enabled tools'],
+    sources:[{label:'Anthropic — Introducing the Model Context Protocol',url:'https://www.anthropic.com/news/model-context-protocol'},{label:'Model Context Protocol — official specification',url:'https://modelcontextprotocol.io/'}]
+  },
+
   /* THEMES */
   'open-closed':{
     label:'Open vs closed',sub:'weights, access, safety',tag:'Theme',theme:'theme',hasChildren:false,
@@ -1822,7 +1838,7 @@ const TREE = {
   math: ['linear-algebra','calculus','probability','attention'],
   training: ['data','pretraining','sft','rlhf','dpo','synthetic','fine-tuning'],
   arch: ['dense','moe','reasoning','openai','anthropic-model','google-model','open-models'],
-  prompting: ['cot','fewshot','system-prompt','rag','context-window','injection'],
+  prompting: ['cot','fewshot','system-prompt','rag','context-window','injection','agents','mcp'],
   themes: ['open-closed','safety','hardware'],
   roles: ['role-data', 'role-ml', 'role-ethics', 'role-swe', 'role-hw']
 };
