@@ -314,6 +314,47 @@ nav ul{padding:.1rem 0 .4rem}
   font-style:italic;
 }
 
+/* "More below" cue — shown on #page-mindmap-inner whenever the canvas
+   content (notably the theme row) extends past the visible bottom edge.
+   Addresses a real discoverability gap: that content was always
+   reachable by dragging, visitors just had no indication it existed. */
+#page-mindmap-inner::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:60px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0), var(--surface));
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.25s;
+  z-index:90;
+}
+#page-mindmap-inner.has-more-below::after{opacity:0.9}
+.scroll-hint-arrow{
+  position:absolute;
+  left:50%;
+  bottom:0.6rem;
+  transform:translateX(-50%);
+  z-index:95;
+  font-size:0.75rem;
+  color:var(--muted);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:0.3rem 0.8rem;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(102,66,40,0.1);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s;
+  animation:bob 1.6s ease-in-out infinite;
+}
+#page-mindmap-inner.has-more-below .scroll-hint-arrow{opacity:0.8}
+@keyframes bob{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(4px)}
+}
+
 /* ── Node boxes ── */
 @keyframes pulse-glow {
   0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.4); }
@@ -534,6 +575,7 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
       <button onclick="zoomMap(0.1)" title="Zoom In" aria-label="Zoom In">+</button>
       <button onclick="zoomMap(-0.1)" title="Zoom Out" aria-label="Zoom Out">−</button>
     </div>
+    <div class="scroll-hint-arrow" aria-hidden="true">▾ more below — drag to explore</div>
   </div>
 </div>
 
@@ -672,6 +714,8 @@ let panY = 0;
 let isDragging = false;
 let startX = 0;
 let startY = 0;
+let canvasContentW = 1400; // set by initLayout once real content width is known
+let canvasContentH = 900;  // set by initLayout once real content height (incl. theme row) is known
   /* ══════════════════════════════════════════════
    THEME DICTIONARY
 ══════════════════════════════════════════════ */
@@ -2067,16 +2111,13 @@ function initLayout(){
   themeIds.forEach((id, i) => {
     const tStartX = (cw - (themeIds.length * W + (themeIds.length-1)*GAP*2))/2;
     POS[id] = {x: tStartX + i*(W+GAP*2), y: themeY};
-    // Theme-row nodes render via this fixed-position row, not the normal
-    // click-to-expand branch flow — but the .node-box CSS still requires
-    // the `.visible` class (driven by visibleNodes) to actually show at
-    // all (default opacity:0, pointer-events:none). Nothing else ever
-    // added them, so they were invisible and unclickable from first load
-    // until a search jump happened to add the searched-for one defensively.
-    visibleNodes.add(id);
+    visibleNodes.add(id); // theme row bypasses the normal expand flow that
+    // would otherwise add these to visibleNodes — see ARCHITECTURE.md
   });
 
   const canvasH = themeY + H + 100;
+  canvasContentW = cw;
+  canvasContentH = canvasH;
   const canvasEl = document.getElementById('map-canvas');
   canvasEl.style.height = canvasH + 'px';
   canvasEl.style.width = cw + 'px'; 
@@ -2102,6 +2143,7 @@ function initInteractivity() {
   
   if (wasHidden) page.style.display = ''; 
   updateTransform();
+  updateScrollHint();
 
   const startDrag = (x, y) => {
     isDragging = true;
@@ -2111,9 +2153,12 @@ function initInteractivity() {
   };
   const drag = (x, y) => {
     if(!isDragging) return;
-    panX = x - startX;
-    panY = y - startY;
+    const newPanX = x - startX;
+    const newPanY = y - startY;
+    panX = clampPan(newPanX, canvasContentW, container.offsetWidth);
+    panY = clampPan(newPanY, canvasContentH, container.offsetHeight);
     updateTransform();
+    updateScrollHint();
   };
   const stopDrag = () => {
     isDragging = false;
@@ -2142,11 +2187,38 @@ function zoomMap(delta) {
   if(mapScale > 2) mapScale = 2;
   updateTransform();
   drawConnectors();
+  updateScrollHint();
 }
 
 function updateTransform() {
   const canvas = document.getElementById('map-canvas');
   if(canvas) canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
+}
+
+/* Keeps panning within a sensible range of the actual content instead of
+   allowing it to be dragged arbitrarily far off-screen with no way back
+   except the reset button. `overscroll` allows a small amount of give
+   past the true edge so dragging still feels natural rather than hitting
+   a hard wall. */
+function clampPan(pan, contentSize, viewSize){
+  const scaledContent = contentSize * mapScale;
+  const overscroll = 80;
+  const minPan = Math.min(0, viewSize - scaledContent) - overscroll;
+  const maxPan = Math.max(0, viewSize - scaledContent) + overscroll;
+  return Math.max(minPan, Math.min(maxPan, pan));
+}
+
+/* Shows a "more below" cue on the container whenever the canvas content
+   extends past the currently-visible bottom edge — addresses the actual
+   discoverability gap behind the theme row going unnoticed: the row
+   wasn't actually invisible (it had the right CSS classes and position),
+   visitors just had no indication that dragging down would reveal it. */
+function updateScrollHint(){
+  const container = document.getElementById('page-mindmap-inner');
+  if (!container) return;
+  const scaledBottom = panY + canvasContentH * mapScale;
+  const hasMoreBelow = scaledBottom > container.offsetHeight + 4; // small tolerance
+  container.classList.toggle('has-more-below', hasMoreBelow);
 }
 
 /* Collapses any expanded branch, closes the sidebar, and restores the
@@ -2163,6 +2235,7 @@ function resetMapView(){
   panY = 0;
   updateTransform();
   syncLines();
+  updateScrollHint();
 }
 
 /* ═══════════════════════════════════════════
@@ -2417,6 +2490,7 @@ function centerOnNode(id){
   panX = viewWidth/2 - (pos.x + W/2) * mapScale;
   panY = viewHeight/2 - (pos.y + H/2) * mapScale;
   updateTransform();
+  updateScrollHint();
 }
 
 /* ══════════════════════════════════════════════

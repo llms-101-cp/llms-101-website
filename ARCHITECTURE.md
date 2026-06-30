@@ -697,6 +697,39 @@ desktop / 0.6 mobile, horizontally centered, `panY` 0) — same math
 `initInteractivity()` uses on first load, so reset means genuinely back
 to the start.
 
+**Follow-up 2026-06-29 — pan bounds + scroll discoverability
+(`index.html`, branch `pan-bounds-scroll-hint-2026-06-29`):** The
+previous fix (adding theme nodes to `visibleNodes`) was necessary but not
+sufficient. Live browser debugging with Craig confirmed the element did
+have the correct `.visible` class and real pixel position — but
+`#page-mindmap-inner` has `overflow:hidden` and a fixed `height:80vh`
+(~500px on a typical screen). The canvas is 900px tall, so the theme row
+sits 400px below the fold, clipped, with no affordance telling a visitor
+to drag down. This was never a CSS-class visibility bug — it was a
+**viewport/discoverability problem** hiding behind a visibility-shaped
+symptom.
+
+**Important lesson for future "node X isn't showing" reports:** check
+viewport/overflow, not just the `.visible`-class mechanism. A node can
+be correctly marked visible and still be invisible to the user if it's
+clipped by a fixed-height `overflow:hidden` container with no scroll cue.
+
+Two fixes shipped together:
+
+1. **Pan bounds clamping (`clampPan()`)**: `panX`/`panY` are now bounded
+   to the real content size (80px overscroll allowance for natural feel).
+   Verified against real browser numbers (canvas 900px, container 500px,
+   scale 0.85): dragging up clamps to `panY: -345px`, fully revealing the
+   theme row. Also closes a separate gap where nothing previously stopped
+   dragging the whole map arbitrarily far off-screen.
+
+2. **"More below" scroll cue (`updateScrollHint()`)**: when canvas
+   content extends past the visible bottom edge, a bottom fade gradient
+   plus a bobbing pill (`▾ more below — drag to explore`) appears.
+   Disappears once the user has scrolled far enough. Hooked into every
+   pan/zoom state change: `initInteractivity`, `drag`, `zoomMap`,
+   `centerOnNode`, `resetMapView`.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
