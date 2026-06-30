@@ -769,6 +769,28 @@ points overshot past the target before curving back, producing a visible
 loop/hook shape (matches Craig's follow-up screenshot exactly). Reverted
 via the 4th commit.
 
+**Separate fix post-PR #16 — branch row Y gap increased 170→200
+(`branch-row-gap-2026-06-30`):** After PR #16 merged, careful live
+verification of the root→themes connector (pulling exact SVG path data,
+real `getBoundingClientRect()` coords, and `mapScale`, then doing the
+math by hand) confirmed the connector itself was never broken — target
+and box position matched to within 0.4px. What Craig was accurately
+seeing: all 6 root connector lines had very little vertical room to swoop
+because the branch row's Y was hardcoded to `170` while root's box
+renders ~110px tall (wrapping to 3 lines). That left only ~30px of
+canvas-space gap (~25.5px on screen) between root's true bottom and the
+branch row. Changed Y from `170` to `200` — one number, affects all 6
+branches uniformly. Everything downstream derives from `POS[id].y`
+dynamically. No other reference to `170` existed anywhere in the file.
+New gap: 60px canvas-space / 51px on screen, confirmed 2x the previous.
+Pre-existing since before this session — just first noticed under close
+scrutiny today.
+
+**Meta-lesson recorded here:** don't assert something is "confirmed
+working" from inference or memory of earlier testing without re-checking
+the specific instance being asked about. That claim was wrong here and
+caused an unnecessary round-trip.
+
 **Unresolved: `hardware`'s reported issue was never actually explained.**
 Craig named `hardware` specifically as broken-looking, both before and
 after the curve-strength attempt. But `hardware`'s curve strength was
