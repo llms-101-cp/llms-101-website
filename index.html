@@ -2051,24 +2051,30 @@ function initLayout(){
     const hGap = GAP;
     const vGap = GAP + 12;
 
-    children.forEach((cid, index) => {
-      const row = Math.floor(index / perRow);
-      const col = index % perRow;
+    const numRows = Math.ceil(children.length / perRow);
+    for (let row = 0; row < numRows; row++) {
       const rowCount = Math.min(perRow, children.length - row * perRow);
       const rowTotalW = rowCount * W + (rowCount - 1) * hGap;
-      
-      let targetX = POS[id].x + W/2 - rowTotalW/2 + col * (W + hGap);
-      
-      // Strict Edge Detection: Keeps nodes within the 1400px laptop view
-      const margin = 50; 
-      if (targetX < margin) targetX = margin;
-      if (targetX > (cw - W - margin)) targetX = cw - W - margin;
+      let rowStartX = POS[id].x + W/2 - rowTotalW/2;
 
-      POS[cid] = {
-        x: targetX,
-        y: POS[id].y + H + 80 + row * (H + vGap)
-      };
-    });
+      // Shift the WHOLE row as one unit if it would overflow the canvas
+      // edge, rather than clamping each child independently. Clamping
+      // children individually (the old approach) sent every overflowing
+      // sibling in a row to the same fixed margin, collapsing them onto
+      // each other instead of just nudging the row into view.
+      const margin = 50;
+      if (rowStartX < margin) rowStartX = margin;
+      if (rowStartX + rowTotalW > cw - margin) rowStartX = cw - margin - rowTotalW;
+
+      for (let col = 0; col < rowCount; col++) {
+        const index = row * perRow + col;
+        const cid = children[index];
+        POS[cid] = {
+          x: rowStartX + col * (W + hGap),
+          y: POS[id].y + H + 80 + row * (H + vGap)
+        };
+      }
+    }
   });
 
   let maxY = 0;

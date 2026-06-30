@@ -791,6 +791,24 @@ working" from inference or memory of earlier testing without re-checking
 the specific instance being asked about. That claim was wrong here and
 caused an unnecessary round-trip.
 
+**Second commit on same PR — row-collision fix (child nodes
+overlapping/collapsing):** Adding `themes` as a 6th root branch shifted
+every branch's X position and spacing, and the row-wrap fix (commit 2 of
+PR #16) made some rows wider. Both compounded against a pre-existing "Strict
+Edge Detection" clamp (commit `c1029b7`, 2026-04-26) that pulled any
+overflowing child back to a fixed margin independently — when multiple
+siblings in the same row overflowed, they all landed on the *identical*
+clamped X, collapsing onto each other. Confirmed with exact numbers:
+Mathematics' "Linear algebra" and "Calculus" both clamped to x=50
+(hidden behind each other); AI Roles' "AI Ethicist" clamped to x=1190
+while "ML Engineer" sat at x=1125 (65px apart on 160px-wide boxes).
+**Fix:** replaced per-child clamping with per-row shifting — compute each
+row's natural width and starting X once, shift the *entire row* as a unit
+if it overflows either canvas edge, then position children within the
+already-in-bounds row. Preserves sibling spacing in all cases. Exhaustively
+verified zero overlaps and zero out-of-bounds across all 6 real branches
+and every row.
+
 **Unresolved: `hardware`'s reported issue was never actually explained.**
 Craig named `hardware` specifically as broken-looking, both before and
 after the curve-strength attempt. But `hardware`'s curve strength was
