@@ -732,6 +732,31 @@ safety, hardware & evaluation", `hasChildren:true`. The body frames these
 internal mechanics — "the surrounding questions worth understanding
 regardless of which model you use."
 
+**Follow-up commit on PR #16 — row-wrap fix + duplicate connector
+cleanup:** A screenshot of the expanded "What Else Matters" branch showed
+3 children in a row with the 4th (Evaluation & Benchmarks) wrapping to
+its own row below, connected by a long dangling line. Root cause: `perRow`
+was hardcoded to `3` for all branches; the old fixed-position theme row
+had always forced 4-in-a-line, so wrapping only became visible when
+`themes` started going through the generic layout. `math` had the same
+silent 3-then-1 wrap the whole time. Fix: `const perRow = children.length
+<= 4 ? children.length : 3` — branches with ≤4 children get a single row,
+larger branches wrap at 3 as before. Only `math` and `themes` change
+behavior; `training`/`arch`/`prompting`/`roles` are byte-for-byte
+unaffected (verified against every real branch's actual child count).
+
+**What worked:** live console debugging (`expandedNodes`, `visibleNodes`,
+connector pair counts all independently confirmed correct) plus an actual
+screenshot — the screenshot pinpointed a visual-only symptom that code
+reading alone had missed across two earlier rounds.
+
+**Pre-existing bug fixed along the way:** `drawConnectors()`'s second
+loop iterates `Object.keys(TREE)`, which includes `'root'` — so every
+root→branch line was added once by the explicit first loop and again by
+the generic second loop. Harmless visually (duplicates rendered on top of
+each other), but doubled the SVG element count on every render. Fixed:
+`if (parentId === 'root') return` skips that key in the second loop.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)

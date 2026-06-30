@@ -2043,7 +2043,11 @@ function initLayout(){
     const children = TREE[id] || [];
     if(!children.length) return;
 
-    const perRow = 3;
+    // Branches with 4 or fewer children get a single row (no wrap) —
+    // avoids a lone item wrapping to its own row with a long, dangling
+    // connector line back to the parent. Branches with more children
+    // (training, arch, prompting, roles) keep wrapping at 3, unchanged.
+    const perRow = children.length <= 4 ? children.length : 3;
     const hGap = GAP;
     const vGap = GAP + 12;
 
@@ -2432,8 +2436,15 @@ function drawConnectors() {
 
   const pairs = [];
   TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
-  
+
+  // Skip 'root' here — the loop above already explicitly added every
+  // root-to-branch line. TREE.root is also a key of TREE itself, so
+  // without this guard every one of those 6 lines gets added a second
+  // time (pre-existing bug, not introduced by the themes-as-branch
+  // change — duplicate lines render on top of each other so it was
+  // visually invisible, just doubled the SVG element count).
   Object.keys(TREE).forEach(parentId => {
+    if (parentId === 'root') return;
     if (visibleNodes.has(parentId)) {
       (TREE[parentId] || []).forEach(childId => {
         if (visibleNodes.has(childId)) {
