@@ -757,23 +757,29 @@ the generic second loop. Harmless visually (duplicates rendered on top of
 each other), but doubled the SVG element count on every render. Fixed:
 `if (parentId === 'root') return` skips that key in the second loop.
 
-**Third commit on PR #16 — curve-strength fix for wide branch-to-children
-connectors:** `curveStrength` was `distY * 0.5` for all connectors. On a
-single-row 4-child layout the vertical gap is fixed but horizontal spread
-is wide — `open-closed` and `evaluation` are ~270-285px apart from the
-parent, producing a nearly-flat, weak-looking diagonal. Fix: for
-branch-to-children connectors (`w <= 1.0`, thin dashed lines) use
-`Math.max(distY * 0.5, distX * 0.2)`, blending in a fraction of
-horizontal distance. Root-to-branch lines (`w > 1.0`, gold solid)
-use the exact original formula — they already looked correct in every
-screenshot and are mathematically confirmed identical before/after.
-Verified against real coordinates: `open-closed` and `evaluation` get
-2.5-2.7x stronger curves; `safety` and `hardware` (closer horizontally)
-are unchanged. **Caveat:** Craig reported `hardware` as the weak-looking
-connector, but coordinates predict `open-closed`/`evaluation` as the flat
-pair — not fully reconciled. The fix is safe (can only make connectors
-look more confident) but treat the next screenshot as a real test, not a
-formality, and check specifically whether `hardware` still looks off.
+**Third commit on PR #16 — curve-strength fix, tried then REVERTED (4th
+commit):** `curveStrength` was `distY * 0.5` for all connectors. Theory:
+on a single-row 4-child layout the vertical gap is fixed but horizontal
+spread is wide — `open-closed`/`evaluation` are ~270-285px apart from the
+parent, producing a flat diagonal. Tried `Math.max(distY * 0.5, distX *
+0.2)` for branch-to-children connectors only. **This made `evaluation`
+visibly worse, not better** — confirmed mathematically: the new strength
+(53.4px) exceeded the actual vertical gap (42px), so the Bezier control
+points overshot past the target before curving back, producing a visible
+loop/hook shape (matches Craig's follow-up screenshot exactly). Reverted
+via the 4th commit.
+
+**Unresolved: `hardware`'s reported issue was never actually explained.**
+Craig named `hardware` specifically as broken-looking, both before and
+after the curve-strength attempt. But `hardware`'s curve strength was
+mathematically *unchanged* by that fix (21px either way — its horizontal
+distance, 95px, wasn't large enough to trigger the `Math.max` branch), so
+whatever's wrong with `hardware` is a different cause than the flatness
+theory that motivated the (reverted) fix. Next session picking this up:
+don't assume flatness is the explanation for `hardware` — get fresh
+coordinate data for it specifically, ideally alongside `safety` (which
+looks fine and has near-identical distX/distY/curveStrength to
+`hardware`) to find what's actually different between the two.
 
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections

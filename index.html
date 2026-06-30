@@ -2470,19 +2470,8 @@ function drawConnectors() {
     const y2 = (rectB.top - canvasRect.top) / mapScale;
 
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const distX = Math.abs(x2 - x1);
     const distY = Math.abs(y2 - y1);
-    // Branch-to-children connectors (w<=1.0) can span wide horizontal
-    // distances on a single-row layout (e.g. a 4-child branch like
-    // themes/math) while the vertical gap stays fixed — a purely
-    // vertical-distance-based curve strength produces a nearly-flat,
-    // weak-looking line for those. Blending in a fraction of the
-    // horizontal distance keeps every connector visually confident
-    // regardless of how far left/right its target sits. Root-to-branch
-    // lines (w>1.0) are untouched — they already render correctly.
-    const curveStrength = w <= 1.0
-      ? Math.max(distY * 0.5, distX * 0.2)
-      : distY * 0.5;
+    const curveStrength = distY * 0.5;
 
     line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
     line.setAttribute('fill', 'none');
