@@ -697,6 +697,41 @@ desktop / 0.6 mobile, horizontally centered, `panY` 0) — same math
 `initInteractivity()` uses on first load, so reset means genuinely back
 to the start.
 
+**Follow-up 2026-06-29 — pan bounds + scroll discoverability
+(`pan-bounds-scroll-hint-2026-06-29`, PR #15, superseded and closed):**
+Live browser debugging confirmed theme nodes had the correct `.visible`
+class and pixel position — but `#page-mindmap-inner` has `overflow:hidden`
+and `height:80vh` (~500px), while the canvas was 900px tall. The theme row
+was always reachable by dragging; visitors had no indication to try.
+PR #15 addressed this with pan-bounds clamping and a "more below" scroll
+cue — real, correct work — but was superseded before merging by the
+structural fix below, which made the scroll-to-find mechanism unnecessary.
+
+**Important lesson for future "node X isn't showing" reports:** check
+viewport/overflow, not just the `.visible`-class mechanism. A node can
+be correctly marked visible and still be invisible if it's clipped by a
+fixed-height `overflow:hidden` container with no scroll cue.
+
+**Structural resolution 2026-06-29 — `themes` becomes a real root branch
+(`themes-as-real-branch-2026-06-29`, PR #16):** After seeing PR #15's
+preview, Craig identified the deeper issue: `themes` wasn't just hard to
+find — it was structurally disconnected, with no connector line to root,
+not following the expand/collapse pattern every other branch uses. The fix
+made `themes` a genuine 6th root branch labeled **"What Else Matters"**
+(alongside Mathematics / Training process / Architectures / Prompting /
+AI Roles), with a new branch-header `NODE_DATA` entry and `themes` added
+to `TREE.root`. The connector-drawing logic (`drawConnectors()`) was
+already fully generic — driven by `Object.keys(TREE).forEach(...)` — so
+no new mechanism was needed. The entire fixed-position theme-row layout
+block in `initLayout()` was removed (net code reduction: 14 insertions,
+20 deletions). NODE_DATA count: 41→42. Search index: 189→190.
+
+New branch node: `themes` — label "What Else Matters", sub "openness,
+safety, hardware & evaluation", `hasChildren:true`. The body frames these
+4 topics as surrounding context distinct from the other branches'
+internal mechanics — "the surrounding questions worth understanding
+regardless of which model you use."
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)

@@ -846,6 +846,14 @@ let NODE_DATA = {
     sources:[{label:'OpenAI — Prompt Engineering Guide',url:'https://platform.openai.com/docs/guides/prompt-engineering'},{label:'Anthropic — Prompt Engineering',url:'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview'}]
   },
 
+  themes:{
+    label:'What Else Matters',sub:'openness, safety, hardware & evaluation',tag:'Branch',theme:'theme',hasChildren:true,
+    title:'Beyond the model itself',
+    body:`<p>Understanding how LLMs work is only part of the picture. Just as important is the context they operate in: whether a model's weights are open or closed, how labs try to keep AI systems safe and aligned, the physical hardware that makes any of this possible, and how we actually know whether one model is genuinely better than another.</p><p>These aren't technical mechanics like the branches above — they're the surrounding questions worth understanding regardless of which model you use, and they shape how the whole field actually develops.</p>`,
+    examples:['Open vs. closed weights','AI safety & alignment','GPUs & hardware','Evaluation & benchmarks'],
+    sources:[{label:'Stanford HAI — AI Index Report',url:'https://hai.stanford.edu/ai-index'}]
+  },
+
   /* MATHS CHILDREN */
   'linear-algebra':{
     label:'Linear algebra',sub:'vectors & matrices',tag:'Mathematics',theme:'math',hasChildren:false,
@@ -1910,7 +1918,7 @@ let EXAMPLE_DATA = {
 };
 
 const TREE = {
-  root: ['math','training','arch','prompting','roles'],
+  root: ['math','training','arch','prompting','themes','roles'],
   math: ['linear-algebra','calculus','probability','attention'],
   training: ['data','pretraining','sft','rlhf','dpo','synthetic','fine-tuning'],
   arch: ['dense','moe','reasoning','openai','anthropic-model','google-model','open-models'],
@@ -2061,22 +2069,7 @@ function initLayout(){
 
   let maxY = 0;
   Object.values(POS).forEach(p => { if(p.y > maxY) maxY = p.y; });
-  const themeY = maxY + H + 100;
-  
-  const themeIds = TREE.themes || [];
-  themeIds.forEach((id, i) => {
-    const tStartX = (cw - (themeIds.length * W + (themeIds.length-1)*GAP*2))/2;
-    POS[id] = {x: tStartX + i*(W+GAP*2), y: themeY};
-    // Theme-row nodes render via this fixed-position row, not the normal
-    // click-to-expand branch flow — but the .node-box CSS still requires
-    // the `.visible` class (driven by visibleNodes) to actually show at
-    // all (default opacity:0, pointer-events:none). Nothing else ever
-    // added them, so they were invisible and unclickable from first load
-    // until a search jump happened to add the searched-for one defensively.
-    visibleNodes.add(id);
-  });
-
-  const canvasH = themeY + H + 100;
+  const canvasH = maxY + H + 100;
   const canvasEl = document.getElementById('map-canvas');
   canvasEl.style.height = canvasH + 'px';
   canvasEl.style.width = cw + 'px'; 
@@ -2398,9 +2391,10 @@ function jumpToNode(id){
       updateExpandHint(targetBranch, true);
     }
   }
-  // Defensive: ensure the target itself is marked visible even for
-  // theme-row nodes, which render via a separate fixed-position mechanism
-  // rather than the branch-expand flow above.
+  // Defensive: ensure the target itself is marked visible. Redundant for
+  // most cases now that themes is a real branch handled by the expand
+  // flow above, but harmless, and still needed if a search result is a
+  // root-level branch itself rather than one of its children.
   visibleNodes.add(id);
   document.getElementById(`node-${id}`)?.classList.add('visible');
   syncLines();
