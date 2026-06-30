@@ -673,6 +673,30 @@ browser. Theme-row nodes (`hardware`, `evaluation`, `open-closed`,
 unconditionally, sidebar opens regardless), but canvas highlight for
 those nodes specifically warrants a look.
 
+**Completed 2026-06-29 — theme-row visibility fix + reset-view button
+(`index.html`, branch `theme-visibility-reset-2026-06-29`):**
+
+**Bug 1 — theme-row nodes invisible and unclickable from first load
+(pre-existing, structural, not introduced by search or `evaluation`
+addition):** `.node-box` CSS defaults to `opacity:0; pointer-events:none`
+and only becomes visible when the `.visible` class is applied (driven by
+`visibleNodes`). `visibleNodes` was only ever populated by three things:
+the initial `['root']`, the branch-expand flow (`toggleChildren`), and
+`jumpToNode`. Nothing ever added theme-row nodes (`open-closed`, `safety`,
+`hardware`, `evaluation`) to it — all four were invisible and unclickable
+from page load, permanently, until search happened to add whichever one
+you searched for defensively. **Fix:** `visibleNodes.add(id)` added inside
+`initLayout`'s existing `themeIds.forEach` loop — the same place their
+positions are computed — so all 4 are in `visibleNodes` from first render.
+
+**Bug 2 — no path back to the full overview after expanding a branch or
+jumping via search:** Added a `⌂` button to `.map-controls` (alongside
+zoom +/−) calling `resetMapView()`: collapses any expanded root branch,
+closes the sidebar, restores the exact initial pan/zoom (`mapScale` 0.85
+desktop / 0.6 mobile, horizontally centered, `panY` 0) — same math
+`initInteractivity()` uses on first load, so reset means genuinely back
+to the start.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
