@@ -697,6 +697,90 @@ desktop / 0.6 mobile, horizontally centered, `panY` 0) — same math
 `initInteractivity()` uses on first load, so reset means genuinely back
 to the start.
 
+**Follow-up 2026-06-29 — pan bounds + scroll discoverability
+(`pan-bounds-scroll-hint-2026-06-29`, PR #15, superseded and closed):**
+Live browser debugging confirmed theme nodes had the correct `.visible`
+class and pixel position — but `#page-mindmap-inner` has `overflow:hidden`
+and `height:80vh` (~500px), while the canvas was 900px tall. The theme row
+was always reachable by dragging; visitors had no indication to try.
+PR #15 addressed this with pan-bounds clamping and a "more below" scroll
+cue — real, correct work — but was superseded before merging by the
+structural fix below, which made the scroll-to-find mechanism unnecessary.
+
+**Important lesson for future "node X isn't showing" reports:** check
+viewport/overflow, not just the `.visible`-class mechanism. A node can
+be correctly marked visible and still be invisible if it's clipped by a
+fixed-height `overflow:hidden` container with no scroll cue.
+
+**Structural resolution 2026-06-29 — `themes` becomes a real root branch
+(`themes-as-real-branch-2026-06-29`, PR #16):** After seeing PR #15's
+preview, Craig identified the deeper issue: `themes` wasn't just hard to
+find — it was structurally disconnected, with no connector line to root,
+not following the expand/collapse pattern every other branch uses. The fix
+made `themes` a genuine 6th root branch labeled **"What Else Matters"**
+(alongside Mathematics / Training process / Architectures / Prompting /
+AI Roles), with a new branch-header `NODE_DATA` entry and `themes` added
+to `TREE.root`. The connector-drawing logic (`drawConnectors()`) was
+already fully generic — driven by `Object.keys(TREE).forEach(...)` — so
+no new mechanism was needed. The entire fixed-position theme-row layout
+block in `initLayout()` was removed (net code reduction: 14 insertions,
+20 deletions). NODE_DATA count: 41→42. Search index: 189→190.
+
+New branch node: `themes` — label "What Else Matters", sub "openness,
+safety, hardware & evaluation", `hasChildren:true`. The body frames these
+4 topics as surrounding context distinct from the other branches'
+internal mechanics — "the surrounding questions worth understanding
+regardless of which model you use."
+
+**Follow-up commit on PR #16 — row-wrap fix + duplicate connector
+cleanup:** A screenshot of the expanded "What Else Matters" branch showed
+3 children in a row with the 4th (Evaluation & Benchmarks) wrapping to
+its own row below, connected by a long dangling line. Root cause: `perRow`
+was hardcoded to `3` for all branches; the old fixed-position theme row
+had always forced 4-in-a-line, so wrapping only became visible when
+`themes` started going through the generic layout. `math` had the same
+silent 3-then-1 wrap the whole time. Fix: `const perRow = children.length
+<= 4 ? children.length : 3` — branches with ≤4 children get a single row,
+larger branches wrap at 3 as before. Only `math` and `themes` change
+behavior; `training`/`arch`/`prompting`/`roles` are byte-for-byte
+unaffected (verified against every real branch's actual child count).
+
+**What worked:** live console debugging (`expandedNodes`, `visibleNodes`,
+connector pair counts all independently confirmed correct) plus an actual
+screenshot — the screenshot pinpointed a visual-only symptom that code
+reading alone had missed across two earlier rounds.
+
+**Pre-existing bug fixed along the way:** `drawConnectors()`'s second
+loop iterates `Object.keys(TREE)`, which includes `'root'` — so every
+root→branch line was added once by the explicit first loop and again by
+the generic second loop. Harmless visually (duplicates rendered on top of
+each other), but doubled the SVG element count on every render. Fixed:
+`if (parentId === 'root') return` skips that key in the second loop.
+
+**Third commit on PR #16 — curve-strength fix, tried then REVERTED (4th
+commit):** `curveStrength` was `distY * 0.5` for all connectors. Theory:
+on a single-row 4-child layout the vertical gap is fixed but horizontal
+spread is wide — `open-closed`/`evaluation` are ~270-285px apart from the
+parent, producing a flat diagonal. Tried `Math.max(distY * 0.5, distX *
+0.2)` for branch-to-children connectors only. **This made `evaluation`
+visibly worse, not better** — confirmed mathematically: the new strength
+(53.4px) exceeded the actual vertical gap (42px), so the Bezier control
+points overshot past the target before curving back, producing a visible
+loop/hook shape (matches Craig's follow-up screenshot exactly). Reverted
+via the 4th commit.
+
+**Unresolved: `hardware`'s reported issue was never actually explained.**
+Craig named `hardware` specifically as broken-looking, both before and
+after the curve-strength attempt. But `hardware`'s curve strength was
+mathematically *unchanged* by that fix (21px either way — its horizontal
+distance, 95px, wasn't large enough to trigger the `Math.max` branch), so
+whatever's wrong with `hardware` is a different cause than the flatness
+theory that motivated the (reverted) fix. Next session picking this up:
+don't assume flatness is the explanation for `hardware` — get fresh
+coordinate data for it specifically, ideally alongside `safety` (which
+looks fine and has near-identical distX/distY/curveStrength to
+`hardware`) to find what's actually different between the two.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
