@@ -2229,17 +2229,34 @@ function toggleChildren(parentId){
       });
     }
     expandedNodes.add(parentId);
-    if(parentId === 'root') document.getElementById('node-root')?.classList.remove('intro-mode');
+    if(parentId === 'root') {
+      const rootEl = document.getElementById('node-root');
+      if(rootEl) {
+        rootEl.classList.remove('intro-mode');
+        // Re-draw once after the 0.5s transform transition fully settles.
+        // The RAF sync loop (550ms) races this transition and reads
+        // getBoundingClientRect() mid-shrink, placing y1 above root's true
+        // bottom edge — the source of the persistent "floating" connector
+        // origin. transitionend fires when the browser has actually finished.
+        const onRootTransitionEnd = (e) => {
+          if (e.propertyName === 'transform') {
+            drawConnectors();
+            rootEl.removeEventListener('transitionend', onRootTransitionEnd);
+          }
+        };
+        rootEl.addEventListener('transitionend', onRootTransitionEnd);
+      }
+    }
     const children = [...(TREE[parentId]||[])];
     children.forEach(cid=>{
       visibleNodes.add(cid);
       const el = document.getElementById(`node-${cid}`);
-      if(el) el.classList.add('visible'); 
+      if(el) el.classList.add('visible');
     });
     updateExpandHint(parentId, true);
   }
   startTime = Date.now();
-  syncLines(); 
+  syncLines();
 }
 
 function collapseNode(nodeId){
