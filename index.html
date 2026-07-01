@@ -251,6 +251,46 @@ nav ul{padding:.1rem 0 .4rem}
 }
 .map-controls button:hover{background:var(--tan-pale)}
 
+/* "Drag to explore" hint — shown on #page-mindmap-inner whenever the
+   canvas content extends past the visible viewport in any direction,
+   so a visitor knows there's more to see by dragging. */
+#page-mindmap-inner::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:60px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0), var(--surface));
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.25s;
+  z-index:90;
+}
+#page-mindmap-inner.has-more-below::after{opacity:0.9}
+.scroll-hint-arrow{
+  position:absolute;
+  left:50%;
+  bottom:0.6rem;
+  transform:translateX(-50%);
+  z-index:95;
+  font-size:0.75rem;
+  color:var(--muted);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:0.3rem 0.8rem;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(102,66,40,0.1);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s;
+  animation:bob 1.6s ease-in-out infinite;
+}
+#page-mindmap-inner.has-more-below .scroll-hint-arrow{opacity:0.8}
+@keyframes bob{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(4px)}
+}
+
 /* Map Search */
 .map-search{
   position:absolute;
@@ -534,6 +574,7 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
       <button onclick="zoomMap(0.1)" title="Zoom In" aria-label="Zoom In">+</button>
       <button onclick="zoomMap(-0.1)" title="Zoom Out" aria-label="Zoom Out">−</button>
     </div>
+    <div class="scroll-hint-arrow" id="scroll-hint" aria-hidden="true">▾ more below — drag to explore</div>
   </div>
 </div>
 
@@ -672,6 +713,8 @@ let panY = 0;
 let isDragging = false;
 let startX = 0;
 let startY = 0;
+let canvasContentW = 1400; // set by initLayout once real content width is known
+let canvasContentH = 900;  // set by initLayout once real content height is known
   /* ══════════════════════════════════════════════
    THEME DICTIONARY
 ══════════════════════════════════════════════ */
@@ -2080,6 +2123,8 @@ function initLayout(){
   let maxY = 0;
   Object.values(POS).forEach(p => { if(p.y > maxY) maxY = p.y; });
   const canvasH = Math.max(maxY + H + 100, 900);
+  canvasContentW = cw;
+  canvasContentH = canvasH;
   const canvasEl = document.getElementById('map-canvas');
   canvasEl.style.height = canvasH + 'px';
   canvasEl.style.width = cw + 'px'; 
@@ -2105,6 +2150,7 @@ function initInteractivity() {
   
   if (wasHidden) page.style.display = ''; 
   updateTransform();
+  updateScrollHint();
 
   const startDrag = (x, y) => {
     isDragging = true;
@@ -2117,6 +2163,7 @@ function initInteractivity() {
     panX = x - startX;
     panY = y - startY;
     updateTransform();
+    updateScrollHint();
   };
   const stopDrag = () => {
     isDragging = false;
@@ -2145,11 +2192,29 @@ function zoomMap(delta) {
   if(mapScale > 2) mapScale = 2;
   updateTransform();
   drawConnectors();
+  updateScrollHint();
 }
 
 function updateTransform() {
   const canvas = document.getElementById('map-canvas');
   if(canvas) canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapScale})`;
+}
+
+/* Shows a "drag to explore" hint whenever the canvas content extends
+   past the visible viewport in any direction — bottom overflow is the
+   most common case (deep branches, many rows), but this checks all four
+   edges since panning can reveal content in any direction. */
+function updateScrollHint(){
+  const container = document.getElementById('page-mindmap-inner');
+  if (!container) return;
+  const viewW = container.offsetWidth, viewH = container.offsetHeight;
+  const scaledW = canvasContentW * mapScale, scaledH = canvasContentH * mapScale;
+  const overflowsBottom = panY + scaledH > viewH + 4;
+  const overflowsRight = panX + scaledW > viewW + 4;
+  const overflowsTop = panY < -4;
+  const overflowsLeft = panX < -4;
+  const hasMore = overflowsBottom || overflowsRight || overflowsTop || overflowsLeft;
+  container.classList.toggle('has-more-below', hasMore);
 }
 
 /* Collapses any expanded branch, closes the sidebar, and restores the
@@ -2166,6 +2231,7 @@ function resetMapView(){
   panY = 0;
   updateTransform();
   syncLines();
+  updateScrollHint();
 }
 
 /* ═══════════════════════════════════════════
@@ -2421,6 +2487,7 @@ function centerOnNode(id){
   panX = viewWidth/2 - (pos.x + W/2) * mapScale;
   panY = viewHeight/2 - (pos.y + H/2) * mapScale;
   updateTransform();
+  updateScrollHint();
 }
 
 /* ══════════════════════════════════════════════
@@ -2441,20 +2508,7 @@ function drawConnectors() {
   const canvasRect = canvas.getBoundingClientRect();
 
   const pairs = [];
-  // Small spread across root's base (25px total — much smaller than the
-  // earlier 100px attempt) to break the visual overlap of 6 lines sharing
-  // one exact start point, without making the origins look obviously
-  // scattered the way the wider spread did.
-  const rootBranchCount = TREE.root.length;
-  const spreadWidth = 25;
-  TREE.root.forEach((bid, i) => {
-    if(visibleNodes.has(bid)) {
-      const offset = rootBranchCount > 1
-        ? (i - (rootBranchCount - 1) / 2) * (spreadWidth / (rootBranchCount - 1))
-        : 0;
-      pairs.push(['root', bid, 'var(--gold)', 1.5, offset]);
-    }
-  });
+  TREE.root.forEach((bid, idx) => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5, idx]); });
 
   // Skip 'root' here — the loop above already explicitly added every
   // root-to-branch line. TREE.root is also a key of TREE itself, so
@@ -2475,7 +2529,7 @@ function drawConnectors() {
     }
   });
 
-  pairs.forEach(([a, b, color, w, offset]) => {
+  pairs.forEach(([a, b, color, w, rootIdx]) => {
     const nodeA = document.getElementById(`node-${a}`);
     const nodeB = document.getElementById(`node-${b}`);
     if(!nodeA || !nodeB) return;
@@ -2483,17 +2537,32 @@ function drawConnectors() {
     const rectA = nodeA.getBoundingClientRect();
     const rectB = nodeB.getBoundingClientRect();
 
-    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2) + (offset || 0);
+    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
     const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
     const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
     const y2 = (rectB.top - canvasRect.top) / mapScale;
 
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const distY = Math.abs(y2 - y1);
 
     if (w > 1.0) {
-      line.setAttribute('d', `M${x1},${y1} L${x2},${y2}`);
+      // Root-to-branch lines: curved, with asymmetric control points per
+      // line (varied by index) rather than the original symmetric
+      // formula. A symmetric curve (CP1=y1+cs, CP2=y2-cs) mathematically
+      // always passes through the exact geometric midpoint regardless of
+      // cs's magnitude — the cs term cancels out algebraically — which is
+      // why the original "same curveStrength for every line" formula
+      // produced a flat shared band at that midpoint for all 6 lines.
+      // Using distinct cs1/cs2 per line breaks that cancellation, giving
+      // each line a genuinely different, visually separated curve path.
+      // Bounded well below the full gap (max ~0.6x) so control points can
+      // never push past either endpoint and cause overshoot.
+      const baseCS = distY * 0.5;
+      const delta = (rootIdx - (TREE.root.length - 1) / 2) * 6;
+      const cs1 = baseCS + delta;
+      const cs2 = baseCS - delta;
+      line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + cs1} ${x2},${y2 - cs2} ${x2},${y2}`);
     } else {
-      const distY = Math.abs(y2 - y1);
       const curveStrength = distY * 0.5;
       line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
     }
