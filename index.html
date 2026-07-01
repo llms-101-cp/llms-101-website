@@ -2478,14 +2478,18 @@ function drawConnectors() {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
     if (w > 1.0) {
-      // Root-to-branch lines: straight, not curved. The curve formula's
-      // two control points shared the same Y (the vertical midpoint),
-      // which mathematically forces every line's midpoint to be nearly
-      // flat/horizontal at that exact height — with 6 lines converging
-      // there, it visually read as a dense horizontal band rather than
-      // 6 lines swooping down from root (confirmed via live coordinate
-      // testing, not assumed). A straight line has no such property.
-      line.setAttribute('d', `M${x1},${y1} L${x2},${y2}`);
+      // Root-to-branch lines: a short vertical "trunk" straight down from
+      // root, then a straight diagonal over to the branch. Plain straight
+      // lines (previous attempt) still read as "floating" partway down
+      // regardless of gap size (confirmed at 260/275/290/320) — the
+      // vertical stub visibly anchors every line to root's exact bottom
+      // edge on its own, independent of how shallow the remaining
+      // diagonal angle is. All 6 lines share an identical trunk segment
+      // (same start point, same drop), which is fine/expected — they
+      // split into 6 distinct diagonals right after the elbow.
+      const trunkDrop = 40;
+      const elbowY = y1 + trunkDrop;
+      line.setAttribute('d', `M${x1},${y1} L${x1},${elbowY} L${x2},${y2}`);
     } else {
       const distY = Math.abs(y2 - y1);
       const curveStrength = distY * 0.5;
