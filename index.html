@@ -2038,7 +2038,7 @@ function initLayout(){
   const bStartX = (cw - totalBW)/2;
   
   branchIds.forEach((id, i) => {
-    POS[id] = {x: bStartX + i * (W + GAP * spacingFactor), y: 380};
+    POS[id] = {x: bStartX + i * (W + GAP * spacingFactor), y: 260};
     
     const children = TREE[id] || [];
     if(!children.length) return;
