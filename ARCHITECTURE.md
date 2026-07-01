@@ -821,6 +821,103 @@ coordinate data for it specifically, ideally alongside `safety` (which
 looks fine and has near-identical distX/distY/curveStrength to
 `hardware`) to find what's actually different between the two.
 
+**RESOLVED 2026-06-30 — the `hardware` mystery above was never about
+`hardware` specifically.** It was the same root cause described below,
+affecting every root-to-branch connector uniformly; `hardware` just
+happened to be the one Craig was looking at closely enough to notice.
+
+**Dead end, investigated and ruled out — root's animation timing:**
+Craig asked whether root's `intro-mode` shrink transition (500ms CSS,
+`syncLines` chases for 550ms) could be capturing a stale mid-transition
+`getBoundingClientRect()`. Tested directly with live coordinates
+(clicked, waited several seconds past any animation window, then
+captured root's rect and the connector's path data) — matched to within
+0.2px. Ruled out cleanly. CC independently proposed the same theory from
+code-reading alone (no live measurement), implemented a `transitionend`-
+based fix, then — to its credit — admitted the theory was inference, not
+confirmed diagnosis, once shown the conflicting live data, and reverted
+its own fix without being asked twice. Worth recording as a good example
+of the right response to being shown better evidence.
+
+**ACTUAL ROOT CAUSE, found via atomic (single-paste) live coordinate
+capture:** `#map-canvas` has a static CSS rule `min-height:900px`
+(pre-existing, unrelated to any of today's work). Whenever the
+JS-computed content height (`canvasH`) is less than 900 — which today's
+gap-reduction trials made happen for the first time (a 275px gap
+produces `canvasH=779`) — the CSS floor forces the box to actually
+render at 900px regardless of what JS set via `style.height`. The
+`<svg id="connector-svg">`'s `viewBox` was still being set to the
+smaller, un-floored value (`"0 0 1400 779"`). Because the SVG's internal
+coordinate system (779 tall) didn't match its actual rendered box (900
+tall), the browser's default `preserveAspectRatio` (`xMidYMid meet`)
+centered the smaller content vertically within the taller box — silently
+shifting every connector line down by exactly `(900-779)/2 × mapScale
+(0.85) = 51.425` screen pixels. That's the exact number measured live,
+repeatedly, across multiple different gap values and lines, to 3 decimal
+places.
+
+This explains why nothing tried earlier in the session (gap values
+200→380, plain straight lines, the 100px and 25px spread attempts, the
+trunk-shape attempt) ever fully fixed the "floaty origin" perception —
+none of them touched this. It was a dormant, pre-existing CSS constraint
+that only became visible once a gap small enough to trigger it was
+tried.
+
+**Fix (one line):**
+```js
+const canvasH = Math.max(maxY + H + 100, 900);
+```
+Wraps the existing calculation in the same 900 floor the CSS already
+enforces, so `canvasH`, `style.height`, and the SVG's `viewBox` are now
+always mutually consistent, regardless of how short real content is.
+
+**Diagnostic method that actually worked, for future reference:**
+single-paste atomic snapshots (root rect + canvas rect + `mapScale` +
+path `d` attribute + path's own rect + SVG's own rect/viewBox, all
+captured in one console statement) — eliminated the risk of comparing
+values from different moments, which caused at least one earlier false
+lead (an apparent 80px root-position shift that turned out to be stale
+cross-session data, not a real change).
+
+**Follow-up commit, same PR — three explicit requests after the root
+cause was fixed:**
+1. Reverted the 25px spread back to a single shared origin point (safe
+   now that the real bug is fixed — the spread was compensating for a
+   symptom, not needed once the actual cause was resolved).
+2. Reintroduced curved root-to-branch lines — but not a blind revert to
+   the original formula. Proved mathematically that the original
+   symmetric curve construction (`CP1=y1+cs`, `CP2=y2-cs`, same `cs` for
+   every line) *always* passes through the exact same midpoint Y
+   regardless of `cs`'s value — the term cancels out algebraically in
+   the cubic Bezier midpoint formula. That's the real mechanism behind
+   the original flat-band bug; it was never about `curveStrength`'s
+   magnitude. Fix: asymmetric control points (`cs1 ≠ cs2`, varied by
+   each branch's real `TREE.root` index, not array position) — breaks
+   the cancellation, confirmed via computed midpoints for all 6 branches
+   (genuine ~22.5-unit spread, no shared band), bounded to a max ~61% of
+   the gap to stay safely clear of the overshoot bug from the earlier
+   reverted curve-strength attempt.
+3. Restored the "drag to explore" hint (bottom-fade + bobbing pill),
+   generalized to check overflow in any direction rather than tied to
+   the old fixed-position theme row it was originally built for (that
+   row no longer exists since `themes` became a real branch). Hooked
+   into all 5 places that change pan/zoom/view state — confirmed by
+   direct count, not assumed.
+
+**One real mistake caught and fixed before it shipped:** a copy-paste
+edit left dangling duplicate code from the old branching structure
+mid-refactor — would have been a silent syntax error if not caught by
+`node --check` before committing.
+
+**Remaining open item for next session:** the branch-row gap size.
+Every gap value tried today (200 through 380) was tested against
+*incorrectly rendered* connectors (the min-height bug was live the whole
+time), so none of that trial-and-error is trustworthy for judging the
+right gap now that rendering is actually correct. Craig confirmed
+post-fix that with properly curved lines, the current 275px gap reads as
+"large again" — worth re-doing the gap-size judgment from scratch against
+accurate rendering, not resuming from any of today's numbers.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
