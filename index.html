@@ -2441,7 +2441,20 @@ function drawConnectors() {
   const canvasRect = canvas.getBoundingClientRect();
 
   const pairs = [];
-  TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
+  // Small spread across root's base (25px total — much smaller than the
+  // earlier 100px attempt) to break the visual overlap of 6 lines sharing
+  // one exact start point, without making the origins look obviously
+  // scattered the way the wider spread did.
+  const rootBranchCount = TREE.root.length;
+  const spreadWidth = 25;
+  TREE.root.forEach((bid, i) => {
+    if(visibleNodes.has(bid)) {
+      const offset = rootBranchCount > 1
+        ? (i - (rootBranchCount - 1) / 2) * (spreadWidth / (rootBranchCount - 1))
+        : 0;
+      pairs.push(['root', bid, 'var(--gold)', 1.5, offset]);
+    }
+  });
 
   // Skip 'root' here — the loop above already explicitly added every
   // root-to-branch line. TREE.root is also a key of TREE itself, so
@@ -2462,7 +2475,7 @@ function drawConnectors() {
     }
   });
 
-  pairs.forEach(([a, b, color, w]) => {
+  pairs.forEach(([a, b, color, w, offset]) => {
     const nodeA = document.getElementById(`node-${a}`);
     const nodeB = document.getElementById(`node-${b}`);
     if(!nodeA || !nodeB) return;
@@ -2470,7 +2483,7 @@ function drawConnectors() {
     const rectA = nodeA.getBoundingClientRect();
     const rectB = nodeB.getBoundingClientRect();
 
-    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
+    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2) + (offset || 0);
     const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
     const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
     const y2 = (rectB.top - canvasRect.top) / mapScale;
@@ -2478,18 +2491,7 @@ function drawConnectors() {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
     if (w > 1.0) {
-      // Root-to-branch lines: a short vertical "trunk" straight down from
-      // root, then a straight diagonal over to the branch. Plain straight
-      // lines (previous attempt) still read as "floating" partway down
-      // regardless of gap size (confirmed at 260/275/290/320) — the
-      // vertical stub visibly anchors every line to root's exact bottom
-      // edge on its own, independent of how shallow the remaining
-      // diagonal angle is. All 6 lines share an identical trunk segment
-      // (same start point, same drop), which is fine/expected — they
-      // split into 6 distinct diagonals right after the elbow.
-      const trunkDrop = 40;
-      const elbowY = y1 + trunkDrop;
-      line.setAttribute('d', `M${x1},${y1} L${x1},${elbowY} L${x2},${y2}`);
+      line.setAttribute('d', `M${x1},${y1} L${x2},${y2}`);
     } else {
       const distY = Math.abs(y2 - y1);
       const curveStrength = distY * 0.5;
