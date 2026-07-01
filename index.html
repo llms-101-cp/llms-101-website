@@ -2038,7 +2038,7 @@ function initLayout(){
   const bStartX = (cw - totalBW)/2;
   
   branchIds.forEach((id, i) => {
-    POS[id] = {x: bStartX + i * (W + GAP * spacingFactor), y: 320};
+    POS[id] = {x: bStartX + i * (W + GAP * spacingFactor), y: 290};
     
     const children = TREE[id] || [];
     if(!children.length) return;
@@ -2441,25 +2441,7 @@ function drawConnectors() {
   const canvasRect = canvas.getBoundingClientRect();
 
   const pairs = [];
-  // Spread the 6 root-to-branch lines' start points across root's own
-  // width, rather than all 6 starting from the exact same pixel (root's
-  // center). Confirmed via live testing: with all 6 lines sharing one
-  // identical origin, they stay visually overlapped near root for a
-  // stretch before separating enough to read as distinct — at shallow
-  // angles this made the true origin look like it was further down than
-  // it actually was. Spreading them across root's base (leftmost branch
-  // -> leftmost point on root, rightmost -> rightmost) makes all 6 lines
-  // visually distinct from their very first pixel, regardless of angle.
-  const rootBranchCount = TREE.root.length;
-  const spreadWidth = 100; // canvas-space px, leaves margin within root's ~160px width
-  TREE.root.forEach((bid, i) => {
-    if(visibleNodes.has(bid)) {
-      const offset = rootBranchCount > 1
-        ? (i - (rootBranchCount - 1) / 2) * (spreadWidth / (rootBranchCount - 1))
-        : 0;
-      pairs.push(['root', bid, 'var(--gold)', 1.5, offset]);
-    }
-  });
+  TREE.root.forEach(bid => { if(visibleNodes.has(bid)) pairs.push(['root', bid, 'var(--gold)', 1.5]); });
 
   // Skip 'root' here — the loop above already explicitly added every
   // root-to-branch line. TREE.root is also a key of TREE itself, so
@@ -2480,7 +2462,7 @@ function drawConnectors() {
     }
   });
 
-  pairs.forEach(([a, b, color, w, offset]) => {
+  pairs.forEach(([a, b, color, w]) => {
     const nodeA = document.getElementById(`node-${a}`);
     const nodeB = document.getElementById(`node-${b}`);
     if(!nodeA || !nodeB) return;
@@ -2488,7 +2470,7 @@ function drawConnectors() {
     const rectA = nodeA.getBoundingClientRect();
     const rectB = nodeB.getBoundingClientRect();
 
-    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2) + (offset || 0);
+    const x1 = (rectA.left - canvasRect.left) / mapScale + (nodeA.offsetWidth / 2);
     const y1 = (rectA.top - canvasRect.top) / mapScale + nodeA.offsetHeight;
     const x2 = (rectB.left - canvasRect.left) / mapScale + (nodeB.offsetWidth / 2);
     const y2 = (rectB.top - canvasRect.top) / mapScale;
