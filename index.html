@@ -2079,7 +2079,7 @@ function initLayout(){
 
   let maxY = 0;
   Object.values(POS).forEach(p => { if(p.y > maxY) maxY = p.y; });
-  const canvasH = maxY + H + 100;
+  const canvasH = Math.max(maxY + H + 100, 900);
   const canvasEl = document.getElementById('map-canvas');
   canvasEl.style.height = canvasH + 'px';
   canvasEl.style.width = cw + 'px'; 
