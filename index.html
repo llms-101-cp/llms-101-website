@@ -2476,10 +2476,22 @@ function drawConnectors() {
     const y2 = (rectB.top - canvasRect.top) / mapScale;
 
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const distY = Math.abs(y2 - y1);
-    const curveStrength = distY * 0.5;
 
-    line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
+    if (w > 1.0) {
+      // Root-to-branch lines: straight, not curved. The curve formula's
+      // two control points shared the same Y (the vertical midpoint),
+      // which mathematically forces every line's midpoint to be nearly
+      // flat/horizontal at that exact height — with 6 lines converging
+      // there, it visually read as a dense horizontal band rather than
+      // 6 lines swooping down from root (confirmed via live coordinate
+      // testing, not assumed). A straight line has no such property.
+      line.setAttribute('d', `M${x1},${y1} L${x2},${y2}`);
+    } else {
+      const distY = Math.abs(y2 - y1);
+      const curveStrength = distY * 0.5;
+      line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + curveStrength} ${x2},${y2 - curveStrength} ${x2},${y2}`);
+    }
+
     line.setAttribute('fill', 'none');
     line.setAttribute('stroke', color);
     line.setAttribute('stroke-width', w);
