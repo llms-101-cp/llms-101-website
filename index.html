@@ -2546,19 +2546,22 @@ function drawConnectors() {
     const distY = Math.abs(y2 - y1);
 
     if (w > 1.0) {
-      // Root-to-branch lines: curved, with asymmetric control points per
-      // line (varied by index) rather than the original symmetric
-      // formula. A symmetric curve (CP1=y1+cs, CP2=y2-cs) mathematically
-      // always passes through the exact geometric midpoint regardless of
-      // cs's magnitude — the cs term cancels out algebraically — which is
-      // why the original "same curveStrength for every line" formula
-      // produced a flat shared band at that midpoint for all 6 lines.
-      // Using distinct cs1/cs2 per line breaks that cancellation, giving
-      // each line a genuinely different, visually separated curve path.
-      // Bounded well below the full gap (max ~0.6x) so control points can
-      // never push past either endpoint and cause overshoot.
+      // Root-to-branch lines: curved, with asymmetric control points that
+      // vary by each branch's ABSOLUTE distance from the center branch —
+      // not signed index — so mirrored branches (e.g. the 1st and last)
+      // get IDENTICAL cs1/cs2 and genuinely overlay when flipped, while
+      // still giving the 3 mirrored pairs distinct curve shapes from
+      // each other. (A symmetric curve — CP1=y1+cs, CP2=y2-cs — always
+      // passes through the exact geometric midpoint regardless of cs's
+      // magnitude, since cs cancels out algebraically; that's why the
+      // original "same curveStrength for every line" formula produced a
+      // flat shared band. An earlier fix using *signed* index broke the
+      // band but also broke mirror symmetry — Mathematics and AI Roles
+      // ended up with swapped, not matched, cs1/cs2 — confirmed and
+      // fixed here.) Bounded well below the full gap (max ~0.68x) so
+      // control points can never push past either endpoint.
       const baseCS = distY * 0.5;
-      const delta = (rootIdx - (TREE.root.length - 1) / 2) * 6;
+      const delta = Math.abs(rootIdx - (TREE.root.length - 1) / 2) * 5;
       const cs1 = baseCS + delta;
       const cs2 = baseCS - delta;
       line.setAttribute('d', `M${x1},${y1} C${x1},${y1 + cs1} ${x2},${y2 - cs2} ${x2},${y2}`);
