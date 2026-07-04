@@ -1,6 +1,6 @@
 {
   "week": "2026-07-13",
-  "generatedAt": "2026-07-04T05:15:45.153Z",
+  "generatedAt": "2026-07-04T05:25:22.490Z",
   "dryRun": false,
   "items": [
     {
@@ -8,14 +8,25 @@
       "contentType": "node",
       "targetPath": "content/nodes/knowledge-distillation.json",
       "note": null,
-      "status": "held",
-      "reasons": [
-        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgSy8zJBRmLZh4GhFSng\"} — holding back rather than publishing unverified content"
-      ],
+      "status": "published",
+      "reasons": [],
       "notes": [],
-      "factCheck": null,
-      "layout": null,
-      "liveUrl": null
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "When GPT-4 generates text, it assigns probabilities to every possible next word.",
+            "issue": "GPT-4 is used as the running illustrative example of a current frontier/teacher model. As of the 2026-07-04 review date, GPT-4 is a superseded model lineup (OpenAI has released multiple newer flagship models since). The claim is not technically false — any autoregressive LLM produces a soft distribution over next tokens — and GPT-4 is used generically rather than asserted as 'the current lineup,' so this is not blocking. But consider genericising the example (e.g. 'a large language model') or using a current model name to avoid the site looking dated."
+          }
+        ]
+      },
+      "layout": {
+        "branch": "training",
+        "before": "3/3/1",
+        "after": "3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
     },
     {
       "filename": "open-source-ai-models-closing-gap.json",
@@ -24,10 +35,49 @@
       "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
       "status": "held",
       "reasons": [
-        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgSy9vbtu1UWGXcyf8vo\"} — holding back rather than publishing unverified content"
+        "fact-check FAILED — see findings"
       ],
       "notes": [],
-      "factCheck": null,
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Llama 3.1 405B, Mistral Large 2, DeepSeek-V3, and Qwen 2.5 all score competitively... [presented as the current open-source lineup in 2026]",
+            "issue": "Every model named as current is one or more generations stale as of mid-2026. Current lineups are: Meta's Llama 4 (Scout/Maverick, released April 2025), with Meta having moved on to 'Muse Spark' by April 2026; Mistral Large 3 / Mistral 3 (released Dec 2025) plus Small 4 and Medium 3.5 (2026), not Mistral Large 2 (mistral-large-2407); DeepSeek V4 (V4-Pro 1.6T / V4-Flash 284B, previewed April 24, 2026), not V3; and Qwen 3.5/3.6/3.7 (Feb–May 2026), not Qwen 2.5. Presenting the 2024-era lineup as the current state of the world is exactly the pipeline's primary failure mode."
+          },
+          {
+            "severity": "blocking",
+            "claim": "They don't match the latest GPT-4.5 or Claude 4 on every dimension...",
+            "issue": "GPT-4.5 and Claude 4 are no longer the latest closed frontier models as of mid-2026. Current frontier closed models include OpenAI's GPT-5.x (e.g. GPT-5.4/5.5) and Anthropic's Claude Opus 4.6/4.7, plus Google Gemini 3.1 Pro. Describing GPT-4.5 and Claude 4 as 'the latest' presents a stale state of the world as current."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Top open models match or beat GPT-4 on most benchmarks. (after_label: '2026 reality')",
+            "issue": "Framing 'matching GPT-4' as the 2026 headline understates reality and is effectively stale. By mid-2026 leading open models (e.g. DeepSeek V4-Pro, Qwen 3.7, Mistral Large 3) are benchmarked against GPT-5.x-class and Claude Opus 4.6/4.7-class systems, having long since surpassed GPT-4-class performance. The 'after' state describes roughly the 2024/early-2025 situation, not 2026."
+          },
+          {
+            "severity": "blocking",
+            "claim": "DeepSeek emerged as a surprise leader, particularly with their R1 reasoning model... [as the framing of DeepSeek's current relevance]",
+            "issue": "R1 (January 2025) is accurate as a historical breakout, but the article treats it as DeepSeek's current flagship. DeepSeek's current flagship is V4 (V4-Pro / V4-Flash, previewed April 24, 2026), which the article does not mention at all. As written this presents an outdated model as the current state."
+          },
+          {
+            "severity": "note",
+            "claim": "Llama 3.1 came in three sizes - 8B, 70B, and 405B parameters",
+            "issue": "This specific historical fact about Llama 3.1 is correct, but the article uses it to describe the currently recommended lineup ('Llama 70B... will do the job'). The 70B recommendation should be reframed as historical or updated to the Llama 4 herd (Scout ~17B active/109B total, Maverick 17B active/400B total). Not blocking on the number itself, but flagged because it reinforces the stale-as-current framing."
+          },
+          {
+            "severity": "note",
+            "claim": "Open models also lag on multimodal capabilities... the best vision-language and audio models remain closed.",
+            "issue": "Partially outdated. By 2026 the current open models are natively multimodal (Llama 4, Qwen 3.5/VL, Mistral 3/Pixtral), so the blanket claim that open multimodal is far behind is weaker than stated. The claim is not egregiously wrong (frontier closed multimodal still leads) so severity is note, but it should be softened."
+          },
+          {
+            "severity": "note",
+            "claim": "as I covered in the AI cost collapse article ... the best open-source LLMs / the AI cost collapse article (internal source links)",
+            "issue": "The article references an internal 'AI cost collapse article' as a cited source. This is an internal cross-link, not an external paper, and cannot be verified from the draft alone. Recommend confirming the linked internal article exists before publication. No external paper/page links are present to verify."
+          }
+        ]
+      },
       "layout": null,
       "liveUrl": null
     }

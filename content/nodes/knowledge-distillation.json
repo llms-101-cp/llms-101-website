@@ -1,0 +1,26 @@
+{
+  "label": "Knowledge Distillation",
+  "sub": "Teaching smaller models from larger ones",
+  "tag": "Training",
+  "theme": "train",
+  "hasChildren": false,
+  "title": "Knowledge Distillation",
+  "body": "<p><strong>Knowledge distillation</strong> is a training technique where a smaller model (the 'student') learns to mimic the behaviour of a larger, more capable model (the 'teacher'). Instead of training the student from scratch on raw data, you train it to match the teacher's outputs — essentially compressing the larger model's knowledge into a more efficient package.</p><p>The key insight is that teacher models produce <strong>soft probability distributions</strong> over possible answers, not just hard predictions. When GPT-4 generates text, it assigns probabilities to every possible next word. These soft targets contain richer information than simple right/wrong labels — they reveal which wrong answers are 'almost right' and capture subtle relationships between concepts. The student learns from this nuanced signal.</p><p>Distillation matters because frontier models are expensive to run. A distilled model might achieve 90% of the teacher's quality at 10% of the computational cost, making advanced capabilities accessible for real-world deployment on phones, laptops, or cheaper servers.</p>",
+  "examples": [
+    "DistilBERT",
+    "Soft targets",
+    "Teacher-student training",
+    "Model compression",
+    "TinyLlama"
+  ],
+  "sources": [
+    {
+      "label": "Hinton et al. — Distilling the Knowledge in a Neural Network (2015)",
+      "url": "https://arxiv.org/abs/1503.02531"
+    },
+    {
+      "label": "Sanh et al. — DistilBERT paper (2019)",
+      "url": "https://arxiv.org/abs/1910.01108"
+    }
+  ]
+}
