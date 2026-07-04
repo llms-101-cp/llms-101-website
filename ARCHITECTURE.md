@@ -918,6 +918,43 @@ post-fix that with properly curved lines, the current 275px gap reads as
 "large again" — worth re-doing the gap-size judgment from scratch against
 accurate rendering, not resuming from any of today's numbers.
 
+**RESOLVED 2026-07-01 — gap-size judged fresh against correctly-rendered
+connectors, per the note above.** Craig measured the actual on-screen gap
+directly (highlighted it on a screenshot) and asked for a 50% reduction.
+Computed from real values rather than measured off the image: root's true
+bottom is consistently ~139 canvas-space units; old gap was `275-139=136`;
+halved gap is `68`; new `branchY = 139+68 = 207`. Confirmed visually
+correct on the deploy preview.
+
+**Second bug found during this same review — curve mirror asymmetry,
+also fixed:** Craig noticed the leftmost and rightmost branches
+(Mathematics, AI Roles) don't overlay when one is flipped horizontally,
+even though they're equidistant from root and should be true mirrors.
+Confirmed mathematically before fixing: the asymmetric curve-strength
+formula from the PR #17 fix used *signed* distance from center
+(`rootIdx - center`), which gives mirrored branches **swapped**, not
+matched, `cs1`/`cs2` values (Mathematics: `cs1=19,cs2=49`; AI Roles:
+`cs1=49,cs2=19` — reversed). Fixed by using **absolute** distance from
+center instead — mirrored branches now get identical `cs1`/`cs2`,
+confirmed via direct computation (`idx0===idx5`, `idx1===idx4`,
+`idx2===idx3`, all `true`). Also reduced the curve-variation scale factor
+from 6 to 5, since the smaller 207 gap made the same scale factor push
+the overshoot-safety margin to 0.79 — tightened back to a comfortable
+0.68, matching the safety level from the original PR #17 fix.
+
+**Lesson for any future per-branch variation scheme:** when 6 items are
+meant to read as 3 mirrored pairs (or any symmetric arrangement), vary
+by *absolute* distance from the symmetric center, not signed position —
+signed variation breaks the mirror even when the underlying intent
+(giving each pair a distinct value) is otherwise correct. This is a
+different, narrower bug than the original flat-band issue; both needed
+fixing independently.
+
+**Connector-line saga now fully closed**, from "I cannot see the
+Hardware node" through the row-collision fix, the actual min-height/
+viewBox root cause, and now correct gap size + genuinely mirror-symmetric
+curves. No further open items on this thread.
+
 **Not yet touched:** `content/pages/*.json` (about, beginners, contact,
 resources) and the broader Mind Map node content beyond the four sections
 above — `content/nodes/` only has 2 files (`fine-tuning.json`, `root.json`)
