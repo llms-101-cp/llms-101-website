@@ -99,9 +99,13 @@ content type is what caused most of today's problems.
   bigger, riskier change than it's worth without a clear reason.
 - When generating a new card via automation, it must be reviewed visually
   and pasted in manually — never auto-spliced into the shared file.
-- **STALENESS RISK (confirmed 2026-06-25):** `generate.js` calls the
+- **STALENESS RISK (confirmed 2026-06-25; root cause fixed 2026-07-04 —
+  `generate.js` now runs ALL content-generation calls, model cards
+  included, with `web_search` enabled; the manual verify-before-paste
+  habit below is still worth keeping for model cards, which never
+  auto-publish):** `generate.js` used to call the
   Anthropic API with no `web_search` tool attached, so model-card content
-  is generated purely from training knowledge and can already be stale by
+  was generated purely from training knowledge and could already be stale by
   review time. A generated Grok card referenced a "Grok-2 / Grok-2 mini /
   Grok-3" lineup when the actual current flagship was Grok 4.3 — caught
   only by manually web-searching before pasting it in. Always verify
@@ -174,19 +178,36 @@ content type is what caused most of today's problems.
 
 ```
 llms101-automation/
-├── .github/workflows/weekly-content.yml   ← Monday 6am UTC cron + manual trigger
+├── .github/workflows/weekly-content.yml   ← Sunday 21:00 UTC cron + manual trigger
+│                                            (was long misdescribed here as "Monday 6am UTC" —
+│                                            the actual cron is `0 21 * * 0`, fixed 2026-07-04)
 ├── content-calendar/calendar.json         ← weeks[0] consumed each run, moved to completed[]
-├── drafts/{week}/                         ← generated output lands here, never auto-published
+├── drafts/{week}/                         ← generated output lands here (audit trail),
+│                                            then validate-and-publish runs against it
 ├── prompts/
 │   ├── track1-json.js                     ← Mind Map nodes + static pages
 │   └── track2-trends.js                   ← Trends articles (JSON) + Model cards (HTML block)
-├── scripts/generate.js                    ← orchestrates both tracks
-└── dashboard/review.html  (deployed to /admin/review.html)
+├── scripts/generate.js                    ← orchestrates both tracks (web_search enabled since 2026-07-04)
+├── scripts/validate-and-publish.js        ← validates drafts and publishes them to main (2026-07-04)
+└── dashboard/review.html  (deployed to /admin/review.html — now a READ-ONLY status view)
 ```
 
-- **Nothing is ever auto-published.** Every run produces drafts only. A
-  human must review in the dashboard, approve, download, and manually
-  upload to the correct location in the main repo. This is intentional.
+- **PRINCIPLE CHANGE (2026-07-04, Craig's explicit decision — not a
+  mistake, do not "fix" it back):** the old rule here was "Nothing is ever
+  auto-published." That is deliberately reversed for the weekly content
+  pipeline. The rule is now: **publish automatically after automated
+  validation; human review is post-hoc on the live site; one revertable
+  commit per week.** Every weekly run generates drafts, then
+  `validate-and-publish.js` validates each item (schema, web-search
+  fact-check, and for nodes a layout simulation plus a guarded TREE
+  splice), publishes everything that passes in a single
+  `publish: weekly content {week} (...)` commit pushed directly to main,
+  and emails Craig a published report. That email is the review trigger;
+  `git revert <publish commit>` is the correction mechanism. Any
+  validation failure holds back that item only — a guard failure is never
+  bypassed to make a publish succeed. Model cards are the one exception:
+  they still require manual paste into models.html (shared hand-coded
+  file, no dynamic system) and are always held back with that reason.
 - **The dashboard fetches from GitHub's raw content API** (public repo,
   no auth needed) — `raw.githubusercontent.com/{owner}/{repo}/main/...`
 - **Calendar only reads `weeks[0]`.** If it's missing or malformed, the
@@ -217,8 +238,98 @@ llms101-automation/
   *does* show the correct `targetPath` on each card and in the download
   toast — read it every time, don't assume from the filename or content
   topic alone.
-- **Fixed 2026-06-26:** `admin/review.html`'s rendered preview for Trends
-  articles used to use quiet fallbacks (`d.summary ? ... : ''`, `d.date || ''`,
+### validate-and-publish.js — how the auto-publish actually works (added 2026-07-04)
+
+`llms101-automation/scripts/validate-and-publish.js [weekFolder] [--dry-run] [--offline]`
+runs after generation in `weekly-content.yml` (default week folder: the
+most recent `drafts/` folder containing a `_manifest.json`). Per manifest
+item, in order — any failure holds back THAT item only, and the reason
+goes in the report email:
+
+1. **Schema validation.** Articles mirror `REQUIRED_ARTICLE_FIELDS` from
+   `scripts/generate-indices.js` (manual-sync comment convention — the two
+   scripts locations cannot share imports). Nodes validate the full node
+   schema (`label, sub, tag, theme, hasChildren, title, body, examples,
+   sources`) plus JSON parse. Pages validate `{title, body}`.
+2. **Fact-check pass.** One `web_search`-enabled API call per item
+   (claude-opus-4-8, same convention as generate-tracker.js) acting as a
+   critic: current model names/versions, dates, quantitative claims, and
+   "as of" statements (house rule: explicit dates required — bare "as of
+   writing" is a blocking finding). Structured pass/fail + findings;
+   blocking finding = held back; "note" findings publish but are listed in
+   the email so Craig can judge from the live page.
+3. **Nodes only — layout simulation.** Replicates `initLayout()`'s exact
+   `perRow` / row-width / margin-shift math (constants kept in MANUAL SYNC
+   with index.html — see the `LAYOUT` object) against the post-insert
+   child count of the manifest's `targetBranch`; asserts no overlap and
+   rows within canvas margins, and reports the before/after row shape
+   (e.g. "training 3/3/1 → 3/3/2") in the email.
+4. **Nodes only — defensive TREE splice** into `TREE.{targetBranch}` in
+   index.html. Mandatory guards, any failure aborts the node publish and
+   leaves index.html untouched: the PR #17 `Math.max(maxY + H + 100, 900)`
+   canvas-height clamp must still be present before touching the file;
+   TREE must parse (vm sandbox) before AND after the edit; the id must
+   appear exactly once across all branches afterwards; no other branch may
+   change; every id in the fetched branches must resolve to content
+   (see roles note below); and the splice must be idempotent (applying it
+   twice is a byte-for-byte no-op — the tracker's non-idempotency lesson).
+   The edit is a pure string operation, so index.html's CRLF line endings
+   are preserved.
+5. **Placement + one commit.** Passing files are copied to their
+   `targetPath`s; one commit for the whole week
+   (`publish: weekly content {week} (1 node, 1 article)`), pushed directly
+   to main — no PR. That commit is the audit trail and the single
+   `git revert` point. A `_publish_report.json` is committed into the week
+   folder alongside it; the read-only dashboard renders it.
+
+**`targetBranch` manifest field (nodes only, added 2026-07-04):**
+generate.js derives it deterministically from the calendar entry's theme
+(`math→math, train→training, arch→arch, prompt→prompting, theme→themes`).
+If no branch can be derived it emits `targetBranch: null`, and the
+publisher holds the node back — it never guesses.
+
+**The roles exclusion, mirrored everywhere:** `loadCMSData()` fetches ids
+from every TREE branch EXCEPT `TREE.roles` (roles are hardcoded inline).
+So `roles` is not a valid `targetBranch`, and the "every id resolves to
+content" guard checks only the fetched branches (root, math, training,
+arch, prompting, themes).
+
+**Repo reality vs. the original spec (discovered 2026-07-04):**
+`content/nodes/` holds only a handful of JSON files — most nodes live
+inline in index.html's `NODE_DATA`, and `loadCMSData()` silently falls
+back to them. The "resolves to content" guard therefore accepts EITHER a
+`content/nodes/{id}.json` file OR an inline `NODE_DATA` entry; the id
+being published must specifically have its JSON file (that IS its
+content).
+
+**Email contract (the review trigger — sends even on partial failure):**
+the published report replaces the old "drafts ready for review" email
+(generate.js no longer emails at all). It contains: direct links to each
+live page, fact-check findings (blocking and borderline), the node layout
+before/after row shape, everything held back and why, and the publish
+commit SHA with a one-line revert instruction. Same RESEND_API_KEY /
+REVIEW_EMAIL secrets as before.
+
+**GitHub Actions gotcha found while wiring this up:** the publish commit
+is pushed with `GITHUB_TOKEN`, and GITHUB_TOKEN pushes never fire
+push-triggered workflows — so `indexing.yml` would NOT have fired on the
+article path by itself (all previous publishes were manual uploads with
+Craig's own token, which is why it always fired before). Fix:
+`indexing.yml` now also has a `workflow_dispatch` trigger, and
+`weekly-content.yml` dispatches it explicitly after the publish step
+(`gh workflow run indexing.yml`, requires `actions: write` permission).
+The index work itself is not duplicated.
+
+**tree.json migration (Option 2) — considered and deferred.** Moving TREE
+out of index.html into a fetched `tree.json` would make node publishing a
+pure data change with no HTML splice. Deliberately deferred in favour of
+the guarded splice (Option 1): revisit if the splice ever fails a guard in
+practice.
+
+- **Fixed 2026-06-26 (SUPERSEDED 2026-07-04 — the dashboard is now a
+  read-only status view; the preview/approve flow described in this bullet
+  no longer exists, kept for history):** `admin/review.html`'s rendered
+  preview for Trends articles used to use quiet fallbacks (`d.summary ? ... : ''`, `d.date || ''`,
   `d.category || 'Explainer'`) that hid missing required fields instead of
   surfacing them. The real live consequence of a missing required field isn't
   "renders a bit thin" — `generate-indices.js` excludes the entry from
@@ -274,16 +385,21 @@ llms101-automation/
   on a fresh branch, and the workflow opens a PR. **The one thing not
   automated is the merge** — every other Track 1/2 content type requires
   manual review-and-upload via `admin/review.html`; Tracker requires only a
-  PR review-and-merge click. `generate-tracker.js` is the only generation
-  script in this repo that calls the Anthropic API with the `web_search`
+  PR review-and-merge click. `generate-tracker.js` was the first generation
+  script in this repo to call the Anthropic API with the `web_search`
   tool enabled — this is the actual fix for the staleness problem, not just
-  a publishing-automation upgrade. If this script's API calls ever start
+  a publishing-automation upgrade. (Since 2026-07-04, `generate.js` and
+  `validate-and-publish.js` use `web_search` too — the tracker's pattern
+  became the pipeline-wide standard.) If this script's API calls ever start
   failing with a model-not-found error, check whether `claude-opus-4-8` has
   been superseded (Anthropic ships new Opus versions roughly every 6-10
   weeks) and update the model string in `generateTrackerRows()`.
-- **Why the merge checkpoint stays.** The site's established principle is
-  "nothing auto-publishes without a human look" — this pipeline extends
-  that rather than departing from it. Even with `web_search` enabled,
+- **Why the merge checkpoint stays.** (Note 2026-07-04: the site-wide
+  "nothing auto-publishes without a human look" principle this paragraph
+  cites was reversed for the WEEKLY CONTENT pipeline on 2026-07-04 — see
+  the automation-pipeline section. The tracker's PR-merge checkpoint was
+  left as-is: it's a separate pipeline, and removing its checkpoint is a
+  separate decision nobody has made.) Even with `web_search` enabled,
   search results can be stale, contradictory, or SEO-noise, and a wrong
   public AI-model ranking is both a likely failure mode (the landscape
   changes weekly) and a visible one. Schema validation catches malformed

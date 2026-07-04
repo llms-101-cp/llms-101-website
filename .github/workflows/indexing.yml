@@ -7,6 +7,10 @@ on:
     paths:
       - 'content/articles/**'
       - 'content/reports/**'
+  # Needed by weekly-content.yml: its publish commit is pushed with
+  # GITHUB_TOKEN, and GITHUB_TOKEN pushes never fire push-triggered
+  # workflows — so the weekly pipeline dispatches this one explicitly.
+  workflow_dispatch:
 
 permissions:
   contents: write

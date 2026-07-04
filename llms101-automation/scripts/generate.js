@@ -14,8 +14,22 @@
  *   Model cards remain a single HTML block, copy-paste only, since
  *   models.html is a genuinely different shared-file situation.
  *
+ * v6 (2026-07-04): generation-time changes for the validate-and-publish
+ *   pipeline (see scripts/validate-and-publish.js):
+ *   - All content-generation API calls now run with the web_search tool
+ *     enabled (same pattern as generate-tracker.js) so drafts are grounded
+ *     in current facts, not training-data memory — this attacks the
+ *     staleness problem at the source.
+ *   - Node drafts now carry a `targetBranch` manifest field naming the
+ *     TREE.{branch} array in index.html the node belongs to, derived
+ *     deterministically from the calendar entry's theme. If no branch can
+ *     be determined confidently it is emitted as null, which the publisher
+ *     treats as a validation failure — never a guess.
+ *   - The "drafts ready for review" email is gone: validate-and-publish.js
+ *     now sends the single published-report email instead.
+ *
  * Run: node scripts/generate.js
- * Env: ANTHROPIC_API_KEY, RESEND_API_KEY, REVIEW_EMAIL
+ * Env: ANTHROPIC_API_KEY
  */
 
 import fs from 'fs/promises';
@@ -72,16 +86,49 @@ async function writeCalendar(calendar) {
 
 // ─── Claude API calls ─────────────────────────────────────────────────────────
 
-async function generateJSON(prompt, label, maxTokens = 2500) {
-  log(`Generating: ${label}`);
+// Server-side web_search tool, same pattern generate-tracker.js already uses.
+// With this enabled the model emits an early "I'll research..." text block
+// before its first search, then the real output in a later text block — so
+// callers must use the LAST text block, never content[0].
+const WEB_SEARCH_TOOL = { type: 'web_search_20250305', name: 'web_search' };
+
+function lastTextBlock(message) {
+  const textBlocks = message.content.filter(b => b.type === 'text').map(b => b.text);
+  return (textBlocks[textBlocks.length - 1] ?? '').trim();
+}
+
+// Extract the first complete {...} object from text, tracking brace depth.
+// Same reasoning as generate-tracker.js's extractJsonArray: a greedy regex
+// mis-extracts when the model appends citation-style trailing brackets after
+// the JSON closes, which is plausible with web_search enabled.
+function extractJsonObject(text) {
+  const start = text.indexOf('{');
+  if (start === -1) return null;
+  let depth = 0, inString = false, escapeNext = false;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (escapeNext) { escapeNext = false; continue; }
+    if (ch === '\\' && inString) { escapeNext = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) return text.slice(start, i + 1); }
+  }
+  return null;
+}
+
+async function generateJSON(prompt, label, maxTokens = 3500) {
+  log(`Generating (web_search enabled): ${label}`);
   const message = await client.messages.create({
     model: 'claude-opus-4-5',
     max_tokens: maxTokens,
     system: prompt.system,
-    messages: [{ role: 'user', content: prompt.user }]
+    messages: [{ role: 'user', content: prompt.user }],
+    tools: [WEB_SEARCH_TOOL]
   });
-  const raw = message.content[0].text.trim();
-  const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  const raw = lastTextBlock(message);
+  const fenceStripped = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  const cleaned = extractJsonObject(fenceStripped) ?? fenceStripped;
 
   if (message.stop_reason === 'max_tokens') {
     log(`WARNING: "${label}" hit the token limit and may be truncated.`);
@@ -98,21 +145,22 @@ async function generateJSON(prompt, label, maxTokens = 2500) {
 }
 
 async function generateHTML(prompt, label) {
-  log(`Generating: ${label}`);
+  log(`Generating (web_search enabled): ${label}`);
   const message = await client.messages.create({
     model: 'claude-opus-4-5',
     max_tokens: 8000,
     system: prompt.system,
-    messages: [{ role: 'user', content: prompt.user }]
+    messages: [{ role: 'user', content: prompt.user }],
+    tools: [WEB_SEARCH_TOOL]
   });
 
   if (message.stop_reason === 'max_tokens') {
     log(`WARNING: HTML generation for "${label}" hit the token limit and was truncated.`);
-    await saveError(label, message.content[0].text + '\n\n[TRUNCATED — stop_reason: max_tokens]');
+    await saveError(label, lastTextBlock(message) + '\n\n[TRUNCATED — stop_reason: max_tokens]');
     throw new Error(`Generation truncated for ${label}`);
   }
 
-  const raw = message.content[0].text.trim();
+  const raw = lastTextBlock(message);
   const cleaned = raw.replace(/^```(?:html)?\n?/, '').replace(/\n?```$/, '').trim();
   return cleaned;
 }
@@ -131,6 +179,20 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ─── Track 1: JSON drafts ─────────────────────────────────────────────────────
 
+// Deterministic theme → TREE.{branch} mapping for the publisher's TREE splice.
+// `roles` is deliberately absent: TREE.roles is hardcoded in index.html and
+// excluded from loadCMSData()'s fetch list, so a dynamically published roles
+// node would never load — the publisher must refuse it, not guess.
+// If the calendar entry's theme isn't in this map, targetBranch is null and
+// validate-and-publish.js treats that as a validation failure for the node.
+const THEME_TO_TREE_BRANCH = {
+  math: 'math',
+  train: 'training',
+  arch: 'arch',
+  prompt: 'prompting',
+  theme: 'themes'
+};
+
 async function runTrack1(weekOf, calendarEntry) {
   const drafts = [];
 
@@ -142,13 +204,18 @@ async function runTrack1(weekOf, calendarEntry) {
         calendarEntry.node.theme
       );
       const content = await generateJSON(prompt, `node: ${calendarEntry.node.id}`);
+      const targetBranch = THEME_TO_TREE_BRANCH[calendarEntry.node.theme] ?? null;
+      if (targetBranch === null) {
+        log(`WARNING: no TREE branch could be derived from theme "${calendarEntry.node.theme}" — emitting targetBranch: null (publisher will hold this node back).`);
+      }
       drafts.push({
         track: 1,
         contentType: 'node',
         targetPath: `content/nodes/${calendarEntry.node.id}.json`,
         filename: `${calendarEntry.node.id}.json`,
         data: content,
-        extraStep: `Also add '${calendarEntry.node.id}' to the correct TREE.{branch} array in index.html, or it won't appear on the map.`
+        targetBranch,
+        extraStep: `Publisher adds '${calendarEntry.node.id}' to TREE.${targetBranch ?? '{branch}'} in index.html automatically (validate-and-publish.js).`
       });
     } catch (err) {
       log(`ERROR generating node: ${err.message}`);
@@ -250,7 +317,10 @@ async function saveDrafts(weekOf, drafts) {
         filename: draft.filename,
         requiresVisualReview: draft.requiresVisualReview || false,
         extraStep: draft.extraStep || null,
-        note: draft.note || null
+        note: draft.note || null,
+        // Only meaningful for nodes; null means "generation could not
+        // determine a branch confidently" and the publisher holds it back.
+        ...(draft.contentType === 'node' ? { targetBranch: draft.targetBranch ?? null } : {})
       });
     } else {
       await fs.writeFile(path.join(dir, draft.filename), draft.html, 'utf8');
@@ -271,49 +341,6 @@ async function saveDrafts(weekOf, drafts) {
     JSON.stringify(manifestEntries, null, 2),
     'utf8'
   );
-}
-
-// ─── Review email ──────────────────────────────────────────────────────────────
-
-async function sendReviewEmail(weekOf, drafts) {
-  if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
-    log('No email config — skipping notification.');
-    return;
-  }
-
-  const lines = drafts.map(d => `  • ${d.contentType}: ${d.filename} → ${d.targetPath}`);
-
-  const body = `
-Your weekly llms101.com content is ready for review.
-
-Week of: ${weekOf}
-
-${lines.join('\n') || '(no drafts generated)'}
-
-Trends articles are now a single JSON file — upload to content/articles/
-and the existing indexing.yml workflow handles the rest automatically.
-
-Review here: https://llms101.com/admin/review?week=${weekOf}
-
-This is an automated message from the llms101 content pipeline.
-  `.trim();
-
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      from: 'llms101-bot@llms101.com',
-      to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Weekly content ready — ${drafts.length} item(s)`,
-      text: body
-    })
-  });
-
-  if (res.ok) log(`Review email sent to ${process.env.REVIEW_EMAIL}`);
-  else log(`WARNING: Email failed — ${res.status}`);
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -346,8 +373,9 @@ async function main() {
   calendar.completed.push({ ...weekEntry, _completed_at: new Date().toISOString() });
   await writeCalendar(calendar);
 
-  await sendReviewEmail(weekOf, allDrafts);
-
+  // No email here any more: validate-and-publish.js sends the single
+  // published-report email after the publish step, covering both what went
+  // live and what was held back (and why).
   log(`Done. ${allDrafts.length} draft item(s) generated for week of ${weekOf}.`);
 }
 

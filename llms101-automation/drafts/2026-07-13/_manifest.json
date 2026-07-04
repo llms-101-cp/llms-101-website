@@ -6,7 +6,8 @@
     "filename": "knowledge-distillation.json",
     "requiresVisualReview": false,
     "extraStep": "Also add 'knowledge-distillation' to the correct TREE.{branch} array in index.html, or it won't appear on the map.",
-    "note": null
+    "note": null,
+    "targetBranch": "training"
   },
   {
     "track": 2,

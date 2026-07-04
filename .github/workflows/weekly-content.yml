@@ -1,15 +1,31 @@
 name: Weekly Content Generation
 
+# 2026-07-04: this pipeline now VALIDATES AND PUBLISHES automatically —
+# Craig's explicit decision, reversing the old "nothing is ever
+# auto-published" principle. Human review happens post-hoc on the live
+# site; the published-report email (sent by validate-and-publish.js) is
+# the review trigger, and `git revert <publish commit>` is the correction
+# mechanism. See ARCHITECTURE.md.
+
 on:
   schedule:
-    - cron: '0 21 * * 0'
+    - cron: '0 21 * * 0'   # Sunday 21:00 UTC
   workflow_dispatch:
+    inputs:
+      publish_week:
+        description: >-
+          Optional: skip generation and run validate-and-publish only, on
+          this existing drafts/{week} folder (e.g. 2026-07-13). Leave empty
+          for the full generate-then-publish run.
+        required: false
+        default: ''
 
 jobs:
-  generate-content:
+  generate-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write   # lets the last step dispatch indexing.yml
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -23,19 +39,46 @@ jobs:
         run: npm install
         working-directory: ./llms101-automation
 
+      - name: Configure git identity
+        run: |
+          git config user.name "llms101-bot"
+          git config user.email "bot@llms101.com"
+
       - name: Generate weekly content (Track 1 JSON + Track 2 HTML)
+        if: ${{ github.event.inputs.publish_week == '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
         run: node scripts/generate.js
         working-directory: ./llms101-automation
 
       - name: Commit drafts to repo
+        if: ${{ github.event.inputs.publish_week == '' }}
         run: |
-          git config user.name "llms101-bot"
-          git config user.email "bot@llms101.com"
           git add llms101-automation/content-calendar/calendar.json
           git add llms101-automation/drafts/
           git diff --staged --quiet || git commit -m "chore: weekly content drafts $(date +%Y-%m-%d)"
           git push
+
+      # Validates every draft (schema, web_search fact-check, node layout
+      # simulation + guarded TREE splice), publishes what passes in ONE
+      # commit pushed to main, and sends the published-report email.
+      # Held-back items and the reasons go in the email — a red X here
+      # means an infrastructure failure, not merely held content.
+      - name: Validate and publish
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+        run: node scripts/validate-and-publish.js ${{ github.event.inputs.publish_week }}
+        working-directory: ./llms101-automation
+
+      # The publish commit is pushed with GITHUB_TOKEN, and GITHUB_TOKEN
+      # pushes never fire push-triggered workflows — so indexing.yml would
+      # NOT run on the article path by itself. Dispatch it explicitly
+      # instead of duplicating its work here. generate-indices.js is
+      # idempotent, so dispatching on a week with no article is a cheap
+      # no-op ("No structural changes to commit").
+      - name: Trigger content indexing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run indexing.yml --ref main
