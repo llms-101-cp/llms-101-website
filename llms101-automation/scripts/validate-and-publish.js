@@ -619,8 +619,14 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     })
   });
 
-  if (res.ok) log(`Published-report email sent to ${process.env.REVIEW_EMAIL}`);
-  else log(`WARNING: report email failed — HTTP ${res.status}`);
+  if (res.ok) {
+    log(`Published-report email sent to ${process.env.REVIEW_EMAIL}`);
+  } else {
+    // Log the body too: Resend's 4xx responses say WHY (unverified domain,
+    // bad key, bad from address), and the status alone is undiagnosable.
+    const detail = await res.text().catch(() => '(no body)');
+    log(`WARNING: report email failed — HTTP ${res.status}: ${detail}`);
+  }
 }
 
 // ─── Git helpers ─────────────────────────────────────────────────────────────
