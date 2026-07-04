@@ -1,6 +1,6 @@
 {
   "week": "2026-07-13",
-  "generatedAt": "2026-07-04T04:56:44.464Z",
+  "generatedAt": "2026-07-04T05:12:11.631Z",
   "dryRun": false,
   "items": [
     {
@@ -10,7 +10,7 @@
       "note": null,
       "status": "held",
       "reasons": [
-        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgRX4DDWK8hu3Hi8AbTJ\"} — holding back rather than publishing unverified content"
+        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgShNjLmZxZanjnwXp8o\"} — holding back rather than publishing unverified content"
       ],
       "notes": [],
       "factCheck": null,
@@ -24,7 +24,7 @@
       "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
       "status": "held",
       "reasons": [
-        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgRX52aZNLytdFPkZqZF\"} — holding back rather than publishing unverified content"
+        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CcgShPiNg6YmVNaWt5GEK\"} — holding back rather than publishing unverified content"
       ],
       "notes": [],
       "factCheck": null,
