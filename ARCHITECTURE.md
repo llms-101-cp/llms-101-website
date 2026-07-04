@@ -664,6 +664,36 @@ o3`, `DeepSeek R1`, `Gemini Thinking`, `Llama 3.3 70B`, `Mistral Large`,
 `Phi-4`. Whether to re-link them or delete them is a content decision —
 not fixed here, listed explicitly so they don't need rediscovering.
 
+**RESOLVED 2026-07-04 (PR #20).** Decided each of the 9 individually
+rather than a blanket rule. Deleted 6: `Qwen 3.5` and `DeepSeek V3`
+(stale, superseded by current Qwen3.6/V4 references elsewhere), `OpenAI
+o1`/`OpenAI o3` (the `openai` node's examples are now entirely GPT-5.x
+era, o-series history already told in `reasoning`'s prose), `Gemini
+Thinking` (verified via search: Google's real current name is "Deep
+Think," not "Thinking Mode" — `reasoning` already correctly uses "Gemini
+Deep Think" separately), and `Mistral Large` (genuine factual error, not
+just staleness — claimed "closed" when Mistral Large 3 is actually
+Apache 2.0/open, confirmed during earlier `models.html` work). Re-linked
+2 accurate ones: `Llama 3.3 70B` (added to `open-models`'s examples) and
+`Phi-4` (added to `synthetic`'s examples — caught a near-miss here:
+almost added `'Phi-4 (Microsoft)'` by pattern-matching the sibling
+`'Phi-3 (Microsoft)'` key, which would have created a *new* orphan; the
+real key is just `'Phi-4'`, no suffix — an existing inconsistency in the
+data, not something to "fix" by matching the wrong pattern). Re-linked
+`DeepSeek R1` with one small addition: `reasoning`'s example list had it
+combined as a single string, `"DeepSeek R1 / V4"`, which had **no**
+detail popup at all (neither half matched a real key) — split into two
+real, distinct examples and added a new `DeepSeek V4` `EXAMPLE_DATA`
+entry (written from facts already verified earlier this week, not a
+fresh unverified claim). Final count: 157 → 152. Confirmed zero orphans
+remain via the same check used to find the original 9.
+
+**Flagged, not fixed, while doing this:** `reasoning`'s own body prose
+still says *"Google's Gemini Thinking and Qwen 3.5's thinking mode follow
+the same principle"* — same staleness pattern just fixed in the examples
+list, sitting in prose instead. Out of scope for this specific cleanup;
+worth a one-sentence fix whenever `reasoning` is next touched.
+
 **Live browser check still needed before trusting fully:** data/logic
 verified; on-screen rendering (search box visual placement, dropdown
 positioning on mobile, centering math landing correctly, theme-row nodes
@@ -1061,3 +1091,47 @@ successfully through the fixed pipeline.
 `generate-indices.js`'s new validation logic tested against both a
 deliberately broken file (correctly excluded) and the real repo content
 (0 errors, clean index rebuild).
+
+---
+
+## Theme cluster expanded 4 → 6 nodes (2026-07-04, PR #21)
+
+Per the independent site review's specific gap flags (regulation/policy
+and economic/environmental cost both named as missing topics), added two
+new nodes to the previously-thin `themes` cluster:
+
+- **`regulation`** — "AI Regulation: What Rules Actually Apply Right
+  Now." Covers the EU AI Act's risk-tiered structure and extraterritorial
+  reach, what's genuinely in force as of writing (GPAI obligations since
+  Aug 2025, real fines from Aug 2026, transparency rules landing Aug 2026
+  regardless), and is explicit that the "Digital Omnibus" amendment
+  deferring high-risk rules to Dec 2027/Aug 2028 was politically agreed
+  but not yet formally published at time of writing — original 2026
+  dates remain technically binding until it is.
+- **`cost`** — "The Economic & Environmental Cost of AI." Leads with the
+  counter-intuitive, sourced fact that ~90% of AI energy use is inference,
+  not training. Deliberately avoids citing a single "water per query"
+  figure — research found estimates ranging from under 1ml to over 500ml
+  per query, a thousandfold spread driven by methodology differences, so
+  picking one number would have been more misleading than useful. Closes
+  with the Jevons paradox and the real 2026 political response (utility
+  pledges, state legislation).
+
+**Layout consequence, checked before shipping:** `themes` crossing from
+4 to 6 children pushed it past the `perRow <= 4` threshold from the
+row-wrap fix built earlier this week — it now wraps into 2 rows of 3
+(matching `training`/`arch`/`prompting`'s existing pattern) instead of
+sitting in one flat row. Simulated the exact row-shift math against the
+real 6-child case before considering it safe: confirmed even spacing,
+zero overlap, correct bounds — the earlier collision fix held up here
+without needing changes.
+
+**Node count:** 42 → 44. `TREE.themes` now
+`['open-closed','safety','hardware','evaluation','regulation','cost']`,
+all confirmed resolving to real `NODE_DATA` entries.
+
+**Process note:** Craig gave a standing instruction during this session —
+whenever body text says "as of writing" or "as of today," attach the
+explicit date (e.g. "4 July 2026") rather than leaving it ambiguous for a
+future reader. Applied to `regulation`'s one relevant sentence; worth
+carrying forward as a general content-writing convention.
