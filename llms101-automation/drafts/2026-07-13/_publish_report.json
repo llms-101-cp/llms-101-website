@@ -1,6 +1,6 @@
 {
   "week": "2026-07-13",
-  "generatedAt": "2026-07-05T01:34:00.020Z",
+  "generatedAt": "2026-07-05T02:06:07.318Z",
   "dryRun": false,
   "items": [
     {
@@ -17,12 +17,7 @@
           {
             "severity": "note",
             "claim": "When GPT-4 generates text, it assigns probabilities to every possible next word.",
-            "issue": "GPT-4 is used only as a generic illustration of an autoregressive model producing a probability distribution, which is fine. However, as of 2026-07-05 GPT-4 is a superseded model (later releases such as GPT-4o and successors exist). The sentence does not present GPT-4 as the current frontier lineup, so it is not blocking, but swapping in a current-generation example (or making it model-agnostic) would keep the page from looking dated."
-          },
-          {
-            "severity": "note",
-            "claim": "A distilled model might achieve 90% of the teacher's quality at 10% of the computational cost.",
-            "issue": "Presented as an illustrative 'might achieve' hypothetical rather than a measured benchmark, so acceptable. For context, the cited DistilBERT paper reports the concrete figures of ~40% size reduction while retaining ~97% of language-understanding capability and being ~60% faster; the round '90%/10%' numbers are indicative, not sourced to a specific result."
+            "issue": "GPT-4 is used in the present tense as the representative frontier model, but as of the publication date (2026-07-05) it is heavily superseded. OpenAI's current frontier model is GPT-5.5 (released April 23, 2026), following GPT-5, GPT-5.1, GPT-5.2, GPT-5.4; even GPT-4.5 was scheduled for retirement from ChatGPT on June 27, 2026. The sentence is mechanistic (illustrating softmax probabilities) rather than an explicit 'current best model' lineup claim, so it is not blocking, but swapping GPT-4 for a current model (e.g. GPT-5.5) or framing it generically ('when a large model generates text') would avoid a dated impression on an LLM-education site."
           }
         ]
       },
@@ -40,73 +35,28 @@
       "contentType": "trends-article",
       "targetPath": "content/articles/open-source-ai-models-closing-gap.json",
       "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
-      "status": "held_after_repair",
-      "reasons": [
-        "fact-check FAILED twice — original AND repaired drafts. This is the alarm case: see both findings rounds."
-      ],
+      "status": "published",
+      "reasons": [],
       "notes": [],
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "the GPT-5.6 series ... went to limited preview on June 26, 2026, with GPT-4.5 already retired from ChatGPT that same day",
-            "issue": "Factually wrong on two counts. (1) OpenAI did not retire any model from ChatGPT on June 26, 2026 alongside the GPT-5.6 preview; the relevant ChatGPT retirements (GPT-4o, GPT-4.1, GPT-4.1 mini, o4-mini, GPT-5 Instant/Thinking) occurred on February 13, 2026, and GPT-5.1 was retired March 11, 2026. (2) There was no 'GPT-4.5' in ChatGPT being retired on that date — this appears to be a fabricated/confused model-and-date pairing. The GPT-5.6 preview date (June 26, 2026) itself is correct, but the retirement clause should be removed or corrected. Note that ChatGPT continued to run GPT-5.5 during the GPT-5.6 limited preview."
+            "severity": "note",
+            "claim": "As of 2026-07-05 that frontier belongs to OpenAI's GPT-5 line and Anthropic's newest Claude models.",
+            "issue": "Accurate and not stale, but for precision: as of the publication date (2026-07-05) the actual newest releases are OpenAI's GPT-5.6 (Sol/Terra/Luna, announced June 26, 2026) and Anthropic's Claude Opus 4.8 (May 28) plus Sonnet 5 (June 30) and the access-restricted Mythos 5 / Fable 5 (June 9-12). The article's generic phrasing ('GPT-5 line', 'newest Claude models') is correct and safe; noting only in case editors want to name current versions. Not blocking."
           },
           {
             "severity": "note",
-            "claim": "OpenAI and Anthropic are now shipping flagship revisions on roughly a monthly cadence",
-            "issue": "Defensible but loosely stated. It is broadly consistent with the 2026 release pace (e.g., Opus 4.6 Feb, 4.7 April, 4.8 May; Sonnet 5 June 30; GPT-5.6 preview June 26), so it is not blocking, but 'monthly' is a generalization rather than a verified cadence."
+            "claim": "Alibaba has also moved into proprietary territory - Qwen 3.7-Max, a closed-weight, API-only flagship with a 1M-token context, was announced in May 2026.",
+            "issue": "Correct. Qwen3.7-Max was unveiled May 20, 2026 at the Alibaba Cloud/Apsara Summit as a closed-weight, DashScope-API-only flagship with 1M context. Verified and current. (Included only to confirm; no correction needed.)"
           }
         ]
       },
-      "originalFactCheck": {
-        "verdict": "fail",
-        "findings": [
-          {
-            "severity": "blocking",
-            "claim": "In 2026, models from Meta, Mistral, DeepSeek, and Alibaba... Llama 3.1 405B, Mistral Large 2, DeepSeek-V3, and Qwen 2.5 all score competitively on standard benchmarks",
-            "issue": "This is the core failure mode: the article presents a superseded 2024-era open-model lineup as the current 2026 state. Every one of the four named 'current' models has been replaced by a newer generation. Llama 4 (Scout/Maverick) shipped in April 2025 and is Meta's current generation; Meta even released a closed model, Muse Spark, in April 2026. Mistral's current flagship is Mistral Large 3 (a 41B-active/675B-total MoE under Apache 2.0), part of the Mistral 3 family, not Mistral Large 2. DeepSeek's current flagship is V4 (V4-Pro/V4-Flash), previewed April 24, 2026, not V3. Alibaba's current lineup is Qwen 3.5/3.6 (open) and Qwen 3.7-Max (proprietary, May 2026), not Qwen 2.5. Naming the older generation as what models 'in 2026 routinely' achieve is exactly the stale-as-current framing that must block publication. The article should be updated to the current lineup (Llama 4, Mistral Large 3, DeepSeek V4, Qwen 3.5/3.6)."
-          },
-          {
-            "severity": "blocking",
-            "claim": "They don't match the latest GPT-4.5 or Claude 4 on every dimension",
-            "issue": "GPT-4.5 and Claude 4 are described as 'the latest' closed models, which is badly stale as of the 2026-06-29 article date. OpenAI's current frontier is the GPT-5 generation (GPT-5.5 was the flagship, with GPT-5.6 Sol/Terra/Luna previewed June 26, 2026); GPT-4.5 was in fact being retired from ChatGPT around June 26-27, 2026. Anthropic's current frontier is the '5' tier — Claude Fable 5 and Mythos 5 (June 2026) plus Claude Sonnet 5 (June 30, 2026) and Opus 4.8 (May 2026), not 'Claude 4.' Presenting GPT-4.5/Claude 4 as the current frontier misstates the state of the world by roughly two full model generations."
-          },
-          {
-            "severity": "blocking",
-            "claim": "Their models consistently punch above their weight class... Mistral Large 2 competes directly with much larger models",
-            "issue": "The Mistral section presents Mistral Large 2 as the current flagship. Mistral's current flagship is Mistral Large 3, released as part of the Mistral 3 family — notably Mistral's first MoE flagship since Mixtral (41B active / 675B total, Apache 2.0). Describing Large 2 as the model that currently 'competes directly with much larger models' presents a superseded model as current."
-          },
-          {
-            "severity": "blocking",
-            "claim": "DeepSeek emerged as a surprise leader, particularly with their R1 reasoning model.",
-            "issue": "Historically framing R1 (January 2025) as the breakout is fine, but the surrounding section presents R1/V3 as DeepSeek's current contribution. As of the article date, DeepSeek's current flagship is V4 (V4-Pro at 1.6T params/49B active and V4-Flash at 284B/13B, both with 1M-token context), previewed April 24, 2026, with V4-Pro-Max positioned as the best open-source model. The article should reflect V4 as the current DeepSeek generation rather than leaving R1/V3 as the endpoint."
-          },
-          {
-            "severity": "blocking",
-            "claim": "Qwen 2.5 matches the best open models across benchmarks and introduced strong multilingual capabilities.",
-            "issue": "Qwen 2.5 is stale as the presented-current Alibaba model. Alibaba's current lineup is the Qwen 3.x generation: Qwen 3.5 (February 2026, 397B/17B-active MoE, 201 languages) and Qwen 3.6 open-weight models, plus the proprietary Qwen 3.7-Max (announced May 20, 2026). Presenting Qwen 2.5 as the current benchmark-matching model is a generation-and-a-half out of date."
-          },
-          {
-            "severity": "note",
-            "claim": "For many applications... Llama 70B or Mistral Large will do the job at a fraction of the cost.",
-            "issue": "Consequent to the stale lineup: 'Llama 70B' refers to the Llama 3.x dense 70B tier. Current Llama 4 uses MoE (Scout 17B-active/109B-total, Maverick 17B-active/400B-total), so the practical recommendation should be refreshed to the current models. Not independently blocking beyond the lineup findings, but worth correcting."
-          },
-          {
-            "severity": "note",
-            "claim": "Open models also lag on multimodal capabilities. While text-only performance has largely caught up, the best vision-language and audio models remain closed.",
-            "issue": "This claim is weaker than it was in 2024. Current open releases are natively multimodal (Llama 4 is natively multimodal; Qwen 3.5 unifies text/image/video; DeepSeek V4 added multimodal capabilities). The blanket statement that open multimodal 'lags' and the best VLMs 'remain closed' is now borderline and would benefit from softening, though it is not a hard factual error."
-          }
-        ]
-      },
-      "repair": {
-        "attempted": true,
-        "repairedFilename": "open-source-ai-models-closing-gap.repaired.json",
-        "error": null
-      },
+      "originalFactCheck": null,
+      "repair": null,
       "layout": null,
-      "liveUrl": null
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=open-source-ai-models-closing-gap"
     }
   ]
 }
