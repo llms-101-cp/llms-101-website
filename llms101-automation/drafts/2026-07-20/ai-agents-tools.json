@@ -1,0 +1,27 @@
+{
+  "label": "AI Agents & Tools",
+  "sub": "Letting LLMs take action",
+  "tag": "Architecture",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Agents and Tool Use",
+  "body": "<p>An <strong>AI agent</strong> is an LLM that can do more than just chat — it can take actions in the real world. While a standard chatbot only generates text, an agent can search the web, send emails, query databases, or run code. The secret? <strong>Tool calling</strong> (also called function calling): the model outputs a structured request saying which tool to use and what parameters to pass, then external code actually runs that tool and feeds the result back.</p><p>The classic pattern is <strong>ReAct</strong> (Reasoning + Acting): the model alternates between thinking through a problem and taking actions to gather information, looping until it reaches an answer. This lets agents tackle multi-step tasks that require real-time data or interaction with other systems.</p><p>The <strong>Model Context Protocol (MCP)</strong> — introduced by Anthropic in 2024 and now adopted by OpenAI and Google — standardises how agents connect to tools. Think of it like USB-C for AI: one universal interface instead of custom code for every integration. This makes building agents with dozens or hundreds of tools far more practical.</p>",
+  "examples": [
+    "Function calling",
+    "ReAct pattern",
+    "Model Context Protocol",
+    "LangChain agents",
+    "Web browsing tools",
+    "Code execution"
+  ],
+  "sources": [
+    {
+      "label": "IBM: What is a ReAct Agent?",
+      "url": "https://www.ibm.com/think/topics/react-agent"
+    },
+    {
+      "label": "Anthropic: Introducing the Model Context Protocol",
+      "url": "https://www.anthropic.com/news/model-context-protocol"
+    }
+  ]
+}

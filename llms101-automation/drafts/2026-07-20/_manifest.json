@@ -1,0 +1,21 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/ai-agents-tools.json",
+    "filename": "ai-agents-tools.json",
+    "requiresVisualReview": false,
+    "extraStep": "Publisher adds 'ai-agents-tools' to TREE.themes in index.html automatically (validate-and-publish.js).",
+    "note": null,
+    "targetBranch": "themes"
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/what-ai-agents-actually-do-2026.json",
+    "filename": "what-ai-agents-actually-do-2026.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]

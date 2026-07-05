@@ -1,19 +1,6 @@
 {
   "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard): trendsArticle now generates a single JSON file for content/articles/; modelCard remains a manual-paste HTML block.",
-  "weeks": [
-    {
-      "week_of": "2026-07-20",
-      "node": {
-        "id": "ai-agents-tools",
-        "parentContext": "What Else Matters branch",
-        "theme": "theme"
-      },
-      "trendsArticle": {
-        "topic": "What AI Agents Actually Do in 2026",
-        "notes": "Plain-English explainer: agents vs chatbots, tool use, MCP as the connector standard. Grounded in current products via live search, not hype."
-      }
-    }
-  ],
+  "weeks": [],
   "completed": [
     {
       "week_of": "2026-06-29",
@@ -69,6 +56,19 @@
         "notes": "Cover Llama, Mistral, DeepSeek, Qwen catching up to closed frontier models in 2026. Balanced, not hype-driven."
       },
       "_completed_at": "2026-06-28T22:04:20.041Z"
+    },
+    {
+      "week_of": "2026-07-20",
+      "node": {
+        "id": "ai-agents-tools",
+        "parentContext": "What Else Matters branch",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "What AI Agents Actually Do in 2026",
+        "notes": "Plain-English explainer: agents vs chatbots, tool use, MCP as the connector standard. Grounded in current products via live search, not hype."
+      },
+      "_completed_at": "2026-07-05T22:04:27.217Z"
     }
   ]
 }
