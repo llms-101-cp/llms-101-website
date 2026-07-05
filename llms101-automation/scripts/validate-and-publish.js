@@ -24,6 +24,29 @@
  *      indexing.yml fires on the article path automatically — this script
  *      does not duplicate its work.
  *
+ * REPAIR STAGE (added 2026-07-05, Craig's decision — hold is now the last
+ * resort, not an expected outcome): a fact-check FAIL no longer holds the
+ * item directly. Instead the item is regenerated ONCE with web_search
+ * enabled, passing the blocking findings in as pointers to what to
+ * re-research (the critic's verdicts are reliable; its specific "current
+ * state" assertions are advisory only and must not be copied as fact).
+ * The repaired draft then goes through the FULL gate again — schema,
+ * fact-check, and for nodes the layout simulation + splice guards. No
+ * shortcuts for repaired content, and never more than one repair attempt
+ * per item per week. Outcomes:
+ *   published              — passed clean, first time.
+ *   published_after_repair — repaired then passed; original findings go
+ *                            in the email so it earns a closer post-hoc read.
+ *   held_after_repair      — failed twice; the alarm case. Both findings
+ *                            rounds go in the report and email.
+ *   held                   — non-repairable failures only (schema errors,
+ *                            manifest problems, API errors): a malformed
+ *                            draft is a generation bug to surface, not
+ *                            content to rewrite.
+ * The repaired draft is written back into the week's drafts/ folder as
+ * {name}.repaired.json alongside the original, so the audit trail shows
+ * both versions.
+ *
  * A failure in ANY step holds back THAT item only; other items still
  * publish, and every failure reason goes into the published-report email.
  * The email sends even on partial failure — it is Craig's review trigger.
@@ -504,6 +527,79 @@ findings array with verdict "pass" is the expected result for clean content.`;
   return result;
 }
 
+// ─── Repair stage ────────────────────────────────────────────────────────────
+
+/**
+ * Regenerate a draft that failed fact-check, using the blocking findings as
+ * pointers to what to re-research — never as replacement facts. Observed
+ * example of why: the critic once cited Claude Opus 4.6/4.7 as frontier
+ * while the site's own live-searched tracker said 4.8. Verdicts reliable,
+ * assertions advisory.
+ * Returns the repaired data object; the caller re-runs the FULL gate on it.
+ */
+async function repairDraft(client, entry, originalData, blockingFindings) {
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const fileSlug = path.basename(entry.filename, '.json');
+  const findingsText = blockingFindings
+    .map((f, i) => `${i + 1}. FLAGGED CLAIM: ${f.claim}\n   WHY FLAGGED: ${f.issue}`)
+    .join('\n');
+
+  const system = `You are the repair stage of llms101.com's automated content pipeline. A draft
+failed its pre-publish fact-check. Regenerate it so it is accurate as of
+${todayISO}, using the web_search tool to re-research every flagged area.
+llms101.com is a beginner-friendly guide to large language models: clear,
+direct, conversational, honest about complexity, no hype, no doom.`;
+
+  const user = `Regenerate this ${entry.contentType} draft. It failed fact-check with the blocking
+findings below.
+
+HOW TO TREAT THE FINDINGS — this matters: they are RELIABLE as pointers to
+WHAT is stale or wrong, but their own "current state" assertions are
+ADVISORY ONLY and may themselves be imprecise or slightly out of date.
+Re-research each flagged area with live web search as of ${todayISO} and
+write the current, correct version. Do not copy the flag text as fact.
+
+BLOCKING FINDINGS (pointers to re-research):
+${findingsText}
+
+ORIGINAL DRAFT (JSON):
+${JSON.stringify(originalData, null, 2)}
+
+Requirements:
+- Return ONLY valid JSON, no markdown fences, with EXACTLY the same fields
+  as the original draft — the same schema contract. Do not add, remove, or
+  rename fields.${entry.contentType === 'trends-article' ? `
+- Keep "slug" exactly "${fileSlug}". Set "date" to "${todayISO}".` : ''}
+- Keep the parts of the original that were NOT flagged, where they remain
+  accurate; rewrite the flagged areas from fresh research.
+- House rule: never write bare "as of writing" or "as of today" — any such
+  statement must carry an explicit date (e.g. "as of ${todayISO}").
+- Match the original's tone, structure, and approximate length.`;
+
+  const message = await client.messages.create({
+    model: 'claude-opus-4-8', // same convention as the fact-check pass
+    max_tokens: 8000,
+    system,
+    messages: [{ role: 'user', content: user }],
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+  });
+
+  if (message.stop_reason === 'max_tokens') {
+    throw new Error('repair generation hit max_tokens — likely truncated, not safe to parse');
+  }
+
+  const raw = lastTextBlock(message);
+  const fenceStripped = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  const cleaned = extractJsonObject(fenceStripped) ?? fenceStripped;
+  const repaired = JSON.parse(cleaned);
+
+  // Enforce the parts of the contract we can enforce mechanically.
+  if (entry.contentType === 'trends-article') {
+    repaired.slug = fileSlug;
+  }
+  return repaired;
+}
+
 // ─── Week folder resolution ──────────────────────────────────────────────────
 
 async function resolveWeekFolder(argFolder) {
@@ -546,8 +642,11 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     return;
   }
 
-  const published = results.filter(r => r.status === 'published');
+  const publishedClean = results.filter(r => r.status === 'published');
+  const publishedRepaired = results.filter(r => r.status === 'published_after_repair');
+  const heldAfterRepair = results.filter(r => r.status === 'held_after_repair');
   const held = results.filter(r => r.status === 'held');
+  const published = [...publishedClean, ...publishedRepaired];
 
   const sections = [];
   sections.push(`llms101.com weekly publish report — week of ${week}`);
@@ -559,21 +658,60 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     sections.push('');
   }
 
-  if (published.length) {
-    sections.push(`PUBLISHED (${published.length}) — now live, review on the site:`);
-    for (const r of published) {
-      sections.push(`  • ${r.contentType}: ${r.filename} → ${r.targetPath}`);
-      if (r.liveUrl) sections.push(`    live: ${r.liveUrl}`);
-      if (r.layout) sections.push(`    map layout: ${r.layout.branch} ${r.layout.before} → ${r.layout.after}`);
-      for (const n of r.notes ?? []) sections.push(`    note: ${n}`);
+  const pushItemBasics = (r) => {
+    sections.push(`  • ${r.contentType}: ${r.filename} → ${r.targetPath}`);
+    if (r.liveUrl) sections.push(`    live: ${r.liveUrl}`);
+    if (r.layout) sections.push(`    map layout: ${r.layout.branch} ${r.layout.before} → ${r.layout.after}`);
+    for (const n of r.notes ?? []) sections.push(`    note: ${n}`);
+  };
+
+  if (publishedClean.length) {
+    sections.push(`PUBLISHED (${publishedClean.length}) — passed clean, now live:`);
+    for (const r of publishedClean) {
+      pushItemBasics(r);
       const noteFindings = (r.factCheck?.findings ?? []).filter(f => f.severity === 'note');
       for (const f of noteFindings) sections.push(`    fact-check note: ${f.claim} — ${f.issue}`);
     }
     sections.push('');
   }
 
+  if (publishedRepaired.length) {
+    sections.push(`PUBLISHED AFTER REPAIR (${publishedRepaired.length}) — live, but this piece failed its first fact-check and was regenerated. It earned a closer post-hoc read:`);
+    for (const r of publishedRepaired) {
+      pushItemBasics(r);
+      sections.push(`    repaired draft in repo: llms101-automation/drafts/${week}/${r.repair?.repairedFilename ?? '(unknown)'}`);
+      sections.push(`    ORIGINAL blocking findings (why it needed repair):`);
+      for (const f of (r.originalFactCheck?.findings ?? []).filter(f => f.severity === 'blocking')) {
+        sections.push(`      - ${f.claim} — ${f.issue}`);
+      }
+      const round2Notes = (r.factCheck?.findings ?? []).filter(f => f.severity === 'note');
+      for (const f of round2Notes) sections.push(`    final-round fact-check note: ${f.claim} — ${f.issue}`);
+    }
+    sections.push('');
+  }
+
+  if (heldAfterRepair.length) {
+    sections.push(`*** HELD AFTER REPAIR (${heldAfterRepair.length}) — ALARM: failed verification twice, nothing published for this item: ***`);
+    for (const r of heldAfterRepair) {
+      sections.push(`  • ${r.contentType}: ${r.filename}`);
+      for (const reason of r.reasons ?? []) sections.push(`    reason: ${reason}`);
+      sections.push(`    ROUND 1 findings (original draft):`);
+      for (const f of (r.originalFactCheck?.findings ?? [])) {
+        sections.push(`      [${f.severity}] ${f.claim} — ${f.issue}`);
+      }
+      if (r.factCheck && r.factCheck !== r.originalFactCheck) {
+        sections.push(`    ROUND 2 findings (repaired draft):`);
+        for (const f of (r.factCheck?.findings ?? [])) {
+          sections.push(`      [${f.severity}] ${f.claim} — ${f.issue}`);
+        }
+      }
+      sections.push(`    next step: this topic likely needs a human decision — rewrite by hand, re-queue with a different brief, or drop it.`);
+    }
+    sections.push('');
+  }
+
   if (held.length) {
-    sections.push(`HELD BACK (${held.length}) — NOT published:`);
+    sections.push(`HELD (${held.length}) — non-repairable failure (schema/config/API error), NOT published:`);
     for (const r of held) {
       sections.push(`  • ${r.contentType}: ${r.filename}`);
       for (const reason of r.reasons ?? []) sections.push(`    reason: ${reason}`);
@@ -584,7 +722,7 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     sections.push('');
   }
 
-  if (!published.length && !held.length) {
+  if (!published.length && !held.length && !heldAfterRepair.length) {
     sections.push('No manifest items were processed.');
     sections.push('');
   }
@@ -614,7 +752,7 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Published: week ${week} — ${published.length} live, ${held.length} held${fatalError ? ' — PIPELINE ERROR' : ''}`,
+      subject: `[llms101] Published: week ${week} — ${published.length} live${publishedRepaired.length ? ` (${publishedRepaired.length} via repair)` : ''}, ${held.length + heldAfterRepair.length} held${heldAfterRepair.length ? ' — REPAIR FAILED, READ ME' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
       text: sections.join('\n')
     })
   });
@@ -654,6 +792,7 @@ async function main() {
   let indexHtml = await fs.readFile(INDEX_HTML, 'utf8');
   let indexHtmlDirty = false;
   const filesToStage = [];
+  const auditFilesToStage = []; // repaired drafts — committed even when held, for the audit trail
   let fatalError = null;
   let commitSha = null;
 
@@ -667,7 +806,9 @@ async function main() {
         status: 'held',
         reasons: [],
         notes: [],
-        factCheck: null,
+        factCheck: null,          // fact-check of the FINAL form (original, or repaired)
+        originalFactCheck: null,  // round-1 fact-check, kept when a repair was attempted
+        repair: null,             // { attempted, repairedFilename, error } audit info
         layout: null,
         liveUrl: null
       };
@@ -689,7 +830,9 @@ async function main() {
         continue;
       }
 
-      // a. Schema validation.
+      // a. Schema validation. Schema failures NEVER trigger repair — a
+      // malformed draft is a generation bug to surface, not content to
+      // rewrite.
       const schema = validateSchema(entry, data);
       result.notes.push(...schema.notes);
       if (!schema.ok) {
@@ -697,7 +840,8 @@ async function main() {
         continue;
       }
 
-      // Node-specific pre-checks before spending an API call.
+      // Node-specific pre-checks before spending an API call. Config
+      // problems, not content — no repair for these either.
       if (entry.contentType === 'node') {
         if (!entry.targetBranch) {
           result.reasons.push('manifest has no targetBranch (or it is null) — generation could not determine a branch confidently, and the publisher never guesses');
@@ -709,20 +853,83 @@ async function main() {
         }
       }
 
-      // b. Fact-check pass.
+      // publishData/publishedViaRepair track which form of the item goes
+      // through the placement steps below.
+      let publishData = data;
+      let publishedViaRepair = false;
+
+      // b. Fact-check pass (round 1), with the repair stage on failure.
       if (offline) {
         result.factCheck = { verdict: 'skipped-offline', findings: [] };
         result.notes.push('fact-check skipped (--offline dev run — publishing disabled)');
       } else {
+        let round1;
         try {
-          result.factCheck = await factCheck(client, entry, data);
+          round1 = await factCheck(client, entry, data);
         } catch (err) {
           result.reasons.push(`fact-check pass errored: ${err.message} — holding back rather than publishing unverified content`);
           continue;
         }
-        if (result.factCheck.verdict === 'fail') {
-          result.reasons.push('fact-check FAILED — see findings');
-          continue;
+        result.factCheck = round1;
+
+        if (round1.verdict === 'fail') {
+          // ── REPAIR STAGE ── exactly one attempt, then the full gate
+          // again. Never loop; never publish anything that hasn't passed
+          // the full gate in its final form.
+          result.originalFactCheck = round1;
+          const blocking = round1.findings.filter(f => f.severity === 'blocking');
+          const repairedFilename = entry.filename.replace(/\.json$/, '.repaired.json');
+          result.repair = { attempted: true, repairedFilename, error: null };
+          log(`Fact-check failed for ${entry.filename} (${blocking.length} blocking finding(s)) — attempting repair (max 1 attempt)`);
+
+          let repairedData;
+          try {
+            repairedData = await repairDraft(client, entry, data, blocking);
+          } catch (err) {
+            result.repair.error = err.message;
+            result.status = 'held_after_repair';
+            result.reasons.push('fact-check FAILED (round 1) — see originalFactCheck findings');
+            result.reasons.push(`repair generation errored: ${err.message}`);
+            continue;
+          }
+
+          // Audit trail: the repaired draft sits alongside the original in
+          // the week folder, committed either way.
+          if (!dryRun) {
+            await fs.writeFile(path.join(weekDir, repairedFilename), JSON.stringify(repairedData, null, 2), 'utf8');
+            auditFilesToStage.push(`llms101-automation/drafts/${week}/${repairedFilename}`);
+          }
+
+          // Full gate, round 2 — schema first.
+          const schema2 = validateSchema(entry, repairedData);
+          result.notes.push(...schema2.notes.map(n => `repaired draft — ${n}`));
+          if (!schema2.ok) {
+            result.status = 'held_after_repair';
+            result.reasons.push('fact-check FAILED (round 1) — see originalFactCheck findings');
+            result.reasons.push(...schema2.blocking.map(b => `repaired draft failed schema validation: ${b}`));
+            continue;
+          }
+
+          // Fact-check, round 2, on the repaired draft.
+          let round2;
+          try {
+            round2 = await factCheck(client, entry, repairedData);
+          } catch (err) {
+            result.status = 'held_after_repair';
+            result.reasons.push('fact-check FAILED (round 1) — see originalFactCheck findings');
+            result.reasons.push(`round-2 fact-check errored: ${err.message} — holding back rather than publishing unverified content`);
+            continue;
+          }
+          result.factCheck = round2; // the final-form verdict
+          if (round2.verdict === 'fail') {
+            result.status = 'held_after_repair';
+            result.reasons.push('fact-check FAILED twice — original AND repaired drafts. This is the alarm case: see both findings rounds.');
+            continue;
+          }
+
+          publishData = repairedData;
+          publishedViaRepair = true;
+          log(`Repair of ${entry.filename} passed the full gate — publishing the repaired version`);
         }
       }
 
@@ -744,14 +951,17 @@ async function main() {
         // file to exist. In dry-run, simulate placement for the guard by
         // writing nothing and waiving only that one existence check is NOT
         // acceptable (guards are guards), so dry-run stages a temp copy.
+        // publishData (not the original draft file) is what gets written —
+        // for a repaired item that's the repaired version.
         const targetAbs = path.join(REPO_ROOT, entry.targetPath);
+        const serialized = JSON.stringify(publishData, null, 2);
         if (!dryRun) {
           await fs.mkdir(path.dirname(targetAbs), { recursive: true });
-          await fs.copyFile(path.join(weekDir, entry.filename), targetAbs);
+          await fs.writeFile(targetAbs, serialized, 'utf8');
         } else if (!existsSync(targetAbs)) {
           // Dry run: place the file, then remember to remove it afterwards.
           await fs.mkdir(path.dirname(targetAbs), { recursive: true });
-          await fs.copyFile(path.join(weekDir, entry.filename), targetAbs);
+          await fs.writeFile(targetAbs, serialized, 'utf8');
           result._dryRunPlacedFile = targetAbs;
         }
 
@@ -766,19 +976,20 @@ async function main() {
         indexHtml = splice.newHtml;
         indexHtmlDirty = true;
         filesToStage.push(entry.targetPath, 'index.html');
-        result.status = 'published';
+        result.status = publishedViaRepair ? 'published_after_repair' : 'published';
         result.liveUrl = liveUrlFor(entry);
         continue;
       }
 
-      // e. Placement for articles and pages.
+      // e. Placement for articles and pages — publishData is the final,
+      // fully-validated form (repaired when the repair path ran).
       const targetAbs = path.join(REPO_ROOT, entry.targetPath);
       if (!dryRun) {
         await fs.mkdir(path.dirname(targetAbs), { recursive: true });
-        await fs.copyFile(path.join(weekDir, entry.filename), targetAbs);
+        await fs.writeFile(targetAbs, JSON.stringify(publishData, null, 2), 'utf8');
       }
       filesToStage.push(entry.targetPath);
-      result.status = 'published';
+      result.status = publishedViaRepair ? 'published_after_repair' : 'published';
       result.liveUrl = liveUrlFor(entry);
     }
 
@@ -804,22 +1015,31 @@ async function main() {
       console.log('\n===== DRY RUN REPORT =====\n' + JSON.stringify(report, null, 2));
     }
 
-    // One commit for the whole week — the audit trail and single revert point.
-    const published = results.filter(r => r.status === 'published');
+    // One commit for the whole week — the audit trail and single revert
+    // point. The message distinguishes items that arrived via repair.
+    const published = results.filter(r => r.status === 'published' || r.status === 'published_after_repair');
     if (!dryRun && published.length) {
       const counts = {};
-      for (const r of published) counts[r.contentType] = (counts[r.contentType] ?? 0) + 1;
+      for (const r of published) {
+        const base = r.contentType.replace('trends-article', 'article');
+        const key = `${base}|${r.status === 'published_after_repair'}`;
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
       const countsText = Object.entries(counts)
-        .map(([t, n]) => `${n} ${t.replace('trends-article', 'article')}${n > 1 ? 's' : ''}`)
+        .map(([key, n]) => {
+          const [base, repaired] = key.split('|');
+          return `${n} ${base}${n > 1 ? 's' : ''}${repaired === 'true' ? ' via repair' : ''}`;
+        })
         .join(', ');
-      git('add', ...new Set(filesToStage));
+      git('add', ...new Set([...filesToStage, ...auditFilesToStage]));
       git('commit', '-m', `publish: weekly content ${week} (${countsText})`);
       commitSha = git('rev-parse', 'HEAD');
       git('push', 'origin', 'HEAD:main');
       log(`Publish commit ${commitSha} pushed to main`);
     } else if (!dryRun) {
-      // Nothing publishable — still commit the report so the dashboard shows why.
-      git('add', reportRel);
+      // Nothing publishable — still commit the report (and any repaired
+      // drafts, for the audit trail) so the dashboard shows why.
+      git('add', reportRel, ...auditFilesToStage);
       try {
         git('commit', '-m', `publish: weekly content ${week} (nothing published — all items held)`);
         commitSha = git('rev-parse', 'HEAD');
@@ -847,9 +1067,10 @@ async function main() {
     }
   }
 
-  const publishedCount = results.filter(r => r.status === 'published').length;
-  const heldCount = results.filter(r => r.status === 'held').length;
-  log(`Done. ${publishedCount} published, ${heldCount} held back.${dryRun ? ' (dry run — nothing written)' : ''}`);
+  const publishedCount = results.filter(r => r.status.startsWith('published')).length;
+  const repairedCount = results.filter(r => r.status === 'published_after_repair').length;
+  const heldCount = results.filter(r => r.status.startsWith('held')).length;
+  log(`Done. ${publishedCount} published (${repairedCount} via repair), ${heldCount} held back.${dryRun ? ' (dry run — nothing written)' : ''}`);
 
   if (fatalError) process.exit(1);
 }

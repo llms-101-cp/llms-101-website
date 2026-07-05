@@ -203,9 +203,13 @@ llms101-automation/
   splice), publishes everything that passes in a single
   `publish: weekly content {week} (...)` commit pushed directly to main,
   and emails Craig a published report. That email is the review trigger;
-  `git revert <publish commit>` is the correction mechanism. Any
-  validation failure holds back that item only — a guard failure is never
-  bypassed to make a publish succeed. Model cards are the one exception:
+  `git revert <publish commit>` is the correction mechanism. Since
+  2026-07-05 a fact-check failure triggers ONE repair attempt
+  (regenerate with web_search, then the full gate again) before anything
+  is held — see the repair stage below; "held" now signals two
+  consecutive verification failures (or a non-repairable schema/config
+  error). A failure still affects that item only, and a guard failure is
+  never bypassed to make a publish succeed. Model cards are the one exception:
   they still require manual paste into models.html (shared hand-coded
   file, no dynamic system) and are always held back with that reason.
 - **The dashboard fetches from GitHub's raw content API** (public repo,
@@ -256,15 +260,44 @@ goes in the report email:
    critic: current model names/versions, dates, quantitative claims, and
    "as of" statements (house rule: explicit dates required — bare "as of
    writing" is a blocking finding). Structured pass/fail + findings;
-   blocking finding = held back; "note" findings publish but are listed in
-   the email so Craig can judge from the live page.
-3. **Nodes only — layout simulation.** Replicates `initLayout()`'s exact
+   a blocking finding triggers the REPAIR stage (below, added 2026-07-05)
+   rather than an immediate hold; "note" findings publish but are listed
+   in the email so Craig can judge from the live page.
+3. **Repair stage (added 2026-07-05 — Craig's decision: "held" as a
+   terminal outcome meant the site got no update that week, so hold is
+   demoted from expected outcome to alarm bell).** Pipeline shape is now
+   `validate → publish | repair → re-validate → publish | hold`. On a
+   fact-check FAIL, the item is regenerated ONCE (claude-opus-4-8 with
+   `web_search`), passing the blocking findings in as **pointers to what
+   to re-research, never as replacement facts**. The operating principle:
+   **the critic's verdicts are reliable; its specific "current state"
+   assertions are advisory** (observed example: the critic cited Claude
+   Opus 4.6/4.7 as frontier while the site's own live-searched tracker
+   said 4.8). The repaired draft preserves the original schema contract
+   (same fields, same slug, same targetPath, explicit-date house rule)
+   and goes through the FULL gate again — schema, fact-check, and for
+   nodes the layout simulation + splice guards. No shortcuts for repaired
+   content. **Hard retry cap: 1 repair attempt per item per week — never
+   loop.** The repaired draft is committed to the week's drafts/ folder
+   as `{name}.repaired.json` alongside the original, and
+   `_publish_report.json` records the original findings, the repair
+   attempt, and the final verdict. Outcomes: `published` (passed clean),
+   `published_after_repair` (email attaches the original findings so the
+   piece earns a closer post-hoc read), `held_after_repair` (**the alarm
+   case — two consecutive verification failures**; both findings rounds
+   go in the report and email, publish nothing for that item), and plain
+   `held` (reserved for non-repairable failures: schema errors, config
+   problems, API errors — a malformed draft is a generation bug to
+   surface, not content to rewrite; schema failures never trigger
+   repair). Commit messages distinguish the path, e.g.
+   `publish: weekly content 2026-07-20 (1 article via repair)`.
+4. **Nodes only — layout simulation.** Replicates `initLayout()`'s exact
    `perRow` / row-width / margin-shift math (constants kept in MANUAL SYNC
    with index.html — see the `LAYOUT` object) against the post-insert
    child count of the manifest's `targetBranch`; asserts no overlap and
    rows within canvas margins, and reports the before/after row shape
    (e.g. "training 3/3/1 → 3/3/2") in the email.
-4. **Nodes only — defensive TREE splice** into `TREE.{targetBranch}` in
+5. **Nodes only — defensive TREE splice** into `TREE.{targetBranch}` in
    index.html. Mandatory guards, any failure aborts the node publish and
    leaves index.html untouched: the PR #17 `Math.max(maxY + H + 100, 900)`
    canvas-height clamp must still be present before touching the file;
@@ -275,7 +308,7 @@ goes in the report email:
    twice is a byte-for-byte no-op — the tracker's non-idempotency lesson).
    The edit is a pure string operation, so index.html's CRLF line endings
    are preserved.
-5. **Placement + one commit.** Passing files are copied to their
+6. **Placement + one commit.** Passing files are copied to their
    `targetPath`s; one commit for the whole week
    (`publish: weekly content {week} (1 node, 1 article)`), pushed directly
    to main — no PR. That commit is the audit trail and the single
@@ -308,7 +341,12 @@ the published report replaces the old "drafts ready for review" email
 live page, fact-check findings (blocking and borderline), the node layout
 before/after row shape, everything held back and why, and the publish
 commit SHA with a one-line revert instruction. Same RESEND_API_KEY /
-REVIEW_EMAIL secrets as before.
+REVIEW_EMAIL secrets as before. Since 2026-07-05 items are labelled with
+one of three outcomes: `published` (passed clean),
+`published_after_repair` (original findings attached — this piece earned
+a closer post-hoc read), or `held_after_repair` (the alarm case — both
+findings rounds attached plus one-line next-step guidance). Plain `held`
+still appears for non-repairable schema/config/API failures.
 
 **GitHub Actions gotcha found while wiring this up:** the publish commit
 is pushed with `GITHUB_TOKEN`, and GITHUB_TOKEN pushes never fire

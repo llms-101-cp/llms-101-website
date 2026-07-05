@@ -183,11 +183,18 @@ function esc(s){
 
 function renderItem(entry, reportItem){
   const status = reportItem ? reportItem.status : 'unknown';
-  const badge = status === 'published' ? '✓ Published live'
-              : status === 'held'      ? '⛔ Held back — not published'
+  // Four outcomes since 2026-07-05 (repair stage): published,
+  // published_after_repair, held_after_repair (the alarm case), held.
+  const statusClass = status.indexOf('published') === 0 ? 'published'
+                    : status.indexOf('held') === 0      ? 'held'
+                    : 'unknown';
+  const badge = status === 'published'              ? '✓ Published live (passed clean)'
+              : status === 'published_after_repair' ? '✓ Published after repair — read this one closely'
+              : status === 'held_after_repair'      ? '🚨 Held after repair — failed verification TWICE'
+              : status === 'held'                   ? '⛔ Held — not published'
               : 'No publish record';
 
-  let inner = `<span class="status-badge ${status}">${badge}</span>`;
+  let inner = `<span class="status-badge ${statusClass}">${badge}</span>`;
 
   if(entry.note) inner += `<div class="note-box">📄 ${esc(entry.note)}</div>`;
   if(entry.extraStep) inner += `<div class="note-box">📌 ${esc(entry.extraStep)}</div>`;
@@ -199,12 +206,21 @@ function renderItem(entry, reportItem){
     if(reportItem.layout){
       inner += `<div class="note-box">🗺 Map layout: ${esc(reportItem.layout.branch)} ${esc(reportItem.layout.before)} → ${esc(reportItem.layout.after)}</div>`;
     }
+    if(reportItem.repair && reportItem.repair.attempted){
+      inner += `<div class="finding-box">🔧 Repair attempted — repaired draft: ${esc(reportItem.repair.repairedFilename)}${reportItem.repair.error ? ` (repair errored: ${esc(reportItem.repair.error)})` : ''}</div>`;
+    }
     for(const reason of (reportItem.reasons || [])){
       inner += `<div class="reason-box">✋ ${esc(reason)}</div>`;
     }
-    const findings = (reportItem.factCheck && reportItem.factCheck.findings) || [];
-    for(const f of findings){
-      inner += `<div class="finding-box">[fact-check ${esc(f.severity)}] ${esc(f.claim)} — ${esc(f.issue)}</div>`;
+    // Round-1 findings (original draft) when a repair was attempted.
+    const originalFindings = (reportItem.originalFactCheck && reportItem.originalFactCheck.findings) || [];
+    for(const f of originalFindings){
+      inner += `<div class="finding-box">[round 1 — original draft, ${esc(f.severity)}] ${esc(f.claim)} — ${esc(f.issue)}</div>`;
+    }
+    // Final-form findings (round 2 when repaired, round 1 otherwise).
+    const finalFindings = (reportItem.factCheck && reportItem.factCheck !== reportItem.originalFactCheck && reportItem.factCheck.findings) || [];
+    for(const f of finalFindings){
+      inner += `<div class="finding-box">[${reportItem.originalFactCheck ? 'round 2 — repaired draft' : 'fact-check'}, ${esc(f.severity)}] ${esc(f.claim)} — ${esc(f.issue)}</div>`;
     }
     for(const n of (reportItem.notes || [])){
       inner += `<div class="finding-box">${esc(n)}</div>`;
@@ -215,7 +231,7 @@ function renderItem(entry, reportItem){
   }
 
   return `
-    <div class="status-card ${status}">
+    <div class="status-card ${statusClass}">
       <div class="card-head">
         <div>
           <div class="card-title">${esc(entry.filename)}</div>
