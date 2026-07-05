@@ -1,0 +1,51 @@
+{
+  "week": "2026-07-20",
+  "generatedAt": "2026-07-05T22:05:07.397Z",
+  "dryRun": false,
+  "items": [
+    {
+      "filename": "ai-agents-tools.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-agents-tools.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3",
+        "after": "3/3/1"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "what-ai-agents-actually-do-2026.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/what-ai-agents-actually-do-2026.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Gartner predicts that by 2026, 40% of enterprise applications will include task-specific AI agents.",
+            "issue": "Directionally correct but loses precision. Gartner's actual claim is '40% of enterprise applications will be integrated with task-specific AI agents by the END of 2026, up from less than 5% in 2025.' Consider adding 'by end of 2026' and the '<5% baseline' for accuracy; not blocking."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=what-ai-agents-actually-do-2026"
+    }
+  ]
+}
