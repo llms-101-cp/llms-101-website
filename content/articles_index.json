@@ -1,5 +1,19 @@
 [
   {
+    "title": "What AI Agents Actually Do in 2026",
+    "slug": "what-ai-agents-actually-do-2026",
+    "date": "2026-07-05",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "AI agents have moved beyond chatbot territory. Here is what they actually do now, how they connect to your tools, and why MCP became the standard.",
+    "before_label": "Chatbots (2023)",
+    "before": "You ask a question, get an answer. No memory between sessions, no ability to take actions or access outside systems.",
+    "after_label": "Agents (2026)",
+    "after": "The AI plans multi-step tasks, uses tools, reads from databases, and takes actions in connected apps - with your approval.",
+    "file": "content/articles/what-ai-agents-actually-do-2026.json",
+    "url": "/trends/view-article.html?article=what-ai-agents-actually-do-2026"
+  },
+  {
     "title": "Open Source AI Models Are Closing the Gap",
     "slug": "open-source-ai-models-closing-gap",
     "date": "2026-07-05",
