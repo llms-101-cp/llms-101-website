@@ -1,5 +1,19 @@
 [
   {
+    "title": "Open Source AI Models Are Closing the Gap",
+    "slug": "open-source-ai-models-closing-gap",
+    "date": "2026-07-05",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "Llama, Mistral, DeepSeek, and Qwen have gone from distant followers to genuine contenders. Here's what that shift actually means.",
+    "before_label": "2023 reality",
+    "before": "Open source models lagged 12-18 months behind GPT-4. Running them required serious hardware and expertise.",
+    "after_label": "2026 reality",
+    "after": "Top open models trade blows with the closed frontier on many benchmarks. Some run efficiently on consumer hardware.",
+    "file": "content/articles/open-source-ai-models-closing-gap.json",
+    "url": "/trends/view-article.html?article=open-source-ai-models-closing-gap"
+  },
+  {
     "title": "Why Every Lab Is Racing to Build Coding Agents",
     "slug": "why-every-lab-is-racing-to-build-coding-agents",
     "date": "2026-06-29",
