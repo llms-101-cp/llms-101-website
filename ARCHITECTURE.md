@@ -291,6 +291,27 @@ goes in the report email:
    surface, not content to rewrite; schema failures never trigger
    repair). Commit messages distinguish the path, e.g.
    `publish: weekly content 2026-07-20 (1 article via repair)`.
+
+   **Resolving a `held_after_repair` item (policy, 2026-07-05):** by
+   deliberate agent correction submitted through the FULL gate — never by
+   blind regeneration (no rerolling until something passes), never by
+   bypassing validation, and not by human pre-review. The correcting
+   agent takes both findings rounds from `_publish_report.json`,
+   verifies every contested claim itself via live web search, and where
+   a specific claim can't be confirmed, DELETES or SOFTENS it rather
+   than substituting a new specific — an explainer needs fewer dated
+   claims, not different ones. The corrected draft replaces the
+   manifest's draft file and is resubmitted via `workflow_dispatch` with
+   `no_repair: true` (script flag `--no-repair`), which makes a
+   fact-check failure hold immediately instead of triggering another
+   regeneration. If a deliberate correction still fails the gate, the
+   topic has a genuine factual problem — that is the one case worth a
+   conversation with Craig. First exercised 2026-07-05 on the
+   `open-source-ai-models-closing-gap` article (held_after_repair
+   earlier that day: the automated repair fixed the original staleness
+   but introduced a wrong GPT-4.5-retirement claim; the deliberate
+   correction deleted the unconfirmable specifics and softened a
+   "monthly cadence" generalisation).
 4. **Nodes only — layout simulation.** Replicates `initLayout()`'s exact
    `perRow` / row-width / margin-shift math (constants kept in MANUAL SYNC
    with index.html — see the `LAYOUT` object) against the post-insert

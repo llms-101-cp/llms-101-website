@@ -55,7 +55,7 @@
  * hand-coded file with no dynamic system (see ARCHITECTURE.md), so those
  * drafts are always held back for manual paste.
  *
- * Run:  node scripts/validate-and-publish.js [weekFolder] [--dry-run] [--offline]
+ * Run:  node scripts/validate-and-publish.js [weekFolder] [--dry-run] [--offline] [--no-repair]
  *   weekFolder  defaults to the most recent folder in drafts/ that has a
  *               _manifest.json (lexicographic max — folder names are ISO
  *               dates so that is also chronological).
@@ -64,6 +64,12 @@
  *   --offline   dev-only: skip the fact-check API call (no ANTHROPIC_API_KEY
  *               needed). Implies --dry-run and CANNOT publish — this is a
  *               testing convenience, never a guard bypass.
+ *   --no-repair deliberate-correction mode: a fact-check failure holds the
+ *               item immediately instead of triggering the repair
+ *               regeneration. Used when a human-or-agent-corrected draft is
+ *               being resubmitted through the gate — if the deliberate
+ *               correction still fails, that means the topic has a genuine
+ *               factual problem worth a conversation, not another reroll.
  *
  * Env: ANTHROPIC_API_KEY (fact-check), RESEND_API_KEY + REVIEW_EMAIL (report)
  */
@@ -779,11 +785,12 @@ async function main() {
   const args = process.argv.slice(2);
   const offline = args.includes('--offline');
   const dryRun = args.includes('--dry-run') || offline; // --offline can never publish
+  const noRepair = args.includes('--no-repair');
   const folderArg = args.find(a => !a.startsWith('--'));
 
   const week = await resolveWeekFolder(folderArg);
   const weekDir = path.join(DRAFTS_DIR, week);
-  log(`Validate-and-publish for drafts/${week}${dryRun ? ' [DRY RUN]' : ''}${offline ? ' [OFFLINE — fact-check skipped, publish disabled]' : ''}`);
+  log(`Validate-and-publish for drafts/${week}${dryRun ? ' [DRY RUN]' : ''}${offline ? ' [OFFLINE — fact-check skipped, publish disabled]' : ''}${noRepair ? ' [NO-REPAIR — deliberate-correction run, failures hold immediately]' : ''}`);
 
   const manifest = JSON.parse(await fs.readFile(path.join(weekDir, '_manifest.json'), 'utf8'));
   const client = offline ? null : new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -873,6 +880,13 @@ async function main() {
         result.factCheck = round1;
 
         if (round1.verdict === 'fail') {
+          if (noRepair) {
+            // Deliberate-correction run: the draft under test IS someone's
+            // considered fix. A failure here means the topic has a genuine
+            // factual problem — stop and surface it, don't reroll.
+            result.reasons.push('fact-check FAILED — repair disabled for this run (--no-repair: this draft was a deliberate correction, so a failure is worth a conversation, not another regeneration)');
+            continue;
+          }
           // ── REPAIR STAGE ── exactly one attempt, then the full gate
           // again. Never loop; never publish anything that hasn't passed
           // the full gate in its final form.
