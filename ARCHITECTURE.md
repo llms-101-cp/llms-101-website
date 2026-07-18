@@ -730,11 +730,24 @@ clean and left untouched.
   3.1 Pro, DeepSeek V4).
 - `ai-cost-collapse.html` — GPT-4o (retired Feb 2026) replaced with
   GPT-5.4 nano pricing; parenthetical added noting the retirement as a
-  data point in the cost-collapse story. **Known deferred item:** three
-  inconsistent multipliers remain in this article (title says "100x in two
-  years", body now says "300x+ in under three years", lede implies
-  10,000x). Reconciling them was scoped out of this pass — they are
-  internally inconsistent but none is actively wrong.
+  data point in the cost-collapse story. **RESOLVED 2026-07-18 — the
+  "three inconsistent multipliers" deferred item** (title "100x in two
+  years", body "300x+ in under three years", lede implying 10,000x):
+  retitled to "200x in Three Years", supportable both input-to-input
+  (GPT-4 $30/1M → DeepSeek V4 Flash $0.14/1M) and output-to-output
+  (GPT-4 $60/1M → V4 Flash $0.28/1M), per DeepSeek's official pricing
+  docs and current GPT-5.4 nano rates ($0.20/1M input), all re-verified
+  against primary sources 2026-07-18. The lede's unsupportable GPT-3
+  10,000x comparison was removed and replaced by an accurate,
+  clearly-labelled cache-hit aside in the body (DeepSeek cache-hit input
+  $0.0028/1M, >10,000x below GPT-4's 2023 rate). The body comparison is
+  now input-to-input with prices labelled as such; the trends.html card
+  (JSON-LD headline, h3, acard-desc) was synced in the same commit, its
+  ba-preview block left as-is (its "At DeepSeek rates: under $0.15" was
+  already consistent with the verified $0.14). Note: the article's
+  previous "DeepSeek's cheapest tier, under $0.10" claim was wrong at
+  standard (cache-miss) rates — only the cache-hit tier is below $0.10 —
+  which is why the originally proposed 300x frame was abandoned for 200x.
 - `state-of-llms-q4-2025.html` — three factual bugs fixed: summary box
   wrongly said "Q1 2026 at a glance"; lede treated DeepSeek R1 as
   upcoming (it released Jan 2025, not Jan 2026); DeepSeek R1 shadow
