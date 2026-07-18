@@ -3,7 +3,7 @@
   "slug": "test-verification-q3-2026",
   "year": 2026,
   "quarter": "Q3",
-  "date": "2026-07-18",
+  "date": "2026-05-01",
   "summary": "TEST: This is a fake summary written only to verify the quarterly reports pipeline end-to-end — it should never appear on the live site.",
   "body": "TEST: This report exists only to verify the dynamic quarterly reports pipeline (index build, sidebar prepend, featured swap, viewer render, footer merge). It contains no real content and should never be merged to main.\n\n## TEST heading — Markdown rendering check\n\nTEST: This second paragraph confirms that the report body renders as Markdown in view-report.html, including the heading above. If you can read this on a live page, something went wrong — this report was meant to be deleted with its throwaway verification PR."
 }
