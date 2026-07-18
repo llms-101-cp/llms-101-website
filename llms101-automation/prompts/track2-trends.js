@@ -249,7 +249,11 @@ do not just relabel last month's models):
   than one of DeepSeek, Llama, Qwen, Mistral, or whichever else currently
   leads open-weight quality
 - 1 mid-tier "best value" closed model per major lab as relevant
-- 1-2 budget/speed-optimised models for high-volume use cases
+- 1-2 budget/speed-optimised models for high-volume use cases. Prefer the
+  budget/fast sibling of each lab's CURRENT flagship generation (e.g. the
+  model currently serving as the ChatGPT default fast tier), not an older
+  generation's budget model that merely satisfies the category label --
+  verify via web_search which sibling is most current before choosing.
 - 1-2 notable specialized or emerging models that don't fit neatly into
   the above -- e.g. a strong coding-specialized model, or a competitive
   model from a lab not otherwise represented in this list (Mistral,
@@ -278,7 +282,7 @@ markdown fences, no preamble. Each object must have exactly these fields:
   "cost_class": "<one of: cost-free, cost-low, cost-standard, cost-premium — cost-low covers both Ultra-low and Low labels>",
   "open_badge": "<one of: 'Closed API', 'Open weights'>",
   "tags": "<space-separated subset of: top writing coding cheap open — used for the page's filter buttons, include 'top' only for genuinely top-tier rows>",
-  "homepage_url": "<the official product/model page on the maker's own website, verified via web_search -- don't guess from memory. Prefer a page dedicated specifically to this model if one exists (verified example: https://www.anthropic.com/claude/opus is Anthropic's actual current page for Opus); fall back to the maker's general product-family page otherwise. Must be the maker's own domain, not a news article, review, or third-party aggregator. Must start with https://>"
+  "homepage_url": "<the official product/model page on the maker's own website, verified via web_search -- don't guess from memory. Search for the page dedicated specifically to this model first (labs commonly have per-model docs pages, e.g. a /docs/models/{model-name} path) and use the maker's general product-family page ONLY if no model-specific page exists -- a page that merely technically qualifies is not enough; always link the most specific official page you can verify (verified example: https://www.anthropic.com/claude/opus is Anthropic's actual current page for Opus). Must be the maker's own domain, not a news article, review, or third-party aggregator. Must start with https://>"
 }
 
 Do not use em dashes or curly quotes in any text field — plain hyphens and
