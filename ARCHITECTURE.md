@@ -162,10 +162,17 @@ content type is what caused most of today's problems.
   out-of-order reports sorted correctly, one deliberately broken report —
   missing `summary` — correctly excluded with a loud `::error::` and
   non-zero exit). The `trends.html`/`view-report.html` JS changes were
-  syntax-checked and logic-reviewed but **not yet verified live** — that
-  needs a real (or deliberately temporary/throwaway) entry in
-  `content/reports/` pushed through the actual pipeline once these changes
-  are merged.
+  **verified live on 2026-07-18** via a throwaway PR deploy preview
+  (PR #22, closed unmerged, branch deleted): the full path — index build,
+  sidebar prepend above the 3 legacy reports, featured swap (test report
+  dated 2026-07-18 > fallback 2026-06-01), viewer render of
+  title/date/summary/Markdown body with zero literal `undefined`, and
+  footer merge/exclusion (legacy reports linked to their standalone
+  pages, open report excluded) — all passed. The non-swap path was also
+  verified: with the test report re-dated 2026-05-01 (older than the
+  fallback), the featured slot correctly stayed on the legacy hardcoded
+  report while the sidebar prepend was unaffected. Evidence recorded in
+  PR #22's closing comment.
 - **Not yet done:** no automation/generation track exists for reports (no
   `EXISTING_REPORTS`-style awareness in `llms101-automation/`, unlike
   articles' `EXISTING_TRENDS_SLUGS`). Given the quarterly (not weekly)
