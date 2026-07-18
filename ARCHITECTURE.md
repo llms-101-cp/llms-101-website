@@ -868,11 +868,17 @@ entry (written from facts already verified earlier this week, not a
 fresh unverified claim). Final count: 157 → 152. Confirmed zero orphans
 remain via the same check used to find the original 9.
 
-**Flagged, not fixed, while doing this:** `reasoning`'s own body prose
-still says *"Google's Gemini Thinking and Qwen 3.5's thinking mode follow
-the same principle"* — same staleness pattern just fixed in the examples
-list, sitting in prose instead. Out of scope for this specific cleanup;
-worth a one-sentence fix whenever `reasoning` is next touched.
+**RESOLVED 2026-07-18:** `reasoning`'s body prose previously said
+*"Google's Gemini Thinking and Qwen 3.5's thinking mode follow the same
+principle"* — same staleness pattern fixed in the examples list on
+2026-07-04, sitting in prose instead. Replaced with "Google's Gemini Deep
+Think mode and the Qwen3 family's hybrid thinking mode follow the same
+principle" (both names verified via live search 2026-07-18: Deep Think is
+Google's actual reasoning-mode name on Gemini 3.x; hybrid thinking has
+been a Qwen-family-wide feature since Qwen3, April 2025). Pure byte-level
+string replacement — all index.html guards confirmed before and after
+(PR #17 clamp present, `node --check` on inline scripts, NODE_DATA 44 /
+EXAMPLE_DATA 152 keys unchanged, CRLF endings preserved).
 
 **Live browser check still needed before trusting fully:** data/logic
 verified; on-screen rendering (search box visual placement, dropdown
