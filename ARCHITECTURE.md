@@ -369,6 +369,11 @@ a closer post-hoc read), or `held_after_repair` (the alarm case — both
 findings rounds attached plus one-line next-step guidance). Plain `held`
 still appears for non-repairable schema/config/API failures.
 
+Resend domain verification fixed 2026-07-18. Root cause of the two-week
+email failure: a misspelled domain entry in Resend (`lms101.com`, one L).
+Re-added correctly with a new DKIM key placed in Netlify. Weekly report
+emails are confirmed sending as of this date.
+
 **GitHub Actions gotcha found while wiring this up:** the publish commit
 is pushed with `GITHUB_TOKEN`, and GITHUB_TOKEN pushes never fire
 push-triggered workflows — so `indexing.yml` would NOT have fired on the
