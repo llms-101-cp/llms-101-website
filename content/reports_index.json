@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "title": "TEST — Pipeline Verification Report (delete me)",
+    "slug": "test-verification-q3-2026",
+    "year": 2026,
+    "quarter": "Q3",
+    "date": "2026-07-18",
+    "summary": "TEST: This is a fake summary written only to verify the quarterly reports pipeline end-to-end — it should never appear on the live site.",
+    "file": "content/reports/test-verification-q3-2026.json",
+    "url": "/trends/view-report.html?report=test-verification-q3-2026",
+    "_sort_key": "2026-Q3"
+  }
+]
