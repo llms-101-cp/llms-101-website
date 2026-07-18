@@ -597,6 +597,23 @@ practice.
     Worth emphasizing "most specific, not just any page that technically
     qualifies" more strongly in the prompt.
 
+  **Both review notes addressed in the prompt 2026-07-18**
+  (`llms101-automation/prompts/track2-trends.js`): the budget/speed
+  category guidance now tells the model to prefer the budget/fast sibling
+  of each lab's CURRENT flagship generation (verified via web_search)
+  rather than any older-generation model that merely satisfies the label,
+  and the `homepage_url` instruction now requires searching for a
+  model-specific page first (per-model docs paths called out explicitly)
+  with the general product-family page allowed ONLY when no model-specific
+  page exists. Verified after editing: `node --check` passes, and the
+  8-case mock suite (reconstructed to the same case list as PR #4's)
+  passes 8/8 against the unchanged `validateTrackerRows` /
+  `renderTrackerRow`, plus both new instructions confirmed present in
+  `buildModelTrackerPrompt`'s output. Standing caveat: whether these
+  prompt changes actually change real output is unverified until the next
+  monthly tracker run (1 August 2026) — watch that PR's budget-slot pick
+  and URL specificity.
+
 ---
 
 ## Site-wide staleness audit (started 2026-06-27)
