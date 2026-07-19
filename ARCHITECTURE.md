@@ -42,6 +42,14 @@ reader-facing twin: any PR changing reader-facing content must append a
 * W2 — Digital Omnibus. The `regulation` node correctly treats the
   amendment as agreed-but-unpublished. When it is formally published,
   the node's dates need updating. See the regulation-node note.
+* W3 — First autonomous changelog append. Once P1 lands, the first
+  weekly cron run to auto-append a `content/changelog.json` entry does
+  so with no human in the loop. Check `/updates` after that run: a
+  malformed append is the one failure mode that blanks the page down to
+  its fallback message (JSON.parse fails → graceful error, no entries).
+  The validate-gate JSON.parse check should prevent this, but it will
+  never have been exercised by real automation before that run. Pairs
+  naturally with the W1 check on the 1 August tracker run.
 
 ### Decisions parked for Craig
 
@@ -1446,3 +1454,42 @@ whenever body text says "as of writing" or "as of today," attach the
 explicit date (e.g. "4 July 2026") rather than leaving it ambiguous for a
 future reader. Applied to `regulation`'s one relevant sentence; worth
 carrying forward as a general content-writing convention.
+
+## What's Changed updates page shipped (2026-07-19, PRs #24 + #25)
+
+Content system 5 (see its section above) went from proposal to production
+in one session. Record of what happened and what was learned:
+
+- **PR #24 (merged as fbb119a):** `updates.html` + seeded
+  `content/changelog.json` (3 backfill entries), nav + footer links on
+  trends/models/tracker, the Explore-list link on index.html, sitemap.xml
+  and llms.txt entries, and the system-5 docs section — all in one PR,
+  per the same-commit documentation rule. guide.html deliberately kept
+  its minimal two-link nav. Full pre-merge verification on the Netlify
+  deploy preview: entries newest-first, tag colors, mobile single-column
+  collapse, active nav state, and the graceful-fallback path (renaming
+  changelog.json produced the fallback message, not a blank column).
+- **PR #25 (merged as 281c6e1):** the page's own launch entry — the
+  first entry added under the changelog discipline rule, appended to the
+  END of the array per convention (the page's client-side date sort is
+  what puts it on top; automation must never prepend). Routed through a
+  quick PR: a changelog-only append is still a content change under the
+  content-change policy.
+- **GOTCHA (index.html line endings):** index.html is a CRLF file that
+  contains ~9 stray bare-LF lines inside the TREE `<script>` block. With
+  `core.autocrlf=true`, a naive full-file edit silently normalizes those
+  lines and produces spurious diff hunks inside the TREE script — the
+  exact region no unrelated PR should ever appear to touch. The fix was
+  reverting and redoing the insert byte-surgically so the final diff was
+  exactly one added nav line. Any future edit to index.html should
+  expect this and verify the staged diff touches only the intended
+  lines.
+- **Deliberate deferral:** pipeline changelog integration became P1
+  (see Outstanding work) rather than shipping in PR #24, because
+  `validate-and-publish.js`, `generate.js`, and `weekly-content.yml`
+  carried uncommitted in-flight self-planning work — editing them would
+  have swept that work into the PR or manufactured a conflict.
+- **Backfill dating:** the 2026-06-30 and 2026-06-01 entries are
+  deliberate month-level round-ups, not per-PR entries. June merge dates
+  (27–30 June) confirmed the 30 June round-up date is accurate. Keep
+  future backfill (if any) at this granularity.
