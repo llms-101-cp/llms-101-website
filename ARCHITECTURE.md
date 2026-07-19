@@ -1,12 +1,69 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-06-25, via direct Claude Code repo inspection + live testing.**
+**Last verified: 2026-06-25, via direct Claude Code repo inspection +
+live testing. Dated section notes through 2026-07-19 supersede this
+where present.**
 
 This document exists because a lot of today's work was wasted rediscovering
 things that should have been known upfront. Don't repeat that — read this,
 trust it, and update it whenever something here turns out to be wrong or
 something changes.
+
+---
+
+## Outstanding work — consolidated list (updated 2026-07-19)
+
+Single source of truth for what is still open. Detailed context lives in
+the dated sections below — this list only points at them. Maintenance
+rule: any session that completes, adds, or re-scopes one of these items
+must update this list in the same commit as the work itself.
+
+### Watch items (time-triggered)
+
+* W1 — 1 August 2026 tracker run. First real test of the 2026-07-18
+  prompt tightening: check that the budget slot picks the current
+  flagship generation's fast sibling and that `homepage_url` values are
+  model-specific pages, not family pages. Same run also tests whether
+  the 12-row category guidance genuinely broadens lab coverage
+  (unverified since PR #4's single run). See the Model Tracker section.
+* W2 — Digital Omnibus. The `regulation` node correctly treats the
+  amendment as agreed-but-unpublished. When it is formally published,
+  the node's dates need updating. See the regulation-node note.
+
+### Decisions parked for Craig
+
+* D1 — Tracker auto-merge. The monthly tracker's PR-merge checkpoint is
+  deliberate; removing it is a one-line change once several consecutive
+  runs are clean. Craig's call.
+* D2 — PR-for-everything policy. Whether script-only changes may commit
+  direct to main or must go through PRs. Data point: the 2026-07-18 run
+  routed prompt-file changes through PR #23 without friction.
+
+### Verification gaps
+
+* V1 — Mind Map search rendering. Data and logic verified; on-screen
+  rendering (search box placement, dropdown on mobile, centering math,
+  theme-row canvas highlight) has never been explicitly confirmed in a
+  real browser. Some aspects may have been incidentally exercised
+  during the 2026-06-30 connector-line debugging, but no one has
+  actually checked.
+* V2 — `content/pages/*.json` staleness audit. About, beginners, and
+  contact have never been content-audited; resources got a link-rot
+  check only. See the site-wide staleness audit section.
+
+### Deferred — revisit only on trigger
+
+* F1 — tree.json migration (Option 2). Only if the guarded splice ever
+  fails a guard in practice.
+* F2 — Reports automation track. Only if hand-authoring quarterly
+  reports in Decap stops being viable.
+
+### Improvement candidates (non-blocking)
+
+* I1 — `homepage_url` live-fetch validation. Validation is form-only;
+  a plausible URL can still 404. Consider a HEAD-request check if a bad
+  link ever ships.
 
 ---
 
@@ -110,9 +167,10 @@ content type is what caused most of today's problems.
   Grok-3" lineup when the actual current flagship was Grok 4.3 — caught
   only by manually web-searching before pasting it in. Always verify
   model-specific facts (current version names, pricing, context windows)
-  independently before approving a model-card draft. The existing OpenAI,
-  Anthropic, and Google cards likely have the same staleness problem
-  (GPT-4o/o3, Claude 4, Gemini 2.5) — not yet refreshed, known gap.
+  independently before approving a model-card draft. (The OpenAI, Anthropic,
+  and Google cards had the same staleness problem — resolved 2026-06-27
+  when PR #6 refreshed all six lab cards; see the models.html refresh
+  section below.)
 
 ---
 
