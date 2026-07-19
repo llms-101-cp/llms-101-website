@@ -17,7 +17,19 @@ something changes.
 Single source of truth for what is still open. Detailed context lives in
 the dated sections below — this list only points at them. Maintenance
 rule: any session that completes, adds, or re-scopes one of these items
-must update this list in the same commit as the work itself.
+must update this list in the same commit as the work itself. (Its
+reader-facing twin: any PR changing reader-facing content must append a
+`content/changelog.json` entry in the same PR — see content system 5.)
+
+### Immediate follow-ups
+
+* P1 — Pipeline changelog integration. The weekly publish stage
+  (`validate-and-publish.js`) and the monthly tracker run must append a
+  `content/changelog.json` entry for each publish (JSON.parse check as
+  part of the existing validate gate). Deferred from the 2026-07-19
+  updates-page PR because those exact script files carried uncommitted
+  in-flight self-planning work in the working tree; do it as soon as
+  that work lands.
 
 ### Watch items (time-triggered)
 
@@ -67,9 +79,9 @@ must update this list in the same commit as the work itself.
 
 ---
 
-## The four real content systems (confirmed, not assumed)
+## The five real content systems (confirmed, not assumed)
 
-There are FOUR genuinely different systems for managing content on this
+There are FIVE genuinely different systems for managing content on this
 site. They are NOT interchangeable. Using the wrong pattern for the wrong
 content type is what caused most of today's problems.
 
@@ -171,6 +183,24 @@ content type is what caused most of today's problems.
   and Google cards had the same staleness problem — resolved 2026-06-27
   when PR #6 refreshed all six lab cards; see the models.html refresh
   section below.)
+
+### 5. Site updates page (`updates.html`) — DYNAMIC, JSON-driven
+
+- **Storage:** `content/changelog.json` — a single append-only JSON array
+  (NOT a collection folder; deliberately outside generate-indices.js scope)
+- **Loader:** `updates.html` fetches it directly, sorts by date desc
+  client-side, renders entries. No index, no build step.
+- **Schema:** `[{ date: "YYYY-MM-DD", title?, items: [{ area, text }] }]`
+  — `area` is one of: Mind Map, Models, Tracker, Trends, Reports, Site.
+- **RULE (reader-facing changelog discipline):** any PR that changes
+  reader-facing CONTENT must append an entry (or add items to today's
+  entry) in the same PR. Reader-facing = Mind Map nodes, model cards,
+  tracker data, articles, reports, static-page content. NOT reader-facing
+  = scripts, CSS, infra, docs. This is the reader-facing twin of the
+  Outstanding-work list maintenance rule.
+- **Automation appends to the END of the array** (page sorts, so order
+  in file doesn't matter). Failure mode is a broken JSON parse → page
+  shows a graceful fallback message; validate JSON parses before commit.
 
 ---
 
