@@ -44,5 +44,15 @@
         "text": "Major build-out: the Model Directory, Model Tracker, and Trends hub launched, alongside eight articles and quarterly reports, a restructured navigation, and search-engine and AI-crawler optimisation."
       }
     ]
+  },
+  {
+    "date": "2026-07-19",
+    "title": "New page",
+    "items": [
+      {
+        "area": "Site",
+        "text": "This page launched — every meaningful reader-facing change to the site is now recorded here by date, and a link to it was added to the navigation site-wide."
+      }
+    ]
   }
 ]
