@@ -1,0 +1,48 @@
+[
+  {
+    "date": "2026-07-18",
+    "title": "Weekly content update",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "Reasoning Models node updated to reflect the current generation — Gemini Deep Think and Qwen3's hybrid thinking mode replace older examples."
+      },
+      {
+        "area": "Trends",
+        "text": "Our AI cost-collapse article is now \"Why AI Prices Have Dropped 200x in Three Years.\" DeepSeek's real cache-miss input price (US$0.14 per million tokens) meant the original 300x framing overstated the drop, so the numbers and title were corrected."
+      }
+    ]
+  },
+  {
+    "date": "2026-06-30",
+    "title": "June round-up: major expansion",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New search feature — type to find any topic on the map directly."
+      },
+      {
+        "area": "Mind Map",
+        "text": "New sixth root branch, \"What Else Matters,\" with five new topics: AI Agents, MCP (Model Context Protocol), Evaluation & Benchmarks, AI Regulation, and the Cost of AI."
+      },
+      {
+        "area": "Models",
+        "text": "Model Directory expanded from 7 to 10 model cards, and all six major lab cards (OpenAI, Anthropic, Google, Meta, DeepSeek, Mistral) refreshed against current releases and pricing (27 June)."
+      },
+      {
+        "area": "Site",
+        "text": "Site-wide staleness audit — every page checked and updated so dated claims reflect mid-2026 reality."
+      }
+    ]
+  },
+  {
+    "date": "2026-06-01",
+    "title": "Site foundations",
+    "items": [
+      {
+        "area": "Site",
+        "text": "Major build-out: the Model Directory, Model Tracker, and Trends hub launched, alongside eight articles and quarterly reports, a restructured navigation, and search-engine and AI-crawler optimisation."
+      }
+    ]
+  }
+]

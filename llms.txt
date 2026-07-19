@@ -9,6 +9,7 @@
 - [Model Directory](https://llms101.com/models): Superpower and trade-off profiles for every major frontier AI model family — OpenAI, Anthropic, Google, Meta, DeepSeek, Mistral. Plain English, no benchmarks.
 - [Model Tracker](https://llms101.com/tracker): Monthly updated human preference rankings and cost tier guide for frontier models. Based on Chatbot Arena Elo data with plain-English interpretation.
 - [Trends](https://llms101.com/trends): Short plain-English explainers on the biggest shifts in AI — agentic workflows, cost collapse, reasoning models, open source developments. Published twice monthly.
+- [What's Changed](https://llms101.com/updates): Dated record of every meaningful content change on the site — ranking shifts, new and retired models, price corrections, new topics.
 - [State of LLMs Q2 2026](https://llms101.com/trends/state-of-llms-q2-2026): Flagship quarterly report covering model landscape, top trends, and what non-technical professionals need to know.
 - [AI for Beginners](https://llms101.com/): Plain-English explanations of foundational AI concepts — what AI is, what LLMs are, how ChatGPT works, what tokens and hallucinations mean.
 - [Learning Resources](https://llms101.com/): Curated list of the best free courses, papers, and tools for learning about LLMs.
