@@ -1,7 +1,9 @@
 {
   "week": "2026-07-20",
-  "generatedAt": "2026-07-05T22:05:07.397Z",
+  "generatedAt": "2026-07-20T10:20:43.059Z",
   "dryRun": false,
+  "plannedBy": null,
+  "planRationale": null,
   "items": [
     {
       "filename": "ai-agents-tools.json",
@@ -13,14 +15,20 @@
       "notes": [],
       "factCheck": {
         "verdict": "pass",
-        "findings": []
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "The Model Context Protocol (MCP) — introduced by Anthropic in 2024 and now adopted by OpenAI and Google — standardises how agents connect to tools.",
+            "issue": "Accurate as stated (Anthropic introduced MCP in November 2024; OpenAI adopted it in March 2025 and Google in April 2025). Worth knowing for completeness: in December 2025 Anthropic donated MCP to the Linux Foundation's Agentic AI Foundation (co-founded with OpenAI and Block), so it is no longer solely an Anthropic-governed project. This does not falsify any claim in the content, but the governance change could be reflected in a future revision."
+          }
+        ]
       },
       "originalFactCheck": null,
       "repair": null,
       "layout": {
         "branch": "themes",
-        "before": "3/3",
-        "after": "3/3/1"
+        "before": "3/3/1",
+        "after": "3/3/2"
       },
       "liveUrl": "https://llms101.com/"
     },
@@ -37,8 +45,13 @@
         "findings": [
           {
             "severity": "note",
+            "claim": "As one industry guide puts it, an AI assistant is reactive... an AI agent 'can take actions automatically based on triggers without human prompting.'",
+            "issue": "The quote is attributed to an unnamed 'industry guide' with no identifiable source or link. Not a factual error, but the attribution is unverifiable. Consider naming the source or removing the quotation framing."
+          },
+          {
+            "severity": "note",
             "claim": "Gartner predicts that by 2026, 40% of enterprise applications will include task-specific AI agents.",
-            "issue": "Directionally correct but loses precision. Gartner's actual claim is '40% of enterprise applications will be integrated with task-specific AI agents by the END of 2026, up from less than 5% in 2025.' Consider adding 'by end of 2026' and the '<5% baseline' for accuracy; not blocking."
+            "issue": "Accurate, but Gartner's prediction (Aug 2025 press release) specifies 'by the end of 2026, up from less than 5% in 2025.' The article omits the baseline comparison; the headline figure and year are correct. Adding 'up from less than 5%' would improve fidelity but the claim as stated is not wrong."
           }
         ]
       },
