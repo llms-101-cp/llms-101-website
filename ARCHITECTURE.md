@@ -1,9 +1,8 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-06-25, via direct Claude Code repo inspection +
-live testing. Dated section notes through 2026-07-19 supersede this
-where present.**
+**Last verified: 2026-07-20, via direct Claude Code repo inspection +
+live testing. Section notes through 2026-07-20 supersede where present.**
 
 This document exists because a lot of today's work was wasted rediscovering
 things that should have been known upfront. Don't repeat that — read this,
@@ -29,7 +28,10 @@ reader-facing twin: any PR changing reader-facing content must append a
   part of the existing validate gate). Deferred from the 2026-07-19
   updates-page PR because those exact script files carried uncommitted
   in-flight self-planning work in the working tree. **Blocker cleared
-  2026-07-20** — self-planning landed; P1 can proceed.
+  2026-07-20** — self-planning landed; P1 can proceed. **First concrete
+  instance of the gap, also 2026-07-20:** publish commit `9dfa54c` shipped
+  with no changelog entry; caught by Craig and backfilled in a separate
+  changelog PR the same day.
 
 ### Watch items (time-triggered)
 
@@ -50,6 +52,16 @@ reader-facing twin: any PR changing reader-facing content must append a
   The validate-gate JSON.parse check should prevent this, but it will
   never have been exercised by real automation before that run. Pairs
   naturally with the W1 check on the 1 August tracker run.
+* W4 — Sunday 2026-07-26 21:00 UTC — first fully unattended run of the
+  planner + sentinel + retry stack together. Backlog is at 3 topics so
+  the backlog tier fires; the self-plan (tier 3) stays unexercised until
+  the backlog drains. Confirm via report email: (a) backlog entry consumed
+  and calendar committed in the chore step, (b) drafts generated + sentinel
+  written, (c) validate gate published at least one item, (d) changelog
+  entry appended to `/updates` (W3/P1 live exercise). If the run fails,
+  check whether another 529-wave hit — the retry stack should absorb a
+  transient burst, but a sustained overload can still exhaust all 3
+  attempts.
 
 ### Decisions parked for Craig
 
@@ -67,7 +79,10 @@ reader-facing twin: any PR changing reader-facing content must append a
   theme-row canvas highlight) has never been explicitly confirmed in a
   real browser. Some aspects may have been incidentally exercised
   during the 2026-06-30 connector-line debugging, but no one has
-  actually checked.
+  actually checked. The computer-use node published 2026-07-20 under
+  the Prompting branch is a concrete node to verify — visiting the
+  live Mind Map and confirming it appears, expands, and renders
+  correctly counts as partial coverage of this check.
 * V2 — `content/pages/*.json` staleness audit. About, beginners, and
   contact have never been content-audited; resources got a link-rot
   check only. See the site-wide staleness audit section.
@@ -84,6 +99,12 @@ reader-facing twin: any PR changing reader-facing content must append a
 * I1 — `homepage_url` live-fetch validation. Validation is form-only;
   a plausible URL can still 404. Consider a HEAD-request check if a bad
   link ever ships.
+* I2 — Failure-email consistency in generate.js. The zero-drafts exit-1
+  path (all generation calls failed) sends no Resend notification — only
+  the planner-failure path does. Every exit-1 in generate.js should route
+  through the same failure-email helper so Craig always hears about a
+  failed run via email, not just GitHub's run-failure notification.
+  Non-blocking: GitHub's run-failure emails cover the alarm meanwhile.
 
 ---
 
@@ -394,44 +415,39 @@ llms101-automation/
   so that `topic-backlog.json` mutations (consumed entries) are committed
   alongside the calendar update in the same weekly chore commit.
 
-  **Partially verified live 2026-07-20 — two bugs found and fixed
-  same session:**
-  - `plan_only=true` dispatch: confirmed correct. Backlog entry #1
-    proposed (`computer-use` node + "AI That Uses Your Computer" article),
-    nothing committed, nothing consumed (4 topics remained).
-  - Real dispatch: **partially failed**. The queue was empty, backlog
-    fired, entry #1 was consumed (4→3) and the calendar mutation was
-    committed — but both content API calls hit HTTP 529 (Overloaded).
-    generate.js logged "WARNING: No drafts were generated" and **exited 0
-    anyway**, moving the week to `completed[]` and writing the calendar.
-    validate-and-publish then silently fell back to the stale
-    `drafts/2026-07-20` folder (lexicographic max) and re-published July 5
-    content as if it were new. Two commits landed (`fc8db85` chore +
-    `737fd29` publish) with zero new content produced.
-  - **Bug 1 fixed (generate.js):** `allDrafts.length === 0` now exits 1
-    and does NOT advance the calendar — the week entry stays in `weeks[]`
-    for retry. A sentinel file `drafts/.last-generated-week` is written on
-    success so the next step knows exactly which week was produced.
-  - **Bug 2 fixed (validate-and-publish.js):** `resolveWeekFolder()` no
-    longer falls back to lexicographic-max when no explicit week arg.
-    Instead it requires `drafts/.last-generated-week` and asserts the
-    folder it names exists with a `_manifest.json`. A missing sentinel is
-    a loud exit-1 with an explanatory message, not a silent fallback.
-  - Calendar recovery: the `2026-07-27` entry was moved back from
-    `completed[]` to `weeks[0]` (without `_completed_at`). Backlog stays
-    at 3 — the topic is already in the calendar queue, so no re-seeding
-    needed.
-  - **2026-07-20 re-dispatch (same day as bug fixes):** hit the same HTTP
-    529 errors again — Anthropic API overloaded. The new exit-1 path fired
-    correctly (no false positive this time), the calendar was not advanced,
-    and the week entry remains in `weeks[0]` for the next run.
-  - **Retry policy added 2026-07-20** (`scripts/api-retry.js` — shared by
-    generate.js, validate-and-publish.js, plan-week.js): 3 attempts total,
-    exponential backoff with ±20% jitter (~30s / ~90s / ~270s). Retries on
-    transient statuses only: 529, 429, 500/502/503, and network errors.
-    Never retries 400/401/403/404. Retry-After headers are honoured.
-    Every retry logs loudly (attempt N/3, status, wait time). Exhaustion
-    still propagates as an error — the exit-1 fail-stop path is unchanged.
+  **2026-07-20 — three failures and three fixes in one session:**
+
+  **(a) Empty-calendar hard exit (July 12 + 19 crons).** `weeks[]` drained
+  while the self-planning fix sat uncommitted locally. Both scheduled runs
+  exited 1 immediately with no content generated and no email sent — exactly
+  the coverage gap the self-planning stage was built to close.
+
+  **(b) Green-but-wrong false positive (first dispatch of the landed fix).**
+  Both generation calls hit HTTP 529 (Overloaded). generate.js logged a
+  warning and **exited 0**, advancing the calendar and moving the entry to
+  `completed[]`. validate-and-publish.js fell back to the lexicographic-max
+  drafts folder (`drafts/2026-07-20`) and re-published July 5 content as new
+  (commits `fc8db85` chore + `737fd29` publish). The run appeared green.
+
+  **(c) Fixes shipped same session.** (i) Zero drafts is now a fatal exit 1;
+  the week entry stays in `weeks[]`; `drafts/.last-generated-week` sentinel
+  written on success only. (ii) `resolveWeekFolder()` requires the sentinel —
+  missing or dangling sentinel is a loud exit 1, never a silent fallback.
+  (iii) `scripts/api-retry.js` (new, shared by all three scripts): 3 attempts,
+  ~30s / ~90s backoff with ±20% jitter, retries on 529/429/500–503 and
+  network errors, Retry-After honoured, every retry logged loudly. Calendar
+  recovered manually (2026-07-27 entry restored to `weeks[0]`).
+
+  **Verified live 2026-07-20 (third dispatch, successful).** Planner consumed
+  the restored 2026-07-27 entry (source: backlog). Drafts committed in chore
+  `ec6e402` including the `.last-generated-week` sentinel.
+  `screen-control-agents-capabilities-limits` article failed first fact-check
+  (1 blocking finding), repaired, passed the full gate —
+  `published_after_repair`. `computer-use` node TREE-spliced into Prompting.
+  Publish commit `9dfa54c`. Report email sent. Indexing rebuilt
+  `articles_index.json`. Content identity confirmed:
+  `content/articles/screen-control-agents-capabilities-limits.json` and
+  `content/nodes/computer-use.json` both present on main.
 
 - **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
   superficially identical (confirmed 2026-06-25).** Both are JSON files
