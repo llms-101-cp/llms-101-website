@@ -1,0 +1,97 @@
+{
+  "week": "2026-07-27",
+  "generatedAt": "2026-07-20T10:58:33.420Z",
+  "dryRun": false,
+  "plannedBy": "backlog",
+  "planRationale": "From the topic backlog: Agents/MCP cluster, part two: agents that operate a computer (screen control, browser use) are the most visible agent form for non-technical readers, and the site has no node for it — 'agents' and 'mcp' under Prompting cover the concept and the connector, not this modality.",
+  "items": [
+    {
+      "filename": "computer-use.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/computer-use.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Example: \"OpenAI Operator\"",
+            "issue": "Operator no longer exists as a standalone product. It was shut down on August 31, 2025 and its capabilities were absorbed into ChatGPT Agent (now the operational successor, running inside ChatGPT). Operator remains a valid historical/illustrative example of computer use, so this is not blocking, but if the site wants examples to reflect currently live products, consider updating to 'OpenAI ChatGPT Agent' or noting Operator as its predecessor."
+          },
+          {
+            "severity": "note",
+            "claim": "Sources labeled \"Anthropic — Introducing computer use (Oct 2024)\" and \"Developing a computer use model\"",
+            "issue": "Both source URLs exist and match their labels; the Oct 2024 date is correct. No issue — noted only to confirm verification. The links are accurate and the body's description of the loop, visual interaction with any software, and recommended human oversight all match Anthropic's own descriptions."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "prompting",
+        "before": "3/3/2",
+        "after": "3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "screen-control-agents-capabilities-limits.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/screen-control-agents-capabilities-limits.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Open-source options like Browser Use, with over 90,000 GitHub stars...",
+            "issue": "The star count is at the high end of what sources support and can't be authoritatively confirmed. The project's own docs said '79k+' (March 2026) and a leaderboard showed ~78,505 (Feb 2026), while a June 2026 third-party blog cited '93K+'. 'Over 90,000' is plausible for July 2026 given the growth trajectory but is imprecise; consider softening to 'over 90,000' being verified against the live repo, or use 'tens of thousands'/'~90,000'."
+          },
+          {
+            "severity": "note",
+            "claim": "In August 2025, researchers found that hidden text on a webpage caused an agent to extract a user's email and one-time passcode.",
+            "issue": "Factually accurate but non-specific. The incident was Brave's security team disclosing an indirect prompt injection against Perplexity's Comet (hidden instructions in a Reddit spoiler tag). Naming the agent (Comet) and the disclosing party (Brave) would strengthen the claim; as written it is correct but vague."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Google's Project Mariner prioritizes DOM awareness over raw pixel parsing, making it stronger on web workflows. (presented in present tense as one of 'the major players')",
+            "issue": "Project Mariner was discontinued as a standalone product on May 4, 2026 — over two months before this article's publish date. Its capabilities were folded into Gemini Agent and Chrome's Auto Browse. Presenting Mariner as a current, active player is exactly the stale-lineup failure mode. Additionally, the characterization is inaccurate: Mariner was a computer-vision / screenshot-based ('watched your browser like a human') agent, not a DOM-first one. The section should be rewritten to reference Gemini Agent / Chrome Auto Browse as the current Google offering, or frame Mariner historically."
+          },
+          {
+            "severity": "note",
+            "claim": "In August 2025, researchers found that hidden text on a webpage caused an agent to extract a user's email and one-time passcode.",
+            "issue": "This appears to be a misattributed/inaccurate account. The prominent documented Claude for Chrome prompt-injection chain (ShadowPrompt) was reported to Anthropic in late December 2025 and publicly disclosed in March 2026, and involved reading Gmail/Docs/Calendar and stealing OAuth tokens — not specifically extracting an 'email and one-time passcode.' August 2025 was when Anthropic announced the Claude in Chrome pilot (with its own red-team results), not a researcher-found OTP extraction incident. The date and the specific 'one-time passcode' detail should be corrected to match an actual documented incident."
+          },
+          {
+            "severity": "note",
+            "claim": "Open-source options like Browser Use, with over 94,000 GitHub stars",
+            "issue": "The most authoritative source (GitHub itself) shows roughly 78,000–79,000 stars as of early-to-mid 2026; the project's own docs say '79k+'. Some secondary sources cite ~99,500 or 104k+. The 94,000 figure does not match the primary GitHub count and star counts change constantly; consider using a rounder, sourced figure (e.g., 'nearly 100,000' per the project site, or ~79,000 per GitHub) with an explicit date."
+          },
+          {
+            "severity": "note",
+            "claim": "The best computer-use agents score around 82% on OSWorld ... one in five attempts fails.",
+            "issue": "By mid-2026 the top of the OSWorld leaderboard exceeds this — tracked scores around 85% appear on public leaderboards (e.g., ~85.4% for a Claude-based setup). '~82% as the best' is slightly stale though still in a defensible range; the qualitative point (roughly one-in-five failure) remains valid. Consider updating the number or softening to 'the best agents now clear the ~72% human baseline, with top setups in the mid-80s.'"
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "screen-control-agents-capabilities-limits.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=screen-control-agents-capabilities-limits"
+    }
+  ]
+}

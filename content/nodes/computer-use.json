@@ -1,0 +1,27 @@
+{
+  "label": "Computer Use",
+  "sub": "AI controls your screen",
+  "tag": "Prompting",
+  "theme": "prompt",
+  "hasChildren": false,
+  "title": "Computer Use: When AI Takes the Mouse",
+  "body": "<p><strong>Computer use</strong> is a capability that lets an AI model operate a computer the way you do — by looking at the screen, moving a cursor, clicking buttons, and typing text. Instead of working through custom APIs or code, the model interprets screenshots of your desktop and decides what action to take next: click here, type that, scroll down.</p><p>The mechanism works in a loop: the AI receives a screenshot, identifies interface elements (buttons, text fields, menus), reasons about what to do, then sends back a specific action like 'click at coordinates (x, y)' or 'type these characters.' This cycle repeats until the task is complete. Because it works visually, the AI can interact with any software — even closed-source applications with no API.</p><p>This matters because it bridges the gap between what AI can understand and what it can actually <strong>do</strong>. Rather than waiting for every tool to build an AI integration, computer use lets models work with software exactly as it exists today. The tradeoff: it's slower than direct API calls and can make mistakes, especially with unusual interfaces. Current systems recommend human oversight for anything consequential.</p>",
+  "examples": [
+    "Claude Computer Use",
+    "OpenAI Operator",
+    "Browser Use",
+    "Desktop agents",
+    "GUI automation",
+    "Screenshot-action loop"
+  ],
+  "sources": [
+    {
+      "label": "Anthropic — Introducing computer use (Oct 2024)",
+      "url": "https://www.anthropic.com/news/3-5-models-and-computer-use"
+    },
+    {
+      "label": "Anthropic — Developing a computer use model",
+      "url": "https://www.anthropic.com/news/developing-computer-use"
+    }
+  ]
+}
