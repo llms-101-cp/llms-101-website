@@ -54,5 +54,18 @@
         "text": "This page launched — every meaningful reader-facing change to the site is now recorded here by date, and a link to it was added to the navigation site-wide."
       }
     ]
+  },
+  {
+    "date": "2026-07-20",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Computer Use node added to the Prompting branch — explains how screen-control agents work and what they can and can't do."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: AI That Uses Your Computer: What Screen-Control Agents Can and Cannot Do."
+      }
+    ]
   }
 ]
