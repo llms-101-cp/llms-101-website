@@ -82,6 +82,7 @@ import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
 import { callWithRetry } from './api-retry.js';
+import { appendToChangelog } from './changelog-append.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTOMATION_ROOT = path.join(__dirname, '..');
@@ -116,6 +117,16 @@ const FETCHED_TREE_BRANCHES = ['root', 'math', 'training', 'arch', 'prompting', 
 // top-level branch is a design decision, not a weekly content publish) and
 // 'roles' is excluded per the note above.
 const VALID_TARGET_BRANCHES = ['math', 'training', 'arch', 'prompting', 'themes'];
+
+// Human-readable branch names for the changelog — kept in manual sync with
+// the branch header NODE_DATA entries in index.html.
+const BRANCH_DISPLAY = {
+  math: 'Mathematics',
+  training: 'Training',
+  arch: 'Architectures',
+  prompting: 'Prompting',
+  themes: 'What Else Matters'
+};
 
 // ─── Layout constants — KEEP IN MANUAL SYNC with index.html ─────────────────
 // These mirror the values used by initLayout() (index.html ~lines 704-706 and
@@ -686,7 +697,7 @@ async function readPlanningContext(week) {
   return ctx;
 }
 
-async function sendReportEmail(week, results, commitSha, fatalError, planning) {
+async function sendReportEmail(week, results, commitSha, fatalError, planning, changelogWarning) {
   if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
     log('No email config — skipping published-report email.');
     return;
@@ -811,6 +822,11 @@ async function sendReportEmail(week, results, commitSha, fatalError, planning) {
       : 'Queue status: LOW (1 week queued) — after it runs, the following week will be self-planned unless you queue more.');
     sections.push('');
   }
+  if (changelogWarning) {
+    sections.push(`*** CHANGELOG APPEND FAILED: ${changelogWarning} ***`);
+    sections.push('The publish commit does not include a /updates changelog entry — add one manually.');
+    sections.push('');
+  }
   sections.push(`Status view: ${SITE_BASE}/admin/review.html?week=${week}`);
   sections.push('');
   sections.push('This email is the review trigger — the site is already live with the content above.');
@@ -866,6 +882,8 @@ async function main() {
   let indexHtmlDirty = false;
   const filesToStage = [];
   const auditFilesToStage = []; // repaired drafts — committed even when held, for the audit trail
+  const changelogItems = [];   // collected during the loop; appended after all items processed
+  let changelogWarning = null;
   let fatalError = null;
   let commitSha = null;
 
@@ -1056,6 +1074,10 @@ async function main() {
         indexHtml = splice.newHtml;
         indexHtmlDirty = true;
         filesToStage.push(entry.targetPath, 'index.html');
+        changelogItems.push({
+          area: 'Mind Map',
+          text: `New ${publishData.label} node added to the ${BRANCH_DISPLAY[entry.targetBranch] ?? entry.targetBranch} branch.`
+        });
         result.status = publishedViaRepair ? 'published_after_repair' : 'published';
         result.liveUrl = liveUrlFor(entry);
         continue;
@@ -1069,6 +1091,9 @@ async function main() {
         await fs.writeFile(targetAbs, JSON.stringify(publishData, null, 2), 'utf8');
       }
       filesToStage.push(entry.targetPath);
+      if (entry.contentType === 'trends-article') {
+        changelogItems.push({ area: 'Trends', text: `New article: ${publishData.title}.` });
+      }
       result.status = publishedViaRepair ? 'published_after_repair' : 'published';
       result.liveUrl = liveUrlFor(entry);
     }
@@ -1097,6 +1122,21 @@ async function main() {
       filesToStage.push(reportRel);
     } else {
       console.log('\n===== DRY RUN REPORT =====\n' + JSON.stringify(report, null, 2));
+    }
+
+    // Append to content/changelog.json before staging — included in the
+    // same publish commit so the changelog and the content are always in sync.
+    // Fail-soft: a failed append leaves the file untouched and notes the
+    // warning in the report email; publish is never held for a changelog error.
+    if (!dryRun && changelogItems.length > 0) {
+      const todayISO = new Date().toISOString().slice(0, 10);
+      const cl = await appendToChangelog(changelogItems, todayISO, REPO_ROOT, { log });
+      if (cl.warning) {
+        changelogWarning = cl.warning;
+        log(`WARNING: changelog append skipped — ${cl.warning}. Publish proceeds; entry must be added manually.`);
+      } else {
+        filesToStage.push(cl.relPath);
+      }
     }
 
     // One commit for the whole week — the audit trail and single revert
@@ -1145,7 +1185,7 @@ async function main() {
   // The email is Craig's review trigger — it must send even on partial failure.
   if (!dryRun) {
     try {
-      await sendReportEmail(week, results, commitSha, fatalError, await readPlanningContext(week));
+      await sendReportEmail(week, results, commitSha, fatalError, await readPlanningContext(week), changelogWarning);
     } catch (err) {
       log(`WARNING: report email threw: ${err.message}`);
     }

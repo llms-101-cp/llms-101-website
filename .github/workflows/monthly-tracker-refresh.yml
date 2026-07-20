@@ -50,7 +50,7 @@ jobs:
           git config user.name "llms101-bot"
           git config user.email "bot@llms101.com"
           git checkout -b "$BRANCH"
-          git add tracker.html
+          git add tracker.html content/changelog.json
 
           if git diff --staged --quiet; then
             echo "tracker.html is unchanged after generation — nothing to PR this month."

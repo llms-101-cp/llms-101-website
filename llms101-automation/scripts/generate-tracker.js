@@ -19,6 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
 import { buildModelTrackerPrompt, validateTrackerRows, TRACKER_ROW_COUNT } from '../prompts/track2-trends.js';
+import { appendToChangelog } from './changelog-append.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..', '..'); // repo root (this file lives in llms101-automation/scripts/)
@@ -229,6 +230,21 @@ async function main() {
 
   await fs.writeFile(TRACKER_PATH, updatedHTML, 'utf8');
   log(`Wrote updated tracker.html (dateModified: ${todayISO})`);
+
+  // Append a changelog entry so the tracker PR includes a /updates line.
+  // The workflow stages content/changelog.json alongside tracker.html.
+  // Fail-soft: a failed append is logged but does not abort the run.
+  const modelNames = rows.slice(0, 3).map(r => r.name).join(', ');
+  const cl = await appendToChangelog(
+    [{ area: 'Tracker', text: `Monthly Model Tracker updated — top models include ${modelNames} and ${rows.length - 3} more.` }],
+    todayISO,
+    ROOT,
+    { log }
+  );
+  if (cl.warning) {
+    log(`WARNING: changelog append skipped — ${cl.warning}. Add the entry to /updates manually after merging the PR.`);
+  }
+
   log('Done. The GitHub Action wrapper handles branch/commit/push/PR from here.');
 }
 
