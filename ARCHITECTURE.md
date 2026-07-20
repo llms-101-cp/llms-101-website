@@ -394,6 +394,17 @@ llms101-automation/
   so that `topic-backlog.json` mutations (consumed entries) are committed
   alongside the calendar update in the same weekly chore commit.
 
+  **Verified live 2026-07-20** (same day as landing, PR #26):
+  - `plan_only=true` dispatch confirmed: backlog entry #1 proposed
+    (`computer-use` node + "AI That Uses Your Computer" article), nothing
+    committed, nothing consumed (4 topics remained after the dry run).
+  - Real dispatch confirmed: queue was empty → backlog fired → entry #1
+    consumed (4→3 topics) and mutation committed → drafts generated →
+    full validate gate ran → publish commit `737fd29` pushed directly to
+    main → indexing.yml dispatched. 2 items published (0 via repair,
+    0 held). Report email includes the `*** THIS WEEK CAME FROM YOUR
+    TOPIC BACKLOG ***` provenance header.
+
 - **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
   superficially identical (confirmed 2026-06-25).** Both are JSON files
   with plausible-sounding filenames, and a calendar week doesn't always
