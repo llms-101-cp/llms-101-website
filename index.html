@@ -519,6 +519,7 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
     <div class="nav-section-label">About</div>
     <ul>
       <li><a href="#" onclick="showPage('about',this)" tabindex="0"><span class="nav-icon">ℹ️</span>About This Site</a></li>
+      <li><a href="#" onclick="showPage('methodology',this)" tabindex="0"><span class="nav-icon">📐</span>Methodology &amp; Glossary</a></li>
       <li><a href="#" onclick="showPage('contact',this)" tabindex="0"><span class="nav-icon">✉️</span>Contact</a></li>
     </ul>
   </nav>
@@ -674,6 +675,14 @@ footer .footer-sep{margin:0 .6rem;opacity:.4}
   <h3>Sources & further reading</h3>
   <p>All factual claims in the node explanations are drawn from primary sources including original research papers, official model documentation, and reputable technical publications. Sources are linked directly in each node's detail panel.</p>
   <p>Key references include: <a href="https://arxiv.org/abs/1706.03762" target="_blank">Vaswani et al. 2017 (Transformer)</a>, <a href="https://arxiv.org/abs/2005.14165" target="_blank">Brown et al. 2020 (GPT-3)</a>, <a href="https://arxiv.org/abs/2203.02155" target="_blank">Ouyang et al. 2022 (InstructGPT/RLHF)</a>, and the official model cards from Anthropic, OpenAI, Meta, Google DeepMind, Mistral, and Alibaba Qwen.</p>
+</div>
+</div>
+
+<div class="page" id="page-methodology">
+<div class="static-page">
+  <h2>Methodology &amp; Glossary</h2>
+  <div class="divider"></div>
+  <p>Content loads dynamically — see content/pages/methodology.json.</p>
 </div>
 </div>
 
@@ -1987,7 +1996,7 @@ async function loadCMSData() {
   }
 
   // 2. Fetch Static Pages
-  const pages = ['beginners', 'resources', 'about', 'contact'];
+  const pages = ['beginners', 'resources', 'about', 'contact', 'methodology'];
   await Promise.all(pages.map(async (pageId) => {
     try {
       const res = await fetch(`/content/pages/${pageId}.json`);
@@ -2667,7 +2676,13 @@ window.addEventListener('load', async () => {
   initLayout();
   renderNodes();
   drawConnectors();
-  initInteractivity(); 
+  initInteractivity();
+
+  // 4. Deep-link: if the URL path names a static page, open it directly
+  //    so /methodology (linked from tracker.html footer) opens the right section.
+  const PAGE_ROUTES = { '/methodology': 'methodology', '/about': 'about', '/contact': 'contact' };
+  const routedPage = PAGE_ROUTES[window.location.pathname];
+  if (routedPage) showPage(routedPage, null);
 });
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.map-search')) {

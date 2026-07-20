@@ -1,8 +1,8 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-07-20, via direct Claude Code repo inspection +
-live testing. Section notes through 2026-07-20 supersede where present.**
+**Last verified: 2026-07-21, via direct Claude Code repo inspection +
+live testing. Section notes through 2026-07-21 supersede where present.**
 
 This document exists because a lot of today's work was wasted rediscovering
 things that should have been known upfront. Don't repeat that — read this,
@@ -11,7 +11,7 @@ something changes.
 
 ---
 
-## Outstanding work — consolidated list (updated 2026-07-20)
+## Outstanding work — consolidated list (updated 2026-07-21)
 
 Single source of truth for what is still open. Detailed context lives in
 the dated sections below — this list only points at them. Maintenance
@@ -34,6 +34,38 @@ reader-facing twin: any PR changing reader-facing content must append a
   Deferred from PR #24 because the script files carried uncommitted in-flight
   self-planning work; first concrete instance of the gap was publish commit
   `9dfa54c` (no changelog entry); backfilled manually in PR #27 same day.
+
+* P2 — Narrow /updates changelog scope. New article publication should NOT
+  generate a changelog entry going forward (the Trends index already catalogues
+  new articles) — only a correction to a previously published article's factual
+  content should. Requires: (1) remove the `area: Trends`-on-every-publish
+  behaviour from `validate-and-publish.js`'s changelog-append call, since
+  automated publishes are always new articles, never corrections; (2) define
+  how a manual correction to an existing article gets its own changelog entry
+  (no such flow exists today — likely a manual/PR-based append, not automated);
+  (3) update ARCHITECTURE.md System 5 rule text to match. Not started.
+
+* P3 — Methodology & Glossary page + tracker.html sourcing fix. **Landed
+  2026-07-21.** New `content/pages/methodology.json` registered in
+  `index.html` (CMS fetch list, nav link, fallback page div); `tracker.html`
+  lines 222 and 482 corrected — both previously misattributed rankings to
+  LMSYS Chatbot Arena; generate-tracker.js actually uses unconstrained
+  `web_search`. Footer now links to `/methodology`. Changelog entry appended
+  (area: Site, 2026-07-21). System 5 note below updated to include
+  `methodology` in the registered pages list.
+
+* P4 — Link badges/tiers to the methodology page, and model-name lists on
+  `models.html` cards to their corresponding tracker rows (no anchor IDs exist
+  on tracker rows yet — needs adding). Depends on P3 landing first. Not started.
+
+* P5 (future, deferred) — Wire `track1-json.js` / `track2-trends.js` prompts
+  to actually query Artificial Analysis and LMArena as named data sources,
+  rather than unconstrained web_search. Requires a verified tracker re-run
+  before the Methodology page's sourcing language can be upgraded to name those
+  sources (draft wording quarantined separately — do not publish until the
+  pipeline actually implements it). Not started — explicitly not bundled with
+  P3 to avoid shipping a page that claims a pipeline behaviour the code
+  doesn't yet have.
 
 ### Watch items (time-triggered)
 
@@ -134,7 +166,7 @@ content type is what caused most of today's problems.
 
 ### 2. Static pages (Beginners/Resources/About/Contact) — DYNAMIC, JSON-driven ✅ confirmed working
 
-- **Storage:** `content/pages/{beginners|resources|about|contact}.json`
+- **Storage:** `content/pages/{beginners|resources|about|contact|methodology}.json`
 - **Loader:** `index.html` → `loadCMSData()` → fetches each page's JSON,
   parses `body` field as Markdown via `marked.js`, injects into the page
 - **Schema:** `{ title, body }` — body is Markdown, NOT HTML

@@ -67,5 +67,18 @@
         "text": "New article: AI That Uses Your Computer: What Screen-Control Agents Can and Cannot Do."
       }
     ]
+  },
+  {
+    "date": "2026-07-21",
+    "items": [
+      {
+        "area": "Site",
+        "text": "New Methodology & Glossary page — explains how rankings, status badges, and cost tiers are worked out, and defines key terms used across the site."
+      },
+      {
+        "area": "Site",
+        "text": "Model Tracker sourcing note corrected — the tracker footer and in-page note previously misattributed rankings to LMSYS Chatbot Arena; replaced with an accurate description of our monthly editorial review process."
+      }
+    ]
   }
 ]
