@@ -1,5 +1,19 @@
 [
   {
+    "title": "AI That Uses Your Computer: What Screen-Control Agents Can and Cannot Do",
+    "slug": "screen-control-agents-capabilities-limits",
+    "date": "2026-07-20",
+    "category": "Trend Spotlight",
+    "read_time": "6 min read",
+    "summary": "Computer-use agents can now click, type, and navigate your screen. Here is what they actually automate today, where they fail, and what to check before giving one your credentials.",
+    "before_label": "The old way",
+    "before": "You describe a task in words, and the AI gives you instructions to follow yourself. The AI never touches your screen.",
+    "after_label": "The new way",
+    "after": "You describe a task, and the agent sees your screen, moves the mouse, types, and completes the workflow autonomously.",
+    "file": "content/articles/screen-control-agents-capabilities-limits.json",
+    "url": "/trends/view-article.html?article=screen-control-agents-capabilities-limits"
+  },
+  {
     "title": "What AI Agents Actually Do in 2026",
     "slug": "what-ai-agents-actually-do-2026",
     "date": "2026-07-05",
