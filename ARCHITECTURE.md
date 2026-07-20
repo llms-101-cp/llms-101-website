@@ -22,16 +22,18 @@ reader-facing twin: any PR changing reader-facing content must append a
 
 ### Immediate follow-ups
 
-* P1 — Pipeline changelog integration. The weekly publish stage
-  (`validate-and-publish.js`) and the monthly tracker run must append a
-  `content/changelog.json` entry for each publish (JSON.parse check as
-  part of the existing validate gate). Deferred from the 2026-07-19
-  updates-page PR because those exact script files carried uncommitted
-  in-flight self-planning work in the working tree. **Blocker cleared
-  2026-07-20** — self-planning landed; P1 can proceed. **First concrete
-  instance of the gap, also 2026-07-20:** publish commit `9dfa54c` shipped
-  with no changelog entry; caught by Craig and backfilled in a separate
-  changelog PR the same day.
+* P1 — Pipeline changelog integration. **Landed 2026-07-20.** After a
+  successful publish, `validate-and-publish.js` appends one entry to the
+  END of `content/changelog.json` (area: Mind Map for nodes, Trends for
+  articles) in the same publish commit; on append failure the publish
+  proceeds and a warning appears in the report email. `generate-tracker.js`
+  appends a Tracker entry alongside `tracker.html` in its monthly PR commit;
+  the workflow was widened to stage `content/changelog.json` too. Shared
+  helper: `scripts/changelog-append.js` (fail-soft: reads, validates
+  round-trip JSON parse, writes — any error returns a warning, never throws).
+  Deferred from PR #24 because the script files carried uncommitted in-flight
+  self-planning work; first concrete instance of the gap was publish commit
+  `9dfa54c` (no changelog entry); backfilled manually in PR #27 same day.
 
 ### Watch items (time-triggered)
 
@@ -44,14 +46,15 @@ reader-facing twin: any PR changing reader-facing content must append a
 * W2 — Digital Omnibus. The `regulation` node correctly treats the
   amendment as agreed-but-unpublished. When it is formally published,
   the node's dates need updating. See the regulation-node note.
-* W3 — First autonomous changelog append. Once P1 lands, the first
-  weekly cron run to auto-append a `content/changelog.json` entry does
-  so with no human in the loop. Check `/updates` after that run: a
-  malformed append is the one failure mode that blanks the page down to
-  its fallback message (JSON.parse fails → graceful error, no entries).
-  The validate-gate JSON.parse check should prevent this, but it will
-  never have been exercised by real automation before that run. Pairs
-  naturally with the W1 check on the 1 August tracker run.
+* W3 — First autonomous changelog append. **Armed 2026-07-20 (P1
+  landed).** The first unattended weekly cron run (W4, Sunday 2026-07-26)
+  is the live exercise. Check `/updates` after that run: a malformed append
+  is the one failure mode that blanks the page down to its fallback message
+  (JSON.parse fails → graceful error, no entries). The round-trip JSON.parse
+  check in `changelog-append.js` should prevent this, but it will never have
+  been exercised by real automation before that run. Pairs naturally with the
+  W1 check on the 1 August tracker run (first automated Tracker changelog
+  entry).
 * W4 — Sunday 2026-07-26 21:00 UTC — first fully unattended run of the
   planner + sentinel + retry stack together. Backlog is at 3 topics so
   the backlog tier fires; the self-plan (tier 3) stays unexercised until
@@ -230,6 +233,11 @@ content type is what caused most of today's problems.
 - **Automation appends to the END of the array** (page sorts, so order
   in file doesn't matter). Failure mode is a broken JSON parse → page
   shows a graceful fallback message; validate JSON parses before commit.
+  As of 2026-07-20 (P1), `validate-and-publish.js` appends automatically
+  after each publish (area: Mind Map / Trends), and `generate-tracker.js`
+  appends a Tracker entry as part of its monthly PR. The shared helper
+  `scripts/changelog-append.js` handles read→append→round-trip-validate→write
+  and returns a warning rather than throwing on any error.
 
 ---
 
