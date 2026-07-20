@@ -27,6 +27,14 @@ on:
           draft through the gate.
         required: false
         default: ''
+      plan_only:
+        description: >-
+          Editorial dry run of the self-planning stage. 'true' = real
+          priority order (backlog first); 'auto' = force the tier-3
+          self-planning call. Prints the proposed week + rationale to the
+          log, commits NOTHING, generates NOTHING.
+        required: false
+        default: ''
 
 jobs:
   generate-and-publish:
@@ -52,17 +60,31 @@ jobs:
           git config user.name "llms101-bot"
           git config user.email "bot@llms101.com"
 
-      - name: Generate weekly content (Track 1 JSON + Track 2 HTML)
-        if: ${{ github.event.inputs.publish_week == '' }}
+      # Editorial dry run of the self-planning stage: proposes a week,
+      # prints it, changes nothing. All other steps are skipped.
+      - name: Plan-only dry run
+        if: ${{ github.event.inputs.plan_only != '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/plan-week.js --plan-only ${{ github.event.inputs.plan_only == 'auto' && '--source=auto' || '' }}
+        working-directory: ./llms101-automation
+
+      # RESEND vars are needed here too since 2026-07-05: if the queue is
+      # empty and the self-planning stage fails, generate.js sends the
+      # "nothing generated this week" final-resort email itself.
+      - name: Generate weekly content (Track 1 JSON + Track 2 HTML)
+        if: ${{ github.event.inputs.publish_week == '' && github.event.inputs.plan_only == '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
         run: node scripts/generate.js
         working-directory: ./llms101-automation
 
       - name: Commit drafts to repo
-        if: ${{ github.event.inputs.publish_week == '' }}
+        if: ${{ github.event.inputs.publish_week == '' && github.event.inputs.plan_only == '' }}
         run: |
-          git add llms101-automation/content-calendar/calendar.json
+          git add llms101-automation/content-calendar/
           git add llms101-automation/drafts/
           git diff --staged --quiet || git commit -m "chore: weekly content drafts $(date +%Y-%m-%d)"
           git push
@@ -73,6 +95,7 @@ jobs:
       # Held-back items and the reasons go in the email — a red X here
       # means an infrastructure failure, not merely held content.
       - name: Validate and publish
+        if: ${{ github.event.inputs.plan_only == '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -87,6 +110,7 @@ jobs:
       # idempotent, so dispatching on a week with no article is a cheap
       # no-op ("No structural changes to commit").
       - name: Trigger content indexing
+        if: ${{ github.event.inputs.plan_only == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run indexing.yml --ref main

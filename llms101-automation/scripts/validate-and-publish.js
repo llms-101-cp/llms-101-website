@@ -642,7 +642,26 @@ function liveUrlFor(entry) {
 
 // ─── Published-report email ──────────────────────────────────────────────────
 
-async function sendReportEmail(week, results, commitSha, fatalError) {
+// Reads planning metadata for this week (was it self-planned?) and the
+// queue depth, both from calendar.json. Email-layer only — no gate logic.
+async function readPlanningContext(week) {
+  const ctx = { plannedBy: null, rationale: null, weeksQueued: 0 };
+  try {
+    const calendar = JSON.parse(await fs.readFile(path.join(AUTOMATION_ROOT, 'content-calendar', 'calendar.json'), 'utf8'));
+    ctx.weeksQueued = (calendar.weeks ?? []).length;
+    const entry = [...(calendar.completed ?? [])].reverse().find(w => w.week_of === week)
+      ?? (calendar.weeks ?? []).find(w => w.week_of === week);
+    if (entry && entry._planned_by) {
+      ctx.plannedBy = entry._planned_by;
+      ctx.rationale = entry.rationale ?? null;
+    }
+  } catch (err) {
+    log(`WARNING: could not read planning context from calendar.json: ${err.message}`);
+  }
+  return ctx;
+}
+
+async function sendReportEmail(week, results, commitSha, fatalError, planning) {
   if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
     log('No email config — skipping published-report email.');
     return;
@@ -657,6 +676,20 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
   const sections = [];
   sections.push(`llms101.com weekly publish report — week of ${week}`);
   sections.push('');
+
+  // Auto-planned weeks LEAD with the editorial provenance — the topic
+  // choice itself is now reviewable, not just the content.
+  if (planning?.plannedBy === 'auto') {
+    sections.push('*** THIS WEEK WAS SELF-PLANNED (no queued week, empty backlog). ***');
+    sections.push(`Why this topic: ${planning.rationale ?? '(no rationale recorded)'}`);
+    sections.push('Queuing a week in calendar.json always overrides self-planning.');
+    sections.push('');
+  } else if (planning?.plannedBy === 'backlog') {
+    sections.push('*** THIS WEEK CAME FROM YOUR TOPIC BACKLOG (no queued week). ***');
+    sections.push(`Why this topic: ${planning.rationale ?? '(no rationale recorded)'}`);
+    sections.push('Queuing a week in calendar.json always overrides the backlog.');
+    sections.push('');
+  }
 
   if (fatalError) {
     sections.push(`*** PIPELINE ERROR: ${fatalError} ***`);
@@ -745,6 +778,14 @@ async function sendReportEmail(week, results, commitSha, fatalError) {
     sections.push('Nothing was committed this week.');
   }
   sections.push('');
+  // Low-fuel note (informational, not an alarm — the planner takes over
+  // when the queue empties).
+  if (planning && planning.weeksQueued <= 1) {
+    sections.push(planning.weeksQueued === 0
+      ? 'Queue status: EMPTY — next week will be self-planned (backlog first) unless you queue one.'
+      : 'Queue status: LOW (1 week queued) — after it runs, the following week will be self-planned unless you queue more.');
+    sections.push('');
+  }
   sections.push(`Status view: ${SITE_BASE}/admin/review.html?week=${week}`);
   sections.push('');
   sections.push('This email is the review trigger — the site is already live with the content above.');
@@ -1014,11 +1055,15 @@ async function main() {
     }
 
     // Publish report file — committed alongside the content so the
-    // dashboard's read-only status view can render it.
+    // dashboard's read-only status view can render it. Carries the
+    // planning provenance so the dashboard can show it too.
+    const planningCtx = await readPlanningContext(week);
     const report = {
       week,
       generatedAt: new Date().toISOString(),
       dryRun,
+      plannedBy: planningCtx.plannedBy,
+      planRationale: planningCtx.rationale,
       items: results.map(({ _dryRunPlacedFile, ...r }) => r)
     };
     const reportRel = `llms101-automation/drafts/${week}/_publish_report.json`;
@@ -1075,7 +1120,7 @@ async function main() {
   // The email is Craig's review trigger — it must send even on partial failure.
   if (!dryRun) {
     try {
-      await sendReportEmail(week, results, commitSha, fatalError);
+      await sendReportEmail(week, results, commitSha, fatalError, await readPlanningContext(week));
     } catch (err) {
       log(`WARNING: report email threw: ${err.message}`);
     }
