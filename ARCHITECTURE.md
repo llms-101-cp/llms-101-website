@@ -46,13 +46,26 @@ reader-facing twin: any PR changing reader-facing content must append a
   (3) update ARCHITECTURE.md System 5 rule text to match. Not started.
 
 * P3 — Methodology & Glossary page + tracker.html sourcing fix. **Landed
-  2026-07-21.** New `content/pages/methodology.json` registered in
-  `index.html` (CMS fetch list, nav link, fallback page div); `tracker.html`
+  2026-07-21 (PR #29 + follow-up commit 69ae9df).** New
+  `content/pages/methodology.json` registered in `index.html` (CMS fetch
+  list, nav link, fallback page div); `_redirects` entry added
+  (`/methodology → /index.html 200`); PAGE_ROUTES handler in `load` init
+  opens the correct section when the URL path is `/methodology`. `tracker.html`
   lines 222 and 482 corrected — both previously misattributed rankings to
-  LMSYS Chatbot Arena; generate-tracker.js actually uses unconstrained
+  LMSYS Chatbot Arena; `generate-tracker.js` actually uses unconstrained
   `web_search`. Footer now links to `/methodology`. Changelog entry appended
   (area: Site, 2026-07-21). System 5 note below updated to include
   `methodology` in the registered pages list.
+  **Post-merge fix (69ae9df):** `tracker.html`, `models.html`, `trends.html`,
+  and `updates.html` have their own standalone flat header nav (separate from
+  `index.html`'s hamburger drawer) — Methodology was unreachable from any of
+  them. Added `<a href="/methodology">Methodology</a>` to the end of all four
+  navs. `guide.html`'s two-link minimal nav left unchanged (its established
+  pattern; About/Contact are also absent there).
+  **GOTCHA for future page additions:** any new static page added to
+  `index.html`'s hamburger nav must ALSO be added to the flat header nav in
+  all four satellite pages (tracker/models/trends/updates), or it will be
+  unreachable from those pages. The two nav systems are not shared.
 
 * P4 — Link badges/tiers to the methodology page, and model-name lists on
   `models.html` cards to their corresponding tracker rows (no anchor IDs exist
@@ -164,12 +177,28 @@ content type is what caused most of today's problems.
   which silently broke the ENTIRE dynamic loading system for ALL node
   types (not just the root) until fixed 2026-06-21.
 
-### 2. Static pages (Beginners/Resources/About/Contact) — DYNAMIC, JSON-driven ✅ confirmed working
+### 2. Static pages (Beginners/Resources/About/Contact/Methodology) — DYNAMIC, JSON-driven ✅ confirmed working
 
 - **Storage:** `content/pages/{beginners|resources|about|contact|methodology}.json`
 - **Loader:** `index.html` → `loadCMSData()` → fetches each page's JSON,
   parses `body` field as Markdown via `marked.js`, injects into the page
 - **Schema:** `{ title, body }` — body is Markdown, NOT HTML
+- **Navigation — TWO separate systems (confirmed 2026-07-21):**
+  - `index.html` hamburger drawer — all static pages linked here via
+    `showPage('id', this)`. Deep-link routing via `PAGE_ROUTES` map in the
+    `load` init opens the right section when the URL path matches (e.g.
+    `/methodology`). `_redirects` maps clean URLs to `index.html 200`.
+  - Satellite pages (`tracker.html`, `models.html`, `trends.html`,
+    `updates.html`) — each has its own flat header `<nav>` with hardcoded
+    links. These are NOT connected to `index.html`'s hamburger. Any static
+    page that should be reachable from satellite pages must be added to both
+    navs explicitly. `guide.html` has a deliberately minimal 2-link nav and
+    is exempt from this rule.
+- **CRITICAL GOTCHA:** Adding a new `content/pages/{id}.json` requires
+  FOUR edits in `index.html` (CMS fetch list, nav `<li>`, fallback `<div>`,
+  `PAGE_ROUTES` map) AND one line in each of the four satellite page navs.
+  Miss either side and the page is either unreachable from the hamburger or
+  unreachable from tracker/models/trends/updates.
 
 ### 3. Trends articles — DYNAMIC, JSON-driven ✅ fixed and confirmed working 2026-06-21
 
