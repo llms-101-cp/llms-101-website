@@ -1,21 +1,6 @@
 {
   "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard): trendsArticle now generates a single JSON file for content/articles/; modelCard remains a manual-paste HTML block.",
-  "weeks": [
-    {
-      "week_of": "2026-07-27",
-      "node": {
-        "id": "computer-use",
-        "parentContext": "Prompting & Usage branch — sits alongside the existing 'agents' and 'mcp' nodes",
-        "theme": "prompt"
-      },
-      "trendsArticle": {
-        "topic": "AI That Uses Your Computer: What Screen-Control Agents Can and Can't Do",
-        "notes": "Plain-English tour of computer-use/browser agents in current products, grounded via live search. What they actually automate today, where they fail, and what to watch before trusting one with your accounts."
-      },
-      "rationale": "From the topic backlog: Agents/MCP cluster, part two: agents that operate a computer (screen control, browser use) are the most visible agent form for non-technical readers, and the site has no node for it — 'agents' and 'mcp' under Prompting cover the concept and the connector, not this modality.",
-      "_planned_by": "backlog"
-    }
-  ],
+  "weeks": [],
   "completed": [
     {
       "week_of": "2026-06-29",
@@ -84,6 +69,21 @@
         "notes": "Plain-English explainer: agents vs chatbots, tool use, MCP as the connector standard. Grounded in current products via live search, not hype."
       },
       "_completed_at": "2026-07-05T22:04:27.217Z"
+    },
+    {
+      "week_of": "2026-07-27",
+      "node": {
+        "id": "computer-use",
+        "parentContext": "Prompting & Usage branch — sits alongside the existing 'agents' and 'mcp' nodes",
+        "theme": "prompt"
+      },
+      "trendsArticle": {
+        "topic": "AI That Uses Your Computer: What Screen-Control Agents Can and Can't Do",
+        "notes": "Plain-English tour of computer-use/browser agents in current products, grounded via live search. What they actually automate today, where they fail, and what to watch before trusting one with your accounts."
+      },
+      "rationale": "From the topic backlog: Agents/MCP cluster, part two: agents that operate a computer (screen control, browser use) are the most visible agent form for non-technical readers, and the site has no node for it — 'agents' and 'mcp' under Prompting cover the concept and the connector, not this modality.",
+      "_planned_by": "backlog",
+      "_completed_at": "2026-07-20T10:55:53.864Z"
     }
   ]
 }

@@ -1,0 +1,21 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/computer-use.json",
+    "filename": "computer-use.json",
+    "requiresVisualReview": false,
+    "extraStep": "Publisher adds 'computer-use' to TREE.prompting in index.html automatically (validate-and-publish.js).",
+    "note": null,
+    "targetBranch": "prompting"
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/screen-control-agents-capabilities-limits.json",
+    "filename": "screen-control-agents-capabilities-limits.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]
