@@ -616,13 +616,27 @@ async function resolveWeekFolder(argFolder) {
     }
     return argFolder;
   }
-  const entries = await fs.readdir(DRAFTS_DIR, { withFileTypes: true });
-  const candidates = entries
-    .filter(e => e.isDirectory() && existsSync(path.join(DRAFTS_DIR, e.name, '_manifest.json')))
-    .map(e => e.name)
-    .sort();
-  if (!candidates.length) throw new Error('No drafts folder with a _manifest.json found');
-  return candidates[candidates.length - 1];
+  // When called after a normal generate.js run (no explicit week arg),
+  // require the sentinel file generate.js writes on success. Without it
+  // we have no way to know which week was just produced, and falling back
+  // to the lexicographic-max folder risks silently re-publishing stale
+  // content from a previous week (exactly what happened on 2026-07-20).
+  const sentinelPath = path.join(DRAFTS_DIR, '.last-generated-week');
+  if (!existsSync(sentinelPath)) {
+    throw new Error(
+      'drafts/.last-generated-week not found — generate.js must write this sentinel before validate-and-publish runs. ' +
+      'Pass an explicit weekFolder argument to bypass (e.g. node scripts/validate-and-publish.js 2026-07-27).'
+    );
+  }
+  const sentinelWeek = (await fs.readFile(sentinelPath, 'utf8')).trim();
+  const p = path.join(DRAFTS_DIR, sentinelWeek);
+  if (!existsSync(path.join(p, '_manifest.json'))) {
+    throw new Error(
+      `drafts/.last-generated-week points to '${sentinelWeek}' but drafts/${sentinelWeek}/_manifest.json was not found. ` +
+      'Generation may have failed after writing the sentinel, or the drafts folder was not committed.'
+    );
+  }
+  return sentinelWeek;
 }
 
 // ─── Live URL helper ─────────────────────────────────────────────────────────

@@ -414,10 +414,20 @@ async function main() {
   const allDrafts = [...track1Drafts, ...track2Drafts];
 
   if (allDrafts.length === 0) {
-    log('WARNING: No drafts were generated this week.');
-  } else {
-    await saveDrafts(weekOf, allDrafts);
+    // Every track that was scheduled produced an error (API failure, parse
+    // failure, etc.) — there is nothing to publish. Do NOT advance the
+    // calendar (the week entry stays in weeks[] for the next retry), and
+    // exit 1 so the workflow step fails loudly rather than falling through
+    // to validate-and-publish picking up a stale folder.
+    log('FATAL: All content generation failed this week — 0 drafts written. The week entry remains in the queue for retry. Exiting 1.');
+    process.exit(1);
   }
+
+  await saveDrafts(weekOf, allDrafts);
+
+  // Sentinel read by validate-and-publish's resolveWeekFolder so it knows
+  // which week was just produced and refuses to fall back to an older folder.
+  await fs.writeFile(path.join(ROOT, 'drafts', '.last-generated-week'), weekOf, 'utf8');
 
   calendar.weeks.shift();
   calendar.completed = calendar.completed || [];

@@ -394,16 +394,33 @@ llms101-automation/
   so that `topic-backlog.json` mutations (consumed entries) are committed
   alongside the calendar update in the same weekly chore commit.
 
-  **Verified live 2026-07-20** (same day as landing, PR #26):
-  - `plan_only=true` dispatch confirmed: backlog entry #1 proposed
-    (`computer-use` node + "AI That Uses Your Computer" article), nothing
-    committed, nothing consumed (4 topics remained after the dry run).
-  - Real dispatch confirmed: queue was empty → backlog fired → entry #1
-    consumed (4→3 topics) and mutation committed → drafts generated →
-    full validate gate ran → publish commit `737fd29` pushed directly to
-    main → indexing.yml dispatched. 2 items published (0 via repair,
-    0 held). Report email includes the `*** THIS WEEK CAME FROM YOUR
-    TOPIC BACKLOG ***` provenance header.
+  **Partially verified live 2026-07-20 — two bugs found and fixed
+  same session:**
+  - `plan_only=true` dispatch: confirmed correct. Backlog entry #1
+    proposed (`computer-use` node + "AI That Uses Your Computer" article),
+    nothing committed, nothing consumed (4 topics remained).
+  - Real dispatch: **partially failed**. The queue was empty, backlog
+    fired, entry #1 was consumed (4→3) and the calendar mutation was
+    committed — but both content API calls hit HTTP 529 (Overloaded).
+    generate.js logged "WARNING: No drafts were generated" and **exited 0
+    anyway**, moving the week to `completed[]` and writing the calendar.
+    validate-and-publish then silently fell back to the stale
+    `drafts/2026-07-20` folder (lexicographic max) and re-published July 5
+    content as if it were new. Two commits landed (`fc8db85` chore +
+    `737fd29` publish) with zero new content produced.
+  - **Bug 1 fixed (generate.js):** `allDrafts.length === 0` now exits 1
+    and does NOT advance the calendar — the week entry stays in `weeks[]`
+    for retry. A sentinel file `drafts/.last-generated-week` is written on
+    success so the next step knows exactly which week was produced.
+  - **Bug 2 fixed (validate-and-publish.js):** `resolveWeekFolder()` no
+    longer falls back to lexicographic-max when no explicit week arg.
+    Instead it requires `drafts/.last-generated-week` and asserts the
+    folder it names exists with a `_manifest.json`. A missing sentinel is
+    a loud exit-1 with an explanatory message, not a silent fallback.
+  - Calendar recovery: the `2026-07-27` entry was moved back from
+    `completed[]` to `weeks[0]` (without `_completed_at`). Backlog stays
+    at 3 — the topic is already in the calendar queue, so no re-seeding
+    needed. Re-dispatch pending.
 
 - **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
   superficially identical (confirmed 2026-06-25).** Both are JSON files
