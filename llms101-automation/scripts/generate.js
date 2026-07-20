@@ -343,6 +343,43 @@ async function saveDrafts(weekOf, drafts) {
   );
 }
 
+// ─── Planner-failure email (final resort — the planner replaced the old
+// empty-calendar hard failure, but if the planner itself errors Craig
+// still needs to hear about it) ───────────────────────────────────────────────
+
+async function sendPlannerFailureEmail(reason) {
+  if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
+    log('No email config — cannot send planner-failure notification.');
+    return;
+  }
+  const body = `Nothing was generated this week.
+
+The calendar queue was empty and the self-planning stage failed:
+
+  ${reason}
+
+No content was generated and nothing was published. Fix the cause (or
+just queue a week in llms101-automation/content-calendar/calendar.json —
+a hand-queued week always wins) and re-run the workflow.
+
+This is an automated message from the llms101 content pipeline.`;
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: 'llms101-bot@llms101.com',
+      to: process.env.REVIEW_EMAIL,
+      subject: '[llms101] Weekly run: nothing generated — planner failed',
+      text: body
+    })
+  });
+  if (res.ok) log('Planner-failure email sent.');
+  else log(`WARNING: planner-failure email failed — HTTP ${res.status}: ${await res.text().catch(() => '(no body)')}`);
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -350,8 +387,22 @@ async function main() {
 
   const calendar = await readCalendar();
   if (calendar.weeks.length === 0) {
-    log('ERROR: Content calendar is empty.');
-    process.exit(1);
+    // Self-planning stage (2026-07-05): queue > backlog > self-plan.
+    // Hand-queued weeks always win — this only runs when the queue is
+    // empty. Fail-stop: a planning/validation failure emails Craig and
+    // exits; it never retry-loops and never generates from an invalid plan.
+    log('Calendar queue is empty — invoking the self-planning stage (queue > backlog > self-plan).');
+    try {
+      const { planWeek } = await import('./plan-week.js');
+      const planned = await planWeek();
+      calendar.weeks.unshift(planned.weekEntry);
+      if (planned.consumeBacklog) await planned.consumeBacklog();
+      log(`Planned week ${planned.weekEntry.week_of} (source: ${planned.plannedBy}). Rationale: ${planned.rationale}`);
+    } catch (err) {
+      log(`ERROR: self-planning failed — ${err.message}`);
+      await sendPlannerFailureEmail(err.message);
+      process.exit(1);
+    }
   }
 
   const weekEntry = calendar.weeks[0];

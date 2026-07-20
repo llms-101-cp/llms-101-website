@@ -12,7 +12,7 @@ something changes.
 
 ---
 
-## Outstanding work — consolidated list (updated 2026-07-19)
+## Outstanding work — consolidated list (updated 2026-07-20)
 
 Single source of truth for what is still open. Detailed context lives in
 the dated sections below — this list only points at them. Maintenance
@@ -28,8 +28,8 @@ reader-facing twin: any PR changing reader-facing content must append a
   `content/changelog.json` entry for each publish (JSON.parse check as
   part of the existing validate gate). Deferred from the 2026-07-19
   updates-page PR because those exact script files carried uncommitted
-  in-flight self-planning work in the working tree; do it as soon as
-  that work lands.
+  in-flight self-planning work in the working tree. **Blocker cleared
+  2026-07-20** — self-planning landed; P1 can proceed.
 
 ### Watch items (time-triggered)
 
@@ -317,9 +317,16 @@ llms101-automation/
   file, no dynamic system) and are always held back with that reason.
 - **The dashboard fetches from GitHub's raw content API** (public repo,
   no auth needed) — `raw.githubusercontent.com/{owner}/{repo}/main/...`
-- **Calendar only reads `weeks[0]`.** If it's missing or malformed, the
-  whole run fails with no graceful "nothing scheduled" path. Always keep
-  at least one well-formed entry in `weeks[]`.
+- **Calendar only reads `weeks[0]` — ~~hard exit on empty is gone~~
+  (2026-07-20).** The original behaviour: if `weeks[]` is empty or
+  missing, the whole run exits 1 with no content generated and no email
+  sent. This crashed two production runs in a row — July 12 and July 19,
+  2026 — when the queue drained and the self-planning work sat in the
+  working tree unmerged. **As of 2026-07-20 the empty-calendar hard exit
+  is replaced by the self-planning stage** (see below). A hand-queued
+  week always wins; the self-planner only fires when `weeks[]` is empty.
+  Always keep at least one well-formed entry in `weeks[]` if you want to
+  override the self-planner's topic choice.
 - **`EXISTING_TRENDS_SLUGS` array in `generate.js` is hardcoded** — it
   lists the real standalone HTML articles so Claude can reference them by
   name. If you add a new permanent hardcoded article to `trends/`, add its
@@ -335,6 +342,58 @@ llms101-automation/
   email can still link straight to it. Don't infer anything about when a
   batch was actually generated or reviewed from its `week_of` label —
   check `_completed_at` in `calendar.json`'s `completed[]` array instead.
+- **Self-planning stage (landed 2026-07-20 — Craig's decision to extend
+  pipeline autonomy to topic selection, with manual queuing as the
+  standing override).** When `weeks[]` is empty, `generate.js` imports
+  `plan-week.js` instead of exiting. Editorial priority is strictly:
+
+  1. **Queue** (`calendar.weeks[]`) — hand-queued weeks always win. `plan-week.js`
+     is never reached while the queue has entries.
+  2. **Backlog** (`content-calendar/topic-backlog.json`) — Craig's soft
+     steering. The top entry is turned into a full week entry and
+     `consumeBacklog()` removes it from the file after a real run (never
+     during a `--plan-only` dry run). Reorder or edit the backlog freely;
+     order is priority.
+  3. **Self-plan** — only when queue AND backlog are both empty. One
+     `web_search`-enabled Anthropic call (claude-opus-4-8) with live
+     coverage context (existing TREE ids, article index, standalone
+     slugs, recent completed weeks) proposes a topic that matters to a
+     non-technical audience and doesn't near-duplicate existing coverage.
+
+  Every planned entry gets two audit fields stamped on it: `_planned_by`
+  (`"backlog"` or `"auto"`) and `rationale` (2-3 sentences). Both ride
+  into `calendar.completed[]` permanently. The report email leads with a
+  prominent `*** THIS WEEK WAS SELF-PLANNED ***` / `*** BACKLOG ***`
+  header when either source was used — **the topic choice is reviewable,
+  not just the content**. A low-queue warning appears in the email when
+  ≤1 week remains queued.
+
+  **Plan validation** runs on both backlog and self-plan paths before
+  generation proceeds — fail-stop, no retry. Checks: node.id is
+  kebab-case, not already in TREE or `content/nodes/`, and maps to a
+  valid branch; `trendsArticle.topic` is non-empty, has notes, and
+  passes a word-set Dice similarity check against all existing coverage
+  (threshold 0.6). A validation failure sends the "nothing generated this
+  week" email and exits 1 — generation never runs on an invalid plan.
+
+  **Planner failure** (planning API error, parse error, or validation
+  failure) sends the `[llms101] Weekly run: nothing generated — planner
+  failed` email with the specific reason and exits 1. This is the
+  final-resort path; it should be rare once the backlog has entries.
+
+  **`--plan-only` CLI / `plan_only` dispatch input:** editorial safety
+  net — commits nothing, generates nothing, mutates nothing. Pass
+  `plan_only=true` to exercise the real priority order (backlog first);
+  `plan_only=auto` to force the tier-3 self-planning call regardless of
+  backlog state. Prints the proposed week entry + rationale to the log.
+  Use this to spot-check what the planner would pick before the Sunday
+  cron fires.
+
+  **`git add llms101-automation/content-calendar/`** (not just
+  `calendar.json`): the commit step in `weekly-content.yml` was widened
+  so that `topic-backlog.json` mutations (consumed entries) are committed
+  alongside the calendar update in the same weekly chore commit.
+
 - **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
   superficially identical (confirmed 2026-06-25).** Both are JSON files
   with plausible-sounding filenames, and a calendar week doesn't always
