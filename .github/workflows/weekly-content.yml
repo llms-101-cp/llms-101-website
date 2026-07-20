@@ -95,6 +95,7 @@ jobs:
       # Held-back items and the reasons go in the email — a red X here
       # means an infrastructure failure, not merely held content.
       - name: Validate and publish
+        if: ${{ github.event.inputs.plan_only == '' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -109,6 +110,7 @@ jobs:
       # idempotent, so dispatching on a week with no article is a cheap
       # no-op ("No structural changes to commit").
       - name: Trigger content indexing
+        if: ${{ github.event.inputs.plan_only == '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run indexing.yml --ref main
