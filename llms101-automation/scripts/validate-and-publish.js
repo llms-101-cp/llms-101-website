@@ -81,6 +81,7 @@ import vm from 'vm';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
+import { callWithRetry } from './api-retry.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTOMATION_ROOT = path.join(__dirname, '..');
@@ -504,14 +505,19 @@ Return ONLY valid JSON, no markdown fences, in exactly this shape:
 "fail" if and only if there is at least one blocking finding. An empty
 findings array with verdict "pass" is the expected result for clean content.`;
 
-  const message = await client.messages.create({
-    model: 'claude-opus-4-8', // same convention as generate-tracker.js — re-check against
-                              // docs.claude.com if this errors model-not-found after a while
-    max_tokens: 4000,
-    system,
-    messages: [{ role: 'user', content: user }],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
-  });
+  const label = `fact-check: ${entry.filename}`;
+  const message = await callWithRetry(
+    () => client.messages.create({
+      model: 'claude-opus-4-8', // same convention as generate-tracker.js — re-check against
+                                // docs.claude.com if this errors model-not-found after a while
+      max_tokens: 4000,
+      system,
+      messages: [{ role: 'user', content: user }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+    }),
+    label,
+    { log }
+  );
 
   if (message.stop_reason === 'max_tokens') {
     throw new Error('fact-check response hit max_tokens — not safe to parse');
@@ -582,13 +588,18 @@ Requirements:
   statement must carry an explicit date (e.g. "as of ${todayISO}").
 - Match the original's tone, structure, and approximate length.`;
 
-  const message = await client.messages.create({
-    model: 'claude-opus-4-8', // same convention as the fact-check pass
-    max_tokens: 8000,
-    system,
-    messages: [{ role: 'user', content: user }],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
-  });
+  const label = `repair: ${entry.filename}`;
+  const message = await callWithRetry(
+    () => client.messages.create({
+      model: 'claude-opus-4-8', // same convention as the fact-check pass
+      max_tokens: 8000,
+      system,
+      messages: [{ role: 'user', content: user }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+    }),
+    label,
+    { log }
+  );
 
   if (message.stop_reason === 'max_tokens') {
     throw new Error('repair generation hit max_tokens — likely truncated, not safe to parse');

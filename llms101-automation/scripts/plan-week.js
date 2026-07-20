@@ -33,6 +33,7 @@ import path from 'path';
 import vm from 'vm';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
+import { callWithRetry } from './api-retry.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTOMATION_ROOT = path.join(__dirname, '..');
@@ -244,13 +245,17 @@ the topic; the article is the required part):
   "rationale": "2-3 sentences: why this topic, why now, for this audience."
 }`;
 
-  const message = await client.messages.create({
-    model: 'claude-opus-4-8',
-    max_tokens: 4000,
-    system,
-    messages: [{ role: 'user', content: user }],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
-  });
+  const message = await callWithRetry(
+    () => client.messages.create({
+      model: 'claude-opus-4-8',
+      max_tokens: 4000,
+      system,
+      messages: [{ role: 'user', content: user }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+    }),
+    'self-plan',
+    { log }
+  );
 
   if (message.stop_reason === 'max_tokens') {
     throw new Error('planning call hit max_tokens — not safe to parse');

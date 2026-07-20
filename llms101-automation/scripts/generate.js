@@ -38,6 +38,7 @@ import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
 import { buildNodePrompt, buildPagePrompt } from '../prompts/track1-json.js';
 import { buildTrendsArticlePrompt, buildModelCardPrompt } from '../prompts/track2-trends.js';
+import { callWithRetry, sleep as retrySleep } from './api-retry.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -119,13 +120,17 @@ function extractJsonObject(text) {
 
 async function generateJSON(prompt, label, maxTokens = 3500) {
   log(`Generating (web_search enabled): ${label}`);
-  const message = await client.messages.create({
-    model: 'claude-opus-4-5',
-    max_tokens: maxTokens,
-    system: prompt.system,
-    messages: [{ role: 'user', content: prompt.user }],
-    tools: [WEB_SEARCH_TOOL]
-  });
+  const message = await callWithRetry(
+    () => client.messages.create({
+      model: 'claude-opus-4-5',
+      max_tokens: maxTokens,
+      system: prompt.system,
+      messages: [{ role: 'user', content: prompt.user }],
+      tools: [WEB_SEARCH_TOOL]
+    }),
+    label,
+    { log }
+  );
   const raw = lastTextBlock(message);
   const fenceStripped = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
   const cleaned = extractJsonObject(fenceStripped) ?? fenceStripped;
@@ -146,13 +151,17 @@ async function generateJSON(prompt, label, maxTokens = 3500) {
 
 async function generateHTML(prompt, label) {
   log(`Generating (web_search enabled): ${label}`);
-  const message = await client.messages.create({
-    model: 'claude-opus-4-5',
-    max_tokens: 8000,
-    system: prompt.system,
-    messages: [{ role: 'user', content: prompt.user }],
-    tools: [WEB_SEARCH_TOOL]
-  });
+  const message = await callWithRetry(
+    () => client.messages.create({
+      model: 'claude-opus-4-5',
+      max_tokens: 8000,
+      system: prompt.system,
+      messages: [{ role: 'user', content: prompt.user }],
+      tools: [WEB_SEARCH_TOOL]
+    }),
+    label,
+    { log }
+  );
 
   if (message.stop_reason === 'max_tokens') {
     log(`WARNING: HTML generation for "${label}" hit the token limit and was truncated.`);
@@ -175,7 +184,7 @@ async function saveError(label, raw) {
   );
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+const sleep = retrySleep;
 
 // ─── Track 1: JSON drafts ─────────────────────────────────────────────────────
 

@@ -420,7 +420,18 @@ llms101-automation/
   - Calendar recovery: the `2026-07-27` entry was moved back from
     `completed[]` to `weeks[0]` (without `_completed_at`). Backlog stays
     at 3 — the topic is already in the calendar queue, so no re-seeding
-    needed. Re-dispatch pending.
+    needed.
+  - **2026-07-20 re-dispatch (same day as bug fixes):** hit the same HTTP
+    529 errors again — Anthropic API overloaded. The new exit-1 path fired
+    correctly (no false positive this time), the calendar was not advanced,
+    and the week entry remains in `weeks[0]` for the next run.
+  - **Retry policy added 2026-07-20** (`scripts/api-retry.js` — shared by
+    generate.js, validate-and-publish.js, plan-week.js): 3 attempts total,
+    exponential backoff with ±20% jitter (~30s / ~90s / ~270s). Retries on
+    transient statuses only: 529, 429, 500/502/503, and network errors.
+    Never retries 400/401/403/404. Retry-After headers are honoured.
+    Every retry logs loudly (attempt N/3, status, wait time). Exhaustion
+    still propagates as an error — the exit-1 fail-stop path is unchanged.
 
 - **Track 1 (`page`/`node`) and Track 2 (`trendsArticle`) drafts can look
   superficially identical (confirmed 2026-06-25).** Both are JSON files
