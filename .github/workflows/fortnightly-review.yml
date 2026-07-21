@@ -39,6 +39,15 @@ jobs:
 
       # workflow_dispatch always runs (--force); the scheduled cron relies on
       # the script's own isScheduledWeek() gate to skip the off week.
+      #
+      # The script commits AND pushes any static-page correction itself, in
+      # this same step, immediately after `git commit` — same pattern as
+      # validate-and-publish.js. Deliberately NOT a separate workflow step:
+      # the first live dispatch (2026-07-21) hit an Anthropic API credit
+      # error on a LATER check (models.html), which aborted the job before a
+      # separate push step ever ran, leaving an already-committed correction
+      # stranded on the ephemeral runner and lost when it was destroyed. See
+      # ARCHITECTURE.md's Fortnightly Full-Site Review section.
       - name: Run fortnightly review
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -46,10 +55,3 @@ jobs:
           REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
         run: node scripts/fortnightly-review.js ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
         working-directory: ./llms101-automation
-
-      # Any static-page correction is already committed locally by the
-      # script itself (git add + git commit, same pattern as
-      # validate-and-publish.js) — this just pushes it. A run with nothing
-      # to correct makes no commit, so this is a no-op push in that case.
-      - name: Push any fortnightly correction commit
-        run: git push

@@ -524,6 +524,20 @@ async function main() {
         git('commit', '-m', `fortnightly review: ${corrected.length} static page correction(s) (${todayISO})`);
         commitSha = git('rev-parse', 'HEAD');
         log(`Committed ${corrected.length} static page correction(s): ${commitSha}`);
+        // Push immediately, in the same script invocation — same reasoning as
+        // validate-and-publish.js's git('push', ...) calls: this commit must
+        // reach origin before anything later in the run can fail and abort
+        // the job, or the correction is committed only on the ephemeral
+        // runner and lost when it's destroyed (exactly what happened
+        // 2026-07-21's first live dispatch, when a later API-credit error
+        // aborted the job before a separate workflow-level push step ran).
+        try {
+          git('push', 'origin', 'HEAD:main');
+          log('Pushed correction commit to origin/main.');
+        } catch (pushErr) {
+          log(`WARNING: push failed — ${pushErr.message}. The correction commit exists locally on this runner only and will be lost when the job ends.`);
+          if (!fatalError) fatalError = `push failed after commit ${commitSha}: ${pushErr.message}`;
+        }
       }
     }
   }
