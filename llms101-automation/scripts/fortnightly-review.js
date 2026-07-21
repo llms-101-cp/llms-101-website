@@ -533,6 +533,40 @@ async function main() {
       log(`ERROR during review: ${err.stack}`);
     }
 
+    // Commit + push the drafts/report folder (model-card suggested
+    // replacements + the audit-trail JSON) FIRST, before the page-correction
+    // commit below — these are real work product from paid API calls that
+    // the report email only describes, not contains. Previously written to
+    // disk but never committed at all, so every draft from a run was lost
+    // the moment the runner was destroyed (caught on the third live
+    // dispatch, 2026-07-21, after the earlier push-order and isolation bugs
+    // were fixed — see ARCHITECTURE.md's Fortnightly Full-Site Review
+    // section). Doing this before the page-correction commit means the
+    // drafts survive even if that later commit/push has its own trouble.
+    if (!dryRun) {
+      const reportDir = path.join(DRAFTS_DIR, `fortnightly-${todayISO}`);
+      await fs.mkdir(reportDir, { recursive: true });
+      await fs.writeFile(
+        path.join(reportDir, '_fortnightly_report.json'),
+        JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, fatalError }, null, 2),
+        'utf8'
+      );
+      try {
+        const relReportDir = path.relative(REPO_ROOT, reportDir);
+        git('add', relReportDir);
+        const draftsStatus = git('status', '--porcelain');
+        if (draftsStatus) {
+          git('commit', '-m', `fortnightly review: drafts + report (${todayISO})`);
+          const draftsCommitSha = git('rev-parse', 'HEAD');
+          git('push', 'origin', 'HEAD:main');
+          log(`Committed and pushed fortnightly drafts/report: ${draftsCommitSha}`);
+        }
+      } catch (err) {
+        log(`WARNING: could not commit/push the fortnightly drafts/report folder — ${err.message}. Model-card drafts and the audit-trail JSON exist only on this runner and will be lost.`);
+        if (!fatalError) fatalError = `drafts/report commit failed: ${err.message}`;
+      }
+    }
+
     const corrected = pageResults.filter(r => r.status === 'corrected');
     if (!dryRun && corrected.length) {
       const changelogItems = corrected.map(r => ({
@@ -567,16 +601,6 @@ async function main() {
         }
       }
     }
-  }
-
-  if (!dryRun) {
-    const reportDir = path.join(DRAFTS_DIR, `fortnightly-${todayISO}`);
-    await fs.mkdir(reportDir, { recursive: true });
-    await fs.writeFile(
-      path.join(reportDir, '_fortnightly_report.json'),
-      JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, commitSha, fatalError, changelogWarning }, null, 2),
-      'utf8'
-    );
   }
 
   if (!offline) {
