@@ -73,21 +73,20 @@ reader-facing twin: any PR changing reader-facing content must append a
   all populated). See System 2 below for the updated gotcha list.
 
 * P6 — Fortnightly Full-Site Review + sitewide "Last Updated" date format.
-  **Code landed 2026-07-21** (this session): new
-  `llms101-automation/scripts/fortnightly-review.js` +
+  **Landed and live-verified 2026-07-21** (PR #31 + four follow-up fixes,
+  #32-#35, all found via real dispatches after Craig topped up Anthropic
+  credit): `llms101-automation/scripts/fortnightly-review.js` +
   `.github/workflows/fortnightly-review.yml` (Wednesday 15:00 UTC cron,
-  self-gated to biweekly — see the new Fortnightly Full-Site Review section
-  below), plus a sitewide date-format fix (every "Last Updated"-style
-  element now reads "27th June 2026" style, ordinal suffix, not the
-  previous mix of "June 2026" / "28 June 2026" / no-ordinal formats).
-  **Not yet exercised**: like every other automation script added to this
-  repo, the code has been syntax-checked and its pure helpers mock-tested,
-  but no live `web_search`/fact-check run has happened yet (no
-  `ANTHROPIC_API_KEY` in the environment that built it) — the actual first
-  run, which is also what resolves V2 below, happens either on the first
-  scheduled Wednesday after this merges to main, or via an explicit
-  `gh workflow run fortnightly-review.yml` dispatch. Don't treat V2 as
-  closed until a report email from a real run has actually arrived.
+  self-gated to biweekly), plus a sitewide date-format fix (every
+  "Last Updated"-style element now reads "27th June 2026" style). Five
+  manual dispatches, four real bugs (push-order, missing per-item
+  isolation, drafts/report never committed, `lastTextBlock`-only silently
+  dropping payloads when the model appends a trailing note — the last one
+  also patched in the SHARED `repairDraft()` used by the weekly pipeline).
+  Run 5 was clean end to end: `resources.json` got 3 real corrections
+  published (commit `1a1ed857`), 7 stale model cards drafted cleanly
+  (commit `ecfd37b4`). See the Fortnightly Full-Site Review section below
+  for the full account. V2 is closed.
 * P4 — Link badges/tiers to the methodology page, and model-name lists on
   `models.html` cards to their corresponding tracker rows (no anchor IDs exist
   on tracker rows yet — needs adding). Depends on P3 landing first. Not started.
@@ -131,17 +130,17 @@ reader-facing twin: any PR changing reader-facing content must append a
   check whether another 529-wave hit — the retry stack should absorb a
   transient burst, but a sustained overload can still exhaust all 3
   attempts.
-* W5 — First fortnightly review run. Code landed 2026-07-21 (P6); the
-  first real execution (via the first scheduled Wednesday after merge, or
-  a manual `gh workflow run fortnightly-review.yml` dispatch) is what
-  actually closes V2. Confirm via report email: (a) all 4 static pages
-  checked, (b) resources.json's link-rot check ran and found the expected
-  zero-or-few dead links, (c) any static-page correction actually
-  auto-published in one commit with a changelog entry, (d) models.html's
-  10 cards were all found and checked (not silently zero — see
-  `extractModelCards`'s balanced-div walk), (e) the biweekly gate fires
-  correctly on the next scheduled Wednesday and is a silent no-op on the
-  Wednesday after that.
+* W5 — First SCHEDULED (not manually dispatched) fortnightly review run.
+  P6 landed and was live-verified 2026-07-21 via 5 manual `workflow_dispatch`
+  runs (see the Fortnightly Full-Site Review section) — items (a)-(d) from
+  the original version of this note are all confirmed: static pages
+  checked, link-rot ran, a correction auto-published with a changelog
+  entry, all 10 models.html cards found and checked. What's still
+  unverified: the biweekly gate itself (`isScheduledWeek()`) firing
+  correctly under the real Wednesday 15:00 UTC cron rather than `--force`.
+  First real cron opportunity: 2026-07-22 (the anchor date itself, so it
+  should fire); confirm it's a silent no-op on 2026-07-29, then fires
+  again 2026-08-05.
 
 ### Decisions parked for Craig
 
@@ -163,16 +162,16 @@ reader-facing twin: any PR changing reader-facing content must append a
   the Prompting branch is a concrete node to verify — visiting the
   live Mind Map and confirming it appears, expands, and renders
   correctly counts as partial coverage of this check.
-* V2 — `content/pages/*.json` staleness audit. About, beginners, and
-  contact have never been content-audited; resources got a link-rot
-  check only (2026-06-27). **Mechanism landed 2026-07-21** — the new
-  fortnightly job (see P6 above and the new section below) fact-checks all
-  four pages plus link-rot on resources every run, auto-correcting through
-  the same schema→fact-check→repair-once→publish|hold gate the weekly
-  pipeline uses. **Still open until the first real run completes** — the
-  code exists but hasn't executed against live web_search yet; this entry
-  moves to Outstanding Work's "landed" language only after that report
-  email actually arrives.
+* V2 — `content/pages/*.json` staleness audit. **RESOLVED 2026-07-21.**
+  About, beginners, and contact had never been content-audited; resources
+  had only ever gotten a link-rot check (2026-06-27). The new fortnightly
+  job (P6, see the section below) now fact-checks all four pages plus
+  link-rot on resources every run, auto-correcting through the same
+  schema→fact-check→repair-once→publish|hold gate the weekly pipeline
+  uses. Live-verified, not just built: run 5 of the dispatch cycle found
+  and published 3 real corrections to `resources.json` (a dead/stale
+  newsletter link among them), the first genuine content audit any of
+  these four pages has ever had.
 
 ### Deferred — revisit only on trigger
 
@@ -1016,16 +1015,77 @@ run exits immediately with no API calls and no email. `workflow_dispatch`
 testing. If the cadence ever needs to change, the anchor date and the cron
 expression both need updating together.
 
-**Status as of 2026-07-21: code landed, not yet exercised.** Syntax-checked
-(`node --check`) and the pure helpers (`ordinal`, `isScheduledWeek`,
-`extractUrls`, `checkLinkRot`, `extractModelCards`) were mock-tested against
-real fixtures and the live `models.html`/`tracker.html` — see P6 in
-Outstanding Work and W5 in Watch items. No live `web_search`/fact-check run
-has happened yet; the environment that built this had no
-`ANTHROPIC_API_KEY`. The first real run — via the next scheduled Wednesday
-after this merges to main, or an explicit `gh workflow run
-fortnightly-review.yml` dispatch — is what actually closes V2, not the code
-landing.
+**Status as of 2026-07-21: live-verified via 5 manual dispatches, V2
+CLOSED.** The build environment had no `ANTHROPIC_API_KEY`, so the initial
+PR (#31) shipped syntax-checked and mock-tested but never exercised against
+real `web_search`. Once Craig topped up the Anthropic account's credit
+balance, manual `gh workflow run fortnightly-review.yml` dispatches found
+and fixed four real bugs in quick succession — each one caught something
+the mock tests structurally couldn't, because it required an actual model
+response:
+
+1. **Push-order bug (run 1, PR #32).** The script committed a
+   `resources.json` correction locally, then a later, unrelated card check
+   hit `400: credit balance too low` and aborted the job before a
+   *separate* workflow-level push step ever ran. The already-committed
+   correction was stranded on the ephemeral runner and lost when it was
+   destroyed. Fixed: `git push` now happens immediately after `git commit`,
+   inside the script itself — same pattern `validate-and-publish.js`
+   already uses, for the same reason.
+2. **No per-item isolation (run 2, PR #33).** `resources.json`'s repair
+   response failed to parse as JSON, and because `checkStaticPages()`/
+   `checkModelCards()` had no per-item try/catch, that ONE page's failure
+   aborted the entire run — `models.html`'s 10 cards and the spot-audit
+   never even started. Fixed to isolate each page/card individually, same
+   "a failure in any step holds back THAT item only" principle
+   `validate-and-publish.js` already applies per manifest entry.
+3. **Drafts/report never committed (run 3, PR #34).** The run completed
+   cleanly end to end — 8 model-card drafts written, but the drafts folder
+   and `_fortnightly_report.json` were only ever written to the runner's
+   disk, never staged or pushed. All of that real work product (paid API
+   calls) vanished the moment the runner was destroyed; the report email
+   only describes findings in text, it doesn't carry the actual draft
+   HTML. Fixed: commit + push the whole `drafts/fortnightly-{date}/` folder
+   immediately after writing it, BEFORE the page-correction commit.
+4. **"Last text block only" silently drops the payload (run 4, PR #35) —
+   the real root cause, not a one-off.** `resources.json`'s repair had now
+   failed 3/3 live attempts with `Unexpected token '(', "(the draft"...`,
+   and 4 of 7 model-card drafts from run 3 were just a stray sentence
+   fragment, no HTML at all. Root cause in both: the model sometimes
+   appends a SEPARATE final text block of caveats/notes AFTER the real
+   payload (e.g. "(the draft above reflects corrected links; I couldn't
+   verify two of the older entries...)"), and `lastTextBlock()` — used by
+   `repairDraft()` in `validate-and-publish.js` and by this job's
+   model-card generation — takes only that trailing block, silently
+   discarding the real content that lived earlier in the response. Fixed
+   as a narrow fallback (not a rewrite of the working common path, so the
+   narration-BEFORE-content case `lastTextBlock` was originally chosen to
+   handle isn't regressed): `repairDraft()` retries against the full
+   concatenated response if the last-block parse fails; the model-card
+   path searches the full concatenated response for a balanced
+   `<div class="mcard">` directly, reusing `extractBalancedDiv()` (already
+   used to parse `models.html` itself). **This is shared code** —
+   `repairDraft()` backs the weekly Trends/node pipeline too, so this fix
+   plausibly also closes a latent bug there that had simply never been
+   triggered by a typical (smaller) article/node repair target.
+
+**Run 5, clean.** All 4 static pages checked; `resources.json` found 3
+real issues (Import AI's newsletter had moved off Substack to
+jack-clark.net; two other resource-card descriptions/URLs were stale),
+repaired, re-fact-checked, and published in one commit
+(`1a1ed85786de1e5f5efaab3e9b112a442c79feb8`) with a changelog entry. All 10
+model cards checked, 7 drafted as clean full-HTML suggested replacements
+(verified: `model-card-grok.html` is a complete 44-line block starting
+directly with `<div class="mcard"`, not the 1-line fragment run 4
+produced), landed in a separate drafts+report commit
+(`ecfd37b4a568c968007f4943c50cd7af039cad6a`). Spot-audit ran without
+findings. **V2 is closed** — the mechanism has now genuinely reviewed and
+corrected live content, not just run without crashing.
+
+**Known rough edge, not blocking:** the corrected `resources.json` lost
+its trailing newline (`fs.writeFile(..., JSON.stringify(...))` doesn't add
+one back). Harmless — doesn't affect JSON validity or rendering — but
+worth a one-line fix (`+ '\n'`) next time this file is touched.
 
 **Sitewide "Last Updated" date format (bundled with this work, same
 2026-07-21 session).** Every "Last Updated"-style element on the site now
