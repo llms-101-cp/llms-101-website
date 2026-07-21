@@ -298,7 +298,7 @@ async function checkStaticPages(client, { dryRun }) {
       result.status = 'corrected';
       result.newData = repaired;
       if (!dryRun) {
-        await fs.writeFile(filePath, JSON.stringify(repaired, null, 2), 'utf8');
+        await fs.writeFile(filePath, JSON.stringify(repaired, null, 2) + '\n', 'utf8');
       }
       log(`  corrected${dryRun ? ' [DRY RUN — not written]' : ' and written'}`);
     } catch (err) {
