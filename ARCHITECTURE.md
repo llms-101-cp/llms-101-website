@@ -56,18 +56,21 @@ reader-facing twin: any PR changing reader-facing content must append a
   `web_search`. Footer now links to `/methodology`. Changelog entry appended
   (area: Site, 2026-07-21). Two-nav GOTCHA resolved by the nav redesign below.
 
-* Nav redesign — Unified navigation. **Landed 2026-07-21.** Replaced all
-  per-page hardcoded `<nav>` blocks across 17 HTML files with a single
-  data-driven system: `content/settings/nav.json` (source of truth) +
-  `scripts/render-nav.js` (injected via `<script defer>` in every page's
-  `<head>`). Desktop: persistent top bar with hover dropdown groups (≥641px).
-  Mobile: hamburger + slide-out drawer (≤640px), reusing the index.html
-  drawer pattern. Footer links also data-driven from the same `nav.json`.
-  `_redirects` extended with `/beginners`, `/resources`, `/about`, `/contact`
-  all routing to `index.html 200`. PAGE_ROUTES in `index.html` extended to
-  include `beginners` and `resources`. The "two nav systems" GOTCHA from P3
-  is permanently resolved — there is now one nav system for all pages.
-  See System 2 below for the updated gotcha list.
+* Nav redesign — Unified navigation. **Landed 2026-07-21 (PR #30, merge
+  commit a102630).** Replaced all per-page hardcoded `<nav>` blocks across
+  17 HTML files with a single data-driven system: `content/settings/nav.json`
+  (source of truth) + `scripts/render-nav.js` (injected via `<script defer>`
+  in every page's `<head>`). Desktop: persistent top bar with hover dropdown
+  groups (≥641px). Mobile: hamburger + slide-out drawer (≤640px), reusing
+  the index.html drawer pattern. Footer links also data-driven from the same
+  `nav.json`. `_redirects` extended with `/beginners`, `/resources`, `/about`,
+  `/contact` all routing to `index.html 200`. PAGE_ROUTES in `index.html`
+  extended to include `beginners` and `resources`. The "two nav systems"
+  GOTCHA from P3 is permanently resolved — there is now one nav system for
+  all pages. **Verified live on production 2026-07-21:** root `/` (mindmap
+  active, 4 nav bar items, 7-link footer), `/tracker` (top bar + footer from
+  live nav.json), `/trends/agentic-ai-explained` (nav bar + drawer + footer
+  all populated). See System 2 below for the updated gotcha list.
 
 * P4 — Link badges/tiers to the methodology page, and model-name lists on
   `models.html` cards to their corresponding tracker rows (no anchor IDs exist
