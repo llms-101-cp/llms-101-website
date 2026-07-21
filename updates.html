@@ -165,9 +165,14 @@ function areaClass(area) {
   return map[area] || 'area-site';
 }
 
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
 function formatDate(dateStr) {
   const d = new Date(dateStr);
-  return isNaN(d) ? dateStr : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  if (isNaN(d)) return dateStr;
+  return `${ordinal(d.getDate())} ${d.toLocaleDateString('en-GB', { month: 'long' })} ${d.getFullYear()}`;
 }
 
 function buildEntry(entry) {
