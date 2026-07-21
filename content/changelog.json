@@ -1,5 +1,11 @@
 [
   {
+    "date": "2026-07-21",
+    "items": [
+      { "area": "Site", "text": "Unified navigation redesign: single data-driven nav replaces per-page hardcoded links across all 17 pages. Desktop top bar with grouped dropdowns (≥641px), hamburger drawer on mobile (≤640px). Nav and footer now sourced from content/settings/nav.json." }
+    ]
+  },
+  {
     "date": "2026-07-18",
     "title": "Weekly content update",
     "items": [

@@ -101,21 +101,19 @@ footer a{color:var(--gold);text-decoration:none}
   .entry{animation:none}
 }
 </style>
+<script src="/scripts/render-nav.js" defer></script>
 </head>
 <body>
 
 <header>
+  <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </button>
   <a href="/" class="site-title">LLMs <span>101</span></a>
-  <nav>
-    <a href="/">Mind Map</a>
-    <a href="/guide">Full Guide</a>
-    <a href="/models">Models</a>
-    <a href="/tracker">Tracker</a>
-    <a href="/trends">Trends</a>
-    <a href="/updates" class="active">Updates</a>
-    <a href="/methodology">Methodology</a>
-  </nav>
+  <div id="site-nav-bar"></div>
 </header>
+<div id="nav-overlay"></div>
+<div id="nav-drawer"></div>
 
 <div class="hero">
   <p class="hero-eyebrow">Site updates</p>
@@ -151,7 +149,7 @@ footer a{color:var(--gold);text-decoration:none}
 </div>
 
 <footer>
-  <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a> · <a href="/updates">Updates</a></p>
+  <p></p>
 </footer>
 
 <script>
