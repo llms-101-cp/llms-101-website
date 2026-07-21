@@ -220,56 +220,69 @@ async function checkStaticPages(client, { dryRun }) {
   const results = [];
   for (const id of STATIC_PAGE_IDS) {
     const filePath = path.join(PAGES_DIR, `${id}.json`);
-    const data = JSON.parse(await fs.readFile(filePath, 'utf8'));
     const entry = { contentType: 'page', filename: `${id}.json` };
     const result = { id, status: 'clean', reasons: [], linkRot: [], originalFactCheck: null, factCheck: null, newData: null };
     results.push(result);
 
-    log(`Checking static page: ${id}`);
-    const fc = await factCheck(client, entry, data);
-    result.factCheck = fc;
-    let blocking = fc.findings.filter(f => f.severity === 'blocking');
+    // Each page's check is isolated — a failure here (parse error, a repair
+    // response that isn't valid JSON, an API error) holds back THAT page
+    // only, same principle validate-and-publish.js uses per manifest item.
+    // Without this isolation, one page's failure previously aborted the
+    // entire run (checkModelCards + the spot-audit never even started) —
+    // caught during the second live dispatch, 2026-07-21, when resources.json's
+    // repair response came back as prose instead of JSON.
+    try {
+      const data = JSON.parse(await fs.readFile(filePath, 'utf8'));
+      log(`Checking static page: ${id}`);
+      const fc = await factCheck(client, entry, data);
+      result.factCheck = fc;
+      let blocking = fc.findings.filter(f => f.severity === 'blocking');
 
-    if (id === 'resources') {
-      const urls = extractUrls(data.body);
-      const dead = await checkLinkRot(urls);
-      result.linkRot = dead;
-      for (const d of dead) {
-        blocking.push({ severity: 'blocking', claim: d.url, issue: `link appears dead (${d.detail})` });
+      if (id === 'resources') {
+        const urls = extractUrls(data.body);
+        const dead = await checkLinkRot(urls);
+        result.linkRot = dead;
+        for (const d of dead) {
+          blocking.push({ severity: 'blocking', claim: d.url, issue: `link appears dead (${d.detail})` });
+        }
       }
-    }
 
-    if (blocking.length === 0) {
-      log(`  clean — no blocking findings`);
-      continue;
-    }
+      if (blocking.length === 0) {
+        log(`  clean — no blocking findings`);
+        continue;
+      }
 
-    result.originalFactCheck = { verdict: 'fail', findings: blocking };
-    log(`  ${blocking.length} blocking finding(s) — attempting repair`);
-    const repaired = await repairDraft(client, entry, data, blocking);
+      result.originalFactCheck = { verdict: 'fail', findings: blocking };
+      log(`  ${blocking.length} blocking finding(s) — attempting repair`);
+      const repaired = await repairDraft(client, entry, data, blocking);
 
-    const schemaCheck = validateSchema(entry, repaired);
-    if (!schemaCheck.ok) {
+      const schemaCheck = validateSchema(entry, repaired);
+      if (!schemaCheck.ok) {
+        result.status = 'held';
+        result.reasons.push(`repaired draft failed schema: ${schemaCheck.blocking.join('; ')}`);
+        log(`  HELD — repaired draft failed schema validation`);
+        continue;
+      }
+
+      const fc2 = await factCheck(client, entry, repaired);
+      result.factCheck = fc2;
+      if (fc2.verdict === 'fail') {
+        result.status = 'held_after_repair';
+        log(`  HELD AFTER REPAIR — still failing fact-check on round 2`);
+        continue;
+      }
+
+      result.status = 'corrected';
+      result.newData = repaired;
+      if (!dryRun) {
+        await fs.writeFile(filePath, JSON.stringify(repaired, null, 2), 'utf8');
+      }
+      log(`  corrected${dryRun ? ' [DRY RUN — not written]' : ' and written'}`);
+    } catch (err) {
       result.status = 'held';
-      result.reasons.push(`repaired draft failed schema: ${schemaCheck.blocking.join('; ')}`);
-      log(`  HELD — repaired draft failed schema validation`);
-      continue;
+      result.reasons.push(`error during check/repair: ${err.message}`);
+      log(`  HELD — ${err.message}`);
     }
-
-    const fc2 = await factCheck(client, entry, repaired);
-    result.factCheck = fc2;
-    if (fc2.verdict === 'fail') {
-      result.status = 'held_after_repair';
-      log(`  HELD AFTER REPAIR — still failing fact-check on round 2`);
-      continue;
-    }
-
-    result.status = 'corrected';
-    result.newData = repaired;
-    if (!dryRun) {
-      await fs.writeFile(filePath, JSON.stringify(repaired, null, 2), 'utf8');
-    }
-    log(`  corrected${dryRun ? ' [DRY RUN — not written]' : ' and written'}`);
   }
   return results;
 }
@@ -284,31 +297,41 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
 
   for (const card of cards) {
     const entry = { contentType: 'model-card', filename: card.company || card.name };
-    log(`Checking model card: ${card.company} — ${card.name}`);
-    const fc = await factCheck(client, entry, {
-      name: card.name, maker: card.company, models: card.models, description: card.seo
-    });
-    const blocking = fc.findings.filter(f => f.severity === 'blocking');
-    const result = { company: card.company, name: card.name, factCheck: fc, draftFile: null };
+    const result = { company: card.company, name: card.name, factCheck: null, draftFile: null, error: null };
     results.push(result);
 
-    if (blocking.length === 0) {
-      log(`  clean`);
-      continue;
-    }
+    // Isolated per card — same reasoning as checkStaticPages: one card's
+    // failure should not lose the report for every other card or abort the
+    // spot-audit that runs after this function returns.
+    try {
+      log(`Checking model card: ${card.company} — ${card.name}`);
+      const fc = await factCheck(client, entry, {
+        name: card.name, maker: card.company, models: card.models, description: card.seo
+      });
+      result.factCheck = fc;
+      const blocking = fc.findings.filter(f => f.severity === 'blocking');
 
-    log(`  ${blocking.length} blocking finding(s) — drafting a suggested replacement card`);
-    const notes = blocking.map(f => `${f.claim} — ${f.issue}`).join('\n');
-    const prompt = buildModelCardPrompt(card.name, card.company, notes);
-    const draftHtml = await generateWithWebSearch(client, prompt, `model card refresh: ${card.name}`);
+      if (blocking.length === 0) {
+        log(`  clean`);
+        continue;
+      }
 
-    if (!dryRun) {
-      const draftDir = path.join(DRAFTS_DIR, `fortnightly-${weekLabel}`);
-      await fs.mkdir(draftDir, { recursive: true });
-      const draftPath = path.join(draftDir, `model-card-${slugify(card.name)}.html`);
-      await fs.writeFile(draftPath, draftHtml, 'utf8');
-      result.draftFile = path.relative(REPO_ROOT, draftPath);
-      log(`  draft written to ${result.draftFile} — review and paste manually`);
+      log(`  ${blocking.length} blocking finding(s) — drafting a suggested replacement card`);
+      const notes = blocking.map(f => `${f.claim} — ${f.issue}`).join('\n');
+      const prompt = buildModelCardPrompt(card.name, card.company, notes);
+      const draftHtml = await generateWithWebSearch(client, prompt, `model card refresh: ${card.name}`);
+
+      if (!dryRun) {
+        const draftDir = path.join(DRAFTS_DIR, `fortnightly-${weekLabel}`);
+        await fs.mkdir(draftDir, { recursive: true });
+        const draftPath = path.join(draftDir, `model-card-${slugify(card.name)}.html`);
+        await fs.writeFile(draftPath, draftHtml, 'utf8');
+        result.draftFile = path.relative(REPO_ROOT, draftPath);
+        log(`  draft written to ${result.draftFile} — review and paste manually`);
+      }
+    } catch (err) {
+      result.error = err.message;
+      log(`  ERROR checking ${card.name} — ${err.message}`);
     }
   }
   return results;
@@ -414,6 +437,10 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
     sections.push('  (no cards found — check models.html structure)');
   }
   for (const r of modelCardResults) {
+    if (r.error) {
+      sections.push(`  • ${r.company} — ${r.name}: ERROR — ${r.error}`);
+      continue;
+    }
     const blocking = (r.factCheck?.findings ?? []).filter(f => f.severity === 'blocking');
     if (!blocking.length) {
       sections.push(`  • ${r.company} — ${r.name}: clean`);
