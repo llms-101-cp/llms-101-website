@@ -419,7 +419,7 @@ function missingFields(data, fields) {
   );
 }
 
-function validateSchema(entry, data) {
+export function validateSchema(entry, data) {
   const problems = [];
   if (entry.contentType === 'trends-article') {
     const missing = missingFields(data, REQUIRED_ARTICLE_FIELDS);
@@ -474,7 +474,7 @@ function extractJsonObject(text) {
   return null;
 }
 
-async function factCheck(client, entry, data) {
+export async function factCheck(client, entry, data) {
   const todayISO = new Date().toISOString().slice(0, 10);
   const contentText = JSON.stringify(data, null, 2);
 
@@ -560,7 +560,7 @@ findings array with verdict "pass" is the expected result for clean content.`;
  * assertions advisory.
  * Returns the repaired data object; the caller re-runs the FULL gate on it.
  */
-async function repairDraft(client, entry, originalData, blockingFindings) {
+export async function repairDraft(client, entry, originalData, blockingFindings) {
   const todayISO = new Date().toISOString().slice(0, 10);
   const fileSlug = path.basename(entry.filename, '.json');
   const findingsText = blockingFindings

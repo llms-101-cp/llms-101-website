@@ -72,6 +72,22 @@ reader-facing twin: any PR changing reader-facing content must append a
   live nav.json), `/trends/agentic-ai-explained` (nav bar + drawer + footer
   all populated). See System 2 below for the updated gotcha list.
 
+* P6 — Fortnightly Full-Site Review + sitewide "Last Updated" date format.
+  **Code landed 2026-07-21** (this session): new
+  `llms101-automation/scripts/fortnightly-review.js` +
+  `.github/workflows/fortnightly-review.yml` (Wednesday 15:00 UTC cron,
+  self-gated to biweekly — see the new Fortnightly Full-Site Review section
+  below), plus a sitewide date-format fix (every "Last Updated"-style
+  element now reads "27th June 2026" style, ordinal suffix, not the
+  previous mix of "June 2026" / "28 June 2026" / no-ordinal formats).
+  **Not yet exercised**: like every other automation script added to this
+  repo, the code has been syntax-checked and its pure helpers mock-tested,
+  but no live `web_search`/fact-check run has happened yet (no
+  `ANTHROPIC_API_KEY` in the environment that built it) — the actual first
+  run, which is also what resolves V2 below, happens either on the first
+  scheduled Wednesday after this merges to main, or via an explicit
+  `gh workflow run fortnightly-review.yml` dispatch. Don't treat V2 as
+  closed until a report email from a real run has actually arrived.
 * P4 — Link badges/tiers to the methodology page, and model-name lists on
   `models.html` cards to their corresponding tracker rows (no anchor IDs exist
   on tracker rows yet — needs adding). Depends on P3 landing first. Not started.
@@ -115,6 +131,17 @@ reader-facing twin: any PR changing reader-facing content must append a
   check whether another 529-wave hit — the retry stack should absorb a
   transient burst, but a sustained overload can still exhaust all 3
   attempts.
+* W5 — First fortnightly review run. Code landed 2026-07-21 (P6); the
+  first real execution (via the first scheduled Wednesday after merge, or
+  a manual `gh workflow run fortnightly-review.yml` dispatch) is what
+  actually closes V2. Confirm via report email: (a) all 4 static pages
+  checked, (b) resources.json's link-rot check ran and found the expected
+  zero-or-few dead links, (c) any static-page correction actually
+  auto-published in one commit with a changelog entry, (d) models.html's
+  10 cards were all found and checked (not silently zero — see
+  `extractModelCards`'s balanced-div walk), (e) the biweekly gate fires
+  correctly on the next scheduled Wednesday and is a silent no-op on the
+  Wednesday after that.
 
 ### Decisions parked for Craig
 
@@ -138,7 +165,14 @@ reader-facing twin: any PR changing reader-facing content must append a
   correctly counts as partial coverage of this check.
 * V2 — `content/pages/*.json` staleness audit. About, beginners, and
   contact have never been content-audited; resources got a link-rot
-  check only. See the site-wide staleness audit section.
+  check only (2026-06-27). **Mechanism landed 2026-07-21** — the new
+  fortnightly job (see P6 above and the new section below) fact-checks all
+  four pages plus link-rot on resources every run, auto-correcting through
+  the same schema→fact-check→repair-once→publish|hold gate the weekly
+  pipeline uses. **Still open until the first real run completes** — the
+  code exists but hasn't executed against live web_search yet; this entry
+  moves to Outstanding Work's "landed" language only after that report
+  email actually arrives.
 
 ### Deferred — revisit only on trigger
 
@@ -911,6 +945,110 @@ practice.
   prompt changes actually change real output is unverified until the next
   monthly tracker run (1 August 2026) — watch that PR's budget-slot pick
   and URL specificity.
+
+---
+
+## Fortnightly Full-Site Review (added 2026-07-21)
+
+Before this, review cadence was uneven: Trends/Mind Map weekly, Tracker
+monthly, and `models.html` + the static `content/pages/*.json` pages
+(about/beginners/contact/resources) never on any cadence at all — reviewed
+only when someone happened to notice staleness. That gap let the Claude
+card's "Fable 5 suspended since June 12" line sit stale for ~3 weeks after
+Anthropic restored access July 1, and let Kimi K3's July 16 launch go
+uncovered entirely. `llms101-automation/scripts/fortnightly-review.js` +
+`.github/workflows/fortnightly-review.yml` close it with a uniform pass
+across everything, every two weeks.
+
+**Four checks, one run, deliberately reusing rather than reinventing the
+existing pipeline's internals:**
+
+1. **Static pages — auto-correct.** `about.json`, `beginners.json`,
+   `contact.json`, `resources.json` each get `factCheck()` (now exported
+   from `validate-and-publish.js`, previously private — no behaviour
+   change, just visible to this new caller). `resources.json` additionally
+   gets a mechanical link-rot check (`extractUrls` + `checkLinkRot`: every
+   `href="https?://..."` in the body, HEAD with an ~8s timeout, GET
+   fallback), whose dead links are folded in as synthetic blocking
+   findings. Any blocking finding triggers `repairDraft()` once, then the
+   full gate again (`validateSchema` + `factCheck`) — the exact same
+   repair-once-then-hold shape the weekly pipeline uses for Trends
+   articles and nodes (see "validate-and-publish.js — how the auto-publish
+   actually works" above). **Craig's 2026-07-21 decision: these
+   auto-publish** through this gate, unlike model cards — static pages are
+   lower-volume, and the fortnightly job's first real run is what closes
+   V2 (see Verification gaps). `methodology.json` is out of scope
+   (newer, meta content, not in the original spec's page list).
+2. **`models.html` — report + draft only, never auto-spliced.** Same rule
+   as the weekly pipeline's model-card handling: models.html is a shared
+   hand-coded file with no dynamic system, so nothing here is ever spliced
+   in automatically. `extractModelCards()` does a read-only, balanced-div
+   extraction of each `.mcard` block (confirmed against the live file:
+   finds all 10 cards, matches the "7 cards → 10" count from the PR #6
+   refresh) and runs `factCheck()` per card. A stale card gets a suggested
+   replacement block generated via the existing `buildModelCardPrompt()`
+   (same function `generate.js` already uses for brand-new cards, fed the
+   fact-check findings as its `notes` parameter) and written to
+   `llms101-automation/drafts/fortnightly-{date}/model-card-{slug}.html`
+   for manual review and paste.
+3. **Tracker + Trends — spot-audit, report only.** Deliberately lighter
+   than checks 1-2: these already have their own weekly/monthly cadences,
+   so this is one `web_search`-enabled call asking "has anything
+   time-sensitive emerged since the last dedicated pass" (given
+   `gatherCoverage()`'s existing coverage context, reused from
+   `plan-week.js`, plus a summary of tracker.html's current rows).
+   Findings are report-only — corrections still flow through the existing
+   weekly/monthly pipelines, never through this job.
+4. **Report email + one commit.** Same Resend pattern as the other two
+   pipelines' report emails. Any static-page corrections from check 1 land
+   in a single commit for the whole run (the audit trail and the one
+   `git revert` point), with a changelog entry (area: `Site`) appended via
+   the existing `appendToChangelog()` helper.
+
+**Scheduling gotcha — read before touching the cron.** GitHub Actions cron
+has no native "every 2 weeks" primitive. `fortnightly-review.yml` fires
+every Wednesday 15:00 UTC (clear of the Sunday 21:00 UTC weekly run and the
+1st-of-month 09:00 UTC tracker run); `isScheduledWeek()` inside the script
+itself gates every OTHER Wednesday via ISO-week parity against a fixed
+anchor date (`2026-07-22`, the first fortnightly Wednesday) — the off-week
+run exits immediately with no API calls and no email. `workflow_dispatch`
+(and the local `--force` flag) always runs regardless of parity, for manual
+testing. If the cadence ever needs to change, the anchor date and the cron
+expression both need updating together.
+
+**Status as of 2026-07-21: code landed, not yet exercised.** Syntax-checked
+(`node --check`) and the pure helpers (`ordinal`, `isScheduledWeek`,
+`extractUrls`, `checkLinkRot`, `extractModelCards`) were mock-tested against
+real fixtures and the live `models.html`/`tracker.html` — see P6 in
+Outstanding Work and W5 in Watch items. No live `web_search`/fact-check run
+has happened yet; the environment that built this had no
+`ANTHROPIC_API_KEY`. The first real run — via the next scheduled Wednesday
+after this merges to main, or an explicit `gh workflow run
+fortnightly-review.yml` dispatch — is what actually closes V2, not the code
+landing.
+
+**Sitewide "Last Updated" date format (bundled with this work, same
+2026-07-21 session).** Every "Last Updated"-style element on the site now
+reads a full written date with an ordinal suffix ("27th June 2026"),
+replacing a previous mix of formats (`models.html`/`tracker.html`'s
+`.updated-badge` was month+year only; the 5 static Trends articles with an
+"Updated" badge had day+month+year but no ordinal; `trends.html`,
+`updates.html`, `trends/view-article.html`, and `trends/view-report.html`
+each had an independently-typed `formatDate()` producing "21 July 2026",
+no ordinal). Audited via grep across every `.html` file — confirmed
+`content/pages/*.json` pages (about/beginners/contact/resources/
+methodology) have no last-updated element at all, nothing to change there.
+The `formatDate()`/`ordinal()` pair is duplicated identically across the 4
+dynamic-rendering files and again (as `formatOrdinalDate`) in
+`generate-tracker.js` — same manual-sync-across-files convention already
+used for `REQUIRED_ARTICLE_FIELDS`, since these are inline `<script>`
+blocks and a standalone Node script with no shared module system between
+them. `generate-tracker.js`'s `applyTrackerUpdate()` now also rewrites
+tracker.html's `.updated-badge` on every monthly run (previously a static
+string this script never touched, despite refreshing the tracker's row
+content every month) — `models.html`'s badge stays a manual edit, updated
+whenever a card is actually pasted in, consistent with models.html staying
+manual-paste-only throughout this repo.
 
 ---
 

@@ -31,6 +31,21 @@ function log(msg) {
   console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
+// ─── Ordinal date formatting for the "Updated" hero badge ──────────────────
+// Matches the site-wide ordinal format adopted 2026-07-21 (e.g. "27th June
+// 2026") — see ARCHITECTURE.md's fortnightly review section. This is a
+// small local copy rather than a shared import: tracker.html/models.html's
+// equivalent formatter lives inline in browser <script> blocks with no
+// module system to import from, so every copy is kept in manual sync.
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+function formatOrdinalDate(isoDate) {
+  const d = new Date(`${isoDate}T00:00:00Z`);
+  return `${ordinal(d.getUTCDate())} ${d.toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' })} ${d.getUTCFullYear()}`;
+}
+
 // ─── HTML-escape any model-generated text before it touches the template ───
 // This is not cosmetic: row text comes from an LLM response, not a trusted
 // constant. An unescaped &, <, or > in a model name or best_for sentence
@@ -118,6 +133,15 @@ export function applyTrackerUpdate(currentHTML, rows, todayISO) {
 
   // Update dateModified in the JSON-LD block
   updated = updated.replace(/"dateModified":\s*"[\d-]+"/, `"dateModified": "${todayISO}"`);
+
+  // Update the "Updated ..." hero badge so it never drifts out of sync with
+  // the row content it describes (previously a static, hand-edited string
+  // that this script never touched — fixed 2026-07-21).
+  const badgeRegex = /(<span class="updated-badge">Updated )[^<]*(<\/span>)/;
+  if (!badgeRegex.test(updated)) {
+    throw new Error('Could not find the .updated-badge span in tracker.html — has the hero markup changed?');
+  }
+  updated = updated.replace(badgeRegex, (_, open, close) => `${open}${formatOrdinalDate(todayISO)}${close}`);
 
   return updated;
 }

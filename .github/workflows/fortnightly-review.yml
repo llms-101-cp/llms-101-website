@@ -1,0 +1,55 @@
+name: Fortnightly Full-Site Review
+
+# Mirrors weekly-content.yml's auto-publish principle (Craig's 2026-07-21
+# decision for static-page corrections specifically) and
+# monthly-tracker-refresh.yml's checkout/setup/install shape. Fires every
+# Wednesday — GitHub Actions cron has no native "every 2 weeks" — and
+# scripts/fortnightly-review.js self-gates to every OTHER Wednesday via
+# isScheduledWeek(), so the off-week run is a fast, harmless no-op (no API
+# calls, no email). workflow_dispatch always runs regardless of parity
+# (--force), for manual testing. See ARCHITECTURE.md.
+
+on:
+  schedule:
+    - cron: '0 15 * * 3'   # every Wednesday 15:00 UTC — script gates to biweekly
+  workflow_dispatch: {}
+
+jobs:
+  fortnightly-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./llms101-automation
+
+      - name: Configure git identity
+        run: |
+          git config user.name "llms101-bot"
+          git config user.email "bot@llms101.com"
+
+      # workflow_dispatch always runs (--force); the scheduled cron relies on
+      # the script's own isScheduledWeek() gate to skip the off week.
+      - name: Run fortnightly review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+        run: node scripts/fortnightly-review.js ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+        working-directory: ./llms101-automation
+
+      # Any static-page correction is already committed locally by the
+      # script itself (git add + git commit, same pattern as
+      # validate-and-publish.js) — this just pushes it. A run with nothing
+      # to correct makes no commit, so this is a no-op push in that case.
+      - name: Push any fortnightly correction commit
+        run: git push
