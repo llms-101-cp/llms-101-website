@@ -458,6 +458,12 @@ function lastTextBlock(message) {
   return (textBlocks[textBlocks.length - 1] ?? '').trim();
 }
 
+// All text blocks joined, not just the last — a fallback for repairDraft's
+// large-payload case (see below).
+function allTextBlocks(message) {
+  return message.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+}
+
 function extractJsonObject(text) {
   const start = text.indexOf('{');
   if (start === -1) return null;
@@ -619,7 +625,26 @@ Requirements:
   const raw = lastTextBlock(message);
   const fenceStripped = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
   const cleaned = extractJsonObject(fenceStripped) ?? fenceStripped;
-  const repaired = JSON.parse(cleaned);
+
+  let repaired;
+  try {
+    repaired = JSON.parse(cleaned);
+  } catch (err) {
+    // Fallback observed live 2026-07-21 on resources.json (a much larger
+    // page body than a typical trends-article/node repair target): the
+    // model sometimes appends a SEPARATE final text block of caveats after
+    // the actual JSON ("I couldn't verify X, so I only changed Y..."),
+    // which "last text block only" silently returns instead of the real
+    // payload. Retry by searching the FULL concatenated response for the
+    // JSON object before giving up — this is strictly a fallback, tried
+    // only after the fast/common path fails, so it can't regress the
+    // narration-BEFORE-content case lastTextBlock was originally chosen to
+    // avoid.
+    const fullText = allTextBlocks(message);
+    const fullCleaned = extractJsonObject(fullText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim());
+    if (!fullCleaned) throw err;
+    repaired = JSON.parse(fullCleaned);
+  }
 
   // Enforce the parts of the contract we can enforce mechanically.
   if (entry.contentType === 'trends-article') {

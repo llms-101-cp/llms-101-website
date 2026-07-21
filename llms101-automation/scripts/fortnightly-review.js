@@ -174,6 +174,20 @@ function lastTextBlock(message) {
   return (textBlocks[textBlocks.length - 1] ?? '').trim();
 }
 
+// All text blocks joined, not just the last. "Last block only" (the
+// convention elsewhere in this pipeline, meant to skip a model's
+// pre-tool-call "I'll research..." narration) breaks the other direction
+// too: observed live 2026-07-21, the model sometimes appends a SEPARATE
+// final text block of caveats/notes AFTER the real payload (e.g. "I
+// couldn't verify the retirement claims, so I only listed..." with no HTML
+// at all) — taking only that last block silently discarded the actual
+// generated card, which lived in an earlier block. Concatenating and
+// letting the caller extract its specific payload (a balanced div, a JSON
+// object) from the full text is robust to narration landing on either side.
+function allTextBlocks(message) {
+  return message.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+}
+
 async function generateWithWebSearch(client, prompt, label, { maxTokens = 4000 } = {}) {
   const message = await callWithRetry(
     () => client.messages.create({
@@ -189,7 +203,16 @@ async function generateWithWebSearch(client, prompt, label, { maxTokens = 4000 }
   if (message.stop_reason === 'max_tokens') {
     throw new Error(`generation truncated (max_tokens) — not safe to use: ${label}`);
   }
-  return lastTextBlock(message).replace(/^```(?:html|json)?\n?/, '').replace(/\n?```$/, '').trim();
+  return allTextBlocks(message);
+}
+
+// Extracts a single balanced <div class="mcard" ...>...</div> block from
+// anywhere in a (possibly prose-wrapped) response, reusing the same
+// balanced-tag walk extractModelCards() uses to read models.html itself.
+export function extractCardHtml(text) {
+  const idx = text.indexOf('<div class="mcard"');
+  if (idx === -1) return null;
+  return extractBalancedDiv(text, idx);
 }
 
 // Same bracket-depth-counting approach as generate-tracker.js's
@@ -319,7 +342,12 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
       log(`  ${blocking.length} blocking finding(s) — drafting a suggested replacement card`);
       const notes = blocking.map(f => `${f.claim} — ${f.issue}`).join('\n');
       const prompt = buildModelCardPrompt(card.name, card.company, notes);
-      const draftHtml = await generateWithWebSearch(client, prompt, `model card refresh: ${card.name}`);
+      const rawResponse = await generateWithWebSearch(client, prompt, `model card refresh: ${card.name}`);
+      const extracted = extractCardHtml(rawResponse);
+      if (!extracted) {
+        log(`  WARNING: no <div class="mcard"> found in the generation response for ${card.name} — writing the raw response instead so nothing is silently lost; review manually.`);
+      }
+      const draftHtml = extracted ?? rawResponse;
 
       if (!dryRun) {
         const draftDir = path.join(DRAFTS_DIR, `fortnightly-${weekLabel}`);
