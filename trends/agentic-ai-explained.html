@@ -120,19 +120,19 @@ footer a{color:var(--gold);text-decoration:none}
   .model-snapshot{grid-template-columns:1fr 1fr}
 }
 </style>
+<script src="/scripts/render-nav.js" defer></script>
 
 </head>
 <body>
 <header>
+  <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </button>
   <a href="/" class="site-title"><span>LLMs</span> 101</a>
-  <nav>
-    <a href="/">Mind Map</a>
-    <a href="/guide">Full Guide</a>
-    <a href="/models">Models</a>
-    <a href="/tracker">Tracker</a>
-    <a href="/trends" class="active">Trends</a>
-  </nav>
+  <div id="site-nav-bar"></div>
 </header>
+<div id="nav-overlay"></div>
+<div id="nav-drawer"></div>
 <div class="article-hero">
   <a href="/trends" class="back-link">← Back to Trends</a>
   <div class="article-meta">
@@ -190,7 +190,7 @@ footer a{color:var(--gold);text-decoration:none}
   <ul class="fr-list"><li><a href="/trends/state-of-llms-q2-2026">State of LLMs — Q2 2026</a> <span>10 min</span></li><li><a href="/trends/ai-cost-collapse">Why AI Prices Have Dropped 100x in Two Years</a> <span>4 min</span></li><li><a href="/trends/reasoning-models-explained">Why Every Major AI Now Has a Thinking Mode</a> <span>4 min</span></li><li><a href="/models">Model directory — full superpower profiles</a> <span>Reference</span></li></ul>
 </div><div class="article-nav"><span></span><a href="/trends/ai-cost-collapse">Why AI Prices Have Dropped 100x →</a></div></div>
 <footer>
-  <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
+  <p></p>
 </footer>
 </body>
 </html>

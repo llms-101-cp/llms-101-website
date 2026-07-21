@@ -1,0 +1,39 @@
+{
+  "items": [
+    { "label": "LLM Mind Map", "href": "/" },
+    {
+      "group": "The Basics",
+      "children": [
+        { "label": "AI for Beginners", "href": "/beginners", "page": "beginners" },
+        { "label": "Interesting Resources", "href": "/resources", "page": "resources" }
+      ]
+    },
+    {
+      "group": "Models and AI Tracking",
+      "children": [
+        { "label": "AI Trends", "href": "/trends" },
+        { "label": "Model Directory", "href": "/models" },
+        { "label": "Model Tracker", "href": "/tracker" },
+        { "label": "Methodology", "href": "/methodology" },
+        { "label": "Full Guide", "href": "/guide" },
+        { "label": "Content Tracker", "href": "/updates" }
+      ]
+    },
+    {
+      "group": "About",
+      "children": [
+        { "label": "About This Site", "href": "/about", "page": "about" },
+        { "label": "Contact", "href": "/contact", "page": "contact" }
+      ]
+    }
+  ],
+  "footer": [
+    { "label": "LLMs 101", "href": "/" },
+    { "label": "Model Tracker", "href": "/tracker" },
+    { "label": "Model Directory", "href": "/models" },
+    { "label": "AI Trends", "href": "/trends" },
+    { "label": "Full Guide", "href": "/guide" },
+    { "label": "Content Tracker", "href": "/updates" },
+    { "label": "Methodology", "href": "/methodology" }
+  ]
+}

@@ -411,16 +411,19 @@
     .topic { padding: 1.25rem 1.25rem; }
   }
 </style>
+<script src="/scripts/render-nav.js" defer></script>
 </head>
 <body>
 
 <header>
+  <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </button>
   <a href="/" class="site-title"><span>LLMs</span> 101</a>
-  <nav>
-    <a href="/">Mind Map</a>
-    <a href="/guide" aria-current="page">Full Guide</a>
-  </nav>
+  <div id="site-nav-bar"></div>
 </header>
+<div id="nav-overlay"></div>
+<div id="nav-drawer"></div>
 
 <div class="hero">
   <p class="hero-eyebrow">Complete reference guide</p>
@@ -1147,7 +1150,7 @@
 </div>
 
 <footer>
-  <p><a href="/">LLMs 101</a> · <a href="/guide">Full guide</a> · <a href="mailto:llms.101.contact@gmail.com">Contact</a></p>
+  <p></p>
 </footer>
 
 </body>

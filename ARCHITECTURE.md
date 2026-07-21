@@ -54,18 +54,20 @@ reader-facing twin: any PR changing reader-facing content must append a
   lines 222 and 482 corrected — both previously misattributed rankings to
   LMSYS Chatbot Arena; `generate-tracker.js` actually uses unconstrained
   `web_search`. Footer now links to `/methodology`. Changelog entry appended
-  (area: Site, 2026-07-21). System 5 note below updated to include
-  `methodology` in the registered pages list.
-  **Post-merge fix (69ae9df):** `tracker.html`, `models.html`, `trends.html`,
-  and `updates.html` have their own standalone flat header nav (separate from
-  `index.html`'s hamburger drawer) — Methodology was unreachable from any of
-  them. Added `<a href="/methodology">Methodology</a>` to the end of all four
-  navs. `guide.html`'s two-link minimal nav left unchanged (its established
-  pattern; About/Contact are also absent there).
-  **GOTCHA for future page additions:** any new static page added to
-  `index.html`'s hamburger nav must ALSO be added to the flat header nav in
-  all four satellite pages (tracker/models/trends/updates), or it will be
-  unreachable from those pages. The two nav systems are not shared.
+  (area: Site, 2026-07-21). Two-nav GOTCHA resolved by the nav redesign below.
+
+* Nav redesign — Unified navigation. **Landed 2026-07-21.** Replaced all
+  per-page hardcoded `<nav>` blocks across 17 HTML files with a single
+  data-driven system: `content/settings/nav.json` (source of truth) +
+  `scripts/render-nav.js` (injected via `<script defer>` in every page's
+  `<head>`). Desktop: persistent top bar with hover dropdown groups (≥641px).
+  Mobile: hamburger + slide-out drawer (≤640px), reusing the index.html
+  drawer pattern. Footer links also data-driven from the same `nav.json`.
+  `_redirects` extended with `/beginners`, `/resources`, `/about`, `/contact`
+  all routing to `index.html 200`. PAGE_ROUTES in `index.html` extended to
+  include `beginners` and `resources`. The "two nav systems" GOTCHA from P3
+  is permanently resolved — there is now one nav system for all pages.
+  See System 2 below for the updated gotcha list.
 
 * P4 — Link badges/tiers to the methodology page, and model-name lists on
   `models.html` cards to their corresponding tracker rows (no anchor IDs exist
@@ -183,22 +185,29 @@ content type is what caused most of today's problems.
 - **Loader:** `index.html` → `loadCMSData()` → fetches each page's JSON,
   parses `body` field as Markdown via `marked.js`, injects into the page
 - **Schema:** `{ title, body }` — body is Markdown, NOT HTML
-- **Navigation — TWO separate systems (confirmed 2026-07-21):**
-  - `index.html` hamburger drawer — all static pages linked here via
-    `showPage('id', this)`. Deep-link routing via `PAGE_ROUTES` map in the
-    `load` init opens the right section when the URL path matches (e.g.
-    `/methodology`). `_redirects` maps clean URLs to `index.html 200`.
-  - Satellite pages (`tracker.html`, `models.html`, `trends.html`,
-    `updates.html`) — each has its own flat header `<nav>` with hardcoded
-    links. These are NOT connected to `index.html`'s hamburger. Any static
-    page that should be reachable from satellite pages must be added to both
-    navs explicitly. `guide.html` has a deliberately minimal 2-link nav and
-    is exempt from this rule.
-- **CRITICAL GOTCHA:** Adding a new `content/pages/{id}.json` requires
-  FOUR edits in `index.html` (CMS fetch list, nav `<li>`, fallback `<div>`,
-  `PAGE_ROUTES` map) AND one line in each of the four satellite page navs.
-  Miss either side and the page is either unreachable from the hamburger or
-  unreachable from tracker/models/trends/updates.
+- **Navigation — single unified system (updated 2026-07-21, nav redesign):**
+  - `scripts/render-nav.js` is loaded via `<script src="/scripts/render-nav.js" defer>`
+    in every page's `<head>`. It fetches `content/settings/nav.json`, builds
+    the desktop top bar (into `#site-nav-bar`), mobile drawer (into `#nav-drawer`),
+    and footer `<p>`. The hamburger button (`#hamburger`) and overlay (`#nav-overlay`)
+    are static HTML present in every page; render-nav.js wires their click handlers.
+  - On `index.html`, render-nav.js intercepts clicks on `data-page` links
+    (items with a `"page"` field in nav.json) and calls `showPage()` instead
+    of navigating. On satellite pages the same links navigate normally (full
+    page load to the clean URL, which `_redirects` routes back to `index.html`).
+  - `_redirects`: all showPage targets need a `{path} /index.html 200` entry.
+    Currently mapped: `/methodology`, `/beginners`, `/resources`, `/about`, `/contact`.
+  - `PAGE_ROUTES` in `index.html`'s `load` init: maps every clean URL path back
+    to a `showPage()` call. Currently: `methodology`, `about`, `contact`, `beginners`,
+    `resources`.
+- **CRITICAL GOTCHA:** Adding a new `content/pages/{id}.json` requires:
+  1. Add the JSON file itself.
+  2. Register `id` in `index.html`'s CMS fetch list (the `pages` array in `loadCMSData`).
+  3. Add a `<div class="page" id="page-{id}">` fallback div in `index.html`.
+  4. Add an entry to `content/settings/nav.json` (with `"page": "{id}"`).
+  5. Add `/{url}: /index.html 200` to `_redirects`.
+  6. Add `'/{url}': '{id}'` to `PAGE_ROUTES` in `index.html`.
+  The two-nav problem from P3 no longer applies — nav.json is the single source.
 
 ### 3. Trends articles — DYNAMIC, JSON-driven ✅ fixed and confirmed working 2026-06-21
 

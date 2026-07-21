@@ -87,18 +87,18 @@ footer a{color:var(--gold);text-decoration:none}
   .ba-block{grid-template-columns:1fr}
 }
 </style>
+<script src="/scripts/render-nav.js" defer></script>
 </head>
 <body>
 <header>
+  <button class="hamburger" id="hamburger" aria-label="Menu" tabindex="0">
+    <span></span><span></span><span></span>
+  </button>
   <a href="/" class="site-title"><span>LLMs</span> 101</a>
-  <nav>
-    <a href="/">Mind Map</a>
-    <a href="/guide">Full Guide</a>
-    <a href="/models">Models</a>
-    <a href="/tracker">Tracker</a>
-    <a href="/trends" class="active">Trends</a>
-  </nav>
+  <div id="site-nav-bar"></div>
 </header>
+<div id="nav-overlay"></div>
+<div id="nav-drawer"></div>
 <main>
   <div class="wrapper">
     <a href="/trends" class="back-link">← Back to Trends</a>
@@ -112,7 +112,7 @@ footer a{color:var(--gold);text-decoration:none}
   </div>
 </main>
 <footer>
-  <p><a href="/">LLMs 101</a> · <a href="/models">Models</a> · <a href="/tracker">Tracker</a> · <a href="/trends">Trends</a> · <a href="/guide">Full Guide</a></p>
+  <p></p>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
