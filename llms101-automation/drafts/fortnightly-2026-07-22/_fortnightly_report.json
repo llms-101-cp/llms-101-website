@@ -1,0 +1,308 @@
+{
+  "week": "2026-07-22",
+  "pageResults": [
+    {
+      "id": "about",
+      "status": "clean",
+      "reasons": [],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "newData": null
+    },
+    {
+      "id": "beginners",
+      "status": "clean",
+      "reasons": [],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Image created with Google Gemini Pro",
+            "issue": "This is a general product-family attribution rather than a current-version claim, so it is not blocking. Note only: Google's Gemini lineup has moved well past a plain 'Pro' descriptor — as of July 2026 the current shipping models include Gemini 3.1 Pro (preview since Feb 19, 2026), Gemini 3.5 Flash (May 19, 2026), and Gemini 3.6 Flash / 3.5 Flash-Lite (released July 21, 2026). The label 'Gemini Pro' is not wrong as a brand reference, but is slightly dated phrasing."
+          }
+        ]
+      },
+      "newData": null
+    },
+    {
+      "id": "contact",
+      "status": "clean",
+      "reasons": [],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "newData": null
+    },
+    {
+      "id": "resources",
+      "status": "held_after_repair",
+      "reasons": [],
+      "linkRot": [
+        {
+          "url": "https://www.deeplearning.ai/courses",
+          "detail": "HTTP 403"
+        },
+        {
+          "url": "https://www.deeplearning.ai/the-batch",
+          "detail": "HTTP 403"
+        }
+      ],
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Import AI — Jack Clark: \"co-founder and Head of Policy at Anthropic.\"",
+            "issue": "Stale title presented as current. Clark held Head of Policy from 2021 until early 2026, when he moved to a new role as Anthropic's Head of Public Benefit, leading the newly created Anthropic Institute (announced March 11, 2026). The current correct title is 'co-founder and Head of Public Benefit.' The description remains otherwise accurate (co-founder; writes Import AI)."
+          },
+          {
+            "severity": "blocking",
+            "claim": "https://www.deeplearning.ai/courses",
+            "issue": "link appears dead (HTTP 403)"
+          },
+          {
+            "severity": "blocking",
+            "claim": "https://www.deeplearning.ai/the-batch",
+            "issue": "link appears dead (HTTP 403)"
+          }
+        ]
+      },
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Many [DeepLearning.AI short courses] run about one to two hours and, as of 2026-07-22, course access is free for a limited time during the DeepLearning.AI learning platform beta.",
+            "issue": "This is factually incorrect and misrepresents the current state. DeepLearning.AI is not running a 'limited-time free beta.' It operates a permanent two-tier model: all course videos remain free to watch (audit), while labs, quizzes, and certificates require a paid Pro membership costing $25/month billed annually (or $30/month billed monthly). The 'free for a limited time during the beta' framing wrongly implies full course access is temporarily free and will later become paid, when in fact the free video tier is permanent and the paid tier already exists. The correct statement is that course videos are free to watch, but hands-on labs, quizzes, and certificates require paid Pro membership."
+          },
+          {
+            "severity": "note",
+            "claim": "DeepLearning.AI Short Courses ... Many run about one to two hours",
+            "issue": "The duration characterization is roughly reasonable for short courses (they are indeed bite-size project courses), so this is not itself a defect — flagged only because it sits in the same sentence as the incorrect 'free beta' claim and should be reviewed together when that sentence is corrected."
+          }
+        ]
+      },
+      "newData": null
+    }
+  ],
+  "modelCardResults": [
+    {
+      "company": "OpenAI",
+      "name": "GPT &amp; o-Series",
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "OpenAI's GPT-5.5 is the current flagship, available in Thinking and Pro variants",
+            "issue": "Stale-as-current. As of 2026-07-22 the current flagship is GPT-5.6, publicly released July 9, 2026, in three tiers Sol (flagship), Terra (balanced), and Luna (cost-efficient). The draft presents the superseded GPT-5.5/GPT-5.4 lineup as the current one — exactly the pipeline's primary failure mode. The whole 'models' field and description need to be updated to lead with the GPT-5.6 family."
+          },
+          {
+            "severity": "blocking",
+            "claim": "GPT-5.5 (Thinking / Pro) · GPT-5.5 Instant · GPT-5.4 (models field)",
+            "issue": "The listed model lineup omits the current generation entirely. GPT-5.6 Sol/Terra/Luna is the current family. This should be added and presented as current; GPT-5.5/5.4 should be reframed as prior-generation or lower tiers only if still offered."
+          },
+          {
+            "severity": "note",
+            "claim": "GPT-5.5 Instant has been the default model across ChatGPT since May 5, 2026.",
+            "issue": "This specific claim is accurate and, usefully, still true after GPT-5.6's launch (GPT-5.5 Instant reportedly remains the everyday default; GPT-5.6 Sol powers reasoning options). But the sentence's surrounding context frames a GPT-5.5-era lineup as the whole current picture, which is misleading once GPT-5.6 exists."
+          },
+          {
+            "severity": "note",
+            "claim": "o3 itself on a sunset path through August 2026",
+            "issue": "Accurate: o3 is scheduled to be retired from ChatGPT on August 26, 2026 following a 90-day sunset. No correction needed, but note this date passes soon — content will need re-verification after Aug 26, 2026."
+          },
+          {
+            "severity": "note",
+            "claim": "reasoning ... once handled by separate o-series models (o1, o3, o4-mini) ... most of the o-series has been retired from ChatGPT",
+            "issue": "Broadly accurate (o4-mini retired Feb 13, 2026; o3 retiring Aug 26, 2026). The historical framing here is acceptable per the judgment standard."
+          }
+        ]
+      },
+      "draftFile": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gpt-amp-o-series.html",
+      "error": null
+    },
+    {
+      "company": "Anthropic",
+      "name": "Claude",
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Anthropic's newest and most capable model, Fable 5, remains suspended for all users as of this writing under a US export-control directive.",
+            "issue": "This is stale and now false. The US Commerce Department lifted the export controls on June 30, 2026, and Anthropic restored Fable 5 globally starting July 1, 2026 (across Claude.ai, Claude Platform, Claude Code, and Claude Cowork). As of today (2026-07-22) Fable 5 is available, not suspended. The claim presents a resolved June 2026 situation as the current state of the world."
+          },
+          {
+            "severity": "blocking",
+            "claim": "...remains suspended for all users as of this writing...",
+            "issue": "House rule violation: 'as of this writing' carries no explicit date. An explicit date is required for any 'as of' statement. This is a blocking finding independent of the accuracy problem above."
+          },
+          {
+            "severity": "note",
+            "claim": "Fable 5 described as 'Anthropic's newest and most capable model.'",
+            "issue": "Fable 5 (Mythos-class, launched June 9, 2026) is Anthropic's most capable publicly available model, so 'most capable' is defensible. 'Newest' is now questionable: Claude Sonnet 5 shipped June 30, 2026, making it the newer release. Consider tightening the wording."
+          },
+          {
+            "severity": "note",
+            "claim": "Model lineup presented as: Claude Opus 4.8 · Claude Sonnet 4.6 · Claude Haiku 4.5.",
+            "issue": "Opus 4.8, Sonnet 4.6, and Haiku 4.5 are all real, valid models. However, Claude Sonnet 5 shipped June 30, 2026 and is now the default Sonnet tier, and Fable 5 exists as a top tier above Opus. Sonnet 4.6 is not retired, so this is not blocking, but the lineup is slightly behind the current tier structure."
+          },
+          {
+            "severity": "note",
+            "claim": "Anthropic eliminated its long-context pricing surcharge in March 2026, so Opus 4.8 and Sonnet 4.6 now support a 1-million-token context window at flat per-token rates.",
+            "issue": "The March 13, 2026 surcharge removal is accurate, and Opus 4.8 does support 1M tokens at flat rates today. But at the time of the March change the models were Opus 4.6 and Sonnet 4.6; Opus 4.8 did not launch until May 28, 2026. The end-state claim is correct, but the March attribution to '4.8' is technically anachronistic. Also note Haiku 4.5 has a 200K context and was not part of this change."
+          }
+        ]
+      },
+      "draftFile": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-claude.html",
+      "error": null
+    },
+    {
+      "company": "Google DeepMind",
+      "name": "Gemini",
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Gemini 3.5 Flash is presented as a current model in the lineup ('Gemini 3.1 Pro · Gemini 3.5 Flash') and described as an optimised production model.",
+            "issue": "Gemini 3.5 Flash has been superseded. On July 21, 2026 Google released Gemini 3.6 Flash (plus 3.5 Flash-Lite and 3.5 Flash Cyber), and Gemini 3.6 Flash is explicitly the direct successor that replaces 3.5 Flash as the default mid-tier Flash model. The current mid-tier Flash model is Gemini 3.6 Flash; the current lightweight model is Gemini 3.5 Flash-Lite. Listing 3.5 Flash as current is exactly the stale-lineup failure mode."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Gemini 3.5 Flash 'measures as the fastest output speed of any major frontier model.'",
+            "issue": "This speed claim is misattributed and overstated. The ~350 tokens/second figure belongs to Gemini 3.5 Flash-Lite (per the Artificial Analysis Index), not Gemini 3.5 Flash, and Google/Artificial Analysis frame it as the fastest within the 3.5 series/its price-tier class, not the fastest of every major frontier model. As written it pairs a wrong number with an unsupported superlative on an already-superseded model."
+          },
+          {
+            "severity": "note",
+            "claim": "Gemini 3.1 Pro is presented as the current Pro-tier model.",
+            "issue": "This is correct as of today (2026-07-22): Gemini 3 Pro Preview was retired March 9, 2026 in favor of Gemini 3.1 Pro, and the promised Gemini 3.5 Pro remains delayed / in limited partner testing and has not launched. No change needed to the Pro entry, but note the state is time-sensitive."
+          },
+          {
+            "severity": "note",
+            "claim": "General description text has no explicit 'as of <date>' anchor while asserting current-state facts (e.g. 'powers Google Search AI Overviews', 'fastest ... of any major frontier model').",
+            "issue": "House rule requires an explicit date for current-state claims. The draft contains no bare 'as of writing'/'as of today' phrasing (so no blocking date-phrase finding), but because the lineup here is fast-moving, consider adding an explicit dated anchor once the model names are corrected."
+          }
+        ]
+      },
+      "draftFile": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gemini.html",
+      "error": null
+    },
+    {
+      "company": "xAI",
+      "name": "Grok",
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "xAI's Grok 4.3, released in 2026, is the current flagship in the Grok family",
+            "issue": "Stale flagship — this is the pipeline's flagged failure mode. Grok 4.3 was the flagship (released ~April 30, 2026), but xAI/SpaceXAI released Grok 4.5 on July 8, 2026 (public July 9), and it is now the current flagship. Multiple independent sources (TechCrunch, Artificial Analysis, felloai, codersera, knowledgehubmedia) confirm Grok 4.5 as the smartest/flagship model as of mid-July 2026. The card presents a superseded lineup as current."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Grok 4.3 · Grok 4.1 · Grok 4 Fast (models lineup)",
+            "issue": "The listed lineup omits the current flagship Grok 4.5 (released July 8, 2026) entirely. As published, the model card would describe a stale lineup as the live one."
+          },
+          {
+            "severity": "note",
+            "claim": "a 1-million-token context window",
+            "issue": "This figure is correct for Grok 4.3, but not for the current flagship Grok 4.5, which multiple sources report as a 500K-token context window. If the flagship reference is corrected to 4.5, this number must change too."
+          },
+          {
+            "severity": "note",
+            "claim": "Earlier variants — Grok 4 and Grok 4 Fast — remain available",
+            "issue": "Sources indicate the older Grok 3 and original Grok 4 versions were retired in a May 2026 cleanup (traffic redirected to 4.3). A fast/budget tier does remain, but it is more commonly identified as 'Grok 4.1 Fast' rather than 'Grok 4 Fast'; verify exact variant name against xAI's current API docs."
+          },
+          {
+            "severity": "note",
+            "claim": "full access requires X Premium+ or a SuperGrok subscription, and developers can call current models through the xAI API",
+            "issue": "Broadly accurate — SuperGrok ($30/mo), X Premium+ ($40/mo), free tier on X with limits, and the xAI API are all confirmed. Minor: the current consumer stack has expanded (e.g., SuperGrok Lite $10, SuperGrok Heavy $300), and full Grok 4.5 access was initially limited to higher tiers at launch; not blocking."
+          }
+        ]
+      },
+      "draftFile": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-grok.html",
+      "error": null
+    },
+    {
+      "company": "Meta AI",
+      "name": "Llama",
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Meta's Llama 4 family remains the most widely deployed open-weight AI ecosystem. [and] Llama 3.3 70B remains a widely-deployed practical text-only option.",
+            "issue": "These are present-tense claims about the current state of the world with no explicit date anchor. Per the house rule, present-state assertions require an explicit 'as of <date>'; a bare present-tense framing is a blocking finding. Additionally, the lead sentence frames Llama 4 as Meta's current flagship/frontier effort, which is stale: as of April 8, 2026 Meta Superintelligence Labs launched the proprietary Muse Spark as the engine behind Meta AI and explicitly overhauled its AI effort away from Llama as the frontier program. The description's own final sentence acknowledges this pivot, contradicting the opening framing. The opening should be re-anchored (e.g. 'As of mid-2026, Llama 4 remains Meta's open-weight lineup, but Meta's frontier effort has shifted to Muse Spark') to avoid presenting a superseded frontier posture as current."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Llama 4 Scout ... 10-million-token context window — the largest of any openly available model.",
+            "issue": "The 10M context figure for Scout is correct, but the superlative 'the largest of any openly available model' is a present-tense, undated absolute claim. It cannot be verified as still true and, per the house rule, an undated present-state superlative is blocking. Sources also note the 10M figure is a theoretical maximum (no Llama 4 variant was trained on prompts beyond ~256k tokens), so the unqualified superlative risks embarrassment. Add an explicit date and soften/qualify the superlative."
+          },
+          {
+            "severity": "note",
+            "claim": "existing Llama models remain open and available for self-hosting via Ollama, Hugging Face, and every major inference framework.",
+            "issue": "Hugging Face distribution is well-confirmed. Availability via Ollama and 'every major inference framework' appears only in lower-quality/promotional sources and could not be confirmed against authoritative documentation; 'every major inference framework' is an overbroad absolute. Consider softening to 'major inference frameworks' and verifying the Ollama tag."
+          },
+          {
+            "severity": "note",
+            "claim": "Muse Spark ... a strategic pivot away from Llama as Meta's frontier effort.",
+            "issue": "Accurate and well-supported (Muse Spark launched April 8, 2026 as the first model from Meta Superintelligence Labs, is proprietary, and now powers Meta AI). Note only that Meta has stated future Muse models will include new open-source releases, so 'pivot away from Llama' should not be read as Meta abandoning open weights entirely."
+          }
+        ]
+      },
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsLKAapBi6bP1Mw7CN\"}"
+    },
+    {
+      "company": "Meta Superintelligence Labs",
+      "name": "Muse Spark",
+      "factCheck": null,
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsM63wNrR5ZwmKghpY\"}"
+    },
+    {
+      "company": "DeepSeek",
+      "name": "DeepSeek",
+      "factCheck": null,
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsMbZEfigWeYbbtgAM\"}"
+    },
+    {
+      "company": "Alibaba",
+      "name": "Qwen",
+      "factCheck": null,
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsNBHVbbrWDVJAHk9B\"}"
+    },
+    {
+      "company": "Moonshot AI",
+      "name": "Kimi",
+      "factCheck": null,
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsNjX74bXc3JX1sQja\"}"
+    },
+    {
+      "company": "Mistral AI",
+      "name": "Mistral",
+      "factCheck": null,
+      "draftFile": null,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsPMELRdKFthsGvij7\"}"
+    }
+  ],
+  "spotAuditFindings": [],
+  "trackerPRs": [],
+  "fatalError": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdHQsQ1uzYZhrXmR97fxf\"}"
+}
