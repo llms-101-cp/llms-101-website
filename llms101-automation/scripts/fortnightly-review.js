@@ -421,13 +421,55 @@ An empty findings array is the expected result most fortnights.`;
   return Array.isArray(parsed.findings) ? parsed.findings : [];
 }
 
+// ─── Check 3b: unmerged monthly-tracker PR detector — report only ───────────
+// The monthly tracker refresh is deliberately PR-merge-gated (ARCHITECTURE.md
+// D1) but has NO reminder of its own, so a generated PR can sit unmerged and
+// the public tracker silently goes stale. That is exactly what happened with
+// PR #18 (opened by the July 1 run, still unmerged ~3 weeks later on
+// 2026-07-21, while four major model launches piled up uncovered). This check
+// surfaces any open PR on a `tracker-refresh-*` branch in the report email so
+// it can't rot unnoticed again. Fail-soft: any gh/parse error returns null
+// (distinct from [] = "ran, none open") and never aborts the run.
+const STALE_TRACKER_PR_DAYS = 7; // older than this is flagged as an alarm, not just noted
+
+function checkUnmergedTrackerPRs() {
+  let raw;
+  try {
+    raw = execFileSync('gh', [
+      'pr', 'list', '--state', 'open',
+      '--json', 'number,title,createdAt,headRefName,url',
+      '--limit', '50'
+    ], { cwd: REPO_ROOT, encoding: 'utf8' });
+  } catch (err) {
+    log(`WARNING: could not list open PRs to check for an unmerged tracker refresh — ${err.message}. (Needs gh on PATH + GH_TOKEN with pull-requests:read.)`);
+    return null;
+  }
+  try {
+    const prs = JSON.parse(raw);
+    const now = Date.now();
+    return prs
+      .filter(pr => pr.headRefName && pr.headRefName.startsWith('tracker-refresh-'))
+      .map(pr => ({
+        number: pr.number,
+        title: pr.title,
+        url: pr.url,
+        createdAt: pr.createdAt,
+        ageDays: Math.floor((now - new Date(pr.createdAt).getTime()) / 86_400_000)
+      }))
+      .sort((a, b) => b.ageDays - a.ageDays);
+  } catch (err) {
+    log(`WARNING: could not parse gh pr list output for the tracker-PR check — ${err.message}.`);
+    return null;
+  }
+}
+
 // ─── Report email ────────────────────────────────────────────────────────────
 
 function titleCase(id) {
   return id.charAt(0).toUpperCase() + id.slice(1);
 }
 
-async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotAuditFindings, commitSha, fatalError }) {
+async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotAuditFindings, trackerPRs, commitSha, fatalError }) {
   if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
     log('No email config — skipping fortnightly report email.');
     return;
@@ -488,6 +530,20 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
   }
   sections.push('');
 
+  sections.push('UNMERGED TRACKER PR CHECK (the monthly tracker is merge-gated with no reminder of its own):');
+  if (trackerPRs === null) {
+    sections.push('  Could not check — see the workflow log (needs gh + GH_TOKEN with pull-requests:read).');
+  } else if (!trackerPRs.length) {
+    sections.push('  None open — the monthly tracker refresh is either current or its latest PR was merged.');
+  } else {
+    for (const pr of trackerPRs) {
+      const stale = pr.ageDays >= STALE_TRACKER_PR_DAYS;
+      sections.push(`  ${stale ? '*** STALE' : '•'} tracker PR #${pr.number} open ${pr.ageDays} day(s): "${pr.title}"${stale ? ' — review/merge or close+re-run ***' : ' (awaiting review)'}`);
+      sections.push(`    ${pr.url}`);
+    }
+  }
+  sections.push('');
+
   const corrected = pageResults.filter(r => r.status === 'corrected');
   if (commitSha) {
     sections.push(`Publish commit (${corrected.length} static page correction(s)): ${commitSha}`);
@@ -502,13 +558,14 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
   sections.push('This email is the review trigger for any auto-published static-page');
   sections.push('correction above. Model-card drafts (if any) still need manual paste.');
 
+  const staleTrackerPR = Array.isArray(trackerPRs) && trackerPRs.some(pr => pr.ageDays >= STALE_TRACKER_PR_DAYS);
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Fortnightly review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${fatalError ? ' — PIPELINE ERROR' : ''}`,
+      subject: `[llms101] Fortnightly review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
       text: sections.join('\n')
     })
   });
@@ -543,7 +600,7 @@ async function main() {
   const todayISO = new Date().toISOString().slice(0, 10);
   log(`Starting fortnightly full-site review for ${todayISO}${dryRun ? ' [DRY RUN]' : ''}${offline ? ' [OFFLINE]' : ''}`);
 
-  let pageResults = [], modelCardResults = [], spotAuditFindings = [];
+  let pageResults = [], modelCardResults = [], spotAuditFindings = [], trackerPRs = null;
   let fatalError = null;
   let commitSha = null;
   let changelogWarning = null;
@@ -561,6 +618,15 @@ async function main() {
       log(`ERROR during review: ${err.stack}`);
     }
 
+    // Runs regardless of whether the API checks above threw — it's a cheap
+    // `gh` call with no dependency on the Anthropic client, and it's the one
+    // check that specifically catches the "generated tracker PR silently sits
+    // unmerged" failure. Fail-soft internally (returns null on any error).
+    trackerPRs = checkUnmergedTrackerPRs();
+    if (Array.isArray(trackerPRs) && trackerPRs.length) {
+      log(`Unmerged tracker PR(s) open: ${trackerPRs.map(p => `#${p.number} (${p.ageDays}d)`).join(', ')}`);
+    }
+
     // Commit + push the drafts/report folder (model-card suggested
     // replacements + the audit-trail JSON) FIRST, before the page-correction
     // commit below — these are real work product from paid API calls that
@@ -576,7 +642,7 @@ async function main() {
       await fs.mkdir(reportDir, { recursive: true });
       await fs.writeFile(
         path.join(reportDir, '_fortnightly_report.json'),
-        JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, fatalError }, null, 2),
+        JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, trackerPRs, fatalError }, null, 2),
         'utf8'
       );
       try {
@@ -632,7 +698,7 @@ async function main() {
   }
 
   if (!offline) {
-    await sendReportEmail(todayISO, { pageResults, modelCardResults, spotAuditFindings, commitSha, fatalError });
+    await sendReportEmail(todayISO, { pageResults, modelCardResults, spotAuditFindings, trackerPRs, commitSha, fatalError });
   }
 
   log('Fortnightly review complete.');
