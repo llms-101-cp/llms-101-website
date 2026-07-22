@@ -102,5 +102,14 @@
         "text": "Resources page updated — corrected stale facts found during the fortnightly review."
       }
     ]
+  },
+  {
+    "date": "2026-07-22",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Monthly Model Tracker updated — top models include GPT-5.6 Sol, Claude Opus 4.8, Gemini 3.1 Pro and 9 more."
+      }
+    ]
   }
 ]
