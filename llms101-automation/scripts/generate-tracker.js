@@ -197,16 +197,21 @@ async function generateTrackerRows(previousRowsSummary) {
     throw new Error('Generation hit max_tokens — likely truncated. Not safe to parse.');
   }
 
-  // With web_search enabled the model emits an early text block ("I'll research...")
-  // before its first tool call, then the final JSON in a later text block after
-  // all searches complete. Use only the LAST text block so we don't prepend prose
-  // to the JSON, then strip any code-fence wrapper and extract the bare array.
-  const textBlocks = message.content.filter(b => b.type === 'text').map(b => b.text);
-  const lastText = (textBlocks[textBlocks.length - 1] ?? '').trim();
-  const fenceStripped = lastText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
-  // Belt-and-suspenders: if any leading/trailing prose survived, extract the array
-  // using bracket-depth counting rather than a greedy regex (which would mis-extract
-  // if the model appends citation-style brackets after the JSON array closes).
+  // With web_search enabled the model wraps the JSON array in prose on BOTH
+  // sides: an early "I'll research..." block before its first tool call, and
+  // sometimes a trailing explanation block AFTER the array ("I ranked in
+  // order of..."). The original approach — take ONLY the last text block —
+  // breaks on that trailing block: observed live 2026-07-22, when it grabbed
+  // the explanation and JSON.parse choked on "I ranked i...". Concatenate ALL
+  // text blocks and let extractJsonArray (a bracket-depth walker) find the
+  // array wherever it sits — leading prose has no '[' so it's skipped, and
+  // anything after the matching ']' is ignored. Same class of fix as PR #35
+  // for the fortnightly/validate-and-publish scripts. (If the model ever
+  // emitted a stray '[' in narration BEFORE the real array, the walker could
+  // mis-grab it — but that then fails loudly in validateTrackerRows below,
+  // never silently.)
+  const allText = message.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  const fenceStripped = allText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
   const cleaned = extractJsonArray(fenceStripped) ?? fenceStripped;
 
   let rows;
@@ -214,7 +219,7 @@ async function generateTrackerRows(previousRowsSummary) {
     rows = JSON.parse(cleaned);
   } catch (err) {
     log('ERROR: JSON parse failed. Raw response saved to drafts/errors/.');
-    await saveError(lastText);
+    await saveError(allText);
     throw err;
   }
 
