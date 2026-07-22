@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read   # lets the unmerged-tracker-PR check run `gh pr list`
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -53,5 +54,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+          GH_TOKEN: ${{ github.token }}   # for the unmerged-tracker-PR check's `gh pr list`
         run: node scripts/fortnightly-review.js ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
         working-directory: ./llms101-automation
