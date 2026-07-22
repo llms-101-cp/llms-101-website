@@ -789,6 +789,39 @@ practice.
   failing with a model-not-found error, check whether `claude-opus-4-8` has
   been superseded (Anthropic ships new Opus versions roughly every 6-10
   weeks) and update the model string in `generateTrackerRows()`.
+- **Two generation bugs fixed 2026-07-22 (found only by re-running after a
+  3-week gap — see the tracker-staleness incident below).** When the tracker
+  hadn't actually generated fresh output since June 27, two latent issues in
+  `generateTrackerRows()` surfaced on consecutive re-dispatches, each
+  unmasking the next: (1) **max_tokens too low** — the 4000 cap was
+  borderline for a 12-row, web_search-grounded JSON generation; the June 27
+  and July 1 runs fit under it but the July 22 run truncated
+  (`stop_reason: max_tokens` → the hard "not safe to parse" throw). Raised to
+  8000 (PR #38), matching the repair-stage / generate.js ceilings. (2)
+  **last-text-block-only extraction** — with more headroom the model returned
+  a complete array but appended a trailing explanation block ("I ranked in
+  order of..."); the code took only the LAST text block, so `extractJsonArray`
+  found no `[` and `JSON.parse` choked on the prose. This is the SAME class
+  of bug PR #35 fixed in `validate-and-publish.js`/`fortnightly-review.js` —
+  this script had its own un-patched copy. Fixed (PR #40) to concatenate ALL
+  text blocks before `extractJsonArray` (leading prose has no `[` so it's
+  skipped; trailing prose is past the matching `]` so it's ignored).
+  Lesson reinforced: a generation script that "worked" months ago can carry
+  latent output-shape bugs that only appear when the model's real response
+  drifts — the tracker's monthly cadence plus the unmerged-PR gap meant it
+  went 3 weeks without a real generation, so both bugs hid until re-run.
+- **GOTCHA (same 2026-07-22 incident) — workflow-file push race.** After the
+  two fixes above, a re-dispatch generated cleanly but its push was rejected:
+  `refusing to allow a GitHub App to create or update workflow ... without
+  workflows permission`. Cause: a PR editing `.github/workflows/**` (the
+  unmerged-PR-detection PR #39) was merged into main WHILE that tracker run
+  was in flight at an older commit. The tracker branch, cut from pre-merge
+  main, then differs from the advanced main in a workflow file — and the
+  tracker workflow's token has `contents`/`pull-requests` write but NOT
+  `workflows`, so the push is blocked. The generation itself was fine; the
+  fix is simply to re-dispatch once main has settled (the new branch then
+  matches main's workflow files). **Don't merge a workflow-touching PR while a
+  tracker run is mid-flight.**
 - **Why the merge checkpoint stays.** (Note 2026-07-04: the site-wide
   "nothing auto-publishes without a human look" principle this paragraph
   cites was reversed for the WEEKLY CONTENT pipeline on 2026-07-04 — see
@@ -802,6 +835,20 @@ practice.
   costs about 30 seconds per month; if trust builds over several clean
   runs, full auto-merge is a one-line addition — but that decision belongs
   to Craig after watching a few PRs prove themselves.
+- **Merge-gate reminder gap — CLOSED 2026-07-22 (PR #39).** The merge
+  checkpoint above only protects the site if someone actually merges the PR.
+  It has no reminder of its own, and on 2026-07-21 that bit hard: the July 1
+  run's PR (#18) sat OPEN and unmerged for ~3 weeks, so tracker.html silently
+  stayed on June 27 content while GPT-5.6, Grok 4.5, Sonnet 5, and Kimi K3 all
+  launched uncovered. The fortnightly review's spot-audit now also runs
+  `checkUnmergedTrackerPRs()` (lists open PRs on `tracker-refresh-*` branches
+  via `gh pr list`) and surfaces any in its report email — age in days, link,
+  tagged `*** STALE ***` past 7 days with a `— STALE TRACKER PR` subject
+  marker. So an unmerged tracker PR now gets a nudge at least every fortnight.
+  Note the right fix for a stale tracker PR is NOT to merge the old one but to
+  close it and re-dispatch fresh (an old PR both misses newer launches and
+  conflicts with intervening tracker.html edits — #18 by 2026-07-21 predated
+  the nav redesign, LMArena-sourcing fix, and ordinal-badge changes).
 - **Debugging history, 2026-06-27 (same day as the build).** Six real bugs
   were found and fixed between building the pipeline and getting one clean
   end-to-end run, in this order:
