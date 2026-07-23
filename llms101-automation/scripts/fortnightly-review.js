@@ -51,6 +51,7 @@
  */
 
 import fs from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -310,6 +311,34 @@ async function checkStaticPages(client, { dryRun }) {
   return results;
 }
 
+// ─── draft → reviewed → APPLIED tracking ────────────────────────────────────
+// Model cards are never auto-applied (models.html is a shared hand-coded file),
+// so "applied to the live file" is a manual third step after "generated" and
+// "reviewed". Nothing tracked that step, and it bit twice in one session — a
+// reviewed, corrected draft sat unapplied while the live page stayed stale.
+// The signal that makes "applied" observable: a card that is STILL stale this
+// run while a draft for it already exists from a PRIOR run means that earlier
+// draft was reviewed-but-never-applied. (A card that was applied correctly is
+// no longer stale, so it never reaches this branch — no false alarm; the 7
+// cards applied 2026-07-22 will read clean next run.)
+export async function findPriorDrafts(slug, currentWeekLabel) {
+  const draftFile = `model-card-${slug}.html`;
+  let folders;
+  try {
+    folders = await fs.readdir(DRAFTS_DIR);
+  } catch {
+    return [];
+  }
+  const found = [];
+  for (const folder of folders) {
+    if (!folder.startsWith('fortnightly-')) continue;
+    if (folder === `fortnightly-${currentWeekLabel}`) continue; // this run's own draft doesn't count
+    const p = path.join(DRAFTS_DIR, folder, draftFile);
+    if (existsSync(p)) found.push({ date: folder.replace('fortnightly-', ''), path: path.relative(REPO_ROOT, p) });
+  }
+  return found.sort((a, b) => a.date.localeCompare(b.date));
+}
+
 // ─── Check 2: models.html — report + draft only, never auto-spliced ─────────
 
 async function checkModelCards(client, weekLabel, { dryRun }) {
@@ -320,7 +349,7 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
 
   for (const card of cards) {
     const entry = { contentType: 'model-card', filename: card.company || card.name };
-    const result = { company: card.company, name: card.name, factCheck: null, draftFile: null, error: null };
+    const result = { company: card.company, name: card.name, stale: false, factCheck: null, draftFile: null, priorDrafts: [], unappliedPriorDrafts: [], error: null };
     results.push(result);
 
     // Isolated per card — same reasoning as checkStaticPages: one card's
@@ -337,6 +366,31 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
       if (blocking.length === 0) {
         log(`  clean`);
         continue;
+      }
+
+      result.stale = true;
+      // Tracked third state ("applied"): a draft from an EARLIER run whose
+      // content the live card does NOT reflect = a draft that was reviewed but
+      // never pasted into models.html. Comparing the live card's model line
+      // against each prior draft's keeps this precise: a draft the live card
+      // already matches WAS applied (the card just went stale again for a new
+      // reason), so it isn't flagged — only genuinely-unapplied drafts are.
+      const priors = await findPriorDrafts(slugify(card.name), weekLabel);
+      const norm = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+      const liveModels = norm(card.models);
+      const unappliedPriors = [];
+      for (const d of priors) {
+        let draftModels = '';
+        try {
+          const dh = await fs.readFile(path.join(REPO_ROOT, d.path), 'utf8');
+          draftModels = norm((dh.match(/<div class="mcard-models">([\s\S]*?)<\/div>/) || [, ''])[1]);
+        } catch { /* unreadable → fall through and flag conservatively */ }
+        if (!draftModels || draftModels !== liveModels) unappliedPriors.push(d);
+      }
+      result.priorDrafts = priors;
+      result.unappliedPriorDrafts = unappliedPriors;
+      if (unappliedPriors.length) {
+        log(`  UNAPPLIED-DRAFT ALARM: still stale AND a prior draft the live card doesn't reflect exists (${unappliedPriors.map(d => d.date).join(', ')}) — never applied to models.html`);
       }
 
       log(`  ${blocking.length} blocking finding(s) — drafting a suggested replacement card`);
@@ -502,7 +556,12 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
   }
   sections.push('');
 
-  sections.push('MODEL CARDS (models.html — report only, never auto-published):');
+  // Model cards are never auto-applied, so each stale card is tracked through
+  // THREE explicit states — generated → reviewed → applied — not two. "applied"
+  // is derived from the live fact-check: a card that is still stale has NOT been
+  // applied yet. A draft from a prior run on a still-stale card is the loud
+  // "reviewed but never applied" alarm.
+  sections.push('MODEL CARDS (models.html — manual-paste only; tracked: generated → reviewed → APPLIED):');
   if (!modelCardResults.length) {
     sections.push('  (no cards found — check models.html structure)');
   }
@@ -511,14 +570,26 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
       sections.push(`  • ${r.company} — ${r.name}: ERROR — ${r.error}`);
       continue;
     }
-    const blocking = (r.factCheck?.findings ?? []).filter(f => f.severity === 'blocking');
-    if (!blocking.length) {
-      sections.push(`  • ${r.company} — ${r.name}: clean`);
+    if (!r.stale) {
+      sections.push(`  • ${r.company} — ${r.name}: ✓ current (live card passes fact-check — nothing to apply)`);
       continue;
     }
-    sections.push(`  • ${r.company} — ${r.name}: STALE`);
-    for (const f of blocking) sections.push(`    finding: ${f.claim} — ${f.issue}`);
-    if (r.draftFile) sections.push(`    suggested replacement drafted: ${r.draftFile} (review and paste manually)`);
+    const unappliedPriors = r.unappliedPriorDrafts ?? [];
+    const unapplied = unappliedPriors.length > 0;
+    sections.push(`  • ${r.company} — ${r.name}: ⚠ STALE${unapplied ? '  *** UNAPPLIED DRAFT ***' : ''}`);
+    for (const f of (r.factCheck?.findings ?? []).filter(f => f.severity === 'blocking')) {
+      sections.push(`      finding: ${f.claim} — ${f.issue}`);
+    }
+    // The three-state checklist. "applied" is unchecked because the live card
+    // is still stale as of this run.
+    sections.push(`      [${r.draftFile ? 'x' : ' '}] generated${r.draftFile ? `: ${r.draftFile}` : ' (draft not written — see error/log)'}`);
+    sections.push(`      [ ] reviewed`);
+    sections.push(`      [ ] APPLIED to models.html  ← live card still fails fact-check`);
+    if (unapplied) {
+      sections.push(`      *** a draft generated on ${unappliedPriors.map(d => d.date).join(', ')} is NOT reflected in the live card, and this card is STILL stale —`);
+      sections.push(`          that earlier draft was reviewed but never pasted into models.html. Apply it (or this run's) now.`);
+      for (const d of unappliedPriors) sections.push(`          unapplied draft: ${d.path}`);
+    }
   }
   sections.push('');
 
@@ -559,13 +630,14 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
   sections.push('correction above. Model-card drafts (if any) still need manual paste.');
 
   const staleTrackerPR = Array.isArray(trackerPRs) && trackerPRs.some(pr => pr.ageDays >= STALE_TRACKER_PR_DAYS);
+  const unappliedDrafts = modelCardResults.some(r => r.stale && (r.unappliedPriorDrafts ?? []).length > 0);
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Fortnightly review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
+      subject: `[llms101] Fortnightly review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${unappliedDrafts ? ' — UNAPPLIED CARD DRAFT' : ''}${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
       text: sections.join('\n')
     })
   });
