@@ -1037,6 +1037,35 @@ existing pipeline's internals:**
    fact-check findings as its `notes` parameter) and written to
    `llms101-automation/drafts/fortnightly-{date}/model-card-{slug}.html`
    for manual review and paste.
+
+   **draft → reviewed → APPLIED (three tracked states, added 2026-07-22).**
+   Because model cards are manual-paste-only, "applied to the live file" is a
+   distinct third step that nothing tracked — a generated, reviewed, corrected
+   draft could (and did, twice in one session) sit unapplied while the live
+   page stayed stale. The report now tracks each card through three states,
+   not two: `generated` (draft written), `reviewed` (the human step — the
+   report email is the trigger), and `applied` (live card reflects the fix).
+   "Applied" is derived, not guessed: a card that is still stale this run has
+   NOT been applied. The loud signal is `findPriorDrafts()` — if a card is
+   stale AND a draft for it exists from an EARLIER run whose `mcard-models`
+   line the live card does not match, that earlier draft was reviewed but
+   never pasted → the report tags it `*** UNAPPLIED DRAFT ***` with a
+   `— UNAPPLIED CARD DRAFT` subject marker. The mcard-models comparison keeps
+   it precise: a draft the live card already matches was applied (so a card
+   that merely went stale again for a new reason is not mis-flagged). A card
+   applied correctly is no longer stale, so it never trips the alarm — the 7
+   cards applied 2026-07-22 read `✓ current` next run.
+
+   **GOTCHA when applying a generated card draft (learned the hard way
+   2026-07-22).** The drafts are raw model output and are NOT paste-ready:
+   they carry markup artifacts — empty `<a>` citation wrappers, stray bare
+   `<span>`s, multi-line `<p>` — and the prompt template OMITS the model-name
+   homepage link the live cards have. Clean only bare-tag PAIRS
+   (`<a>…</a>`, `<span>…</span>` with no attributes) — a blanket `/<\/?span>/g`
+   also strips every attribute-bearing tag's `</span>` closer and silently
+   produces malformed HTML that still renders (browsers auto-close) but breaks
+   `extractModelCards()`. Restore the mcard-name link, and validate `<div>`,
+   `<span>` AND `<a>` balance (not just divs) plus that all companies parse.
 3. **Tracker + Trends — spot-audit, report only.** Deliberately lighter
    than checks 1-2: these already have their own weekly/monthly cadences,
    so this is one `web_search`-enabled call asking "has anything
