@@ -1,24 +1,25 @@
-name: Fortnightly Full-Site Review
+name: Mid-Month Light Spot-Check
 
-# Mirrors weekly-content.yml's auto-publish principle (Craig's 2026-07-21
-# decision for static-page corrections specifically) and
-# monthly-tracker-refresh.yml's checkout/setup/install shape. Fires every
-# Wednesday — GitHub Actions cron has no native "every 2 weeks" — and
-# scripts/fortnightly-review.js self-gates to every OTHER Wednesday via
-# isScheduledWeek(), so the off-week run is a fast, harmless no-op (no API
-# calls, no email). workflow_dispatch always runs regardless of parity
-# (--force), for manual testing. See ARCHITECTURE.md.
+# Hybrid cadence (2026-07-22, cost restructure): the EXPENSIVE full review
+# (every models.html card + every static page, live web-search-backed) now
+# runs MONTHLY, folded into monthly-tracker-refresh.yml on the 1st. This
+# workflow is the cheap mid-month off-week pass: a SINGLE web_search call
+# ("what's changed since the ~1st full review?") plus the free
+# checkUnmergedTrackerPRs() check. Report-only — it never fact-checks each
+# card/page or auto-drafts corrections. The old every-other-Wednesday
+# ISO-week-parity gate is retired; this is a plain 15th-of-month cron.
+# See ARCHITECTURE.md's Full-Site Review section.
 
 on:
   schedule:
-    - cron: '0 15 * * 3'   # every Wednesday 15:00 UTC — script gates to biweekly
+    - cron: '0 15 15 * *'   # 15th of each month, 15:00 UTC — mid-month, ~2 wks after the 1st full review
   workflow_dispatch: {}
 
 jobs:
-  fortnightly-review:
+  light-spot-check:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: read   # lets the unmerged-tracker-PR check run `gh pr list`
     steps:
       - name: Checkout repo
@@ -33,27 +34,13 @@ jobs:
         run: npm install
         working-directory: ./llms101-automation
 
-      - name: Configure git identity
-        run: |
-          git config user.name "llms101-bot"
-          git config user.email "bot@llms101.com"
-
-      # workflow_dispatch always runs (--force); the scheduled cron relies on
-      # the script's own isScheduledWeek() gate to skip the off week.
-      #
-      # The script commits AND pushes any static-page correction itself, in
-      # this same step, immediately after `git commit` — same pattern as
-      # validate-and-publish.js. Deliberately NOT a separate workflow step:
-      # the first live dispatch (2026-07-21) hit an Anthropic API credit
-      # error on a LATER check (models.html), which aborted the job before a
-      # separate push step ever ran, leaving an already-committed correction
-      # stranded on the ephemeral runner and lost when it was destroyed. See
-      # ARCHITECTURE.md's Fortnightly Full-Site Review section.
-      - name: Run fortnightly review
+      # Report-only: one web_search spot-audit + the gh PR check. No commits,
+      # no pushes, no per-card/per-page fact-checks — that's the monthly run.
+      - name: Run light spot-check
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
           GH_TOKEN: ${{ github.token }}   # for the unmerged-tracker-PR check's `gh pr list`
-        run: node scripts/fortnightly-review.js ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+        run: node scripts/fortnightly-review.js --light
         working-directory: ./llms101-automation

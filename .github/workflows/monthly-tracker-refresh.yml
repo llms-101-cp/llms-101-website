@@ -1,11 +1,22 @@
-name: Monthly Model Tracker Refresh
+name: Monthly Tracker Refresh + Full-Site Review
 
-# Mirrors weekly-content.yml's cron + workflow_dispatch pattern, but on a
-# monthly cadence (tracker.html's own hero text already promises "Updated
-# monthly") and with a materially different publish mechanism: this opens a
-# PR directly against tracker.html itself, rather than saving a draft for
-# manual copy-paste via admin/review.html. See ARCHITECTURE.md "Model
-# Tracker automation" section for why.
+# Two monthly jobs share ONE run (2026-07-22 cost restructure — avoid two
+# independent monthly crons both hitting the API):
+#   1. Full-site review (fortnightly-review.js, full mode): every models.html
+#      card + every static page, live web-search-backed. Static-page
+#      corrections auto-publish to main; stale model cards get drafts +
+#      the generated→reviewed→APPLIED checkpoint. This is the EXPENSIVE pass
+#      moved here from its old every-2-weeks cadence (the mid-month
+#      fortnightly-review.yml is now just a cheap spot-check).
+#   2. Tracker refresh (generate-tracker.js): opens a PR against tracker.html
+#      for human merge (D1). See ARCHITECTURE.md "Model Tracker automation".
+#
+# ORDER MATTERS: the review runs FIRST (on main, auto-committing/pushing its
+# corrections), THEN the tracker step cuts its branch from the now-updated
+# main — so the tracker PR diff stays just tracker.html + changelog. The
+# review step is `continue-on-error` so a review failure (e.g. API credit)
+# never blocks the tracker refresh, and vice versa; each surfaces its own
+# outcome (the review emails its own report).
 
 on:
   schedule:
@@ -13,11 +24,11 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  refresh-tracker:
+  monthly-review-and-tracker:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
+      pull-requests: write   # tracker opens a PR; review's gh pr list reads them
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -31,6 +42,26 @@ jobs:
         run: npm install
         working-directory: ./llms101-automation
 
+      - name: Configure git identity
+        run: |
+          git config user.name "llms101-bot"
+          git config user.email "bot@llms101.com"
+
+      # FULL site review — runs first, on main. Auto-publishes static-page
+      # corrections and commits model-card drafts + the report to main itself
+      # (commit-then-push in the same script invocation, same pattern as
+      # validate-and-publish.js). continue-on-error so a review failure never
+      # blocks the tracker refresh below; the review sends its own report email.
+      - name: Run monthly full-site review (models.html + static pages)
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+          GH_TOKEN: ${{ github.token }}   # for the unmerged-tracker-PR check's `gh pr list`
+        run: node scripts/fortnightly-review.js
+        working-directory: ./llms101-automation
+
       - name: Generate refreshed tracker.html (web_search-enabled)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -41,14 +72,14 @@ jobs:
       # failure, JSON parse failure, or max_tokens truncation throws and
       # exits non-zero, which fails this whole job before any commit
       # happens. That's deliberate: matches generate-indices.js's existing
-      # "fail loudly, don't write bad content" pattern.
+      # "fail loudly, don't write bad content" pattern. The branch is cut
+      # from main AFTER the review step pushed its corrections, so the PR
+      # diff is only tracker.html + the tracker's own changelog entry.
       - name: Create branch, commit, and open PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="tracker-refresh-$(date +%Y-%m-%d)"
-          git config user.name "llms101-bot"
-          git config user.email "bot@llms101.com"
           git checkout -b "$BRANCH"
           git add tracker.html content/changelog.json
 
