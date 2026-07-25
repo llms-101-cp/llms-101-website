@@ -101,6 +101,48 @@ fine, just don't wrap the whole JSON response in triple-backtick fences):
  * models.html is a genuinely different situation: a shared file with
  * hand-coded cards, not a dynamic JSON-driven system. Copy-paste only.
  */
+// ─── models.html card vocabulary (single source of truth) ───────────────────
+// The status badge and cost-tier label are the two spots where generated cards
+// used to drift into ad-hoc wording ("Dominant", "Open weight leader",
+// "Mid-range (free if you self-host…)") that matches nothing in
+// content/pages/methodology.json. Standardized 2026-07-22 to the exact labels
+// methodology.json documents, enforced by validateModelCardVocab() below and
+// spelled out in the generation prompt so future cards can't drift again.
+//
+// Each status CSS class pairs with exactly ONE badge label (the card's coloured
+// tier is the class; the visible text must be its documented name).
+export const STATUS_CLASS_TO_LABEL = {
+  'status-dominant': 'Market Leader',
+  'status-strong': 'Highly Competitive',
+  'status-rising': 'Rising',
+  'status-disruptor': 'Disruptor',
+};
+export const MODEL_CARD_STATUS_LABELS = Object.values(STATUS_CLASS_TO_LABEL);
+export const MODEL_CARD_COST_TIERS = ['Free', 'Ultra-low', 'Low', 'Standard', 'Premium'];
+
+// Validate a single <div class="mcard"> block against the two vocabularies.
+// Returns { ok, problems[] }. Used both to gate freshly-generated card drafts
+// (fortnightly-review.js) and as a reusable check.
+export function validateModelCardVocab(cardHtml) {
+  const problems = [];
+  const badgeM = cardHtml.match(/<span class="status-badge (status-[a-z]+)">([^<]*)<\/span>/);
+  if (!badgeM) {
+    problems.push('no status-badge span found');
+  } else {
+    const [, cls, label] = badgeM;
+    const expected = STATUS_CLASS_TO_LABEL[cls];
+    if (!expected) problems.push(`unknown status class "${cls}" (allowed: ${Object.keys(STATUS_CLASS_TO_LABEL).join(', ')})`);
+    else if (label.trim() !== expected) problems.push(`badge label "${label.trim()}" must be "${expected}" for ${cls} (allowed labels: ${MODEL_CARD_STATUS_LABELS.join(', ')})`);
+  }
+  const costM = cardHtml.match(/<span class="cost-tier-name">([^<]*)<\/span>/);
+  if (!costM) {
+    problems.push('no cost-tier-name span found');
+  } else if (!MODEL_CARD_COST_TIERS.includes(costM[1].trim())) {
+    problems.push(`cost tier "${costM[1].trim()}" is not one of the 5 documented bands (${MODEL_CARD_COST_TIERS.join(', ')})`);
+  }
+  return { ok: problems.length === 0, problems };
+}
+
 export function buildModelCardPrompt(modelName, maker, notes) {
   return {
     system: SITE_VOICE,
@@ -123,7 +165,7 @@ TEMPLATE TO FILL (this is a real example from the live site):
   <div class="mcard-header">
     <div class="mcard-top">
       <span class="mcard-company">{{MAKER_NAME}}</span>
-      <span class="status-badge {{STATUS_CLASS_FROM: status-dominant status-strong status-rising status-disruptor}}">{{STATUS_LABEL}}</span>
+      <span class="status-badge {{STATUS_CLASS}}">{{STATUS_LABEL}}</span>
     </div>
     <div class="mcard-name">{{MODEL_FAMILY_NAME}}</div>
     <div class="mcard-models">{{COMMA_SEPARATED_MODEL_VARIANTS}}</div>
@@ -157,7 +199,7 @@ TEMPLATE TO FILL (this is a real example from the live site):
     <div class="cost-tier">
       <span class="cost-label">Cost tier</span>
       <div class="cost-dots">{{COST_DOTS — repeat <div class="cost-dot active"></div> for filled dots and <div class="cost-dot"></div> for empty, 5 total}}</div>
-      <span class="cost-tier-name">{{COST_TIER_NAME}}</span>
+      <span class="cost-tier-name">{{COST_TIER_BAND}}</span>
     </div>
   </div>
   <div class="seo-content">
@@ -166,6 +208,27 @@ TEMPLATE TO FILL (this is a real example from the live site):
 </div>
 
 ═══════════════════════════════════════════════════════════════
+
+CONTROLLED VOCABULARY — these two labels are NOT free text. They must be the
+exact documented values (methodology.json defines them; anything else is
+rejected):
+
+- {{STATUS_CLASS}} + {{STATUS_LABEL}} are a PAIR. Pick the class for the model's
+  standing, then use its one required label verbatim:
+    status-dominant   → "Market Leader"       (most-used/default in its category)
+    status-strong     → "Highly Competitive"  (matches/beats the leader, less adoption)
+    status-rising     → "Rising"              (improving fast, not yet at the top)
+    status-disruptor  → "Disruptor"           (changes the economics/rules of the field)
+  Do NOT invent labels like "Dominant", "Strong", "Open weight leader",
+  "European challenger", or "Market disruptor".
+
+- {{COST_TIER_BAND}} must be EXACTLY one of these 5 bands (blended $/1M tokens):
+    "Free"       ($0 for standard/consumer use)
+    "Ultra-low"  (~$0–1)
+    "Low"        (~$1–3)
+    "Standard"   (~$3–8)
+    "Premium"    ($8+)
+  Just the band word — no parentheticals, no "-to-mid", no "(free if you self-host)".
 
 Scoring guidance:
 - Speed/Reasoning percent and score should be internally consistent (e.g. 85% ≈ 8.5/10)
