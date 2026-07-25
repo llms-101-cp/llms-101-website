@@ -2,8 +2,8 @@
 
 **Read this file FIRST before making any changes to content systems.**
 **Last verified: 2026-07-25 — split into current-state reference (this file)
-+ dated incident history. Section notes through 2026-07-22 supersede where
-present; the blow-by-blow debugging narratives were moved out (see below).**
++ dated incident history (PR #47). Section notes through 2026-07-22 supersede
+where present; the blow-by-blow debugging narratives were moved out (see below).**
 
 **Full dated incident history: `docs/ARCHITECTURE-history.md`** — this file
 is now the lean current-state reference (schemas, gotchas, mechanics,
