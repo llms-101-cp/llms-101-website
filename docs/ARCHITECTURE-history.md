@@ -1096,3 +1096,26 @@ for `/admin/*` with a literal placeholder password (`yourchosenpassword`). It
 was DELETED 2026-06-21. The standing rule (do not recreate it; the review
 dashboard uses an in-page JS password screen and Decap CMS uses Netlify
 Identity, so neither needs `_headers`) lives in ARCHITECTURE.md.
+
+---
+
+## Document split — ARCHITECTURE.md → current-state reference + this file (2026-07-25, PR #47)
+
+`ARCHITECTURE.md` had grown to ~2,022 lines / ~124KB — large enough that
+GitHub's rendered view truncated it mid-file. On 2026-07-25 it was split into
+two files (merge commit `ddaa262`):
+
+- `ARCHITECTURE.md` — a lean ~980-line current-state reference (schemas,
+  gotchas, mechanics, outstanding work). Ten sections were kept, condensed to
+  drop the "how we found this" narrative from each.
+- `docs/ARCHITECTURE-history.md` (this file) — the ten dated debugging
+  narratives, moved out verbatim: 2026-06-21 and 2026-06-25 fixes, the
+  site-wide staleness audit, the theme cluster 4→6 expansion, the updates
+  page, the Quarterly 5-bug list, the automation 2026-07-20 three-failures,
+  the Model Tracker six-bug + PR #4 review + 2026-07-22 re-run, the Full-Site
+  four-bug/Run-5/V2 closure, and this security note.
+
+Pure documentation restructure — no code, content, or rules changed; the split
+only relocates existing text. Two content additions shipped in the same PR: the
+P7 outstanding-work item (static-page audit scope gap) and the EXAMPLE_DATA
+re-count verification habit in content system 1.
