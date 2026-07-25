@@ -1,5 +1,5 @@
 /**
- * llms101.com — Fortnightly Full-Site Review (added 2026-07-21)
+ * llms101.com — Full-Site Review (added 2026-07-21; hybrid cadence 2026-07-22)
  *
  * Closes the review-cadence gap documented in ARCHITECTURE.md: Trends/Mind
  * Map get a weekly pass and the Tracker gets a monthly pass, but
@@ -8,7 +8,9 @@
  * all — the reason the Claude card sat stale for ~3 weeks after Fable 5 was
  * restored, and Kimi K3's launch went uncovered.
  *
- * Four checks, one run:
+ * TWO MODES (hybrid cadence, 2026-07-22 — to cut API cost):
+ *
+ * FULL mode (default; runs MONTHLY, folded into monthly-tracker-refresh.yml):
  *   1. Static pages (about/beginners/contact/resources) — fact-checked and,
  *      on a blocking finding, corrected through the SAME schema → fact-check
  *      → repair-once → publish|hold gate the weekly pipeline uses (Craig's
@@ -16,35 +18,41 @@
  *      `resources.json` additionally gets a mechanical link-rot check whose
  *      failures are folded in as synthetic blocking findings.
  *   2. `models.html` — fact-checked per card. Never auto-spliced (shared
- *      hand-coded file, no dynamic system — same rule as the weekly
- *      pipeline's model-card handling). A stale card gets a suggested
- *      replacement block written to drafts/ for manual review and paste.
- *   3. Tracker + Trends — a lighter, report-only spot-audit for anything
- *      time-sensitive that slipped through since the last dedicated
- *      weekly/monthly pass. Corrections still flow through THOSE pipelines,
- *      not this one.
- *   4. One report email (same Resend pattern as the weekly/monthly reports)
- *      and one commit for the run, covering whatever static-page
- *      corrections actually published — the single `git revert` point.
+ *      hand-coded file, no dynamic system). A stale card gets a suggested
+ *      replacement block written to drafts/ for manual review and paste;
+ *      a card that's still stale while a prior-run draft it doesn't match
+ *      exists is flagged UNAPPLIED (the generated→reviewed→applied checkpoint).
+ *   3. Report email + one commit covering static-page corrections + drafts.
+ *
+ * LIGHT mode (`--light`; runs mid-month, the 15th, in fortnightly-review.yml):
+ *   A cheap spot-check only — the off-week between full reviews. ONE
+ *   web_search-enabled call asking whether anything time-sensitive has
+ *   emerged since the ~1st-of-month full review (a major launch, deprecation,
+ *   or price change), plus the free, no-API `checkUnmergedTrackerPRs()`.
+ *   Report-only: NEVER fact-checks each card/page individually and NEVER
+ *   auto-drafts corrections — anything it flags is for Craig to trigger a
+ *   manual full review or wait for the 1st. This is the cost-restructure: the
+ *   ~21 per-card/per-page web_search calls run monthly, not fortnightly; the
+ *   off-week is a single call. (The generated→reviewed→APPLIED checkpoint
+ *   stays in the monthly full run, where a live fact-check keeps it precise.)
  *
  * Reuses rather than reinvents: `validateSchema`/`factCheck`/`repairDraft`
  * from validate-and-publish.js (already generic over contentType),
  * `gatherCoverage` from plan-week.js, `buildModelCardPrompt` from
  * prompts/track2-trends.js, `appendToChangelog`, `callWithRetry`.
  *
- * Scheduling: GitHub Actions cron has no native "every 2 weeks" primitive.
- * .github/workflows/fortnightly-review.yml fires every Wednesday 15:00 UTC;
- * `isScheduledWeek()` below gates every other one via ISO-week parity
- * against a fixed anchor date, so the job is a silent no-op (exit 0, no
- * email) on the off week. `workflow_dispatch` (or `--force` locally) always
- * runs regardless of parity, for manual testing.
+ * Scheduling (hybrid, 2026-07-22): full review runs on the 1st of the month
+ * inside monthly-tracker-refresh.yml (shares that run — no separate monthly
+ * cron); the light spot-check runs on the 15th via fortnightly-review.yml's
+ * plain `0 15 15 * *` cron. The old every-other-Wednesday ISO-week-parity
+ * gate is retired — two fixed calendar days are simpler and less bug-prone.
  *
- * Run: node scripts/fortnightly-review.js [--dry-run] [--offline] [--force]
+ * Run: node scripts/fortnightly-review.js [--light] [--dry-run] [--offline]
+ *   (no flag) full review (default).
+ *   --light    cheap spot-check only (one web_search call + free file checks).
  *   --dry-run  run every check but write nothing, commit nothing, email
  *              nothing (prints the report to stdout instead).
  *   --offline  dev-only: skip every web_search API call. Implies --dry-run.
- *   --force    bypass the biweekly parity gate (workflow_dispatch passes
- *              this automatically; use it locally to test off-cycle).
  *
  * Env: ANTHROPIC_API_KEY (fact-check/repair/generation),
  *      RESEND_API_KEY + REVIEW_EMAIL (report email)
@@ -89,16 +97,14 @@ export function ordinal(n) {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-// ─── Biweekly gate ───────────────────────────────────────────────────────────
-// First fortnightly Wednesday. Every OTHER Wednesday from this anchor is a
-// scheduled run; the ones in between are a silent no-op under cron.
+// ─── Light-mode "since date" ─────────────────────────────────────────────────
+// The full review runs on the 1st of the month (folded into the tracker run),
+// so the mid-month light spot-check frames "what's changed since ~the 1st".
+// First-of-month is a good-enough anchor for a spot-check prompt and needs no
+// committed marker state.
 
-const ANCHOR_WEDNESDAY = new Date('2026-07-22T00:00:00Z');
-
-export function isScheduledWeek(now = new Date()) {
-  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const diffWeeks = Math.floor((now.getTime() - ANCHOR_WEDNESDAY.getTime()) / msPerWeek);
-  return ((diffWeeks % 2) + 2) % 2 === 0;
+export function firstOfMonthISO(now = new Date()) {
+  return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-01`;
 }
 
 // ─── Static-page link-rot check (resources.json only) ───────────────────────
@@ -421,20 +427,23 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
 
 // ─── Check 3: Tracker + Trends spot-audit — report only ─────────────────────
 
-async function spotAuditTrackerAndTrends(client) {
+async function spotAuditTrackerAndTrends(client, sinceDate = null) {
   const coverage = await gatherCoverage();
   const trackerHtml = await fs.readFile(TRACKER_HTML, 'utf8');
   const trackerNames = [...trackerHtml.matchAll(/<div class="model-name">([\s\S]*?)<\/div>/g)]
     .map(m => m[1].replace(/<[^>]+>/g, '').trim());
 
   const todayISO = new Date().toISOString().slice(0, 10);
+  const sinceClause = sinceDate
+    ? ` The last full review was around ${sinceDate}; focus on what has emerged SINCE then.`
+    : '';
   const system = `You are a lightweight currency spot-checker for llms101.com, an
 educational site about large language models. Today's date is ${todayISO}.
 The site's Model Tracker refreshes monthly and Trends refreshes weekly — you
 are NOT re-reviewing either in full, only checking whether something
 genuinely time-sensitive has emerged since the last pass that a reasonably
 informed reader would expect this site to already reflect (a major model
-launch, a deprecation, a significant price change). Use web_search.`;
+launch, a deprecation, a significant price change).${sinceClause} Use web_search.`;
 
   const user = `CURRENT TRACKER ROWS (${trackerNames.length}):
 ${trackerNames.map(n => `- ${n}`).join('\n')}
@@ -530,7 +539,7 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
   }
 
   const sections = [];
-  sections.push(`llms101.com fortnightly full-site review — ${weekLabel}`);
+  sections.push(`llms101.com MONTHLY full-site review — ${weekLabel}`);
   sections.push('');
 
   if (fatalError) {
@@ -637,16 +646,83 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Fortnightly review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${unappliedDrafts ? ' — UNAPPLIED CARD DRAFT' : ''}${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
+      subject: `[llms101] Monthly full review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${unappliedDrafts ? ' — UNAPPLIED CARD DRAFT' : ''}${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
       text: sections.join('\n')
     })
   });
 
   if (res.ok) {
-    log(`Fortnightly report email sent to ${process.env.REVIEW_EMAIL}`);
+    log(`Monthly full-review report email sent to ${process.env.REVIEW_EMAIL}`);
   } else {
     const detail = await res.text().catch(() => '(no body)');
     log(`WARNING: report email failed — HTTP ${res.status}: ${detail}`);
+  }
+}
+
+// ─── Light-mode report email ─────────────────────────────────────────────────
+// The mid-month spot-check: no per-card/per-page fact-checks, no corrections.
+// Just the one spot-audit call's findings + the two free file checks, framed
+// as "flag for Craig — trigger a manual full review if any of this matters".
+async function sendLightReportEmail(dateLabel, { sinceDate, spotAuditFindings, trackerPRs, fatalError }) {
+  if (!process.env.RESEND_API_KEY || !process.env.REVIEW_EMAIL) {
+    log('No email config — skipping light spot-check email.');
+    return;
+  }
+
+  const sections = [];
+  sections.push(`llms101.com mid-month LIGHT spot-check — ${dateLabel}`);
+  sections.push(`(cheap between-full-reviews pass; the last full review was ~${sinceDate}. No fact-checks or corrections run today.)`);
+  sections.push('');
+
+  if (fatalError) {
+    sections.push(`*** SPOT-CHECK ERROR: ${fatalError} ***`);
+    sections.push('');
+  }
+
+  sections.push(`WHAT'S CHANGED SINCE THE LAST FULL REVIEW (${sinceDate})?`);
+  if (!spotAuditFindings.length) {
+    sections.push('  Nothing significant flagged. (This is the expected result most off-weeks.)');
+  } else {
+    for (const f of spotAuditFindings) sections.push(`  • [${f.area}] ${f.issue}`);
+    sections.push('');
+    sections.push('  → If any of the above matters, trigger a full review now:');
+    sections.push('    gh workflow run monthly-tracker-refresh.yml   (runs the full models.html + static-page pass)');
+    sections.push('    …otherwise it will be picked up automatically on the 1st.');
+  }
+  sections.push('');
+
+  sections.push('UNMERGED TRACKER PR CHECK:');
+  if (trackerPRs === null) {
+    sections.push('  Could not check — see the workflow log (needs gh + GH_TOKEN with pull-requests:read).');
+  } else if (!trackerPRs.length) {
+    sections.push('  None open.');
+  } else {
+    for (const pr of trackerPRs) {
+      const stale = pr.ageDays >= STALE_TRACKER_PR_DAYS;
+      sections.push(`  ${stale ? '*** STALE' : '•'} tracker PR #${pr.number} open ${pr.ageDays} day(s): "${pr.title}"${stale ? ' — review/merge or close+re-run ***' : ' (awaiting review)'}`);
+      sections.push(`    ${pr.url}`);
+    }
+  }
+  sections.push('');
+  sections.push('This is a report-only spot-check — nothing was changed or published today.');
+
+  const staleTrackerPR = Array.isArray(trackerPRs) && trackerPRs.some(pr => pr.ageDays >= STALE_TRACKER_PR_DAYS);
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'llms101-bot@llms101.com',
+      to: process.env.REVIEW_EMAIL,
+      subject: `[llms101] Light spot-check ${dateLabel} — ${spotAuditFindings.length} finding(s)${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — ERROR' : ''}`,
+      text: sections.join('\n')
+    })
+  });
+
+  if (res.ok) {
+    log(`Light spot-check report email sent to ${process.env.REVIEW_EMAIL}`);
+  } else {
+    const detail = await res.text().catch(() => '(no body)');
+    log(`WARNING: light report email failed — HTTP ${res.status}: ${detail}`);
   }
 }
 
@@ -658,19 +734,52 @@ function git(...args) {
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 
+async function runLight({ offline, todayISO }) {
+  const sinceDate = firstOfMonthISO();
+  log(`Starting LIGHT spot-check for ${todayISO} (since ~${sinceDate})${offline ? ' [OFFLINE]' : ''}`);
+
+  let spotAuditFindings = [], fatalError = null;
+
+  // Free, no-API check first — reports even if the one API call fails. The
+  // draft→reviewed→APPLIED checkpoint stays in the MONTHLY full run only
+  // (checkModelCards + findPriorDrafts), where a real fact-check makes it
+  // precise; a pure file-compare here would over-flag superseded drafts.
+  const trackerPRs = checkUnmergedTrackerPRs();
+  if (Array.isArray(trackerPRs) && trackerPRs.length) {
+    log(`Unmerged tracker PR(s) open: ${trackerPRs.map(p => `#${p.number} (${p.ageDays}d)`).join(', ')}`);
+  }
+
+  // The single paid call: one web_search spot-audit "what's changed since ~1st".
+  if (offline) {
+    log('OFFLINE — skipping the spot-audit web_search call.');
+  } else {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    try {
+      spotAuditFindings = await spotAuditTrackerAndTrends(client, sinceDate);
+    } catch (err) {
+      fatalError = err.message;
+      log(`ERROR during light spot-check: ${err.stack}`);
+    }
+    await sendLightReportEmail(todayISO, { sinceDate, spotAuditFindings, trackerPRs, fatalError });
+  }
+
+  log('Light spot-check complete. (Report-only — nothing changed or published.)');
+  if (fatalError) process.exitCode = 1;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const offline = args.includes('--offline');
   const dryRun = args.includes('--dry-run') || offline;
-  const force = args.includes('--force');
-
-  if (!force && !isScheduledWeek()) {
-    log('Off-cycle week under the biweekly gate — nothing to do this Wednesday. Pass --force to override.');
-    return;
-  }
+  const light = args.includes('--light');
 
   const todayISO = new Date().toISOString().slice(0, 10);
-  log(`Starting fortnightly full-site review for ${todayISO}${dryRun ? ' [DRY RUN]' : ''}${offline ? ' [OFFLINE]' : ''}`);
+
+  if (light) {
+    return runLight({ offline, todayISO });
+  }
+
+  log(`Starting MONTHLY full-site review for ${todayISO}${dryRun ? ' [DRY RUN]' : ''}${offline ? ' [OFFLINE]' : ''}`);
 
   let pageResults = [], modelCardResults = [], spotAuditFindings = [], trackerPRs = null;
   let fatalError = null;
@@ -773,7 +882,7 @@ async function main() {
     await sendReportEmail(todayISO, { pageResults, modelCardResults, spotAuditFindings, trackerPRs, commitSha, fatalError });
   }
 
-  log('Fortnightly review complete.');
+  log('Monthly full-site review complete.');
   if (fatalError) process.exitCode = 1;
 }
 

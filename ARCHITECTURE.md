@@ -76,9 +76,11 @@ reader-facing twin: any PR changing reader-facing content must append a
   **Landed and live-verified 2026-07-21** (PR #31 + four follow-up fixes,
   #32-#35, all found via real dispatches after Craig topped up Anthropic
   credit): `llms101-automation/scripts/fortnightly-review.js` +
-  `.github/workflows/fortnightly-review.yml` (Wednesday 15:00 UTC cron,
-  self-gated to biweekly), plus a sitewide date-format fix (every
-  "Last Updated"-style element now reads "27th June 2026" style). Five
+  `.github/workflows/fortnightly-review.yml` (originally a biweekly Wednesday
+  cron; **restructured to a hybrid monthly-full + mid-month-light cadence
+  2026-07-22** — see the Full-Site Review section), plus a sitewide
+  date-format fix (every "Last Updated"-style element now reads
+  "27th June 2026" style). Five
   manual dispatches, four real bugs (push-order, missing per-item
   isolation, drafts/report never committed, `lastTextBlock`-only silently
   dropping payloads when the model appends a trailing note — the last one
@@ -130,17 +132,17 @@ reader-facing twin: any PR changing reader-facing content must append a
   check whether another 529-wave hit — the retry stack should absorb a
   transient burst, but a sustained overload can still exhaust all 3
   attempts.
-* W5 — First SCHEDULED (not manually dispatched) fortnightly review run.
-  P6 landed and was live-verified 2026-07-21 via 5 manual `workflow_dispatch`
-  runs (see the Fortnightly Full-Site Review section) — items (a)-(d) from
-  the original version of this note are all confirmed: static pages
-  checked, link-rot ran, a correction auto-published with a changelog
-  entry, all 10 models.html cards found and checked. What's still
-  unverified: the biweekly gate itself (`isScheduledWeek()`) firing
-  correctly under the real Wednesday 15:00 UTC cron rather than `--force`.
-  First real cron opportunity: 2026-07-22 (the anchor date itself, so it
-  should fire); confirm it's a silent no-op on 2026-07-29, then fires
-  again 2026-08-05.
+* W5 — Full-site review live-verified 2026-07-21 via 5 manual dispatches
+  (static pages checked, link-rot ran, a correction auto-published with a
+  changelog entry, all 10 models.html cards found and checked). **The
+  biweekly `isScheduledWeek()` gate this note used to watch is retired**
+  (2026-07-22 hybrid restructure — full pass monthly, light pass on the 15th;
+  no more parity math). New things to confirm under the hybrid cadence: (a)
+  the first monthly run on 1 Aug 2026 does the full review AND the tracker PR
+  in one `monthly-tracker-refresh.yml` run, review-first ordering intact; (b)
+  the first light run on 15 Aug is a cheap ~1-call spot-check that emails a
+  report and commits nothing. Both still ride the shared Anthropic key — watch
+  for the recurring credit-exhaustion failure.
 
 ### Decisions parked for Craig
 
@@ -994,7 +996,14 @@ practice.
 
 ---
 
-## Fortnightly Full-Site Review (added 2026-07-21)
+## Full-Site Review — hybrid cadence (added 2026-07-21; restructured 2026-07-22)
+
+> Cadence note: this ran every 2 weeks at first. Since 2026-07-22 it is a
+> **hybrid**: the full pass runs MONTHLY (folded into the tracker run on the
+> 1st) and a cheap LIGHT spot-check runs mid-month (the 15th). The
+> "every two weeks" phrasing below is historical — see the HYBRID CADENCE
+> block further down for the current schedule and the cost rationale.
+
 
 Before this, review cadence was uneven: Trends/Mind Map weekly, Tracker
 monthly, and `models.html` + the static `content/pages/*.json` pages
@@ -1080,16 +1089,47 @@ existing pipeline's internals:**
    `git revert` point), with a changelog entry (area: `Site`) appended via
    the existing `appendToChangelog()` helper.
 
-**Scheduling gotcha — read before touching the cron.** GitHub Actions cron
-has no native "every 2 weeks" primitive. `fortnightly-review.yml` fires
-every Wednesday 15:00 UTC (clear of the Sunday 21:00 UTC weekly run and the
-1st-of-month 09:00 UTC tracker run); `isScheduledWeek()` inside the script
-itself gates every OTHER Wednesday via ISO-week parity against a fixed
-anchor date (`2026-07-22`, the first fortnightly Wednesday) — the off-week
-run exits immediately with no API calls and no email. `workflow_dispatch`
-(and the local `--force` flag) always runs regardless of parity, for manual
-testing. If the cadence ever needs to change, the anchor date and the cron
-expression both need updating together.
+**HYBRID CADENCE (2026-07-22 cost restructure) — supersedes the every-2-weeks
+model above.** The full pass described in checks 1–4 is the expensive part:
+~23 `web_search`-enabled Opus calls per run (10 card fact-checks + ~7 draft
+generations + 4 pages + spot-audit), ~$0.30–0.70 each. Running it every two
+weeks was the biggest single line item on the shared Anthropic key. So the
+job now has **two modes** and **two schedules**:
+
+- **FULL (monthly, the 1st).** `node scripts/fortnightly-review.js` (no flag)
+  runs checks 1–4 exactly as documented above. It is **folded into
+  `monthly-tracker-refresh.yml`** — one runner does the full review *then* the
+  tracker generation, so there aren't two independent monthly crons both
+  hitting the API. Order matters: the review runs FIRST (auto-committing/
+  pushing its corrections to main), then the tracker step cuts its PR branch
+  from the now-updated main, so the tracker PR diff stays just tracker.html +
+  changelog. The review step is `continue-on-error` so a review failure (e.g.
+  API credit) never blocks the tracker refresh, and vice versa.
+- **LIGHT (mid-month, the 15th).** `node scripts/fortnightly-review.js --light`
+  is `fortnightly-review.yml` (renamed "Mid-Month Light Spot-Check"). The
+  off-week between full reviews: **one** `web_search` call asking "what's
+  changed since the ~1st full review?" (`spotAuditTrackerAndTrends(client,
+  sinceDate)`, sinceDate = first-of-month) plus the free `checkUnmergedTrackerPRs()`.
+  Report-only — it NEVER fact-checks each card/page and NEVER auto-drafts
+  corrections. If it flags something, the email tells Craig to
+  `gh workflow run monthly-tracker-refresh.yml` for a full pass or wait for
+  the 1st. ~1 call instead of ~23.
+
+The old every-other-Wednesday `isScheduledWeek()` ISO-week-parity hack (and
+its `--force` flag) is **retired** — two fixed calendar-day crons (1st + 15th)
+are simpler and less bug-prone than parity math. `firstOfMonthISO()` replaced
+`isScheduledWeek()`.
+
+**Expected monthly API spend under the hybrid structure** (Opus 4.8 $5/$25
+per 1M tok; web search $10/1k): full review monthly ≈ $8–16; light spot-check
+≈ $1–2; weekly content pipeline (unchanged) ≈ $8–12; tracker generation
+(unchanged, now same run) ≈ $1–2 → **~$18–32/mo total on the shared key**,
+down from ~$27–49/mo when the full review ran fortnightly. The review portion
+roughly halves with zero coverage loss — the same checks run, just monthly +
+a cheap mid-month nudge. Weekly content and the tracker were deliberately left
+weekly/monthly (Craig's call 2026-07-22): dropping weekly→fortnightly would
+save ~$4–6/mo more but halve content output, an editorial decision to make
+separately.
 
 **Status as of 2026-07-21: live-verified via 5 manual dispatches, V2
 CLOSED.** The build environment had no `ANTHROPIC_API_KEY`, so the initial
