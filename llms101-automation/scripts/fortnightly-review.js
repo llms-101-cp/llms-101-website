@@ -68,7 +68,7 @@ import { callWithRetry } from './api-retry.js';
 import { appendToChangelog } from './changelog-append.js';
 import { validateSchema, factCheck, repairDraft } from './validate-and-publish.js';
 import { gatherCoverage } from './plan-week.js';
-import { buildModelCardPrompt } from '../prompts/track2-trends.js';
+import { buildModelCardPrompt, validateModelCardVocab } from '../prompts/track2-trends.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTOMATION_ROOT = path.join(__dirname, '..');
@@ -409,6 +409,17 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
       }
       const draftHtml = extracted ?? rawResponse;
 
+      // Enforce the controlled vocabulary — the generation prompt spells out the
+      // exact status-badge and cost-tier labels, but validate the actual output
+      // too so a drifted draft is flagged for the reviewer (not silently pasted).
+      if (extracted) {
+        const v = validateModelCardVocab(extracted);
+        if (!v.ok) {
+          result.vocabProblems = v.problems;
+          log(`  VOCAB DRIFT in ${card.name} draft: ${v.problems.join('; ')}`);
+        }
+      }
+
       if (!dryRun) {
         const draftDir = path.join(DRAFTS_DIR, `fortnightly-${weekLabel}`);
         await fs.mkdir(draftDir, { recursive: true });
@@ -588,6 +599,9 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
     sections.push(`  • ${r.company} — ${r.name}: ⚠ STALE${unapplied ? '  *** UNAPPLIED DRAFT ***' : ''}`);
     for (const f of (r.factCheck?.findings ?? []).filter(f => f.severity === 'blocking')) {
       sections.push(`      finding: ${f.claim} — ${f.issue}`);
+    }
+    if (r.vocabProblems?.length) {
+      sections.push(`      ⚠ VOCAB DRIFT in the generated draft (fix before pasting): ${r.vocabProblems.join('; ')}`);
     }
     // The three-state checklist. "applied" is unchecked because the live card
     // is still stale as of this run.
