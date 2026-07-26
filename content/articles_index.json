@@ -1,5 +1,19 @@
 [
   {
+    "title": "Before You Trust an AI Agent With Your Accounts",
+    "slug": "before-you-trust-ai-agent-with-accounts",
+    "date": "2026-07-26",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "AI agents can now manage your email, calendar, and finances. But the same features that make them useful also make them risky. Here is what to check before granting access.",
+    "before_label": "Chatbots (2023-2024)",
+    "before": "Could only read and respond. The worst outcome was a bad answer or embarrassing output.",
+    "after_label": "Agents (2025-2026)",
+    "after": "Can read, write, and act across connected accounts. A mistake or attack can move money, delete data, or send messages.",
+    "file": "content/articles/before-you-trust-ai-agent-with-accounts.json",
+    "url": "/trends/view-article.html?article=before-you-trust-ai-agent-with-accounts"
+  },
+  {
     "title": "AI That Uses Your Computer: What Screen-Control Agents Can and Cannot Do",
     "slug": "screen-control-agents-capabilities-limits",
     "date": "2026-07-20",
