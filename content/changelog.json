@@ -119,5 +119,14 @@
         "text": "Model Directory tidied — every card’s status badge and cost-tier label now uses the site’s documented vocabulary (Market Leader / Highly Competitive / Rising / Disruptor, and Free / Ultra-low / Low / Standard / Premium), so the badges match the Methodology page and the cost row reads evenly."
       }
     ]
+  },
+  {
+    "date": "2026-07-26",
+    "items": [
+      {
+        "area": "Trends",
+        "text": "New article: Before You Trust an AI Agent With Your Accounts."
+      }
+    ]
   }
 ]
