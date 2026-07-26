@@ -84,6 +84,16 @@
       "rationale": "From the topic backlog: Agents/MCP cluster, part two: agents that operate a computer (screen control, browser use) are the most visible agent form for non-technical readers, and the site has no node for it — 'agents' and 'mcp' under Prompting cover the concept and the connector, not this modality.",
       "_planned_by": "backlog",
       "_completed_at": "2026-07-20T10:55:53.864Z"
+    },
+    {
+      "week_of": "2026-08-03",
+      "trendsArticle": {
+        "topic": "Before You Trust an AI Agent With Your Accounts",
+        "notes": "Consumer-angle explainer on agent safety: prompt injection in the wild, permission prompts, why 'read access' and 'act access' are different risks. Reference the existing injection/agents nodes rather than re-explaining mechanics."
+      },
+      "_planned_by": "backlog",
+      "rationale": "From the topic backlog: Agents/MCP cluster, part three: safety when an AI acts on your behalf. The 'injection' node explains prompt injection mechanics; nothing explains the everyday-user version — what can go wrong when you hand an agent your inbox or browser, and what guardrails to expect.",
+      "_completed_at": "2026-07-26T22:01:13.009Z"
     }
   ]
 }
