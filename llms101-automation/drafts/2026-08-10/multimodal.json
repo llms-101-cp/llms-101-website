@@ -1,0 +1,27 @@
+{
+  "label": "Multimodal Models",
+  "sub": "Text, images, audio & more",
+  "tag": "Architecture",
+  "theme": "arch",
+  "hasChildren": false,
+  "title": "Multimodal Models: Beyond Text-Only Understanding",
+  "body": "<p><strong>Multimodal models</strong> are AI systems that can process and understand multiple types of input — typically text and images, but increasingly audio and video too. Rather than being limited to reading words, these models can 'see' pictures, interpret charts, and reason across different kinds of information simultaneously.</p><p>The core idea involves connecting a <strong>vision encoder</strong> (which turns images into numerical representations) to a language model through an alignment layer. Models like CLIP first learn to match images with text descriptions, creating a shared understanding space. Then systems like GPT-4V or LLaVA use this visual understanding alongside text processing — you can show them a photo and ask questions about it.</p><p>This matters because humans naturally combine different senses to understand the world. Multimodal models can now describe what's in an image, read text from photos, analyze charts, or answer questions that require both seeing and reasoning. It's a significant step toward AI that understands context the way we do.</p>",
+  "examples": [
+    "GPT-4V",
+    "CLIP",
+    "LLaVA",
+    "Gemini",
+    "Flamingo",
+    "Vision Transformer (ViT)"
+  ],
+  "sources": [
+    {
+      "label": "MM-LLMs: Recent Advances in MultiModal Large Language Models (arXiv)",
+      "url": "https://arxiv.org/abs/2401.13601"
+    },
+    {
+      "label": "Multimodality and Large Multimodal Models - Chip Huyen",
+      "url": "https://huyenchip.com/2023/10/10/multimodal.html"
+    }
+  ]
+}

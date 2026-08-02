@@ -1,0 +1,21 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/multimodal.json",
+    "filename": "multimodal.json",
+    "requiresVisualReview": false,
+    "extraStep": "Publisher adds 'multimodal' to TREE.arch in index.html automatically (validate-and-publish.js).",
+    "note": null,
+    "targetBranch": "arch"
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/voice-vision-end-text-only-ai.json",
+    "filename": "voice-vision-end-text-only-ai.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]

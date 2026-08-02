@@ -94,6 +94,21 @@
       "_planned_by": "backlog",
       "rationale": "From the topic backlog: Agents/MCP cluster, part three: safety when an AI acts on your behalf. The 'injection' node explains prompt injection mechanics; nothing explains the everyday-user version — what can go wrong when you hand an agent your inbox or browser, and what guardrails to expect.",
       "_completed_at": "2026-07-26T22:01:13.009Z"
+    },
+    {
+      "week_of": "2026-08-10",
+      "node": {
+        "id": "multimodal",
+        "parentContext": "Architectures branch",
+        "theme": "arch"
+      },
+      "trendsArticle": {
+        "topic": "Voice, Vision, and the End of Text-Only AI",
+        "notes": "What multimodal actually means, what current flagship models can see/hear/say, and which of it is useful day-to-day. Verify current capabilities via live search."
+      },
+      "_planned_by": "backlog",
+      "rationale": "From the topic backlog: Coverage gap: the site is text-centric but the model landscape is natively multimodal now (vision, voice, image generation baked into flagships). No node or article explains what 'multimodal' means for a normal user.",
+      "_completed_at": "2026-08-02T21:58:47.159Z"
     }
   ]
 }
