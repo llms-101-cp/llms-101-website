@@ -1,5 +1,19 @@
 [
   {
+    "title": "Voice, Vision, and the End of Text-Only AI",
+    "slug": "voice-vision-end-text-only-ai",
+    "date": "2026-08-02",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "Modern AI models can see images, hear speech, and talk back. Here's what multimodal actually means, what today's flagship models can do as of 2026-08-02, and which features matter for everyday use.",
+    "before_label": "2023: Text-first AI",
+    "before": "AI assistants processed text only. To work with images or audio, you needed separate tools and manual conversion steps.",
+    "after_label": "2026: Native multimodal",
+    "after": "Flagship models handle text, images, audio, and video in a single conversation. No switching tools or converting files.",
+    "file": "content/articles/voice-vision-end-text-only-ai.json",
+    "url": "/trends/view-article.html?article=voice-vision-end-text-only-ai"
+  },
+  {
     "title": "Before You Trust an AI Agent With Your Accounts",
     "slug": "before-you-trust-ai-agent-with-accounts",
     "date": "2026-07-26",
