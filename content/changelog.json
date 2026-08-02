@@ -137,5 +137,18 @@
         "text": "Resources page updated — corrected stale facts found during the fortnightly review."
       }
     ]
+  },
+  {
+    "date": "2026-08-02",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Multimodal Models node added to the Architectures branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Voice, Vision, and the End of Text-Only AI."
+      }
+    ]
   }
 ]

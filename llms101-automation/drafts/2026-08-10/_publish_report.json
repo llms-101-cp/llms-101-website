@@ -1,0 +1,107 @@
+{
+  "week": "2026-08-10",
+  "generatedAt": "2026-08-02T22:01:05.658Z",
+  "dryRun": false,
+  "plannedBy": "backlog",
+  "planRationale": "From the topic backlog: Coverage gap: the site is text-centric but the model landscape is natively multimodal now (vision, voice, image generation baked into flagships). No node or article explains what 'multimodal' means for a normal user.",
+  "items": [
+    {
+      "filename": "multimodal.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/multimodal.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "systems like GPT-4V or LLaVA use this visual understanding alongside text processing",
+            "issue": "GPT-4V is a dated model (a vision-capable version of GPT-4). By August 2026, OpenAI's lineup has moved through GPT-4o to the GPT-5.x family, and GPT-4o itself was retired from ChatGPT on February 13, 2026. GPT-4V is used here as a valid illustrative example of the vision-encoder-plus-LLM approach rather than as a claim of current flagship status, so it is not blocking — but the present-tense framing ('use') could be lightly historicized (e.g., 'systems like GPT-4V (2023) and LLaVA') to avoid implying it is the current state of the art."
+          },
+          {
+            "severity": "note",
+            "claim": "Examples list includes 'GPT-4V' and 'Gemini'",
+            "issue": "The examples are a mix of foundational/historical items (CLIP, Flamingo, ViT, LLaVA) and product names. 'Gemini' remains a current Google product family (2026 stable series is Gemini 3.x), so it is fine as a generic label. 'GPT-4V' is a specific superseded model; it is acceptable as a historically significant example but is no longer a current OpenAI offering. No blocking issue since these illustrate the concept rather than assert a current lineup, and no 'as of <date>' or quantitative claims are attached."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "arch",
+        "before": "3/3/1",
+        "after": "3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "voice-vision-end-text-only-ai.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/voice-vision-end-text-only-ai.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Google, for example, notes that Gemini 3.5 Flash helps Ramp enable smarter, more reliable OCR through multimodal understanding of complex invoices combined with reasoning over historical patterns.",
+            "issue": "Claim is accurate and correctly attributed to Gemini 3.5 Flash (Google DeepMind's Gemini 3.5 page and blog use nearly identical wording). Worth noting only that this is a vendor/customer-story claim, not independent benchmarking — the article's own closing caveat already covers this, so no change required."
+          },
+          {
+            "severity": "note",
+            "claim": "full-duplex voice is fast becoming table stakes rather than a differentiator",
+            "issue": "The underlying statement is well-supported by reporting (e.g., coverage noting full-duplex voice is becoming standard across consumer AI, with Google's Gemini Live already offering bidirectional voice), but the citation index in the draft (31-4) points to a Claude Sonnet 5 pricing source that does not support this specific claim. The citation appears mismatched; the claim itself is factually defensible. Recommend re-pointing the citation before publish, but not blocking."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "GPT-4o is presented as OpenAI's current flagship multimodal model ('What the Flagship Models Can Do Today').",
+            "issue": "GPT-4o was released in May 2024 and is long superseded. As of the 2026-08-02 publication date, OpenAI's current flagship family is GPT-5.6 (variants Sol, Terra, Luna), launched July 9, 2026, with Sol as the flagship; the GPT-Live voice generation models also postdate GPT-4o. Presenting GPT-4o as the current flagship describes a stale state of the world as current. (Note: the 320ms average / 232ms floor audio latency figure is itself accurate for GPT-4o, but the 'today's flagship' framing is wrong.)"
+          },
+          {
+            "severity": "blocking",
+            "claim": "\"Google's Gemini 2.0\" is presented as the current flagship, with a 2 million token context window and eight TTS voices.",
+            "issue": "Gemini 2.0 (Flash) was a December 2024 release and is superseded. As of the publication date, Google's current lineup is Gemini 3.5 (announced May 2026, starting with 3.5 Flash) alongside Gemini 3.1 Pro (Feb 2026). The 'eight distinct voices' detail is a real Gemini 2.0 Flash feature but describes an old model; the '2 million token' context figure does not match current models. Presenting Gemini 2.0 as current is blocking."
+          },
+          {
+            "severity": "blocking",
+            "claim": "The Claude section describes Anthropic's current multimodal capabilities without a version and frames a measured/vision-focused lineup as current.",
+            "issue": "The described Claude state is stale. As of the publication date Anthropic's current lineup includes Claude Opus 5 (released July 24, 2026), Claude Sonnet 5 (June 30, 2026), and the Mythos-class Fable 5 (June 9, 2026) — a rapid 2026 flagship cadence not reflected here. Presenting the older Claude state as current is blocking."
+          },
+          {
+            "severity": "blocking",
+            "claim": "The 'after' panel and body present the GPT-4o / Gemini 2.0 / older-Claude trio as the '2026: Native multimodal' current state.",
+            "issue": "This is the pipeline's flagged primary failure mode: an entire flagship comparison describing a superseded lineup (GPT-4o, Gemini 2.0, pre-Claude-5) as the current 2026 state of the world. The trend framing ('what today's flagship models can do') is not historically framed, so it reads as current and is inaccurate."
+          },
+          {
+            "severity": "note",
+            "claim": "\"Claude added voice mode features in early 2026, with multilingual support for 18 languages as of June 2026\"; \"Claude Code added a /voice command in March 2026\".",
+            "issue": "These specific Claude voice/dictation details (18 languages, the /voice command, March/June 2026 dates) could not be verified against authoritative sources and may be fabricated. Even setting aside verifiability, the '18 languages as of June 2026' contains an explicit date so it satisfies the house date rule, but the underlying facts are unconfirmed — recommend sourcing or removing before publication."
+          },
+          {
+            "severity": "note",
+            "claim": "Cross-links to 'state-of-llms-q2-2026' and 'agentic-ai-explained', and the quoted 'industry analysis' about treating modalities 'as peers in a single context window.'",
+            "issue": "The internal links are plausible site slugs but could not be verified as existing pages; the quoted 'industry analysis' has no attribution/URL, so its source cannot be confirmed. Recommend confirming the internal links resolve and attributing (or removing) the quote before publication."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "voice-vision-end-text-only-ai.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=voice-vision-end-text-only-ai"
+    }
+  ]
+}
