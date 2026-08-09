@@ -1,0 +1,80 @@
+{
+  "week": "2026-08-17",
+  "generatedAt": "2026-08-09T21:36:41.209Z",
+  "dryRun": false,
+  "plannedBy": "backlog",
+  "planRationale": "From the topic backlog: Coverage gap: running capable models on your own hardware went mainstream (the hardware node touches quantization/GGUF, but nothing walks a curious non-developer through what is realistically possible on a laptop in 2026).",
+  "items": [
+    {
+      "filename": "local-ai-2026-what-works.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/local-ai-2026-what-works.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Local models are not magic. They have real limitations compared to cloud services like GPT-4o or Claude Sonnet.",
+            "issue": "GPT-4o is used as the representative frontier cloud model, but by August 2026 it is a dated flagship reference (later OpenAI and Anthropic frontier models exist). The phrasing 'cloud services like' frames these as examples rather than as the current top of the market, so it is not misleading, but a fresher example (or a generic 'frontier cloud models') would read as more current. Not blocking."
+          },
+          {
+            "severity": "note",
+            "claim": "OpenAI's gpt-oss 20B (a mixture-of-experts model that fits in roughly 12-14GB...)",
+            "issue": "gpt-oss-20b has ~21B total parameters (20.9B) and ~3.6B active; its MXFP4 footprint is about 14GB and it is commonly cited as running on ~16GB. The '20B' label matches OpenAI's own model name and the '12-14GB' figure is consistent with the ~14GB MXFP4 footprint, so this is accurate as written — noted only for precision."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "**Gemma 4** from Google brings multimodal capabilities. The 12B version can process both text and images... / 16GB: Opens up mid-size models like Gemma 4 12B",
+            "issue": "There is no 'Gemma 4.' Google's current open model generation is Gemma 3, released March 2025, which comes in 1B/4B/12B/27B sizes; the 12B (and 4B/27B) variants are the multimodal (text+image) versions with a 128K context window. The article invents a non-existent 'Gemma 4 12B' and presents it as the current go-to for vision. Correct to 'Gemma 3 12B.'"
+          },
+          {
+            "severity": "blocking",
+            "claim": "**Qwen 3** from Alibaba excels at coding. Qwen 2.5 Coder 14B is widely considered the best local coding model for 16GB systems. / 24-32GB... You can run Qwen 2.5 32B / 16GB: ... Qwen 3 8B",
+            "issue": "The section header says 'Qwen 3' but the concrete model recommendations are the superseded Qwen 2.5 lineup (Qwen 2.5 Coder 14B, Qwen 2.5 32B). As of 2026 the current open-weight Qwen generation is Qwen3.5/Qwen3.6 (e.g. Qwen3.6-27B released April 2026, Qwen3.6-35B-A3B for local use), and there are newer coding models (e.g. Qwen 4 Coder). Recommending Qwen 2.5 models as the current best local picks presents a stale lineup as current — the pipeline's primary failure mode."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Four model families dominate local AI in 2026: ... **Llama 3.3** from Meta remains the default choice for most people. The 8B version fits on modest hardware, while the 70B version competes with frontier cloud models",
+            "issue": "Meta's current model generation is Llama 4 (Scout and Maverick), released April 2025 and shipping as the current open-weight line through 2026. Framing Llama 3.3 as the current 'default' without acknowledging Llama 4 exists presents a superseded generation as the current one. It is defensible to note that the dense Llama 3.3 70B remains the most-deployed dense workhorse for local use, but the article should not omit that Llama 4 is Meta's current generation. Also note: there is no 'Llama 3.3 8B' — the 8B is a Llama 3.1 model; Llama 3.3 was released only as a 70B."
+          },
+          {
+            "severity": "note",
+            "claim": "**Phi-4-mini** from Microsoft ... At just 3.8B parameters with a 128K context window",
+            "issue": "Verified accurate — Phi-4-mini is a 3.8B dense model with a 128K context window (released February 2025). No change needed."
+          },
+          {
+            "severity": "note",
+            "claim": "[LM Studio] the company recently made all commercial use free.",
+            "issue": "Accurate but 'recently' is now stale: LM Studio dropped the commercial-license requirement on July 8, 2025 (over a year before the article's 2026-08-09 date). Consider replacing 'recently' with the explicit date."
+          },
+          {
+            "severity": "note",
+            "claim": "[llama.cpp] With over 118,000 GitHub stars",
+            "issue": "Plausible and within range — llama.cpp passed 100K stars in March 2026 and mid-2026 sources cite figures from ~109K up to ~123K. The 118,000 figure is consistent with current data; consider adding an explicit 'as of <date>' since this number moves."
+          },
+          {
+            "severity": "note",
+            "claim": "Ollama provides an OpenAI-compatible API at localhost:11434 / Local models cannot browse the web / Frontier cloud models now offer 1 million token contexts",
+            "issue": "These are verified/accurate: 11434 is Ollama's default port, and 1M-token context windows are offered by current frontier models (e.g. Qwen3.7-Max, Llama 4 Maverick, Gemini). No change needed."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "local-ai-2026-what-works.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=local-ai-2026-what-works"
+    }
+  ]
+}
