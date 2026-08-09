@@ -1,13 +1,4 @@
 {
   "description": "Craig's soft steering for the self-planning stage. When calendar.weeks[] is empty, plan-week.js turns the TOP entry here into a full week entry (queue always wins over backlog; backlog always wins over self-planning). Entries are week-shaped: node and/or trendsArticle, plus a one-line brief that becomes the planning rationale. Reorder or edit freely — order is priority. Seeded 2026-07-05 from the independent site review's gap themes: the Agents/MCP cluster continuation first (tonight's 2026-07-20 hand-queued week is part one), then other coverage gaps derived from the repo (topics the site mentions in passing but never explains). The review's only other named gaps — regulation/policy and economic/environmental cost — were built as nodes on 2026-07-04 (PR #21).",
-  "topics": [
-    {
-      "brief": "Coverage gap: running capable models on your own hardware went mainstream (the hardware node touches quantization/GGUF, but nothing walks a curious non-developer through what is realistically possible on a laptop in 2026).",
-      "node": null,
-      "trendsArticle": {
-        "topic": "Running AI on Your Own Computer in 2026: What Actually Works",
-        "notes": "Honest, current-state guide: which open-weight models run on ordinary laptops, what tools people actually use, what you give up vs cloud models. Live-search for current model/tool names."
-      }
-    }
-  ]
+  "topics": []
 }

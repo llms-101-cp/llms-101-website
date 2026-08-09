@@ -1,0 +1,11 @@
+[
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/local-ai-2026-what-works.json",
+    "filename": "local-ai-2026-what-works.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]

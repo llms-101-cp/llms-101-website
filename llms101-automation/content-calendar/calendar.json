@@ -109,6 +109,16 @@
       "_planned_by": "backlog",
       "rationale": "From the topic backlog: Coverage gap: the site is text-centric but the model landscape is natively multimodal now (vision, voice, image generation baked into flagships). No node or article explains what 'multimodal' means for a normal user.",
       "_completed_at": "2026-08-02T21:58:47.159Z"
+    },
+    {
+      "week_of": "2026-08-17",
+      "trendsArticle": {
+        "topic": "Running AI on Your Own Computer in 2026: What Actually Works",
+        "notes": "Honest, current-state guide: which open-weight models run on ordinary laptops, what tools people actually use, what you give up vs cloud models. Live-search for current model/tool names."
+      },
+      "_planned_by": "backlog",
+      "rationale": "From the topic backlog: Coverage gap: running capable models on your own hardware went mainstream (the hardware node touches quantization/GGUF, but nothing walks a curious non-developer through what is realistically possible on a laptop in 2026).",
+      "_completed_at": "2026-08-09T21:34:07.795Z"
     }
   ]
 }
