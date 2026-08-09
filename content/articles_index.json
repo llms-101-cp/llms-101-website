@@ -1,5 +1,19 @@
 [
   {
+    "title": "Running AI on Your Own Computer in 2026: What Actually Works",
+    "slug": "local-ai-2026-what-works",
+    "date": "2026-08-09",
+    "category": "Trend Spotlight",
+    "read_time": "6 min read",
+    "summary": "Local AI has gone from hobbyist curiosity to real option. Here is what actually runs on ordinary hardware, which tools to use, and what you give up compared to cloud models.",
+    "before_label": "2024: Niche hobby",
+    "before": "Local LLMs were slow, low-quality, and required technical expertise. Most people stuck with cloud APIs.",
+    "after_label": "2026: Practical choice",
+    "after": "Open-weight models rival GPT-4-class performance. One-command tools like Ollama make setup trivial on laptops.",
+    "file": "content/articles/local-ai-2026-what-works.json",
+    "url": "/trends/view-article.html?article=local-ai-2026-what-works"
+  },
+  {
     "title": "Voice, Vision, and the End of Text-Only AI",
     "slug": "voice-vision-end-text-only-ai",
     "date": "2026-08-02",
