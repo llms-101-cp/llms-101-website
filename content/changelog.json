@@ -166,5 +166,14 @@
         "url": "/trends/view-article.html?article=local-ai-2026-what-works"
       }
     ]
+  },
+  {
+    "date": "2026-08-01",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Monthly Model Tracker updated — top models include Claude Opus 5, GPT-5.6 Sol, Gemini 3.1 Pro and 9 more."
+      }
+    ]
   }
 ]
