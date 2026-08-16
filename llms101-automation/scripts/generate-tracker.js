@@ -273,7 +273,11 @@ async function main() {
   // Fail-soft: a failed append is logged but does not abort the run.
   const modelNames = rows.slice(0, 3).map(r => r.name).join(', ');
   const cl = await appendToChangelog(
-    [{ area: 'Tracker', text: `Monthly Model Tracker updated — top models include ${modelNames} and ${rows.length - 3} more.` }],
+    [{
+      area: 'Tracker',
+      text: `Monthly Model Tracker updated — top models include ${modelNames} and ${rows.length - 3} more.`,
+      url: '/tracker'
+    }],
     todayISO,
     ROOT,
     { log }
