@@ -19,7 +19,9 @@ import path from 'path';
 const CHANGELOG_REL = path.join('content', 'changelog.json');
 
 /**
- * @param {{ area: string, text: string }[]} items  — changelog line items
+ * @param {{ area: string, text: string, url?: string }[]} items — changelog
+ *   line items. `url` is optional and passed through as-is — callers should
+ *   omit the key entirely when there's no link (never write `url: null`).
  * @param {string} todayISO                          — "YYYY-MM-DD" publish date
  * @param {string} repoRoot                          — absolute path to repo root
  * @param {{ log?: (msg:string)=>void }} [opts]

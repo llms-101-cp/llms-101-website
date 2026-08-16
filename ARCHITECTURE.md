@@ -122,6 +122,15 @@ reader-facing twin: any PR changing reader-facing content must append a
   formally close the "where does the rest of Mind Map content live" question
   rather than leaving it implicit.
 
+* P8 — Mind Map changelog source links. 2026-08's changelog source-link pass
+  added `url` to Trends/Tracker/Models/Site changelog items, but Mind Map
+  node entries were explicitly scoped OUT — no stable per-node URL exists to
+  link to (same underlying gap as P4: nothing on `index.html` currently
+  addresses an individual node). Mind Map items keep rendering as plain text
+  (schema's `url` field is optional for exactly this reason). Blocked on
+  Mind Map URL/anchor support landing — revisit once P4 (or a Mind Map-
+  specific deep-link mechanism) exists. Not started.
+
 ### Watch items (time-triggered)
 
 * W1 — 1 August 2026 tracker run. First real test of the 2026-07-18
@@ -355,8 +364,16 @@ content type is what caused most of today's problems.
   (NOT a collection folder; deliberately outside generate-indices.js scope)
 - **Loader:** `updates.html` fetches it directly, sorts by date desc
   client-side, renders entries. No index, no build step.
-- **Schema:** `[{ date: "YYYY-MM-DD", title?, items: [{ area, text }] }]`
+- **Schema:** `[{ date: "YYYY-MM-DD", title?, items: [{ area, text, url? }] }]`
   — `area` is one of: Mind Map, Models, Tracker, Trends, Reports, Site.
+  `url` is optional (added 2026-08 for P2's sibling task, source-linking) —
+  when present, `updates.html` wraps `text` in a link to it; when absent
+  (all pre-2026-08 entries, and Mind Map entries until a stable per-node
+  URL exists — see Outstanding Work), the item renders as plain text exactly
+  as before. Per area: Trends → `/trends/view-article.html?article={slug}`,
+  Tracker → `/tracker`, Models → `/models.html`, Site → `/{pageId}`. All
+  page-level for now (no anchor IDs on tracker rows or model cards yet — see
+  P4); Mind Map is deferred entirely pending a deep-link target.
 - **RULE (reader-facing changelog discipline):** any PR that changes
   reader-facing CONTENT must append an entry (or add items to today's
   entry) in the same PR. Reader-facing = Mind Map nodes, model cards,
@@ -847,6 +864,21 @@ existing pipeline's internals:**
    applied correctly is no longer stale, so it never trips the alarm — the 7
    cards applied 2026-07-22 read `✓ current` next run.
 
+   **Changelog entry on APPLIED (added 2026-08).** The mirror image of the
+   UNAPPLIED alarm: a CLEAN card whose live `mcard-models` line now matches a
+   prior run's draft is evidence that draft was just pasted in. Comparing
+   against a small persisted state file, `llms101-automation/drafts/.applied-log.json`
+   (slug → date of the newest prior draft already turned into a changelog
+   entry — same sidecar-file pattern as `drafts/.last-generated-week`), keeps
+   this a one-time event per draft rather than re-flagging the same
+   already-logged application on every subsequent clean run. On a genuine new
+   detection, a `Models` changelog item (`url: /models.html`) is appended in
+   the SAME commit as any static-page corrections from check 1, and the log
+   is updated in that commit too — the two never land separately. Seeded at
+   ship time against the already-applied 2026-07-22/2026-08 cards so the
+   feature's first live run doesn't retroactively backdate old corrections
+   into today's changelog.
+
    **GOTCHA when applying a generated card draft (learned the hard way
    2026-07-22).** The drafts are raw model output and are NOT paste-ready:
    they carry markup artifacts — empty `<a>` citation wrappers, stray bare
@@ -866,10 +898,12 @@ existing pipeline's internals:**
    Findings are report-only — corrections still flow through the existing
    weekly/monthly pipelines, never through this job.
 4. **Report email + one commit.** Same Resend pattern as the other two
-   pipelines' report emails. Any static-page corrections from check 1 land
-   in a single commit for the whole run (the audit trail and the one
-   `git revert` point), with a changelog entry (area: `Site`) appended via
-   the existing `appendToChangelog()` helper.
+   pipelines' report emails. Any static-page corrections from check 1, AND
+   any newly-detected APPLIED model cards from check 2, land in a SINGLE
+   commit for the whole run (the audit trail and the one `git revert`
+   point), with changelog entries (area: `Site` with `url: /{pageId}`, area:
+   `Models` with `url: /models.html`) appended via the existing
+   `appendToChangelog()` helper — see the APPLIED checkpoint note above.
 
 **HYBRID CADENCE (2026-07-22 cost restructure) — supersedes the every-2-weeks
 model above.** The full pass described in checks 1–4 is the expensive part:

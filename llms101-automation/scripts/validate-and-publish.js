@@ -1117,7 +1117,12 @@ async function main() {
       }
       filesToStage.push(entry.targetPath);
       if (entry.contentType === 'trends-article') {
-        changelogItems.push({ area: 'Trends', text: `New article: ${publishData.title}.` });
+        const articleSlug = path.basename(entry.filename, '.json');
+        changelogItems.push({
+          area: 'Trends',
+          text: `New article: ${publishData.title}.`,
+          url: `/trends/view-article.html?article=${articleSlug}`
+        });
       }
       result.status = publishedViaRepair ? 'published_after_repair' : 'published';
       result.liveUrl = liveUrlFor(entry);

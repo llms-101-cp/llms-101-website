@@ -74,6 +74,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const AUTOMATION_ROOT = path.join(__dirname, '..');
 const REPO_ROOT = path.join(AUTOMATION_ROOT, '..');
 const DRAFTS_DIR = path.join(AUTOMATION_ROOT, 'drafts');
+const APPLIED_LOG_PATH = path.join(DRAFTS_DIR, '.applied-log.json');
 const PAGES_DIR = path.join(REPO_ROOT, 'content', 'pages');
 const MODELS_HTML = path.join(REPO_ROOT, 'models.html');
 const TRACKER_HTML = path.join(REPO_ROOT, 'tracker.html');
@@ -345,9 +346,46 @@ export async function findPriorDrafts(slug, currentWeekLabel) {
   return found.sort((a, b) => a.date.localeCompare(b.date));
 }
 
+// Shared by both directions of the draft/live comparison: the STALE branch's
+// "unapplied prior draft" alarm, and the CLEAN branch's "just applied"
+// detection below. Comparing on the mcard-models line only (not the whole
+// card) is deliberate — it's the one field guaranteed present in both a
+// generated draft and a live card, and stable enough that a match is a
+// reliable "this exact draft was pasted in" signal.
+const normModels = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+async function draftModelsText(relPath) {
+  try {
+    const dh = await fs.readFile(path.join(REPO_ROOT, relPath), 'utf8');
+    return normModels((dh.match(/<div class="mcard-models">([\s\S]*?)<\/div>/) || [, ''])[1]);
+  } catch {
+    return ''; // unreadable draft — treat as no match, never a false claim either way
+  }
+}
+
+// ─── Models changelog "applied" checkpoint — small persisted state file ─────
+// models.html is never auto-spliced (System 4, hand-coded shared file), so
+// unlike Trends/Tracker/Site there is no publish event to hang a changelog
+// append on. The only observable signal is comparing the live card against
+// its own prior drafts (same mechanism as the UNAPPLIED-DRAFT alarm below,
+// run in the opposite direction). Without a persisted "already logged" marker
+// a card that was applied once would match its old draft FOREVER and get
+// re-flagged as newly-applied on every subsequent run — so this tiny sidecar
+// file (same pattern as drafts/.last-generated-week) records, per card slug,
+// the date of the most recent prior draft already turned into a changelog
+// entry. Fail-soft, matching every other read in this file: a missing or
+// unparsable log is treated as empty, never a fatal error.
+async function loadAppliedLog() {
+  try {
+    const parsed = JSON.parse(await fs.readFile(APPLIED_LOG_PATH, 'utf8'));
+    return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 // ─── Check 2: models.html — report + draft only, never auto-spliced ─────────
 
-async function checkModelCards(client, weekLabel, { dryRun }) {
+async function checkModelCards(client, weekLabel, { dryRun, appliedLog = {} }) {
   const html = await fs.readFile(MODELS_HTML, 'utf8');
   const cards = extractModelCards(html);
   log(`Found ${cards.length} model cards in models.html`);
@@ -355,7 +393,11 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
 
   for (const card of cards) {
     const entry = { contentType: 'model-card', filename: card.company || card.name };
-    const result = { company: card.company, name: card.name, stale: false, factCheck: null, draftFile: null, priorDrafts: [], unappliedPriorDrafts: [], error: null };
+    const result = {
+      company: card.company, name: card.name, stale: false, factCheck: null, draftFile: null,
+      priorDrafts: [], unappliedPriorDrafts: [], error: null,
+      justApplied: false, slug: null, appliedDraftDate: null
+    };
     results.push(result);
 
     // Isolated per card — same reasoning as checkStaticPages: one card's
@@ -371,6 +413,33 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
 
       if (blocking.length === 0) {
         log(`  clean`);
+        // "Just applied" detection — the changelog-entry half of the
+        // generated→reviewed→APPLIED checkpoint below. A clean card whose
+        // live mcard-models line now matches a PRIOR run's draft (one this
+        // run didn't generate) means that draft was pasted in since the
+        // card was last stale. Only flag it once per draft date — appliedLog
+        // records the newest draft date already turned into a changelog
+        // entry for this slug, so a card that's stayed clean for months
+        // doesn't get re-flagged every run.
+        const slug = slugify(card.name);
+        const priors = await findPriorDrafts(slug, weekLabel);
+        if (priors.length) {
+          const liveModels = normModels(card.models);
+          const matching = [];
+          for (const d of priors) {
+            const draftModels = await draftModelsText(d.path);
+            if (draftModels && draftModels === liveModels) matching.push(d);
+          }
+          if (matching.length) {
+            const latest = matching[matching.length - 1]; // priors sorted ascending
+            if (appliedLog[slug] !== latest.date) {
+              result.justApplied = true;
+              result.slug = slug;
+              result.appliedDraftDate = latest.date;
+              log(`  APPLIED DETECTED — live card matches the ${latest.date} draft, not yet logged — changelog entry pending`);
+            }
+          }
+        }
         continue;
       }
 
@@ -382,15 +451,10 @@ async function checkModelCards(client, weekLabel, { dryRun }) {
       // already matches WAS applied (the card just went stale again for a new
       // reason), so it isn't flagged — only genuinely-unapplied drafts are.
       const priors = await findPriorDrafts(slugify(card.name), weekLabel);
-      const norm = s => String(s ?? '').replace(/\s+/g, ' ').trim();
-      const liveModels = norm(card.models);
+      const liveModels = normModels(card.models);
       const unappliedPriors = [];
       for (const d of priors) {
-        let draftModels = '';
-        try {
-          const dh = await fs.readFile(path.join(REPO_ROOT, d.path), 'utf8');
-          draftModels = norm((dh.match(/<div class="mcard-models">([\s\S]*?)<\/div>/) || [, ''])[1]);
-        } catch { /* unreadable → fall through and flag conservatively */ }
+        const draftModels = await draftModelsText(d.path);
         if (!draftModels || draftModels !== liveModels) unappliedPriors.push(d);
       }
       result.priorDrafts = priors;
@@ -591,7 +655,11 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
       continue;
     }
     if (!r.stale) {
-      sections.push(`  • ${r.company} — ${r.name}: ✓ current (live card passes fact-check — nothing to apply)`);
+      if (r.justApplied) {
+        sections.push(`  • ${r.company} — ${r.name}: ✓ current — APPLIED just detected (matches the ${r.appliedDraftDate} draft; changelog entry added this run)`);
+      } else {
+        sections.push(`  • ${r.company} — ${r.name}: ✓ current (live card passes fact-check — nothing to apply)`);
+      }
       continue;
     }
     const unappliedPriors = r.unappliedPriorDrafts ?? [];
@@ -804,9 +872,10 @@ async function main() {
     log('OFFLINE mode — skipping every web_search-dependent check (no ANTHROPIC_API_KEY call made).');
   } else {
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const appliedLog = await loadAppliedLog();
     try {
       pageResults = await checkStaticPages(client, { dryRun });
-      modelCardResults = await checkModelCards(client, todayISO, { dryRun });
+      modelCardResults = await checkModelCards(client, todayISO, { dryRun, appliedLog });
       spotAuditFindings = await spotAuditTrackerAndTrends(client);
     } catch (err) {
       fatalError = err.message;
@@ -857,23 +926,47 @@ async function main() {
     }
 
     const corrected = pageResults.filter(r => r.status === 'corrected');
-    if (!dryRun && corrected.length) {
-      const changelogItems = corrected.map(r => ({
-        area: 'Site',
-        text: `${titleCase(r.id)} page updated — corrected stale facts found during the fortnightly review.`
-      }));
+    const justApplied = modelCardResults.filter(r => r.justApplied);
+    if (!dryRun && (corrected.length || justApplied.length)) {
+      const changelogItems = [
+        ...corrected.map(r => ({
+          area: 'Site',
+          text: `${titleCase(r.id)} page updated — corrected stale facts found during the fortnightly review.`,
+          url: `/${r.id}`
+        })),
+        ...justApplied.map(r => ({
+          area: 'Models',
+          text: `${r.company} — ${r.name} card corrected (fortnightly review draft applied).`,
+          url: '/models.html'
+        }))
+      ];
       const cl = await appendToChangelog(changelogItems, todayISO, REPO_ROOT, { log });
       changelogWarning = cl.warning;
 
       const relPaths = corrected.map(r => path.relative(REPO_ROOT, path.join(PAGES_DIR, `${r.id}.json`)));
-      git('add', ...relPaths);
+      if (relPaths.length) git('add', ...relPaths);
       if (cl.staged) git('add', 'content/changelog.json');
+
+      // Persist the applied-log update alongside the changelog entry — same
+      // commit, so the two never drift out of sync (a log write that lands
+      // without its changelog entry, or vice versa, would either silently
+      // re-flag next run or silently suppress a real one).
+      if (justApplied.length) {
+        const updatedLog = { ...appliedLog };
+        for (const r of justApplied) updatedLog[r.slug] = r.appliedDraftDate;
+        await fs.mkdir(DRAFTS_DIR, { recursive: true });
+        await fs.writeFile(APPLIED_LOG_PATH, JSON.stringify(updatedLog, null, 2) + '\n', 'utf8');
+        git('add', path.relative(REPO_ROOT, APPLIED_LOG_PATH));
+      }
 
       const status = git('status', '--porcelain');
       if (status) {
-        git('commit', '-m', `fortnightly review: ${corrected.length} static page correction(s) (${todayISO})`);
+        const parts = [];
+        if (corrected.length) parts.push(`${corrected.length} static page correction(s)`);
+        if (justApplied.length) parts.push(`${justApplied.length} model card(s) marked applied`);
+        git('commit', '-m', `fortnightly review: ${parts.join(', ')} (${todayISO})`);
         commitSha = git('rev-parse', 'HEAD');
-        log(`Committed ${corrected.length} static page correction(s): ${commitSha}`);
+        log(`Committed ${parts.join(', ')}: ${commitSha}`);
         // Push immediately, in the same script invocation — same reasoning as
         // validate-and-publish.js's git('push', ...) calls: this commit must
         // reach origin before anything later in the run can fail and abort
