@@ -29,7 +29,7 @@
   "description": "Monthly updated tracking of frontier AI model performance tiers based on human preference rankings, alongside plain-English cost guidance and best use cases.",
   "url": "https://llms101.com/tracker",
   "isPartOf": {"@type":"WebSite","url":"https://llms101.com/","name":"LLMs 101"},
-  "dateModified": "2026-08-01",
+  "dateModified": "2026-08-16",
   "isAccessibleForFree": true,
   "inLanguage": "en-US"
 }
@@ -173,7 +173,7 @@ footer a{color:var(--gold);text-decoration:none}
   <h1>How AI models rank when<br><span>real humans compare them</span></h1>
   <p class="hero-sub">Benchmark scores don't tell the full story. This tracker translates human preference data and real-world usage into plain-English tiers — updated every month.</p>
   <div class="hero-rule"></div>
-  <span class="updated-badge">Updated 1st August 2026</span>
+  <span class="updated-badge">Updated 16th August 2026</span>
 </div>
 
 <!-- Explainer cards -->
@@ -223,15 +223,36 @@ footer a{color:var(--gold);text-decoration:none}
 
   <div class="tracker-list" id="tracker-list">
 
-    <!-- #1 Claude Opus 5 -->
+    <!-- #1 Claude Fable 5 -->
     <div class="trow" data-tags="top writing coding">
       <div class="rank-col"><span class="rank-num top">1</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Anthropic</div>
+          <div class="model-name"><a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener">Claude Fable 5</a></div>
+          <div class="model-flagship">Most capable general-access model</div>
+          <span class="tier-badge tier-1">🏆 Tier 1 - Top</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">State-of-the-art performance on the hardest, longest-running coding, research, and knowledge-work tasks — software engineering, scientific/financial analysis, and multi-day autonomous agent work where raw capability matters more than cost.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-premium">Premium</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #2 Claude Opus 5 -->
+    <div class="trow" data-tags="top writing coding">
+      <div class="rank-col"><span class="rank-num top">2</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Anthropic</div>
           <div class="model-name"><a href="https://www.anthropic.com/claude/opus" target="_blank" rel="noopener">Claude Opus 5</a></div>
           <div class="model-flagship">Flagship intelligence model</div>
-          <span class="tier-badge tier-1">🏆 Tier 1 - Top</span>
+          <span class="tier-badge tier-1">🥈 Tier 1 - Top</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
@@ -244,15 +265,15 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #2 GPT-5.6 Sol -->
+    <!-- #3 GPT-5.6 Sol -->
     <div class="trow" data-tags="top writing coding">
-      <div class="rank-col"><span class="rank-num top">2</span></div>
+      <div class="rank-col"><span class="rank-num top">3</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">OpenAI</div>
           <div class="model-name"><a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener">GPT-5.6 Sol</a></div>
           <div class="model-flagship">Flagship reasoning and coding model</div>
-          <span class="tier-badge tier-1">🥈 Tier 1 - Top</span>
+          <span class="tier-badge tier-1">🥉 Tier 1 - Top</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
@@ -265,15 +286,15 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #3 Gemini 3.1 Pro -->
+    <!-- #4 Gemini 3.1 Pro -->
     <div class="trow" data-tags="top writing coding">
-      <div class="rank-col"><span class="rank-num top">3</span></div>
+      <div class="rank-col"><span class="rank-num">4</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Google DeepMind</div>
           <div class="model-name"><a href="https://deepmind.google/models/gemini/pro/" target="_blank" rel="noopener">Gemini 3.1 Pro</a></div>
           <div class="model-flagship">Advanced multimodal reasoning</div>
-          <span class="tier-badge tier-1">🥉 Tier 1 - Top</span>
+          <span class="tier-badge tier-1">Tier 1 - Top</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
@@ -286,9 +307,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #4 Grok 4.5 -->
+    <!-- #5 Grok 4.5 -->
     <div class="trow" data-tags="top coding">
-      <div class="rank-col"><span class="rank-num">4</span></div>
+      <div class="rank-col"><span class="rank-num">5</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">xAI</div>
@@ -307,9 +328,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #5 Claude Sonnet 5 -->
+    <!-- #6 Claude Sonnet 5 -->
     <div class="trow" data-tags="writing coding">
-      <div class="rank-col"><span class="rank-num">5</span></div>
+      <div class="rank-col"><span class="rank-num">6</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Anthropic</div>
@@ -328,9 +349,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #6 GPT-5.6 Terra -->
+    <!-- #7 GPT-5.6 Terra -->
     <div class="trow" data-tags="writing coding">
-      <div class="rank-col"><span class="rank-num">6</span></div>
+      <div class="rank-col"><span class="rank-num">7</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">OpenAI</div>
@@ -349,9 +370,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #7 GLM-5.2 -->
+    <!-- #8 GLM-5.2 -->
     <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">7</span></div>
+      <div class="rank-col"><span class="rank-num">8</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Z.ai</div>
@@ -370,9 +391,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #8 Kimi K3 -->
+    <!-- #9 Kimi K3 -->
     <div class="trow" data-tags="coding open">
-      <div class="rank-col"><span class="rank-num">8</span></div>
+      <div class="rank-col"><span class="rank-num">9</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Moonshot AI</div>
@@ -391,9 +412,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #9 DeepSeek V4-Pro -->
+    <!-- #10 DeepSeek V4-Pro -->
     <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">9</span></div>
+      <div class="rank-col"><span class="rank-num">10</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">DeepSeek</div>
@@ -412,9 +433,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #10 Gemini 3.6 Flash -->
+    <!-- #11 Gemini 3.6 Flash -->
     <div class="trow" data-tags="cheap coding">
-      <div class="rank-col"><span class="rank-num">10</span></div>
+      <div class="rank-col"><span class="rank-num">11</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Google DeepMind</div>
@@ -433,9 +454,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #11 GPT-5.6 Luna -->
+    <!-- #12 GPT-5.6 Luna -->
     <div class="trow" data-tags="cheap">
-      <div class="rank-col"><span class="rank-num">11</span></div>
+      <div class="rank-col"><span class="rank-num">12</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">OpenAI</div>
@@ -454,9 +475,9 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #12 Qwen 3.6 -->
+    <!-- #13 Qwen 3.6 -->
     <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">12</span></div>
+      <div class="rank-col"><span class="rank-num">13</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Alibaba Qwen</div>
