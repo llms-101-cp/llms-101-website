@@ -119,6 +119,21 @@
       "_planned_by": "backlog",
       "rationale": "From the topic backlog: Coverage gap: running capable models on your own hardware went mainstream (the hardware node touches quantization/GGUF, but nothing walks a curious non-developer through what is realistically possible on a laptop in 2026).",
       "_completed_at": "2026-08-09T21:34:07.795Z"
+    },
+    {
+      "week_of": "2026-08-24",
+      "node": {
+        "id": "provenance-watermarking",
+        "parentContext": "Under Themes, alongside safety, regulation, and evaluation — how AI-generated content is disclosed, labeled, and detected",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Can You Tell If Something Was Made by AI? The New Labeling Rules, Explained",
+        "notes": "Angle: a plain-language guide to how (and how reliably) people can now tell whether text, images, audio, or video was AI-made, pegged to the EU AI Act transparency rules that took effect Aug 2, 2026 requiring chatbots to disclose they're AI and deepfakes to be labeled. Ground via live search: the specifics of the EU rules, plus the watermarking/provenance moves from Anthropic (Claude), Google (SynthID), and OpenAI (C2PA), and consumer-facing signals like TikTok/LinkedIn labels. Be honest about limits — watermarks get stripped when content is edited or re-shared, and labels don't tell the full story. Avoid deep technical detail on cryptographic metadata; keep it about what a normal reader sees and should trust."
+      },
+      "_planned_by": "auto",
+      "rationale": "The EU's AI transparency rules just came into force (Aug 2, 2026) and major labs simultaneously rolled out content watermarking, making 'is this real or AI?' an immediate, everyday concern for non-technical readers navigating deepfakes and synthetic media. The site covers agents, models, and safety but has no node on content provenance/labeling, so it fills a genuine gap. The topic is durable: the rules and labeling infrastructure are here to stay and will only grow more relevant over the coming month and beyond.",
+      "_completed_at": "2026-08-16T21:22:25.937Z"
     }
   ]
 }

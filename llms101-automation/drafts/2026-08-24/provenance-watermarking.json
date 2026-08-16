@@ -1,0 +1,27 @@
+{
+  "label": "Provenance & Watermarking",
+  "sub": "Labeling AI-generated content",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "Content Provenance and Watermarking",
+  "body": "<p><strong>Provenance and watermarking</strong> are techniques for tracking and disclosing where digital content comes from — particularly whether it was created or modified by AI. Provenance records the origin and edit history of a file; watermarking embeds an invisible signal directly into the content itself.</p><p>The main approaches work differently. <strong>Content Credentials</strong> (based on the C2PA standard) attach cryptographically signed metadata to images, video, and audio — like a nutrition label showing which tools created or edited the file. Invisible watermarks embed subtle patterns during generation: distinctive word choices in text, pixel patterns in images, or signals in audio waves. Because metadata can be stripped from files, many systems now combine both methods for durability.</p><p>This matters because AI-generated media has become difficult to distinguish from authentic content. Under the EU AI Act, providers must ensure AI outputs are \"marked in a machine-readable format and detectable as artificially generated.\" Major platforms now display labels when they detect these signals, and newsrooms increasingly reject unsigned images for major stories. The goal isn't to ban AI content — it's to make its origins transparent.</p>",
+  "examples": [
+    "C2PA / Content Credentials",
+    "SynthID (Google)",
+    "Text watermarking",
+    "EU AI Act Article 50",
+    "AI-generated labels",
+    "Invisible watermarks"
+  ],
+  "sources": [
+    {
+      "label": "C2PA: How Content Credentials work",
+      "url": "https://contentauthenticity.org/how-it-works"
+    },
+    {
+      "label": "OpenAI: Advancing content provenance",
+      "url": "https://openai.com/index/advancing-content-provenance/"
+    }
+  ]
+}
