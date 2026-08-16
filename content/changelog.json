@@ -108,15 +108,18 @@
     "items": [
       {
         "area": "Tracker",
-        "text": "Monthly Model Tracker updated — top models include GPT-5.6 Sol, Claude Opus 4.8, Gemini 3.1 Pro and 9 more."
+        "text": "Monthly Model Tracker updated — top models include GPT-5.6 Sol, Claude Opus 4.8, Gemini 3.1 Pro and 9 more.",
+        "url": "/tracker"
       },
       {
         "area": "Models",
-        "text": "Model Directory refreshed — the OpenAI, Anthropic, Google, xAI, Meta Superintelligence Labs, Alibaba and Moonshot cards now reflect current models (GPT-5.6, Claude Sonnet 5, Grok 4.5, Muse Spark 1.1, Qwen3.8-Max, Kimi K3) and corrected availability, replacing stale June content."
+        "text": "Model Directory refreshed — the OpenAI, Anthropic, Google, xAI, Meta Superintelligence Labs, Alibaba and Moonshot cards now reflect current models (GPT-5.6, Claude Sonnet 5, Grok 4.5, Muse Spark 1.1, Qwen3.8-Max, Kimi K3) and corrected availability, replacing stale June content.",
+        "url": "/models.html"
       },
       {
         "area": "Models",
-        "text": "Model Directory tidied — every card’s status badge and cost-tier label now uses the site’s documented vocabulary (Market Leader / Highly Competitive / Rising / Disruptor, and Free / Ultra-low / Low / Standard / Premium), so the badges match the Methodology page and the cost row reads evenly."
+        "text": "Model Directory tidied — every card’s status badge and cost-tier label now uses the site’s documented vocabulary (Market Leader / Highly Competitive / Rising / Disruptor, and Free / Ultra-low / Low / Standard / Premium), so the badges match the Methodology page and the cost row reads evenly.",
+        "url": "/models.html"
       }
     ]
   },
@@ -125,7 +128,8 @@
     "items": [
       {
         "area": "Trends",
-        "text": "New article: Before You Trust an AI Agent With Your Accounts."
+        "text": "New article: Before You Trust an AI Agent With Your Accounts.",
+        "url": "/trends/view-article.html?article=before-you-trust-ai-agent-with-accounts"
       }
     ]
   },
@@ -134,7 +138,8 @@
     "items": [
       {
         "area": "Site",
-        "text": "Resources page updated — corrected stale facts found during the fortnightly review."
+        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
+        "url": "/resources"
       }
     ]
   },
@@ -147,7 +152,8 @@
       },
       {
         "area": "Trends",
-        "text": "New article: Voice, Vision, and the End of Text-Only AI."
+        "text": "New article: Voice, Vision, and the End of Text-Only AI.",
+        "url": "/trends/view-article.html?article=voice-vision-end-text-only-ai"
       }
     ]
   },
@@ -156,7 +162,8 @@
     "items": [
       {
         "area": "Trends",
-        "text": "New article: Running AI on Your Own Computer in 2026: What Actually Works."
+        "text": "New article: Running AI on Your Own Computer in 2026: What Actually Works.",
+        "url": "/trends/view-article.html?article=local-ai-2026-what-works"
       }
     ]
   }
