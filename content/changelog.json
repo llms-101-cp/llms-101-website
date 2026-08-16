@@ -172,7 +172,8 @@
     "items": [
       {
         "area": "Tracker",
-        "text": "Monthly Model Tracker updated — top models include Claude Opus 5, GPT-5.6 Sol, Gemini 3.1 Pro and 9 more."
+        "text": "Monthly Model Tracker updated — top models include Claude Opus 5, GPT-5.6 Sol, Gemini 3.1 Pro and 9 more.",
+        "url": "/tracker"
       }
     ]
   }
