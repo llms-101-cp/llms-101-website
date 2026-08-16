@@ -288,6 +288,20 @@ each lab's current flagship model specifically (OpenAI, Anthropic, Google
 DeepMind, xAI, DeepSeek, Meta) before writing its row. If a model you
 considered including was deprecated, superseded, or access-restricted since
 your training cutoff, do not include it — search to confirm current status.
+
+Do not assume one lab has only one current flagship-tier model — search for
+ALL of a lab's currently generally-available top-tier models before picking
+just one, since some labs run two in parallel. Anthropic specifically
+currently offers BOTH Claude Opus 5 AND Claude Fable 5 as separate, current,
+generally-available models (Fable 5's access restriction was lifted 2026-06-30
+and it has been publicly available again since 2026-07-01) — search for and
+consider both explicitly rather than defaulting to Opus alone; per
+Anthropic's own materials Fable 5 is described as their most capable
+general-access model. (Anthropic's Claude Mythos 5, by contrast, remains
+invitation-only under Project Glasswing and is NOT generally available —
+correctly excluded under the "not generally available" rule above; do not
+include it, but don't mistake that exclusion for meaning Fable 5 is also
+restricted.)
 `.trim(),
     user: `
 Research and produce exactly ${TRACKER_ROW_COUNT} rows for the Model Tracker

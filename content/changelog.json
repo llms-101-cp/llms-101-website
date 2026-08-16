@@ -176,5 +176,15 @@
         "url": "/tracker"
       }
     ]
+  },
+  {
+    "date": "2026-08-16",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Corrected /tracker: added missing Claude Fable 5 row (Anthropic's most capable general-access model, omitted from the Aug 1 run).",
+        "url": "/tracker"
+      }
+    ]
   }
 ]
