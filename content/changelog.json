@@ -186,5 +186,19 @@
         "url": "/tracker"
       }
     ]
+  },
+  {
+    "date": "2026-08-16",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Provenance & Watermarking node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Can You Tell If Something Was Made by AI? The New Labeling Rules, Explained.",
+        "url": "/trends/view-article.html?article=ai-labeling-rules-explained-2026"
+      }
+    ]
   }
 ]

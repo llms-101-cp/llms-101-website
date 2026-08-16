@@ -1,0 +1,86 @@
+{
+  "week": "2026-08-24",
+  "generatedAt": "2026-08-16T21:24:56.856Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "The EU's AI transparency rules just came into force (Aug 2, 2026) and major labs simultaneously rolled out content watermarking, making 'is this real or AI?' an immediate, everyday concern for non-technical readers navigating deepfakes and synthetic media. The site covers agents, models, and safety but has no node on content provenance/labeling, so it fills a genuine gap. The topic is durable: the rules and labeling infrastructure are here to stay and will only grow more relevant over the coming month and beyond.",
+  "items": [
+    {
+      "filename": "provenance-watermarking.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/provenance-watermarking.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/1",
+        "after": "3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-labeling-rules-explained-2026.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-labeling-rules-explained-2026.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "backed by fines up to 15 million euros",
+            "issue": "Accurate but incomplete. Official sources state the penalty is up to €15 million OR 3% of total worldwide annual turnover, whichever is higher (with proportionality for SMEs). The draft's figure is not wrong, but omitting the turnover-based alternative understates the ceiling for large companies."
+          },
+          {
+            "severity": "note",
+            "claim": "LinkedIn is the clearest outlier. In May 2026 it became the first major platform with a confirmed policy that demotes - rather than removes - content specifically because it reads as generic AI.",
+            "issue": "The substance checks out: LinkedIn announced (around May 20, 2026) that it would suppress/demote rather than remove generic AI-generated posts. However, the 'first major platform' superlative is not clearly substantiated by authoritative sources and is a borderline claim. Sources also frame LinkedIn's action as targeting 'generic/low-substance' content (of which AI produces a lot) rather than penalizing content purely for being AI, a nuance the draft's phrasing slightly overstates. Not embarrassing, but worth softening."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "By May 2026, Google reported that more than 10 billion pieces of content had been watermarked with it.",
+            "issue": "This misattributes a stale milestone to the current date. The '10 billion' figure was reported at Google I/O in May 2025, not May 2026. By I/O on May 19, 2026, Google reported the figure for images and videos alone had passed 100 billion (a roughly tenfold rise), plus ~60,000 years of watermarked audio. The article presents a year-old number as the current-year figure. Correct fix: either 'By May 2025... more than 10 billion' or 'By May 2026... more than 100 billion images and videos.'"
+          },
+          {
+            "severity": "blocking",
+            "claim": "TikTok has labeled over 1.3 billion AI-generated videos through automated detection.",
+            "issue": "Stale figure presented as current. The 1.3 billion figure was reported by TikTok in November 2025. On July 10, 2026, TikTok announced it had labeled more than 3 billion AI-generated videos — roughly doubling in eight months. Given the article is dated 2026-08-16, the current figure is 3 billion, not 1.3 billion."
+          },
+          {
+            "severity": "note",
+            "claim": "AI-generated content must carry machine-readable marks / 'AI-generated content must carry machine-readable marks' presented as fully in force from August 2, 2026.",
+            "issue": "The article's framing is broadly correct but omits a material nuance: while chatbot disclosure and deepfake labeling took effect August 2, 2026, the machine-readable marking/detection obligation for generative AI systems already on the market (Article 50(2)) has a transitional grace period running to December 2, 2026 under the AI Omnibus agreement. The article notes the pre-Aug-2 non-retroactivity but not this marking runway. Worth a clarifying line; not embarrassing enough to block on its own."
+          },
+          {
+            "severity": "note",
+            "claim": "At Google I/O 2026... with OpenAI, Kakao, and ElevenLabs signing on as adopters.",
+            "issue": "Sources covering the I/O 2026 SynthID adopter list consistently include Nvidia alongside OpenAI, Kakao, and ElevenLabs. The three named are accurate, but the list is incomplete. Minor factual omission, not an error in what is stated."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-labeling-rules-explained-2026.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-labeling-rules-explained-2026"
+    }
+  ]
+}
