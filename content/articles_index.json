@@ -1,5 +1,19 @@
 [
   {
+    "title": "Can You Tell If Something Was Made by AI? The New Labeling Rules, Explained",
+    "slug": "ai-labeling-rules-explained-2026",
+    "date": "2026-08-16",
+    "category": "Trend Spotlight",
+    "read_time": "6 min read",
+    "summary": "New EU rules require chatbots to identify themselves and deepfakes to be labeled. Here's what that actually means for spotting AI content - and where the gaps remain.",
+    "before_label": "Before August 2, 2026",
+    "before": "AI companies made voluntary promises about watermarking and labeling. No enforcement, no deadlines, inconsistent implementation.",
+    "after_label": "After August 2, 2026",
+    "after": "EU AI Act mandates transparency: chatbots must disclose they're AI, deepfakes need labels, and AI-generated content must carry machine-readable marks.",
+    "file": "content/articles/ai-labeling-rules-explained-2026.json",
+    "url": "/trends/view-article.html?article=ai-labeling-rules-explained-2026"
+  },
+  {
     "title": "Running AI on Your Own Computer in 2026: What Actually Works",
     "slug": "local-ai-2026-what-works",
     "date": "2026-08-09",
