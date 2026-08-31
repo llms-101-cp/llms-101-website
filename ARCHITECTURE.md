@@ -1,7 +1,7 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-07-25 — split into current-state reference (this file)
+**Last verified: 2026-08-31 — split into current-state reference (this file)
 + dated incident history (PR #47). Section notes through 2026-07-22 supersede
 where present; the blow-by-blow debugging narratives were moved out (see below).**
 
@@ -18,7 +18,7 @@ something changes.
 
 ---
 
-## Outstanding work — consolidated list (updated 2026-07-21)
+## Outstanding work — consolidated list (updated 2026-08-31)
 
 Single source of truth for what is still open. Detailed context lives in
 the dated sections below — this list only points at them. Maintenance
@@ -133,45 +133,55 @@ reader-facing twin: any PR changing reader-facing content must append a
 
 ### Watch items (time-triggered)
 
-* W1 — 1 August 2026 tracker run. First real test of the 2026-07-18
-  prompt tightening: check that the budget slot picks the current
-  flagship generation's fast sibling and that `homepage_url` values are
-  model-specific pages, not family pages. Same run also tests whether
-  the 12-row category guidance genuinely broadens lab coverage
-  (unverified since PR #4's single run). See the Model Tracker section.
+* W1 — **CLOSED 2026-08-01.** August tracker run (PR #50) merged and
+  live. Review confirmed clean run: correct flagship generation picked,
+  model-specific `homepage_url` values, broad lab coverage.
 * W2 — Digital Omnibus. The `regulation` node correctly treats the
   amendment as agreed-but-unpublished. When it is formally published,
   the node's dates need updating. See the regulation-node note.
-* W3 — First autonomous changelog append. **Armed 2026-07-20 (P1
-  landed).** The first unattended weekly cron run (W4, Sunday 2026-07-26)
-  is the live exercise. Check `/updates` after that run: a malformed append
-  is the one failure mode that blanks the page down to its fallback message
-  (JSON.parse fails → graceful error, no entries). The round-trip JSON.parse
-  check in `changelog-append.js` should prevent this, but it will never have
-  been exercised by real automation before that run. Pairs naturally with the
-  W1 check on the 1 August tracker run (first automated Tracker changelog
-  entry).
-* W4 — Sunday 2026-07-26 21:00 UTC — first fully unattended run of the
-  planner + sentinel + retry stack together. Backlog is at 3 topics so
-  the backlog tier fires; the self-plan (tier 3) stays unexercised until
-  the backlog drains. Confirm via report email: (a) backlog entry consumed
-  and calendar committed in the chore step, (b) drafts generated + sentinel
-  written, (c) validate gate published at least one item, (d) changelog
-  entry appended to `/updates` (W3/P1 live exercise). If the run fails,
-  check whether another 529-wave hit — the retry stack should absorb a
-  transient burst, but a sustained overload can still exhaust all 3
-  attempts.
-* W5 — Full-site review live-verified 2026-07-21 via 5 manual dispatches
-  (static pages checked, link-rot ran, a correction auto-published with a
-  changelog entry, all 10 models.html cards found and checked). **The
-  biweekly `isScheduledWeek()` gate this note used to watch is retired**
-  (2026-07-22 hybrid restructure — full pass monthly, light pass on the 15th;
-  no more parity math). New things to confirm under the hybrid cadence: (a)
-  the first monthly run on 1 Aug 2026 does the full review AND the tracker PR
-  in one `monthly-tracker-refresh.yml` run, review-first ordering intact; (b)
-  the first light run on 15 Aug is a cheap ~1-call spot-check that emails a
-  report and commits nothing. Both still ride the shared Anthropic key — watch
-  for the recurring credit-exhaustion failure.
+* W3 — **CLOSED 2026-07-26.** First autonomous changelog append
+  confirmed live on that run.
+* W4 — **CLOSED 2026-07-26.** First fully unattended run clean end to end.
+* W5 — **CLOSED 2026-08-01.** Hybrid cadence (monthly full + mid-month
+  light) confirmed working: August 1 run did full review + tracker PR in
+  one `monthly-tracker-refresh.yml` run; August 15 light spot-check ran
+  in 42s with a report email and no commits. Both rides on the shared
+  Anthropic key — the recurring credit-exhaustion failure did hit August
+  (see incident note below).
+* W6 — **1 September 2026 monthly run** (scheduled 09:00 UTC tomorrow).
+  First run with the `updateModelsBadge()` fix in `fortnightly-review.js`
+  (added 2026-08-31) — confirm the models.html badge date updates to
+  1 September 2026 in the drafts commit. Also first run since the
+  2-week credit gap; confirm the tracker PR opens cleanly.
+
+### Incident notes
+
+* **2026-08-31 — API credit exhaustion (2-week pipeline gap).** The
+  self-planning stage (tier 3) fires when `calendar.weeks[]` is empty
+  and requires Anthropic API credits. Credits were exhausted for 2 weeks
+  (runs 2026-08-17 and 2026-08-24 both failed at the self-planning call
+  with HTTP 400 "credit balance too low"). Fix: topped up credits, queued
+  a week in `calendar.weeks[]` (`ai-regulation` node + regulation trends
+  article) to bypass the self-planner and trigger immediate generation,
+  then re-dispatched `weekly-content.yml`. Run completed successfully.
+  **GOTCHA from this incident:** the queued node id `ai-regulation`
+  duplicated the existing `regulation` node on the themes branch.
+  Duplicate caught visually (two "AI Regulation" nodes on Mind Map);
+  fixed by removing `'ai-regulation'` from `TREE.themes` in `index.html`
+  and deleting `content/nodes/ai-regulation.json` (commit `6ad6d83`).
+  **Rule:** before queueing a node, verify its id does not already exist
+  in `TREE` or `NODE_DATA` in `index.html`. The plan-validation check in
+  `plan-week.js` catches this for self-planned topics but does NOT run on
+  hand-queued calendar entries.
+
+* **2026-08-31 — models.html "Updated" badge auto-update fix.** The
+  badge was a hardcoded string never updated automatically — frozen at
+  "22nd July 2026" since the last manual card paste. Two changes:
+  (1) badge corrected to today's date immediately (commit `8d32be1`);
+  (2) `updateModelsBadge()` added to `fortnightly-review.js` — called
+  every monthly full run, rewrites the badge to the run date, staged
+  alongside the drafts commit (commit `cfb86ea`). No manual edits to
+  this badge are needed going forward.
 
 ### Decisions parked for Craig
 
@@ -241,6 +251,12 @@ content type is what caused most of today's problems.
   ALSO add the node's id to the correct `TREE.{branch}` array hardcoded
   inside `index.html`'s `<script>` block, or it will never appear on the
   visual map even though the data loads fine.
+- **CRITICAL GOTCHA #3 (2026-08-31):** Before queueing or adding a new
+  node, verify its id does not already exist in `TREE` or `NODE_DATA` in
+  `index.html`. Duplicate ids silently create two nodes on the same branch
+  with identical labels. The pipeline's `plan-week.js` plan-validation
+  catches duplicates for self-planned topics, but does NOT validate
+  hand-queued `calendar.json` entries — that check is manual-only.
 - **CRITICAL GOTCHA #2:** The root node file MUST be named exactly
   `root.json`. It was previously misnamed `large-language-models.json`,
   which silently broke the ENTIRE dynamic loading system for ALL node
@@ -342,6 +358,11 @@ content type is what caused most of today's problems.
   bigger, riskier change than it's worth without a clear reason.
 - When generating a new card via automation, it must be reviewed visually
   and pasted in manually — never auto-spliced into the shared file.
+- **"Updated …" badge is auto-maintained (fixed 2026-08-31).** The
+  `<span class="updated-badge">Updated …</span>` badge in `models.html`
+  is rewritten by `fortnightly-review.js` on every monthly full run
+  (via `updateModelsBadge()`), staged alongside the drafts commit. The
+  date reflects "last reviewed on …" — no manual edits needed.
 - **STALENESS RISK (confirmed 2026-06-25; root cause fixed 2026-07-04 —
   `generate.js` now runs ALL content-generation calls, model cards
   included, with `web_search` enabled; the manual verify-before-paste
