@@ -1,19 +1,6 @@
 {
   "description": "llms101.com weekly content calendar — two-track system. Track 1 (node/page) is low-risk JSON. Track 2 (trendsArticle/modelCard): trendsArticle now generates a single JSON file for content/articles/; modelCard remains a manual-paste HTML block.",
-  "weeks": [
-    {
-      "week_of": "2026-08-31",
-      "node": {
-        "id": "ai-regulation",
-        "parentContext": "Under Themes — alongside safety and evaluation; covers the growing body of rules and laws shaping how AI can be built and deployed",
-        "theme": "theme"
-      },
-      "trendsArticle": {
-        "topic": "The AI Rules Taking Effect in 2026: What You Actually Need to Know",
-        "notes": "Plain-English guide to the regulations that are live or coming into force this year — EU AI Act obligations (GPAI transparency rules Aug 2026, high-risk system requirements), UK approach, US executive orders. Focus on what changes for everyday users and products, not legal detail. Ground via live search: which rules are in force now vs. coming soon, real examples of products affected. Avoid treating it as a law-school explainer — the angle is 'here is what is actually changing and why it matters to you'."
-      }
-    }
-  ],
+  "weeks": [],
   "completed": [
     {
       "week_of": "2026-06-29",
@@ -147,6 +134,19 @@
       "_planned_by": "auto",
       "rationale": "The EU's AI transparency rules just came into force (Aug 2, 2026) and major labs simultaneously rolled out content watermarking, making 'is this real or AI?' an immediate, everyday concern for non-technical readers navigating deepfakes and synthetic media. The site covers agents, models, and safety but has no node on content provenance/labeling, so it fills a genuine gap. The topic is durable: the rules and labeling infrastructure are here to stay and will only grow more relevant over the coming month and beyond.",
       "_completed_at": "2026-08-16T21:22:25.937Z"
+    },
+    {
+      "week_of": "2026-08-31",
+      "node": {
+        "id": "ai-regulation",
+        "parentContext": "Under Themes — alongside safety and evaluation; covers the growing body of rules and laws shaping how AI can be built and deployed",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "The AI Rules Taking Effect in 2026: What You Actually Need to Know",
+        "notes": "Plain-English guide to the regulations that are live or coming into force this year — EU AI Act obligations (GPAI transparency rules Aug 2026, high-risk system requirements), UK approach, US executive orders. Focus on what changes for everyday users and products, not legal detail. Ground via live search: which rules are in force now vs. coming soon, real examples of products affected. Avoid treating it as a law-school explainer — the angle is 'here is what is actually changing and why it matters to you'."
+      },
+      "_completed_at": "2026-08-31T11:53:54.500Z"
     }
   ]
 }

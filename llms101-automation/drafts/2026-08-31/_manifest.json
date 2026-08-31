@@ -1,0 +1,21 @@
+[
+  {
+    "track": 1,
+    "contentType": "node",
+    "targetPath": "content/nodes/ai-regulation.json",
+    "filename": "ai-regulation.json",
+    "requiresVisualReview": false,
+    "extraStep": "Publisher adds 'ai-regulation' to TREE.themes in index.html automatically (validate-and-publish.js).",
+    "note": null,
+    "targetBranch": "themes"
+  },
+  {
+    "track": 2,
+    "contentType": "trends-article",
+    "targetPath": "content/articles/ai-rules-2026-what-you-need-to-know.json",
+    "filename": "ai-rules-2026-what-you-need-to-know.json",
+    "requiresVisualReview": true,
+    "extraStep": null,
+    "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two."
+  }
+]

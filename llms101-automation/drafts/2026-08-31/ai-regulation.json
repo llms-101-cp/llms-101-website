@@ -1,0 +1,27 @@
+{
+  "label": "AI Regulation",
+  "sub": "Rules shaping AI development",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Regulation: The Growing Rulebook for Artificial Intelligence",
+  "body": "<p><strong>AI regulation</strong> refers to the laws, rules, and standards that governments create to control how AI systems are built, tested, and used. Just as medicines need approval before reaching pharmacies and cars must pass safety tests, AI systems are increasingly subject to formal requirements—especially when they affect people's safety, rights, or opportunities.</p><p>Most regulatory frameworks use a <strong>risk-based approach</strong>: the higher the stakes, the stricter the rules. The EU AI Act—the world's first comprehensive AI law—categorises systems from minimal to unacceptable risk. High-risk applications like hiring tools or medical devices face requirements around transparency, human oversight, and testing. Some uses, like social scoring, are banned outright. In the US, Executive Order 14110 requires companies to share safety test results for powerful AI systems and directs federal agencies to develop standards for things like red-teaming and content watermarking.</p><p>Regulation matters because it shapes what AI companies can and cannot do, influences where AI research happens, and determines what protections ordinary people have when algorithms make decisions about their lives.</p>",
+  "examples": [
+    "EU AI Act",
+    "Risk-based classification",
+    "High-risk AI systems",
+    "Red-teaming requirements",
+    "Content watermarking",
+    "Conformity assessments"
+  ],
+  "sources": [
+    {
+      "label": "European Commission – AI Act regulatory framework",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "label": "Congressional Research Service – Highlights of the 2023 Executive Order on AI",
+      "url": "https://www.congress.gov/crs-product/R47843"
+    }
+  ]
+}
