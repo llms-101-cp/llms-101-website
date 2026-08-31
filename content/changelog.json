@@ -200,5 +200,19 @@
         "url": "/trends/view-article.html?article=ai-labeling-rules-explained-2026"
       }
     ]
+  },
+  {
+    "date": "2026-08-31",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI Regulation node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: The AI Rules Taking Effect in 2026: What You Actually Need to Know.",
+        "url": "/trends/view-article.html?article=ai-rules-2026-what-you-need-to-know"
+      }
+    ]
   }
 ]

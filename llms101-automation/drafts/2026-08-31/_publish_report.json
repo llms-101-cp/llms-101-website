@@ -1,0 +1,92 @@
+{
+  "week": "2026-08-31",
+  "generatedAt": "2026-08-31T11:55:55.913Z",
+  "dryRun": false,
+  "plannedBy": null,
+  "planRationale": null,
+  "items": [
+    {
+      "filename": "ai-regulation.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-regulation.json",
+      "note": null,
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "As of 2026-08-31, rules for stand-alone high-risk systems ... were delayed—now generally expected around late 2027—as the EU works through amendments and awaits harmonised technical standards.",
+            "issue": "The 'late 2027' figure is correct: the Digital Omnibus set the Annex III (standalone) high-risk deadline to 2 December 2027. Minor nuance: the framing 'works through amendments' slightly understates that a provisional political agreement fixing this date was already reached on 7 May 2026 (though still subject to formal adoption as of the publication date). Not misleading enough to block, but the site could tighten this by noting the May 2026 agreement."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "In the US, Executive Order 14110 requires companies to share safety test results for powerful AI systems and directs federal agencies to develop standards for things like red-teaming and content watermarking.",
+            "issue": "Presented in the present tense as current US regulation, but EO 14110 was revoked by President Trump on January 20, 2025 (his first day in office) and replaced by EO 14179 ('Removing Barriers to American Leadership in Artificial Intelligence') on January 23, 2025. This is the pipeline's flagged failure mode: a superseded state of the world presented as current. Fix by reframing historically (e.g., 'In 2023, the Biden administration issued Executive Order 14110, which required... The order was revoked in January 2025 and replaced by EO 14179') and updating the US paragraph to reflect the current sector-specific/state-law patchwork and the 2025 executive order."
+          },
+          {
+            "severity": "note",
+            "claim": "Regulation matters because it shapes what AI companies can and cannot do... (overall US framing implies an active federal regulatory regime)",
+            "issue": "As of 2026, there is still no comprehensive US federal AI law; the landscape is a patchwork of state laws (e.g., Colorado, California) plus sector-specific agency authority and the 2025 Trump EO 14179. If the node is meant to describe the current rulebook, consider noting this so the US picture isn't left implying the revoked EO framework still governs."
+          },
+          {
+            "severity": "note",
+            "claim": "The EU AI Act—the world's first comprehensive AI law—categorises systems from minimal to unacceptable risk. High-risk applications... face requirements around transparency, human oversight, and testing.",
+            "issue": "Factually correct and the 'world's first comprehensive AI law' label is accurate. Minor freshness point (not blocking): as of 2 August 2026 transparency rules are live, but the toughest high-risk obligations were pushed back (to roughly December 2027 / 2028) by the Digital Omnibus (Regulation (EU) 2026/1744). The node's description of high-risk requirements as present-tense obligations is slightly ahead of the current phase-in but is a fair general description of the law."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-regulation.repaired.json",
+        "error": null
+      },
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/2",
+        "after": "3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-rules-2026-what-you-need-to-know.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-rules-2026-what-you-need-to-know.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Non-compliance could cost your company 7% of global annual revenue. For context, GDPR maxes out at 4%.",
+            "issue": "The 7% (€35M) tier applies specifically to PROHIBITED AI practices under Article 5, not to the high-risk hiring/loan systems the article discusses in the immediately preceding sentence. High-risk non-compliance and GPAI obligations are capped at the lower tier of 3% or €15M, whichever is higher. The 7%-vs-4% GDPR comparison itself is correct (7% for prohibited practices exceeds GDPR's 4% cap), but placing '7% of global revenue' right after discussing job-screening and loan-assessment AI misleadingly implies those high-risk use cases carry the 7% penalty when they actually carry 3%."
+          },
+          {
+            "severity": "note",
+            "claim": "...as a result of the political agreement on the AI Omnibus, which entered into force on July 27, 2026.",
+            "issue": "Minor conflation of two events. The Omnibus political agreement was reached on 7 May 2026; the Omnibus itself (the amending law) entered into force on 27 July 2026. The article ties 'political agreement' to the 27 July date. The substantive dates for the high-risk deferrals (2 December 2027 for Annex III, 2 August 2028 for Annex I) and the in-force date are correct, so this is a wording issue rather than a factual error."
+          },
+          {
+            "severity": "note",
+            "claim": "The Safety and Security chapter only applies to providers of GPAI models with systemic risk, above the 10^25 FLOP threshold, currently a small group of 5-15 companies worldwide.",
+            "issue": "The 10^25 FLOP systemic-risk threshold and the scope of the Safety and Security chapter are correct. The specific '5-15 companies worldwide' figure is not confirmed by authoritative sources, which say only that 'a significant number of providers globally' surpass the threshold. The estimate is plausible and not embarrassing, but is presented with more precision than the sources support."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-rules-2026-what-you-need-to-know"
+    }
+  ]
+}

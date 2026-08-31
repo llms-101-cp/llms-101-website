@@ -1,0 +1,27 @@
+{
+  "label": "AI Regulation",
+  "sub": "Rules shaping AI development",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Regulation: The Growing Rulebook for Artificial Intelligence",
+  "body": "<p><strong>AI regulation</strong> refers to the laws, rules, and standards that governments create to control how AI systems are built, tested, and used. Just as medicines need approval before reaching pharmacies and cars must pass safety tests, AI systems are increasingly subject to formal requirements—especially when they affect people's safety, rights, or opportunities.</p><p>Many regulatory frameworks use a <strong>risk-based approach</strong>: the higher the stakes, the stricter the rules. The EU AI Act—the world's first comprehensive AI law—categorises systems from minimal to unacceptable risk. <strong>It entered into force on 1 August 2024 and applies in phases:</strong> bans on certain uses like social scoring and manipulative systems, along with AI literacy duties, applied from February 2025; rules for general-purpose AI models followed in August 2025; and the bulk of the remaining rules, including transparency obligations and EU-level enforcement, took effect on 2 August 2026. As of 2026-08-31, rules for stand-alone high-risk systems (like certain hiring or medical tools) were delayed—now generally expected around late 2027—as the EU works through amendments and awaits harmonised technical standards.</p><p>The US looks very different. In 2023, the Biden administration issued Executive Order 14110, which required developers of the most powerful AI systems to share safety test results and directed agencies to develop standards for red-teaming and content watermarking. That order was revoked in January 2025 and replaced by Executive Order 14179 ('Removing Barriers to American Leadership in Artificial Intelligence'), which reoriented federal policy toward removing regulatory barriers. As of 2026-08-31, there is no comprehensive federal AI statute; instead the US has a patchwork of state laws (in California, Texas, Illinois, Utah, and others) alongside federal executive orders, with an active push by the Trump administration to preempt state rules—though no state law has actually been preempted yet.</p><p>Regulation matters because it shapes what AI companies can and cannot do, influences where AI research happens, and determines what protections ordinary people have when algorithms make decisions about their lives.</p>",
+  "examples": [
+    "EU AI Act",
+    "Risk-based classification",
+    "High-risk AI systems",
+    "Red-teaming requirements",
+    "Content watermarking",
+    "US state-law patchwork"
+  ],
+  "sources": [
+    {
+      "label": "European Commission – AI Act regulatory framework",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "label": "Federal Register – Executive Order 14179: Removing Barriers to American Leadership in Artificial Intelligence",
+      "url": "https://www.federalregister.gov/documents/2025/01/31/2025-02172/removing-barriers-to-american-leadership-in-artificial-intelligence"
+    }
+  ]
+}
