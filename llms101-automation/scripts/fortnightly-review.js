@@ -814,6 +814,38 @@ function git(...args) {
   return execFileSync('git', args, { cwd: REPO_ROOT, encoding: 'utf8' }).trim();
 }
 
+// ─── models.html "Updated …" badge auto-updater ──────────────────────────────
+// The badge is hardcoded HTML. On every monthly full review we rewrite it to
+// today's date so it always reflects "last reviewed on …" without manual edits.
+async function updateModelsBadge(todayISO) {
+  try {
+    const d = new Date(todayISO + 'T12:00:00Z');
+    const day = d.getUTCDate();
+    const v = day % 100;
+    const s = ['th', 'st', 'nd', 'rd'];
+    const ord = day + (s[(v - 20) % 10] || s[v] || s[0]);
+    const month = d.toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' });
+    const year = d.getUTCFullYear();
+    const dateStr = `${ord} ${month} ${year}`;
+
+    const html = await fs.readFile(MODELS_HTML, 'utf8');
+    const updated = html.replace(
+      /(<span class="updated-badge">Updated )[^<]+(< *\/span>)/,
+      `$1${dateStr}$2`
+    );
+    if (updated === html) {
+      log('models.html badge: no match found for update pattern — skipping.');
+      return false;
+    }
+    await fs.writeFile(MODELS_HTML, updated, 'utf8');
+    log(`models.html badge updated to "Updated ${dateStr}"`);
+    return true;
+  } catch (err) {
+    log(`WARNING: could not update models.html badge — ${err.message}`);
+    return false;
+  }
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function runLight({ offline, todayISO }) {
@@ -909,9 +941,13 @@ async function main() {
         JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, trackerPRs, fatalError }, null, 2),
         'utf8'
       );
+      // Update models.html badge to today every monthly run — "Updated …" must
+      // reflect the last review date without requiring a manual edit.
+      const badgeUpdated = await updateModelsBadge(todayISO);
       try {
         const relReportDir = path.relative(REPO_ROOT, reportDir);
         git('add', relReportDir);
+        if (badgeUpdated) git('add', 'models.html');
         const draftsStatus = git('status', '--porcelain');
         if (draftsStatus) {
           git('commit', '-m', `fortnightly review: drafts + report (${todayISO})`);
