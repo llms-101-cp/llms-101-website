@@ -214,5 +214,15 @@
         "url": "/trends/view-article.html?article=ai-rules-2026-what-you-need-to-know"
       }
     ]
+  },
+  {
+    "date": "2026-09-01",
+    "items": [
+      {
+        "area": "Site",
+        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
+        "url": "/resources"
+      }
+    ]
   }
 ]
