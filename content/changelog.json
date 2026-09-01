@@ -224,5 +224,15 @@
         "url": "/resources"
       }
     ]
+  },
+  {
+    "date": "2026-09-01",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Monthly Model Tracker updated — top models include Claude Fable 5, GPT-5.6 Sol, Claude Opus 5 and 9 more.",
+        "url": "/tracker"
+      }
+    ]
   }
 ]
