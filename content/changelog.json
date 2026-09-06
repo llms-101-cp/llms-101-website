@@ -224,5 +224,19 @@
         "url": "/resources"
       }
     ]
+  },
+  {
+    "date": "2026-09-06",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Your Data & Privacy node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Is AI Reading Your Chats? What Really Happens and How to Turn It Off.",
+        "url": "/trends/view-article.html?article=ai-reading-your-chats-training-data-opt-out"
+      }
+    ]
   }
 ]

@@ -1,0 +1,27 @@
+{
+  "label": "Your Data & Privacy",
+  "sub": "What happens to your inputs",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "Your Data & Privacy: What Happens to What You Type",
+  "body": "<p>When you send a message to an LLM chatbot, that text doesn't just vanish after you get a reply. <strong>By default, most AI providers store your conversations and may use them to train future models</strong> — your words potentially become part of the system that serves millions of other users.</p><p>The mechanics vary by provider and plan. Consumer accounts often have training enabled by default, while enterprise tiers typically exclude your data from training. Most services let you opt out, disable chat history, or use temporary modes that auto-delete. Deleted conversations are usually retained for 30 days before permanent removal. Human reviewers may also access flagged conversations for safety checks.</p><p><strong>The practical risk is straightforward: anything you type could be stored, reviewed, or learned from.</strong> This matters most with sensitive information — personal details, confidential work data, or private conversations. The controls exist, but you need to find them and turn them on.</p>",
+  "examples": [
+    "Opt-out settings",
+    "Temporary Chat mode",
+    "Enterprise data agreements",
+    "Data retention periods",
+    "Memory features",
+    "GDPR deletion rights"
+  ],
+  "sources": [
+    {
+      "label": "OpenAI Consumer Privacy Settings",
+      "url": "https://openai.com/consumer-privacy/"
+    },
+    {
+      "label": "Future of Privacy Forum: Privacy Risks in LLMs",
+      "url": "https://fpf.org/blog/fpf-releases-privacy-and-data-protection-risks-in-large-language-models-llms/"
+    }
+  ]
+}

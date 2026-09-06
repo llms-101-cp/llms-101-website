@@ -1,0 +1,64 @@
+{
+  "week": "2026-09-07",
+  "generatedAt": "2026-09-06T22:47:21.788Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "'What happens to what I type into AI?' is one of the most common and reasonable questions ordinary users have now that a billion-plus people use these tools weekly, yet the site has no privacy/your-data node at all. The topic is durable: it's about defaults and settings, so it stays useful for months rather than expiring like a news item, while still being timely because vendors quietly shifted to opt-out models in late 2025. It's perfectly pitched for a smart non-technical reader who wants a clear answer plus a five-minute action they can take.",
+  "items": [
+    {
+      "filename": "your-data-privacy.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/your-data-privacy.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Source link labeled 'Future of Privacy Forum: Privacy Risks in LLMs' pointing to https://fpf.org/blog/fpf-releases-privacy-and-data-protection-risks-in-large-language-models-llms/",
+            "issue": "The referenced FPF publication 'Privacy and Data Protection Risks in Large Language Models (LLMs)' (2024) is genuine and the label accurately describes it. However, that exact URL slug did not surface directly in searches, whereas other FPF blog URLs on LLM privacy (e.g. fpf.org/blog/nature-of-data-in-pre-trained-large-language-models/) clearly resolve. Recommend confirming the specific URL returns a live page before publication; the label/topic match is fine, only the precise link needs a click-test."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/2",
+        "after": "3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-reading-your-chats-training-data-opt-out.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-reading-your-chats-training-data-opt-out.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Since 28 August 2025 [Anthropic] does [train on consumer conversations], if you allow it, and allowed chats can be kept for up to five years.",
+            "issue": "Accurate on dates and the 5-year retention, but the phrasing 'if you allow it' slightly understates that the setting defaults to ON (opt-out) for consumer Free/Pro/Max accounts, so users are trained on unless they act. The article's own ChatGPT/Gemini/Claude sections and the 'you must opt out manually' line resolve this, so it is not misleading overall, just a phrasing nuance."
+          },
+          {
+            "severity": "note",
+            "claim": "consider using features like Temporary Chat in ChatGPT or Incognito mode in Claude, which are excluded from training regardless of your main settings",
+            "issue": "Both features and the training-exclusion claims are correct per OpenAI and Anthropic help centers. Worth knowing: Claude Incognito chats are still retained ~30 days for safety and, on Team/Enterprise plans, are included in admin data exports — so 'excluded from training' is right but 'private' should not be overread. No correction needed; informational only."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-reading-your-chats-training-data-opt-out"
+    }
+  ]
+}
