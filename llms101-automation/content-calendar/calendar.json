@@ -147,6 +147,21 @@
         "notes": "Plain-English guide to the regulations that are live or coming into force this year — EU AI Act obligations (GPAI transparency rules Aug 2026, high-risk system requirements), UK approach, US executive orders. Focus on what changes for everyday users and products, not legal detail. Ground via live search: which rules are in force now vs. coming soon, real examples of products affected. Avoid treating it as a law-school explainer — the angle is 'here is what is actually changing and why it matters to you'."
       },
       "_completed_at": "2026-08-31T11:53:54.500Z"
+    },
+    {
+      "week_of": "2026-09-07",
+      "node": {
+        "id": "your-data-privacy",
+        "parentContext": "Themes branch — the societal and practical concerns around living with LLMs (sits alongside safety, regulation, provenance-watermarking): what happens to the personal information you type into AI tools and the controls you have over it.",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Is the AI Reading Your Chats? What Really Happens to What You Type — and How to Turn It Off",
+        "notes": "Angle: answer the single most common worry a non-technical person has ('does it train on my stuff?') in plain language, then give a calm, do-this-now walkthrough of the opt-out toggles for ChatGPT, Gemini, and Claude, plus what opting out does and doesn't do. Ground via live search the exact, current settings paths and default behaviors (they shift often — verify each vendor's default 'opt-out vs opt-in' status, the toggle names/locations, and the key caveat that opting out only stops FUTURE training and doesn't erase data already used). Also verify current facts like paid tiers still training by default unless you opt out, API/enterprise being excluded, and the thumbs-up-feedback exception. Avoid: legal advice, GDPR-lawyer detail, fearmongering, and any promotion of third-party 'removal' tools; keep it to the three or four mainstream consumer tools a general reader actually uses."
+      },
+      "_planned_by": "auto",
+      "rationale": "'What happens to what I type into AI?' is one of the most common and reasonable questions ordinary users have now that a billion-plus people use these tools weekly, yet the site has no privacy/your-data node at all. The topic is durable: it's about defaults and settings, so it stays useful for months rather than expiring like a news item, while still being timely because vendors quietly shifted to opt-out models in late 2025. It's perfectly pitched for a smart non-technical reader who wants a clear answer plus a five-minute action they can take.",
+      "_completed_at": "2026-09-06T22:46:18.727Z"
     }
   ]
 }
