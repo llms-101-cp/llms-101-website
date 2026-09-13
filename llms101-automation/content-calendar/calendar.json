@@ -162,6 +162,21 @@
       "_planned_by": "auto",
       "rationale": "'What happens to what I type into AI?' is one of the most common and reasonable questions ordinary users have now that a billion-plus people use these tools weekly, yet the site has no privacy/your-data node at all. The topic is durable: it's about defaults and settings, so it stays useful for months rather than expiring like a news item, while still being timely because vendors quietly shifted to opt-out models in late 2025. It's perfectly pitched for a smart non-technical reader who wants a clear answer plus a five-minute action they can take.",
       "_completed_at": "2026-09-06T22:46:18.727Z"
+    },
+    {
+      "week_of": "2026-09-14",
+      "node": {
+        "id": "ai-shopping",
+        "parentContext": "Real-world consumer uses of AI, under the Themes branch — everyday applications like agents, privacy, and now shopping/commerce",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Can AI Really Buy Things for You? What AI Shopping Actually Does in 2026",
+        "notes": "Angle: cut through the 'agent shops for you' hype and explain what actually works today for a non-technical shopper — AI is now a mainstream research/recommendation tool ('discover in AI, buy on the merchant's site'), while fully autonomous in-chat checkout largely stalled after OpenAI retired Instant Checkout in early 2026. Ground via live search: the current state of ChatGPT/Google/Perplexity shopping features, Anthropic's just-released Claude shopping-agent blueprints (Sept 2026), and fresh adoption/trust survey numbers (e.g. share of consumers using AI to shop; low willingness to let AI make purchase decisions). Give readers a practical 'what you can and can't do, and what to watch for' framing — accuracy of AI product claims, disclosure of paid/affiliate relationships, and setting spending limits. Avoid merchant/SEO how-to advice, technical protocol deep-dives (ACP/UCP internals), and anything that will date quickly like specific model version names."
+      },
+      "_planned_by": "auto",
+      "rationale": "AI shopping has crossed into everyday habit — a majority of consumers now use AI somewhere in the buying journey — yet most people are fuzzy on what these tools actually do versus the 'agent buys it for you' marketing. It's a distinctly consumer-facing topic the site doesn't cover, and the durable 'discover in AI, buy on the site' reality plus the trust-and-disclosure questions will still be relevant in a month rather than tied to one week's product news.",
+      "_completed_at": "2026-09-13T22:58:56.534Z"
     }
   ]
 }
