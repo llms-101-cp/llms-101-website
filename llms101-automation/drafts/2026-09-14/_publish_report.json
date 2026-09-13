@@ -1,0 +1,80 @@
+{
+  "week": "2026-09-14",
+  "generatedAt": "2026-09-13T23:01:07.733Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "AI shopping has crossed into everyday habit — a majority of consumers now use AI somewhere in the buying journey — yet most people are fuzzy on what these tools actually do versus the 'agent buys it for you' marketing. It's a distinctly consumer-facing topic the site doesn't cover, and the durable 'discover in AI, buy on the site' reality plus the trust-and-disclosure questions will still be relevant in a month rather than tied to one week's product news.",
+  "items": [
+    {
+      "filename": "ai-shopping.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-shopping.json",
+      "note": null,
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "OpenAI ... retired it around March 2026",
+            "issue": "Correct and well-supported. The exact date is reported slightly differently across sources (Forbes cites March 4, 2026; The Information's scoop broke March 6, 2026), but the draft's hedged phrasing 'around March 2026' accurately captures this. No correction needed."
+          },
+          {
+            "severity": "note",
+            "claim": "Google's Universal Cart (built on its Universal Commerce Protocol) and Perplexity's Instant Buy (powered by PayPal) are the more active in-chat checkout paths as of 2026-09-13",
+            "issue": "Verified accurate. One nuance: Google's UCP checkout completes via Google Pay OR routes to retailer checkout, and merchants remain the merchant of record — so 'in-chat checkout' is a fair but slightly simplified characterization. Not misleading enough to require a change."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "\"ChatGPT Instant Checkout\" listed as a current example of an AI shopping assistant",
+            "issue": "This presents a superseded feature as current. OpenAI launched Instant Checkout in September 2025 and retired it in March 2026, about six months later, repositioning ChatGPT toward product discovery with checkout moving back to merchants' own environments. As of the node's publication date (2026-09-13), Instant Checkout is no longer live. Agentic checkout has since shifted to Google's Universal Commerce Protocol / Universal Cart and Perplexity's Instant Buy. This example should be removed or reframed historically, or replaced with a current offering (e.g., Google Universal Cart)."
+          },
+          {
+            "severity": "note",
+            "claim": "\"Amazon Alexa for Shopping\" listed as an example",
+            "issue": "Not an error — this label happens to be current. On May 13, 2026 Amazon retired the standalone Rufus chatbot and merged Rufus and Alexa+ into a unified assistant called 'Alexa for Shopping,' integrated into the main search bar. Worth noting because the underlying product changed significantly in 2026; the label is accurate but the associated capabilities (now agentic, e.g. auto-buy and 'Buy for Me' across other retailers) are newer than a plain 'Alexa for Shopping' voice-assistant reading might imply."
+          },
+          {
+            "severity": "note",
+            "claim": "\"Perplexity Shopping\" listed as an example",
+            "issue": "Accurate. Perplexity's shopping offering ('Buy with Pro,' launched around Black Friday 2024/2025 with PayPal integration) is a valid current example. No change needed; flagged only for completeness since it sits alongside the stale ChatGPT example."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-shopping.repaired.json",
+        "error": null
+      },
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3",
+        "after": "3/3/3/1"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-shopping-what-actually-works-2026.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-shopping-what-actually-works-2026.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "held",
+      "reasons": [
+        "fact-check pass errored: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cf2GZY24vi6nXbzXNjpcy\"} — holding back rather than publishing unverified content"
+      ],
+      "notes": [],
+      "factCheck": null,
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": null
+    }
+  ]
+}

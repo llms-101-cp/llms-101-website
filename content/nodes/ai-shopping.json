@@ -1,0 +1,27 @@
+{
+  "label": "AI Shopping",
+  "sub": "Conversational commerce and recommendations",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Shopping Assistants",
+  "body": "<p><strong>AI shopping assistants</strong> are software systems that help you find products, answer questions, and complete purchases through natural conversation instead of traditional search boxes and filters. Rather than typing keywords and scrolling through pages, you describe what you want in plain language—\"a moisturizer for dry, sensitive skin\" or \"travel-friendly skincare from premium brands\"—and the AI interprets your intent to surface relevant products.</p><p>Under the hood, these systems use large language models to understand context and nuance. They convert your everyday language into structured queries, analyze product catalogs, and factor in things like your browsing history, past purchases, and even external context like seasonality. More advanced versions don't just recommend—they can add items to your cart, apply discounts, or complete checkout on your behalf.</p><p><strong>Why it matters:</strong> This represents a fundamental shift in how online shopping works. Instead of you doing the cognitive work of researching and comparing, the AI handles that middle phase of the buying journey. For shoppers, it means less friction. For retailers, it means higher conversion rates—but also a new kind of competition where visibility depends on whether AI systems surface your products at all. It's worth noting this space is still shaking out: in-chat checkout has proven harder than it looked. OpenAI launched its Instant Checkout feature in ChatGPT in September 2025 but retired it around March 2026, repositioning ChatGPT toward product discovery while routing actual purchases back to merchants' own sites and apps. As of 2026-09-13, the more active in-chat checkout paths are Google's Universal Cart (built on its Universal Commerce Protocol) and Perplexity's Instant Buy (powered by PayPal).</p>",
+  "examples": [
+    "Amazon Alexa for Shopping",
+    "Shop.app by Shopify",
+    "Perplexity Instant Buy",
+    "Google Universal Cart",
+    "Visual product search",
+    "Agentic commerce"
+  ],
+  "sources": [
+    {
+      "label": "BigCommerce: AI Shopping Assistants in Ecommerce (2026)",
+      "url": "https://www.bigcommerce.com/articles/ecommerce/ai-shopping-assistant/"
+    },
+    {
+      "label": "AI21: LLMs in Retail Applications",
+      "url": "https://www.ai21.com/knowledge/llms-in-retail/"
+    }
+  ]
+}
