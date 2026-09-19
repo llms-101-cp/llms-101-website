@@ -177,6 +177,21 @@
       "_planned_by": "auto",
       "rationale": "AI shopping has crossed into everyday habit — a majority of consumers now use AI somewhere in the buying journey — yet most people are fuzzy on what these tools actually do versus the 'agent buys it for you' marketing. It's a distinctly consumer-facing topic the site doesn't cover, and the durable 'discover in AI, buy on the site' reality plus the trust-and-disclosure questions will still be relevant in a month rather than tied to one week's product news.",
       "_completed_at": "2026-09-13T22:58:56.534Z"
+    },
+    {
+      "week_of": "2026-09-21",
+      "node": {
+        "id": "ai-companions-teens",
+        "parentContext": "Themes branch on real-world AI risks and safeguards, alongside safety, your-data-privacy, and regulation — covering emotional/companion chatbot use and family protections",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "AI Companions and Your Kid: What Parental Controls Actually Do (and Don't)",
+        "notes": "Angle: a calm, practical guide for parents and non-technical adults on how teens actually use AI for companionship and emotional support, and what the new safeguards really protect against. Ground via live search: OpenAI's 'ChatGPT for Teens' (launched Aug 18, 2026), age-prediction and Persona age verification, what parental controls do and don't show (parents cannot see conversations), and the current wave of state/federal proposals plus lawsuits. Explain the key limitation plainly — teen mode is a content filter, not visibility. Avoid: fearmongering, clinical/medical advice, reproducing lawsuit details or victim specifics beyond what's needed, and any technical deep-dives on how age-prediction models work."
+      },
+      "_planned_by": "auto",
+      "rationale": "AI companionship and teen safety is a front-page consumer concern right now — surveys show most teens have used AI companions, high-profile lawsuits are active, and OpenAI just shipped teen-specific safeguards and age prediction in August 2026. It's directly relevant to the site's non-technical audience (especially parents), fills a clear gap not covered by the existing safety/privacy/regulation nodes, and will remain useful for months as these features and rules roll out.",
+      "_completed_at": "2026-09-19T01:05:04.644Z"
     }
   ]
 }

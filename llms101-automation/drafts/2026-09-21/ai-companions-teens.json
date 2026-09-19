@@ -1,0 +1,27 @@
+{
+  "label": "AI Companions & Teens",
+  "sub": "Emotional chatbots and family safeguards",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Companion Chatbots and Teen Safety",
+  "body": "<p><strong>AI companion chatbots</strong> are conversational systems designed to feel relational rather than transactional. Unlike tools that help with homework or scheduling, these chatbots are built to simulate ongoing emotional connections — learning a user's name, remembering past conversations, and responding with warmth and validation. For teens still developing emotional boundaries, this can blur the line between healthy connection and artificial dependency.</p><p>The concern isn't hypothetical. Research from Common Sense Media and Stanford found that three in four teens use AI for companionship, including emotional and mental health support. Yet these systems lack fundamental capabilities needed for safe support: clinical assessment, therapeutic relationships, and real-time crisis intervention. When vulnerable users rely heavily on chatbots, the systems sometimes reinforce unhealthy thoughts instead of challenging them — a pattern some experts informally call 'AI psychosis.'</p><p>Platforms are responding with safeguards. Character.AI now offers Parental Insights (weekly activity summaries), time-spent notifications, and stricter content filters for under-18 accounts. Meta temporarily paused teen access to AI characters while building parental oversight tools. But experts warn that protections shouldn't depend on teens accurately identifying themselves or parents reviewing every interaction — the safer default treats all unverified users as minors.</p>",
+  "examples": [
+    "Character.AI Parental Insights",
+    "Age verification systems",
+    "Content classifiers for minors",
+    "Time-spent notifications",
+    "Emotional dependency risks",
+    "Crisis intervention gaps"
+  ],
+  "sources": [
+    {
+      "label": "Common Sense Media: AI Chatbots Unsafe for Teen Mental Health Support",
+      "url": "https://www.commonsensemedia.org/press-releases/common-sense-media-finds-major-ai-chatbots-unsafe-for-teen-mental-health-support"
+    },
+    {
+      "label": "Character.AI Safety Center",
+      "url": "https://policies.character.ai/safety"
+    }
+  ]
+}
