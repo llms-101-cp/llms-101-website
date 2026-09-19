@@ -1,5 +1,19 @@
 [
   {
+    "title": "AI Companions and Your Kid: What Parental Controls Actually Do (and Don't)",
+    "slug": "ai-companions-parental-controls-guide",
+    "date": "2026-09-19",
+    "category": "Trend Spotlight",
+    "read_time": "6 min read",
+    "summary": "Teens are using AI chatbots for emotional support at a staggering rate. New parental controls filter content, but they cannot read your child's conversations. Here is what parents need to know.",
+    "before_label": "What parents assume",
+    "before": "Parental controls let me see what my teen is saying to AI chatbots and monitor their conversations for safety.",
+    "after_label": "The reality",
+    "after": "Parental controls filter content and send alerts, but no major platform lets parents read their teen's actual AI conversations.",
+    "file": "content/articles/ai-companions-parental-controls-guide.json",
+    "url": "/trends/view-article.html?article=ai-companions-parental-controls-guide"
+  },
+  {
     "title": "Is AI Reading Your Chats? What Really Happens and How to Turn It Off",
     "slug": "ai-reading-your-chats-training-data-opt-out",
     "date": "2026-09-06",
