@@ -6,6 +6,10 @@
     "category": "Trend Spotlight",
     "read_time": "5 min read",
     "summary": "Yes, most AI chatbots train on your conversations by default. Here is what that actually means, and the exact settings to turn it off for ChatGPT, Gemini, and Claude.",
+    "before_label": "Most people assume",
+    "before": "AI chatbots are just tools — your conversations are private and used only to give you answers in the session.",
+    "after_label": "The reality",
+    "after": "On free and personal plans, your chats train future models by default. One setting change per service turns this off — and it takes about a minute.",
     "file": "content/articles/ai-reading-your-chats-training-data-opt-out.json",
     "url": "/trends/view-article.html?article=ai-reading-your-chats-training-data-opt-out"
   },
@@ -16,6 +20,10 @@
     "category": "Trend Spotlight",
     "read_time": "6 min read",
     "summary": "AI regulation just got real. Here is what is actually changing in the EU, UK, and US this year, and why it matters for the products you use every day.",
+    "before_label": "Before August 2026",
+    "before": "AI regulation was mostly proposals and voluntary commitments. No enforcement deadlines, no binding rules in force for most AI use cases.",
+    "after_label": "August 2026 and beyond",
+    "after": "EU AI Act transparency rules are now enforced: chatbots must disclose they are AI, deepfakes must be labeled. High-risk AI rules follow in 2027–2028.",
     "file": "content/articles/ai-rules-2026-what-you-need-to-know.json",
     "url": "/trends/view-article.html?article=ai-rules-2026-what-you-need-to-know"
   },
