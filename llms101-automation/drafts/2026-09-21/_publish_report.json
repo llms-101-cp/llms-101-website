@@ -1,0 +1,99 @@
+{
+  "week": "2026-09-21",
+  "generatedAt": "2026-09-19T01:08:21.506Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "AI companionship and teen safety is a front-page consumer concern right now — surveys show most teens have used AI companions, high-profile lawsuits are active, and OpenAI just shipped teen-specific safeguards and age prediction in August 2026. It's directly relevant to the site's non-technical audience (especially parents), fills a clear gap not covered by the existing safety/privacy/regulation nodes, and will remain useful for months as these features and rules roll out.",
+  "items": [
+    {
+      "filename": "ai-companions-teens.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-companions-teens.json",
+      "note": null,
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Character.AI now offers Parental Insights (weekly activity summaries), time-spent notifications, and stricter content filters for under-18 accounts.",
+            "issue": "This describes a superseded safeguard regime as current. As of November 25, 2025, Character.AI removed open-ended chat entirely for under-18 users, limiting them to non-chat features (Feed, Imagine, Avatar FX, Streams) and rolling out age-assurance/verification (including third-party Persona checks). Parental Insights, time-spent notifications, and filters were the pre-ban measures the company itself has since described as no longer sufficient. Presenting them as the current under-18 approach is exactly the stale-state failure mode. The node should state that under-18 users can no longer have open-ended chats, dated to Nov 25, 2025."
+          },
+          {
+            "severity": "note",
+            "claim": "The node presents the platform-response paragraph as the current state of the world with no date anchor.",
+            "issue": "The draft contains no explicit 'as of <date>' statement anywhere. While it avoids the bare 'as of writing/today' phrasing that would itself be blocking, the absence of any temporal anchor is what lets the stale Character.AI description read as current. Recommend adding an explicit dated anchor (e.g. 'As of September 2026...') to the platform-response paragraph, especially once the Character.AI ban is corrected."
+          },
+          {
+            "severity": "note",
+            "claim": "Meta temporarily paused teen access to AI characters while building parental oversight tools.",
+            "issue": "Accurate and current (announced Jan 23, 2026; pause until an updated teen version with built-in parental controls is ready). No correction needed, but this is a fast-moving situation — worth date-stamping since the pause is stated to be temporary and could end."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-companions-teens.repaired.json",
+        "error": null
+      },
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/1",
+        "after": "3/3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-companions-parental-controls-guide.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-companions-parental-controls-guide.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "On June 1, 2026, Florida Attorney General James Uthmeier filed an 83-page civil complaint against OpenAI ... in Highlands County Circuit Court",
+            "issue": "The date (June 1, 2026), the 83-page length, the 'first state to sue the maker of ChatGPT' framing, and the personal-liability claim against Altman all check out against multiple sources (Axios, NPR, CNBC, Florida AG press release). However, the specific venue 'Highlands County Circuit Court' could not be confirmed — reporting consistently describes it only as 'Florida state court' filed out of Tallahassee/Leon County, and the AG is based in Tallahassee. The county detail may be inaccurate and is worth a quick human check, though it would not embarrass the site. Not blocking."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "On June 2, 2026, Florida became the first U.S. state to file a lawsuit against an AI company when its Attorney General filed a civil action against OpenAI and CEO Sam Altman.",
+            "issue": "Two errors. (1) Date: the lawsuit was filed on June 1, 2026 (a Monday), per the Florida AG's own press release, CNBC, NPR, NBC and the filed complaint — not June 2. (2) Framing: Florida was the first state to sue OpenAI specifically, but NOT the first state to sue an AI company. Kentucky AG Russell Coleman filed a state lawsuit against Character.AI on January 8, 2026, months earlier. The correct claim is that Florida was 'the first state to sue OpenAI' (over ChatGPT's alleged safety failures). As written, the 'first U.S. state to file a lawsuit against an AI company' claim presents a false state of the world and would embarrass the site."
+          },
+          {
+            "severity": "note",
+            "claim": "Character.AI and Google settled multiple lawsuits in January 2026, including cases that claimed their chatbots contributed to mental health crises and suicides among young people.",
+            "issue": "Accurate but worth flagging for precision: as of the filings (Jan 7, 2026) the parties had reached a 'settlement in principle'/agreement to settle five cases (Florida, New York, Colorado, Texas); terms were confidential with no admission of liability. 'Settled multiple lawsuits' is a fair characterization and is not blocking."
+          },
+          {
+            "severity": "note",
+            "claim": "Character AI uses Persona-powered age assurance to flag suspected under-18 users and block them from open-ended chat.",
+            "issue": "Verified against current sources (Character.AI rolled out Persona-powered age assurance across most users in early 2026; flagged under-18 users are blocked from open-ended chat and can verify via selfie/ID fallback). Correctly framed as current. No change needed."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-companions-parental-controls-guide.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-companions-parental-controls-guide"
+    }
+  ]
+}

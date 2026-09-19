@@ -1,0 +1,27 @@
+{
+  "label": "AI Companions & Teens",
+  "sub": "Emotional chatbots and family safeguards",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Companion Chatbots and Teen Safety",
+  "body": "<p><strong>AI companion chatbots</strong> are conversational systems designed to feel relational rather than transactional. Unlike tools that help with homework or scheduling, these chatbots are built to simulate ongoing emotional connections — learning a user's name, remembering past conversations, and responding with warmth and validation. For teens still developing emotional boundaries, this can blur the line between healthy connection and artificial dependency.</p><p>The concern isn't hypothetical. Research from Common Sense Media, conducted with Stanford Medicine's Brainstorm Lab, found that <a href=\"https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions\">nearly three in four teens have used AI companions</a>, with many turning to them for emotional and mental-health support. Yet a follow-up assessment concluded these systems are fundamentally unsafe for that role: despite improvements at handling explicit suicide and self-harm content, leading platforms consistently fail to recognize and appropriately respond to broader mental health conditions, especially across longer conversations. When vulnerable users lean on chatbots that are designed to be engaging and validating, the systems can substitute for — rather than bridge to — real-world care.</p><p>Platforms have responded, and the safeguards keep shifting. Character.AI's earlier measures (parental insights, time limits, and content filters) proved insufficient: on 2025-11-25 the company finished removing open-ended chat entirely for under-18 users, leaving them non-chat creative features like Feed, Imagine, Avatar FX, and Streams, and rolling out age-assurance checks that combine an in-house model with third-party tools such as Persona. In January 2026, Meta likewise paused teen access to its AI characters worldwide while it rebuilds them with built-in parental controls. As of 2026-09-19, the emerging consensus is that protections shouldn't depend on teens accurately identifying themselves or parents reviewing every interaction — the safer default treats all unverified users as minors.</p>",
+  "examples": [
+    "Character.AI under-18 open-ended chat removal (Nov 2025)",
+    "Age assurance & verification (e.g. Persona)",
+    "Non-chat features for teens (Feed, Imagine, Avatar FX, Streams)",
+    "Meta teen AI character pause (Jan 2026)",
+    "Emotional dependency risks",
+    "Crisis intervention gaps"
+  ],
+  "sources": [
+    {
+      "label": "Common Sense Media: AI Chatbots Unsafe for Teen Mental Health Support",
+      "url": "https://www.commonsensemedia.org/press-releases/common-sense-media-finds-major-ai-chatbots-unsafe-for-teen-mental-health-support"
+    },
+    {
+      "label": "Character.AI: Taking Bold Steps to Keep Teen Users Safe",
+      "url": "https://blog.character.ai/u18-chat-announcement/"
+    }
+  ]
+}

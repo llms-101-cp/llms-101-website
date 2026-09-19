@@ -247,5 +247,19 @@
         "text": "New AI Shopping node added to the What Else Matters branch."
       }
     ]
+  },
+  {
+    "date": "2026-09-19",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI Companions & Teens node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: AI Companions and Your Kid: What Parental Controls Actually Do (and Don't).",
+        "url": "/trends/view-article.html?article=ai-companions-parental-controls-guide"
+      }
+    ]
   }
 ]
