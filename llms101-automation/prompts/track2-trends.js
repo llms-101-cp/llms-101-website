@@ -86,10 +86,10 @@ fine, just don't wrap the whole JSON response in triple-backtick fences):
   "category": "One of: Trend Spotlight | Explainer | Deep Dive | Model Update | Quarterly",
   "read_time": "e.g. '5 min read' — estimate based on actual word count",
   "summary": "REQUIRED — 1-2 sentences, under 220 characters. This is the hook shown on the /trends listing card. A missing or empty summary blocks publication. Make it earn the click.",
-  "before_label": "OPTIONAL — short label, e.g. 'The old way' or '2023 pricing'. Omit entirely with before/after/after_label if no comparison suits this topic.",
-  "before": "OPTIONAL — 1-2 sentences, under 160 characters, describing the old state.",
-  "after_label": "OPTIONAL — short label, e.g. 'The new way' or '2026 pricing'.",
-  "after": "OPTIONAL — 1-2 sentences, under 160 characters, describing the new state.",
+  "before_label": "REQUIRED — short label for the contrast card, e.g. 'The old way', '2023 pricing', 'What most people assume'. Every article must have a before/after pair — it is the visual hook on the listing card. If the topic is not a before/after contrast, use a different framing: assumption vs reality, common belief vs fact, what people expect vs what actually happens.",
+  "before": "REQUIRED — 1-2 sentences, under 160 characters, describing the old state, assumption, or common belief.",
+  "after_label": "REQUIRED — short label for the new state, e.g. 'The new way', '2026 pricing', 'The reality'.",
+  "after": "REQUIRED — 1-2 sentences, under 160 characters, describing the current state, reality, or what has changed.",
   "body": "The full 700-900 word article as a MARKDOWN string. Use \\n\\n between paragraphs and headings. Real markdown syntax: ## for headings, **bold** for emphasis, - for bullet points."
 }
     `.trim()

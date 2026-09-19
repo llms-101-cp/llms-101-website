@@ -4,7 +4,7 @@ import path from 'path';
 // Fields every Trends article JSON must have for trends.html / view-article.html
 // to render correctly. If any of these are missing, the live card shows literal
 // "undefined" text instead of failing loudly — so we catch it here instead.
-const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'body'];
+const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'before_label', 'before', 'after_label', 'after', 'body'];
 
 // Same idea, for Quarterly Reports. trends.html's buildFeatured() and
 // view-report.html both assume title/date/summary/body exist (year/quarter

@@ -102,7 +102,7 @@ function log(msg) {
 // KEEP THESE IN SYNC MANUALLY — no shared import is possible between the two
 // scripts locations (see ARCHITECTURE.md "Two completely separate scripts
 // locations"). If generate-indices.js's list changes, update this one too.
-const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'body'];
+const REQUIRED_ARTICLE_FIELDS = ['title', 'date', 'category', 'read_time', 'summary', 'before_label', 'before', 'after_label', 'after', 'body'];
 
 // The full Mind Map node schema — matches NODE_DATA's shape in index.html
 // and the schema documented in ARCHITECTURE.md.
