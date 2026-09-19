@@ -85,7 +85,7 @@ fine, just don't wrap the whole JSON response in triple-backtick fences):
   "date": "Today's date in ISO format, e.g. 2026-06-29",
   "category": "One of: Trend Spotlight | Explainer | Deep Dive | Model Update | Quarterly",
   "read_time": "e.g. '5 min read' — estimate based on actual word count",
-  "summary": "1-2 sentences, under 220 characters. This is the hook shown on the /trends listing card — make it earn the click.",
+  "summary": "REQUIRED — 1-2 sentences, under 220 characters. This is the hook shown on the /trends listing card. A missing or empty summary blocks publication. Make it earn the click.",
   "before_label": "OPTIONAL — short label, e.g. 'The old way' or '2023 pricing'. Omit entirely with before/after/after_label if no comparison suits this topic.",
   "before": "OPTIONAL — 1-2 sentences, under 160 characters, describing the old state.",
   "after_label": "OPTIONAL — short label, e.g. 'The new way' or '2026 pricing'.",

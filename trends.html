@@ -410,7 +410,7 @@ function buildFeatured(report) {
           <span class="featured-date">${report.date || ''}</span>
         </div>
         <h2>${report.title}</h2>
-        <p class="featured-desc">${report.summary}</p>
+        ${report.summary ? `<p class="featured-desc">${report.summary}</p>` : ''}
       </div>
       <a href="${report.url || '/trends/' + report.slug}" class="read-btn">Read the full report →</a>
     </div>
@@ -444,7 +444,7 @@ function buildArticleCard(article) {
       <span class="acard-read">${article.read_time || '4 min read'}</span>
     </div>
     <h3>${article.title}</h3>
-    <p class="acard-desc">${article.summary}</p>
+    ${article.summary ? `<p class="acard-desc">${article.summary}</p>` : ''}
     ${baHTML}
   </a>`;
 }
