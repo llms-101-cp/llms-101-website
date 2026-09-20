@@ -192,6 +192,21 @@
       "_planned_by": "auto",
       "rationale": "AI companionship and teen safety is a front-page consumer concern right now — surveys show most teens have used AI companions, high-profile lawsuits are active, and OpenAI just shipped teen-specific safeguards and age prediction in August 2026. It's directly relevant to the site's non-technical audience (especially parents), fills a clear gap not covered by the existing safety/privacy/regulation nodes, and will remain useful for months as these features and rules roll out.",
       "_completed_at": "2026-09-19T01:05:04.644Z"
+    },
+    {
+      "week_of": "2026-09-28",
+      "node": {
+        "id": "ai-health-advice",
+        "parentContext": "Real-world consumer themes (alongside your-data-privacy, ai-shopping, ai-companions-teens): everyday uses and risks of AI for ordinary people",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Asking AI About Your Health: What It's Good For, and When to Stop",
+        "notes": "Angle: a calm, practical guide for the ~1-in-6 adults who already ask chatbots health questions, now that ChatGPT lets you connect Apple Health and medical records. Cover two things clearly: (1) what happens to your data — that once records leave a hospital and go to a consumer AI tool they lose HIPAA protection and are governed by the company's terms, plus how permission defaults changed in Sept 2026; (2) where AI genuinely helps (summarizing bloodwork, prepping questions before an appointment) vs. where it's dangerous (self-diagnosis, spotting emergencies). Ground via live search: current availability/eligibility, the Sept 2026 default-permission change, and recent study findings on accuracy/emergency-recognition. Avoid: giving any medical advice, over-quoting sources, endorsing any product, and drifting into the already-covered 'is AI reading your chats' or 'companions for teens' territory — keep the focus on health specifically."
+      },
+      "_planned_by": "auto",
+      "rationale": "Health is one of the single most common consumer uses of AI (hundreds of millions of weekly questions), and OpenAI's medical-records integration plus a September 2026 permission-default change make it timely right now. It's a distinct gap in the site's map — the privacy branch covers chats, not health data, and no article addresses medical use. The core guidance (data protections, and what AI can and can't do medically) stays useful well beyond a month.",
+      "_completed_at": "2026-09-20T23:04:30.510Z"
     }
   ]
 }

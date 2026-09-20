@@ -1,0 +1,27 @@
+{
+  "label": "AI Health Advice",
+  "sub": "Symptom checkers & medical chatbots",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Health Advice: When chatbots play doctor",
+  "body": "<p><strong>AI health advice</strong> refers to using general-purpose chatbots or dedicated symptom-checker apps to get answers about medical symptoms, medications, or treatment options. About one-third of adults now use AI for health questions, with younger users even more likely to turn to chatbots first.</p><p>The core problem: LLMs generate responses by predicting likely text continuations based on their training data, not by consulting verified medical databases. A recent audit found that nearly half of AI chatbot responses to common health questions contained misleading or problematic information. Some answers lack important context; others suggest unproven treatments alongside evidence-based options—a problem researchers call 'false balance.'</p><p><strong>Why this matters:</strong> Chatbots present information confidently regardless of accuracy. Small differences in how you describe symptoms can completely change the advice you receive. Experts recommend using AI only for general health education—like asking what a medical term means—rather than diagnosis. Always cross-check with official sources or a real healthcare provider.</p>",
+  "examples": [
+    "ChatGPT symptom questions",
+    "Ada Health",
+    "Babylon Health",
+    "WebMD Symptom Checker",
+    "False balance risk",
+    "Hallucinated citations"
+  ],
+  "sources": [
+    {
+      "label": "BMJ Open: AI chatbot health advice audit (2026)",
+      "url": "https://bmjopen.bmj.com/"
+    },
+    {
+      "label": "Mayo Clinic: Can you trust AI for health advice?",
+      "url": "https://www.mayoclinic.org/healthy-lifestyle/consumer-health/in-depth/can-you-trust-ai-for-health-advice/art-80010355"
+    }
+  ]
+}
