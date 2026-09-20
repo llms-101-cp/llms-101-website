@@ -1,0 +1,31 @@
+{
+  "label": "AI Health Advice",
+  "sub": "Symptom checkers & medical chatbots",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Health Advice: When chatbots play doctor",
+  "body": "<p><strong>AI health advice</strong> refers to using general-purpose chatbots or dedicated symptom-checker apps to get answers about medical symptoms, medications, or treatment options. As of 2026-09-20, about one-third of U.S. adults report having used AI chatbots for health information in the past year, roughly on par with the share who turn to social media for health, though still far below those who consult doctors or search engines. Younger users lean on these tools the most, especially for mental health.</p><p>The core problem: LLMs generate responses by predicting likely text continuations based on their training data, not by consulting verified medical databases. A 2026 audit published in BMJ Open found that nearly half of AI chatbot responses to common health questions were problematic—roughly 30% lacked full context, and about 20% were highly problematic, offering inaccurate or misleading information. Some answers suggest unproven treatments alongside evidence-based options—a problem researchers call 'false balance'—and none of the chatbots reliably produced fully accurate reference lists.</p><p><strong>Why this matters:</strong> Chatbots present information confidently regardless of accuracy. Small differences in how you describe symptoms can completely change the advice you receive. Experts recommend using AI only for general health education—like asking what a medical term means—rather than diagnosis. Always cross-check with official sources or a real healthcare provider.</p>",
+  "examples": [
+    "ChatGPT symptom questions",
+    "Ada Health",
+    "Google Gemini health questions",
+    "WebMD Symptom Checker",
+    "False balance risk",
+    "Hallucinated citations"
+  ],
+  "sources": [
+    {
+      "label": "BMJ Open: AI chatbot health advice audit (2026)",
+      "url": "https://bmjopen.bmj.com/content/16/4/e112695"
+    },
+    {
+      "label": "KFF: 1 in 3 adults use AI chatbots for health information (2026)",
+      "url": "https://www.kff.org/health-information-trust/poll-1-in-3-adults-are-turning-to-ai-chatbots-for-health-information-equaling-the-share-who-use-social-media-for-health/"
+    },
+    {
+      "label": "Mayo Clinic: Can you trust AI for health advice?",
+      "url": "https://www.mayoclinic.org/healthy-lifestyle/consumer-health/in-depth/can-you-trust-ai-for-health-advice/art-80010355"
+    }
+  ]
+}

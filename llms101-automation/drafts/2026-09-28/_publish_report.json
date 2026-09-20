@@ -1,0 +1,117 @@
+{
+  "week": "2026-09-28",
+  "generatedAt": "2026-09-20T23:07:45.910Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "Health is one of the single most common consumer uses of AI (hundreds of millions of weekly questions), and OpenAI's medical-records integration plus a September 2026 permission-default change make it timely right now. It's a distinct gap in the site's map — the privacy branch covers chats, not health data, and no article addresses medical use. The core guidance (data protections, and what AI can and can't do medically) stays useful well beyond a month.",
+  "items": [
+    {
+      "filename": "ai-health-advice.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-health-advice.json",
+      "note": null,
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "As of 2026-09-20, about one-third of U.S. adults report having used AI chatbots for health information in the past year",
+            "issue": "The 'one-third' figure is accurate and well-sourced (KFF: 32%), but the underlying KFF poll was fielded February 24-March 2, 2026 and published March 2026. The 'as of 2026-09-20' framing implies a more current measurement than exists; the stat is ~6 months old. Not misleading (it satisfies the explicit-date house rule and remains the latest available data), but the date attribution could be read as fresher than the source supports."
+          },
+          {
+            "severity": "note",
+            "claim": "A 2026 audit published in BMJ Open found that nearly half of AI chatbot responses to common health questions were problematic",
+            "issue": "Accurate. The study was published in BMJ Open in April 2026 (DOI 10.1136/bmjopen-2025-112695) with 49.6% problematic, ~30% somewhat problematic, ~20% (precisely 19.6%) highly problematic. Worth knowing: the chatbot testing itself was conducted in February 2025, so the 'as of 2026' framing describes publication date, not test date. Content framing is acceptable."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Babylon Health listed as a current example of a symptom-checker / medical chatbot (examples array, alongside active tools like ChatGPT, Ada Health, WebMD)",
+            "issue": "Babylon Health is defunct. It filed for Chapter 7 bankruptcy in the US in August 2023 (once valued at ~$2B) and liquidated/sold its assets; it is not a current tool. Presenting it in an undifferentiated list of live example tools presents a stale state of the world as current — the pipeline's flagged failure mode. Fix: remove it, or reframe historically (e.g., 'Babylon Health (defunct, 2023)')."
+          },
+          {
+            "severity": "note",
+            "claim": "About one-third of adults now use AI for health questions, with younger users even more likely to turn to chatbots first.",
+            "issue": "Accurate. The KFF Tracking Poll on Health Information and Trust (fielded Feb 24–Mar 2, 2026; n=1,343) found 32% of adults have turned to AI chatbots for health information in the past year, with 18–29-year-olds (36% for physical health) roughly three times the rate of adults 50+. No correction needed; noting the source specificity in case the site wants an inline citation."
+          },
+          {
+            "severity": "note",
+            "claim": "A recent audit found that nearly half of AI chatbot responses to common health questions contained misleading or problematic information ... 'false balance.'",
+            "issue": "Accurate. BMJ Open audit (Tiller et al., published April 14, 2026; DOI 10.1136/bmjopen-2025-112695) found ~49.6% of responses across five chatbots problematic (~30% somewhat, 19.6% highly), and used the 'false balance' framing. The cited source URL points only to the BMJ Open homepage rather than the article (content/16/4/e112695); consider linking the specific article page."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-health-advice.repaired.json",
+        "error": null
+      },
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/2",
+        "after": "3/3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "asking-ai-about-your-health.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/asking-ai-about-your-health.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "held_after_repair",
+      "reasons": [
+        "fact-check FAILED twice — original AND repaired drafts. This is the alarm case: see both findings rounds."
+      ],
+      "notes": [],
+      "factCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "in the same Pew survey, only about 18% of chatbot health users rated the answers as highly accurate",
+            "issue": "Misattribution. The 18% 'highly accurate' figure does NOT come from the June 22-28, 2026 Pew survey referenced earlier in the article. It comes from a separate, earlier Pew survey conducted Oct. 20-26, 2025 (released April 7, 2026). The June 2026 survey measured helpfulness (about 47% found answers extremely/very helpful) and comfort, not this accuracy statistic. The article's phrase 'in the same Pew survey' ties a real number to the wrong survey, making the sourcing claim false."
+          },
+          {
+            "severity": "note",
+            "claim": "in KFF's polling most adults said they were concerned about the privacy of medical information shared with AI",
+            "issue": "Accurate but could be sharpened. KFF (Feb 24-Mar 2, 2026) found about three-quarters (77%) of adults are 'very' or 'somewhat' concerned about the privacy of personal medical information provided to AI tools. The 'most adults' phrasing is correct; no correction strictly needed."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "Roughly one in six U.S. adults now asks chatbots health questions at least weekly. That number jumped after OpenAI launched Health in ChatGPT this July.",
+            "issue": "Multiple problems. (1) The '1 in 6 (16%)' figure from the KFF poll refers specifically to adults who sought MENTAL-health information from AI in the PAST YEAR, not to people asking health questions 'at least weekly.' Broader health-AI use is much higher (KFF ~29-32% in the past year; Pew 34% ever). (2) The 'at least weekly' cadence is not supported by any cited survey. (3) The causal chronology is wrong: the Pew (June 22-28, 2026) and KFF (early 2026) data predate the July 23, 2026 broad rollout, so the number could not have 'jumped after' the July launch. This misstates a headline statistic and its cause."
+          },
+          {
+            "severity": "note",
+            "claim": "OpenAI launched Health in ChatGPT this July, letting people connect Apple Health data and even hospital medical records.",
+            "issue": "Health in ChatGPT first launched January 7, 2026 as a limited beta; the broad availability to all U.S. users across Free/Go/Plus/Pro came July 23, 2026. The article's later section correctly says 'rolled out to U.S. users in July 2026,' so the July framing is defensible for the general rollout, but readers may infer July was the original launch. Consider clarifying that a limited version existed since January 2026."
+          },
+          {
+            "severity": "note",
+            "claim": "Isaac Kohane, Chair of Biomedical Informatics at Harvard.",
+            "issue": "Title is slightly imprecise. Source lists him as Chair, Department of Biomedical Informatics at Harvard Medical School. Minor, but worth tightening for accuracy. The quoted words themselves match the source."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "asking-ai-about-your-health.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": null
+    }
+  ]
+}
