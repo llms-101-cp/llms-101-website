@@ -155,7 +155,18 @@
   if (nav.footer) {
     const footer = document.querySelector('footer');
     if (footer) {
-      let p = footer.querySelector('p');
+      // Copyright line (from nav.json "copyright" field, falls back to static text)
+      const copyrightText = nav.copyright || '© 2026 LLMs 101 · All rights reserved';
+      let cp = footer.querySelector('p.snav-copyright');
+      if (!cp) {
+        cp = document.createElement('p');
+        cp.className = 'snav-copyright';
+        footer.insertBefore(cp, footer.firstChild);
+      }
+      cp.textContent = copyrightText;
+
+      // Nav link row
+      let p = footer.querySelector('p:not(.snav-copyright)');
       if (!p) { p = document.createElement('p'); footer.appendChild(p); }
       p.innerHTML = nav.footer.map(f => `<a href="${f.href}">${f.label}</a>`).join(' · ');
     }

@@ -27,6 +27,7 @@
       ]
     }
   ],
+  "copyright": "© 2026 LLMs 101 · All rights reserved",
   "footer": [
     { "label": "LLMs 101", "href": "/" },
     { "label": "Model Tracker", "href": "/tracker" },
