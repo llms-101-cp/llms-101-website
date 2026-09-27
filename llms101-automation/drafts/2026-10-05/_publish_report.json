@@ -1,0 +1,97 @@
+{
+  "week": "2026-10-05",
+  "generatedAt": "2026-09-27T23:45:30.103Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "In 2026 AI features stopped being a separate app and moved into the browser most people already use, so ordinary readers are being offered agent features that act inside their logged-in accounts—something the site hasn't covered directly. The topic is timely (fresh security disclosures and mainstream rollouts in the last weeks) yet durable, because the core prompt-injection risk is a structural problem experts agree won't be quickly solved. It's also perfectly pitched for a non-technical audience deciding whether to trust the shiny new button in their address bar.",
+  "items": [
+    {
+      "filename": "ai-browsers.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-browsers.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Privacy-focused options like Brave Leo run smaller models locally, so your data never leaves your device.",
+            "issue": "Slightly imprecise. By default, Brave Leo runs Brave-hosted (cloud) models; the prompt and page context leave the device unless the user configures a local model via 'Bring Your Own Model' (BYOM). Fully on-device operation is an opt-in advanced setup, not Leo's default behavior. The claim is defensible as written but could mislead a reader into thinking Leo is local-by-default."
+          },
+          {
+            "severity": "note",
+            "claim": "Whole node presents the browser-AI landscape in present tense with no explicit date anchor.",
+            "issue": "Not a blocking finding under the house rule (there is no bare 'as of writing'/'as of today' phrase to trigger it). However, this is a fast-moving space (Chrome moved to Gemini 3 / Gemini 3.1, Edge Copilot expanded in May 2026, etc.). Adding an explicit 'as of <date>' anchor would future-proof the content against becoming silently stale — recommended but not required."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3",
+        "after": "3/3/3/3/1"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-browsers-prompt-injection-risk.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-browsers-prompt-injection-risk.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published_after_repair",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "OWASP ranked prompt injection number one again in its 2026 Top 10 - the third year running that it has topped the list.",
+            "issue": "Substantively correct: prompt injection has been #1 in every edition (2023/24, 2025, 2026), which is three editions. However 'third year running' is slightly loose phrasing because the editions are not strictly annual (there was no separate 2024 standalone edition distinct from the original 2023/24 list). The underlying fact - #1 across all three published editions - is accurate."
+          },
+          {
+            "severity": "note",
+            "claim": "Perplexity Comet ... now offers it free across iOS, Android, Windows, and Mac.",
+            "issue": "Verified accurate against the official changelog, the iOS launch blog, and Wikipedia (Windows/Mac July 2025, Android Nov 2025, iOS March 2026). Worth flagging only that one Perplexity Help Center page (modified Sept 11, 2026) still states no mobile app exists - this appears to be a stale/unmigrated support doc that contradicts all other authoritative sources, so it is not a defect in the article, but a reviewer double-checking that single page should not be misled by it."
+          }
+        ]
+      },
+      "originalFactCheck": {
+        "verdict": "fail",
+        "findings": [
+          {
+            "severity": "blocking",
+            "claim": "OpenAI's ChatGPT Atlas browser... the company announced in July 2026 that it would retire the standalone browser in August. [Atlas listed as a current entry in 'The New Lineup'; safety section describes Atlas behavior in present tense]",
+            "issue": "This presents a stale state of the world as current. As of today (2026-09-27), Atlas has ALREADY shut down — it stopped working on August 9, 2026 (confirmed by OpenAI's own Help Center and multiple outlets). The draft frames the shutdown as a pending future event ('would retire... in August') and lists Atlas among current AI browsers in 'The New Lineup,' calling it 'the most aggressive entry.' The 'Practical Safety Rules' section also states in the present tense that 'Atlas will pause if you move away from the tab with sensitive information,' as if Atlas is a live product users can turn on. Atlas no longer exists as a standalone browser; its capabilities moved into the ChatGPT desktop app and a Chrome extension. This is precisely the pipeline's most common failure mode."
+          },
+          {
+            "severity": "blocking",
+            "claim": "Claude for Chrome: An extension from Anthropic that grew from roughly 40,000 installs in December 2025 to over 10 million by June 2026",
+            "issue": "These figures are unsupported and appear fabricated. In December 2025 Claude for Chrome was in beta being expanded to paid plans (Pro/Team/Enterprise on 18 December 2025), not sitting at '40,000 installs.' Current sources cite roughly 15 million Chrome Web Store users as of September 2026 — not 'over 10 million by June 2026.' Neither the starting number, the ending number, nor the June 2026 timeline matches any authoritative source. Remove or correct with sourced figures."
+          },
+          {
+            "severity": "note",
+            "claim": "Edge Copilot: Microsoft's built-in AI features, which became free after the Copilot Mode retirement in May 2026",
+            "issue": "The retirement date is correct (Microsoft announced retiring Edge's Copilot Mode on May 13, 2026). However, the 'became free' framing is unsupported — sources describe Copilot Mode being dissolved and its features integrated directly into Edge across desktop/mobile, not a change in pricing. Recommend rewording to reflect integration rather than a free/paid transition."
+          },
+          {
+            "severity": "note",
+            "claim": "Brave Leo: A privacy-first option that routes requests anonymously and offers on-device processing",
+            "issue": "Not independently verified in this check against a current authoritative Brave source. The general description is plausible and consistent with Brave Leo's known positioning, but it was not confirmed against a live source in this pass. Flagged only as a low-severity note; not embarrassing if accurate."
+          }
+        ]
+      },
+      "repair": {
+        "attempted": true,
+        "repairedFilename": "ai-browsers-prompt-injection-risk.repaired.json",
+        "error": null
+      },
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-browsers-prompt-injection-risk"
+    }
+  ]
+}
