@@ -1,5 +1,19 @@
 [
   {
+    "title": "Your Browser Now Has an AI Inside It: What to Know Before Turning It On",
+    "slug": "ai-browsers-prompt-injection-risk",
+    "date": "2026-09-27",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "AI browsers can now read your tabs and click buttons for you. One security flaw - prompt injection - cannot be fully patched. Here is what that means for you.",
+    "before_label": "What most people assume",
+    "before": "AI browser assistants work like secure, sandboxed tools that cannot be tricked by malicious websites.",
+    "after_label": "The reality",
+    "after": "Hidden text on any webpage can hijack the AI agent acting on your behalf. No vendor has a complete fix.",
+    "file": "content/articles/ai-browsers-prompt-injection-risk.json",
+    "url": "/trends/view-article.html?article=ai-browsers-prompt-injection-risk"
+  },
+  {
     "title": "AI Companions and Your Kid: What Parental Controls Actually Do (and Don't)",
     "slug": "ai-companions-parental-controls-guide",
     "date": "2026-09-19",
