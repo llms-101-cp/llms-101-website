@@ -1,0 +1,27 @@
+{
+  "label": "AI Browsers",
+  "sub": "Assistants built into your browser",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Browsers: When Your Browser Becomes the AI",
+  "body": "<p>An <strong>AI browser</strong> is a web browser with a built-in language model that can summarize pages, answer questions about what you're viewing, draft text, and increasingly complete multi-step tasks on your behalf. Rather than switching to a separate chatbot tab, the AI assistant lives in a sidebar or popup that sees your current context—the page content, your open tabs, and sometimes your connected apps.</p><p>The main approaches vary by vendor. Chrome integrates Gemini into a side panel with an \"Auto Browse\" feature that can handle multi-step workflows autonomously. Edge embeds Copilot with multi-tab awareness, letting it reason across several pages at once. Privacy-focused options like Brave Leo run smaller models locally, so your data never leaves your device. Some experimental browsers replace the traditional URL bar entirely with a prompt interface.</p><p><strong>Why this matters:</strong> Browser AI changes where intelligence lives. Instead of copying text into ChatGPT, the model comes to you. This convenience creates tradeoffs—you're trusting your browser with more context about your activity, and \"agentic\" features that click around on your behalf introduce new security questions. Still, for everyday research and writing tasks, having AI understand your current page without extra steps is a genuine quality-of-life upgrade.</p>",
+  "examples": [
+    "Chrome Auto Browse",
+    "Edge Copilot",
+    "Brave Leo",
+    "Page summarization",
+    "Multi-tab context",
+    "Gemini Nano on-device"
+  ],
+  "sources": [
+    {
+      "label": "Chrome Built-in AI documentation",
+      "url": "https://developer.chrome.com/docs/ai/built-in"
+    },
+    {
+      "label": "AI Multiple – AI Web Browsers Selection Guide",
+      "url": "https://aimultiple.com/ai-web-browser"
+    }
+  ]
+}

@@ -207,6 +207,21 @@
       "_planned_by": "auto",
       "rationale": "Health is one of the single most common consumer uses of AI (hundreds of millions of weekly questions), and OpenAI's medical-records integration plus a September 2026 permission-default change make it timely right now. It's a distinct gap in the site's map — the privacy branch covers chats, not health data, and no article addresses medical use. The core guidance (data protections, and what AI can and can't do medically) stays useful well beyond a month.",
       "_completed_at": "2026-09-20T23:04:30.510Z"
+    },
+    {
+      "week_of": "2026-10-05",
+      "node": {
+        "id": "ai-browsers",
+        "parentContext": "Consumer-facing 'themes' branch covering everyday AI tools people actually touch, alongside ai-shopping, your-data-privacy, and ai-agents-tools",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Your Browser Now Has an AI Inside It: What AI Browsers Do and the One Risk You Can't Ignore",
+        "notes": "Plain-language explainer of the 2026 shift where the AI assistant moved from a separate chat box into the browser itself (Atlas, Comet, Gemini in Chrome, Edge Copilot, Brave Leo) and can now read every tab and click buttons inside your logged-in sessions. Ground via live search the current lineup and adoption signals (e.g., Claude for Chrome's install growth, Comet going free), and the central, durable warning: 'prompt injection'—hidden instructions on a webpage that hijack the agent—which OpenAI, the UK NCSC, and OWASP all say cannot be fully patched. Give readers concrete, still-valid-in-a-month safety rules (no autonomous payments, require confirmation on consequential actions, use a limited profile). Avoid vendor hype, ranking 'best browser' listicles, and enterprise/SEO angles; keep it about what a normal person should know before turning these features on."
+      },
+      "_planned_by": "auto",
+      "rationale": "In 2026 AI features stopped being a separate app and moved into the browser most people already use, so ordinary readers are being offered agent features that act inside their logged-in accounts—something the site hasn't covered directly. The topic is timely (fresh security disclosures and mainstream rollouts in the last weeks) yet durable, because the core prompt-injection risk is a structural problem experts agree won't be quickly solved. It's also perfectly pitched for a non-technical audience deciding whether to trust the shiny new button in their address bar.",
+      "_completed_at": "2026-09-27T23:42:58.207Z"
     }
   ]
 }
