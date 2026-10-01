@@ -284,5 +284,15 @@
         "url": "/trends/view-article.html?article=ai-browsers-prompt-injection-risk"
       }
     ]
+  },
+  {
+    "date": "2026-10-01",
+    "items": [
+      {
+        "area": "Site",
+        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
+        "url": "/resources"
+      }
+    ]
   }
 ]
