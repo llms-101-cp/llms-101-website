@@ -302,16 +302,6 @@
         "area": "Site",
         "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
         "url": "/resources"
-      }
-    ]
-  },
-  {
-    "date": "2026-10-03",
-    "items": [
-      {
-        "area": "Site",
-        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
-        "url": "/resources"
       },
       {
         "area": "Models",
@@ -322,22 +312,12 @@
         "area": "Models",
         "text": "Meta Superintelligence Labs — Muse Spark card corrected (fortnightly review draft applied).",
         "url": "/models.html"
-      }
-    ]
-  },
-  {
-    "date": "2026-10-03",
-    "items": [
+      },
       {
         "area": "Tracker",
         "text": "Monthly Model Tracker updated — top models include Claude Fable 5.1, GPT-6 Astra, Claude Opus 5.5 and 17 more.",
         "url": "/tracker"
-      }
-    ]
-  },
-  {
-    "date": "2026-10-03",
-    "items": [
+      },
       {
         "area": "Models",
         "text": "OpenAI — GPT-6 (Astra, Sol, Luna) card updated — reflects September 2026 GPT-6 launch, superseding GPT-5.6 family.",
