@@ -846,6 +846,36 @@ async function updateModelsBadge(todayISO) {
   }
 }
 
+// ─── tracker.html "Updated …" badge auto-updater ─────────────────────────────
+async function updateTrackerBadge(todayISO) {
+  try {
+    const d = new Date(todayISO + 'T12:00:00Z');
+    const day = d.getUTCDate();
+    const v = day % 100;
+    const s = ['th', 'st', 'nd', 'rd'];
+    const ord = day + (s[(v - 20) % 10] || s[v] || s[0]);
+    const month = d.toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' });
+    const year = d.getUTCFullYear();
+    const dateStr = `${ord} ${month} ${year}`;
+
+    const html = await fs.readFile(TRACKER_HTML, 'utf8');
+    const updated = html.replace(
+      /(<span class="updated-badge">Updated )[^<]+(< *\/span>)/,
+      `$1${dateStr}$2`
+    );
+    if (updated === html) {
+      log('tracker.html badge: no match found for update pattern — skipping.');
+      return false;
+    }
+    await fs.writeFile(TRACKER_HTML, updated, 'utf8');
+    log(`tracker.html badge updated to "Updated ${dateStr}"`);
+    return true;
+  } catch (err) {
+    log(`WARNING: could not update tracker.html badge — ${err.message}`);
+    return false;
+  }
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function runLight({ offline, todayISO }) {
@@ -941,13 +971,14 @@ async function main() {
         JSON.stringify({ week: todayISO, pageResults, modelCardResults, spotAuditFindings, trackerPRs, fatalError }, null, 2),
         'utf8'
       );
-      // Update models.html badge to today every monthly run — "Updated …" must
-      // reflect the last review date without requiring a manual edit.
+      // Update models.html and tracker.html badges to today every monthly run.
       const badgeUpdated = await updateModelsBadge(todayISO);
+      const trackerBadgeUpdated = await updateTrackerBadge(todayISO);
       try {
         const relReportDir = path.relative(REPO_ROOT, reportDir);
         git('add', relReportDir);
         if (badgeUpdated) git('add', 'models.html');
+        if (trackerBadgeUpdated) git('add', 'tracker.html');
         const draftsStatus = git('status', '--porcelain');
         if (draftsStatus) {
           git('commit', '-m', `fortnightly review: drafts + report (${todayISO})`);
