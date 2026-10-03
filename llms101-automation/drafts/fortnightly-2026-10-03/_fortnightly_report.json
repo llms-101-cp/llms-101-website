@@ -25,12 +25,12 @@
           {
             "severity": "note",
             "claim": "Image created with Google Gemini Pro",
-            "issue": "By 2026, Google's dedicated image-generation models under Gemini are branded as 'Gemini Pro Image' / 'Nano Banana Pro' rather than plain 'Google Gemini Pro' (which primarily denotes the text reasoning tier). The attribution is close enough not to mislead a beginner audience, but 'Gemini' or 'Gemini Pro Image' would be more precise. Non-blocking."
+            "issue": "\"Gemini Pro\" is a Gemini model tier/brand rather than a precise current model version. It is acceptable as an informal tool credit and not misleading, but the current Pro offering developers can call is Gemini 3.1 Pro (the 3.x family is current as of October 2026). No change required; flagged only so editors are aware the generic 'Pro' label does not pin a specific version."
           },
           {
             "severity": "note",
-            "claim": "Local models are typically smaller and less capable than the frontier cloud models.",
-            "issue": "Still broadly accurate as of 2026, with the minor caveat that Ollama now also offers an optional paid cloud tier for larger datacenter-hosted models. The core claim comparing locally-runnable models to frontier cloud models remains correct and the nuance does not affect a beginner explanation."
+            "claim": "One token is roughly 0.75 words on average.",
+            "issue": "Accurate as a widely-used rule of thumb (1 token ≈ 0.75 words ≈ 4 characters in English). Worth knowing that newer tokenizers (e.g., Anthropic's Claude 4.7+) can produce ~30% more tokens for the same text, so the ratio is approximate and tokenizer-dependent — but the 'on average' framing in the draft is fine."
           }
         ]
       },
@@ -54,7 +54,7 @@
       "reasons": [],
       "linkRot": [
         {
-          "url": "https://learn.deeplearning.ai/",
+          "url": "https://www.deeplearning.ai/courses",
           "detail": "HTTP 403"
         },
         {
@@ -67,7 +67,7 @@
         "findings": [
           {
             "severity": "blocking",
-            "claim": "https://learn.deeplearning.ai/",
+            "claim": "https://www.deeplearning.ai/courses",
             "issue": "link appears dead (HTTP 403)"
           },
           {
@@ -79,10 +79,21 @@
       },
       "factCheck": {
         "verdict": "pass",
-        "findings": []
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "DeepLearning.AI short courses — 'more than 100 of them as of 2026-10-03'",
+            "issue": "Verified as accurate: the DeepLearning.AI catalog currently lists 107 short courses, so 'more than 100' is correct. Noted only because this is a changing quantity tied to a specific date and should be re-checked on future edits; no action needed for publication."
+          },
+          {
+            "severity": "note",
+            "claim": "Import AI 'has well over 100,000 subscribers'",
+            "issue": "Verified and accurate (the Substack currently shows 'Over 142,000 subscribers'). 'Well over 100,000' is a safe, correct characterization. Noted only as a figure that drifts upward over time."
+          }
+        ]
       },
       "newData": {
-        "body": "A curated collection of the best places to learn more about AI, large language models, and the broader landscape.\n\n### **Foundational Reading**\n\n<div class=\"resource-card\">\n\n  <h4>Attention Is All You Need — Original Transformer Paper</h4>\n\n  <p>The 2017 Google research paper that introduced the Transformer architecture which underpins every modern LLM.</p>\n\n  <div><span class=\"tag-pill\">Academic</span><span class=\"tag-pill\">Architecture</span></div>\n\n  <br><a href=\"https://arxiv.org/abs/1706.03762\" target=\"_blank\">arxiv.org/abs/1706.03762 ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>The Illustrated Transformer — Jay Alammar</h4>\n\n  <p>The clearest visual explanation of how transformers work. Essential reading for anyone wanting to understand the mechanics without heavy maths.</p>\n\n  <div><span class=\"tag-pill\">Visual</span><span class=\"tag-pill\">Beginner-friendly</span></div>\n\n  <br><a href=\"https://jalammar.github.io/illustrated-transformer/\" target=\"_blank\">jalammar.github.io ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Language Models are Few-Shot Learners (GPT-3 Paper)</h4>\n\n  <p>OpenAI's landmark 2020 paper introducing GPT-3 and the concept of few-shot learning at scale.</p>\n\n  <div><span class=\"tag-pill\">Academic</span><span class=\"tag-pill\">OpenAI</span></div>\n\n  <br><a href=\"https://arxiv.org/abs/2005.14165\" target=\"_blank\">arxiv.org/abs/2005.14165 ↗</a>\n\n</div>\n\n### **Courses & Interactive Learning**\n\n<div class=\"resource-card\">\n\n  <h4>fast.ai — Practical Deep Learning for Coders</h4>\n\n  <p>Free, hands-on course that takes you from basics to building real neural networks. No heavy maths prerequisites.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Course</span><span class=\"tag-pill\">Practical</span></div>\n\n  <br><a href=\"https://course.fast.ai\" target=\"_blank\">course.fast.ai ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Andrej Karpathy — Neural Networks: Zero to Hero</h4>\n\n  <p>YouTube series by former Tesla and OpenAI researcher. Builds a neural network from scratch in Python. One of the best free resources available.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">YouTube</span><span class=\"tag-pill\">Coding</span></div>\n\n  <br><a href=\"https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ\" target=\"_blank\">YouTube Playlist ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>DeepLearning.AI Short Courses</h4>\n\n  <p>Short courses on LLMs, prompt engineering, RAG, and agents, taught by Andrew Ng and leading practitioners from partner labs and companies like OpenAI, Anthropic, and Meta. Each typically runs about one to two hours. As of 2026-10-03, the large catalogue of short courses is mostly free to access — the gate is an email address, not a credit card — and DeepLearning.AI also offers a paid Pro subscription that unlocks some newer content and extras. Pricing and what sits behind the paywall change over time, so check the course page for the current terms. Ideal for non-technical learners who want to start watching and experimenting quickly.</p>\n\n  <div><span class=\"tag-pill\">Mostly free</span><span class=\"tag-pill\">Course</span><span class=\"tag-pill\">Beginner-friendly</span></div>\n\n  <br><a href=\"https://www.deeplearning.ai/courses\" target=\"_blank\">deeplearning.ai/courses ↗</a>\n\n</div>\n\n### **News & Commentary**\n\n<div class=\"resource-card\">\n\n  <h4>The Batch — DeepLearning.AI Newsletter</h4>\n\n  <p>Weekly AI news and commentary from DeepLearning.AI, with a personal letter from Andrew Ng in every issue. It focuses on the realities of AI — what's actually happening and what it means — so readers can keep up without being misled by hype. Clear, balanced, and accessible for non-technical readers.</p>\n\n  <div><span class=\"tag-pill\">Newsletter</span><span class=\"tag-pill\">Weekly</span></div>\n\n  <br><a href=\"https://www.deeplearning.ai/the-batch/\" target=\"_blank\">deeplearning.ai/the-batch ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Import AI — Jack Clark</h4>\n\n  <p>Detailed weekly newsletter from Jack Clark, co-founder of Anthropic and, as of 2026-10-03, the company's Head of Public Benefit, where he leads the Anthropic Institute (the in-house research effort announced in March 2026). He previously served as Anthropic's Head of Policy. Covers research, policy, and the strategic AI landscape, and has well over 100,000 subscribers. Read it on his own site, which is the canonical home for the archive.</p>\n\n  <div><span class=\"tag-pill\">Newsletter</span><span class=\"tag-pill\">Research</span></div>\n\n  <br><a href=\"https://jack-clark.net\" target=\"_blank\">jack-clark.net ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Simon Willison's Blog</h4>\n\n  <p>Practical, technically sharp commentary on LLM developments — how they actually work, what they are good at, and where they fail. Written by an independent researcher and open-source maintainer.</p>\n\n  <div><span class=\"tag-pill\">Blog</span><span class=\"tag-pill\">Technical</span></div>\n\n  <br><a href=\"https://simonwillison.net\" target=\"_blank\">simonwillison.net ↗</a>\n\n</div>\n\n### **Model Playgrounds**\n\n<div class=\"resource-card\">\n\n  <h4>Ollama — Run models locally</h4>\n\n  <p>Download and run open-weight models on your own computer. Free, private, no API costs.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Local</span><span class=\"tag-pill\">Open source</span></div>\n\n  <br><a href=\"https://ollama.com\" target=\"_blank\">ollama.com ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Hugging Face — Model Hub</h4>\n\n  <p>The GitHub of AI models. Browse, download, and test thousands of open models. Essential reference for the open AI ecosystem.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Models</span><span class=\"tag-pill\">Community</span></div>\n\n  <br><a href=\"https://huggingface.co\" target=\"_blank\">huggingface.co ↗</a>\n\n</div>",
+        "body": "A curated collection of the best places to learn more about AI, large language models, and the broader landscape.\n\n### **Foundational Reading**\n\n<div class=\"resource-card\">\n\n  <h4>Attention Is All You Need — Original Transformer Paper</h4>\n\n  <p>The 2017 Google research paper that introduced the Transformer architecture which underpins every modern LLM.</p>\n\n  <div><span class=\"tag-pill\">Academic</span><span class=\"tag-pill\">Architecture</span></div>\n\n  <br><a href=\"https://arxiv.org/abs/1706.03762\" target=\"_blank\">arxiv.org/abs/1706.03762 ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>The Illustrated Transformer — Jay Alammar</h4>\n\n  <p>The clearest visual explanation of how transformers work. Essential reading for anyone wanting to understand the mechanics without heavy maths.</p>\n\n  <div><span class=\"tag-pill\">Visual</span><span class=\"tag-pill\">Beginner-friendly</span></div>\n\n  <br><a href=\"https://jalammar.github.io/illustrated-transformer/\" target=\"_blank\">jalammar.github.io ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Language Models are Few-Shot Learners (GPT-3 Paper)</h4>\n\n  <p>OpenAI's landmark 2020 paper introducing GPT-3 and the concept of few-shot learning at scale.</p>\n\n  <div><span class=\"tag-pill\">Academic</span><span class=\"tag-pill\">OpenAI</span></div>\n\n  <br><a href=\"https://arxiv.org/abs/2005.14165\" target=\"_blank\">arxiv.org/abs/2005.14165 ↗</a>\n\n</div>\n\n### **Courses & Interactive Learning**\n\n<div class=\"resource-card\">\n\n  <h4>fast.ai — Practical Deep Learning for Coders</h4>\n\n  <p>Free, hands-on course that takes you from basics to building real neural networks. No heavy maths prerequisites.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Course</span><span class=\"tag-pill\">Practical</span></div>\n\n  <br><a href=\"https://course.fast.ai\" target=\"_blank\">course.fast.ai ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Andrej Karpathy — Neural Networks: Zero to Hero</h4>\n\n  <p>YouTube series by former Tesla and OpenAI researcher. Builds a neural network from scratch in Python. One of the best free resources available.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">YouTube</span><span class=\"tag-pill\">Coding</span></div>\n\n  <br><a href=\"https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ\" target=\"_blank\">YouTube Playlist ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>DeepLearning.AI Short Courses</h4>\n\n  <p>A large catalogue of short, focused courses on LLMs, prompt engineering, RAG, and agents — more than 100 of them as of 2026-10-03 — many taught by Andrew Ng and built with industry partners like Anthropic, NVIDIA, Google, and Meta. Each short course typically runs about one to two hours. Most are free to start — the gate is usually an email address and a login, not a credit card — and DeepLearning.AI also offers longer paid courses and specializations. Pricing and what sits behind any paywall change over time, so check the course page for the current terms. Ideal for non-technical learners who want to start watching and experimenting quickly.</p>\n\n  <div><span class=\"tag-pill\">Mostly free</span><span class=\"tag-pill\">Course</span><span class=\"tag-pill\">Beginner-friendly</span></div>\n\n  <br><a href=\"https://www.deeplearning.ai/courses/\" target=\"_blank\">deeplearning.ai/courses ↗</a>\n\n</div>\n\n### **News & Commentary**\n\n<div class=\"resource-card\">\n\n  <h4>The Batch — DeepLearning.AI Newsletter</h4>\n\n  <p>Free weekly AI news and commentary from DeepLearning.AI, with a personal letter from Andrew Ng in every issue. It curates the stories that actually matter — new model releases, research, industry deals, and policy shifts — and explains why they matter, so readers can keep up without being misled by hype. Clear, balanced, and accessible for both beginners and experts.</p>\n\n  <div><span class=\"tag-pill\">Newsletter</span><span class=\"tag-pill\">Weekly</span><span class=\"tag-pill\">Free</span></div>\n\n  <br><a href=\"https://www.deeplearning.ai/the-batch/\" target=\"_blank\">deeplearning.ai/the-batch ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Import AI — Jack Clark</h4>\n\n  <p>Detailed weekly newsletter from Jack Clark, co-founder of Anthropic and, as of 2026-10-03, the company's Head of Public Benefit — a role he took on in March 2026 to lead the Anthropic Institute, the lab's in-house research effort on AI's societal, economic, and security impacts. He previously served as Anthropic's Head of Policy and, before that, as Policy Director at OpenAI. Running since 2016, it covers frontier research, policy, and the strategic AI landscape, and has well over 100,000 subscribers. The newsletter is free, with an optional paid tier; read it on its Substack, which is the canonical home for the archive.</p>\n\n  <div><span class=\"tag-pill\">Newsletter</span><span class=\"tag-pill\">Research</span></div>\n\n  <br><a href=\"https://importai.substack.com\" target=\"_blank\">importai.substack.com ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Simon Willison's Blog</h4>\n\n  <p>Practical, technically sharp commentary on LLM developments — how they actually work, what they are good at, and where they fail. Written by an independent researcher and open-source maintainer.</p>\n\n  <div><span class=\"tag-pill\">Blog</span><span class=\"tag-pill\">Technical</span></div>\n\n  <br><a href=\"https://simonwillison.net\" target=\"_blank\">simonwillison.net ↗</a>\n\n</div>\n\n### **Model Playgrounds**\n\n<div class=\"resource-card\">\n\n  <h4>Ollama — Run models locally</h4>\n\n  <p>Download and run open-weight models on your own computer. Free, private, no API costs.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Local</span><span class=\"tag-pill\">Open source</span></div>\n\n  <br><a href=\"https://ollama.com\" target=\"_blank\">ollama.com ↗</a>\n\n</div>\n\n<div class=\"resource-card\">\n\n  <h4>Hugging Face — Model Hub</h4>\n\n  <p>The GitHub of AI models. Browse, download, and test thousands of open models. Essential reference for the open AI ecosystem.</p>\n\n  <div><span class=\"tag-pill\">Free</span><span class=\"tag-pill\">Models</span><span class=\"tag-pill\">Community</span></div>\n\n  <br><a href=\"https://huggingface.co\" target=\"_blank\">huggingface.co ↗</a>\n\n</div>",
         "title": "Interesting Resources"
       }
     }
@@ -90,58 +101,26 @@
   "modelCardResults": [
     {
       "company": "OpenAI",
-      "name": "GPT &amp; o-Series",
-      "stale": true,
+      "name": "GPT-6 (Astra, Sol, Luna) &amp; o-Series",
+      "stale": false,
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "OpenAI's current flagship family is GPT-5.6, which was released publicly on July 9, 2026 ... as three models: Sol ... Terra ... and Luna.",
-            "issue": "Stale state-of-the-world presented as current — the pipeline's primary failure mode. GPT-5.6 is no longer OpenAI's flagship. OpenAI released GPT-6 Astra on September 3, 2026 as its new flagship, with GPT-6 Sol and GPT-6 Luna following on September 22, 2026. As of the current date (2026-10-03), GPT-6 Astra is the flagship and GPT-5.6 is a superseded generation. The model-card title/lineup and the word 'current' must be rewritten to reflect GPT-6 Astra as flagship, with GPT-5.6 reframed historically (e.g., 'released July 2026, now succeeded by GPT-6')."
-          },
-          {
-            "severity": "blocking",
-            "claim": "In practice, eligible paid plans access GPT-5.6 Sol through ChatGPT's reasoning settings while GPT-5.5 Instant remains the default for everyday chat.",
-            "issue": "Presents a superseded product state as current. Following the GPT-6 Astra launch (Sept 3, 2026), ChatGPT's engine is now GPT-6 Astra (GPT-6 Pro in chat on Pro/Business/Enterprise). The claim that GPT-5.6 Sol is reached via reasoning settings and GPT-5.5 Instant is the everyday default was accurate in July–August 2026 but is no longer the current state. Must be reframed historically or updated."
+            "severity": "note",
+            "claim": "GPT-6 Astra ... released by OpenAI on September 3, 2026",
+            "issue": "September 3, 2026 was the limited preview/announcement date; the stable general-public release of Astra was September 4, 2026. Sources use both dates, with Sep 3 as announcement/limited preview and Sep 4 as stable public release. Not misleading enough to block, but the content could note Sep 3 was the preview and Sep 4 the public release."
           },
           {
             "severity": "note",
-            "claim": "a 1 million token context window",
-            "issue": "Imprecise/understated. The documented context window for all three GPT-5.6 models is 1,050,000 tokens (commonly cited as 1.05M), not 1 million. The 128,000 maximum output tokens figure is correct."
-          },
-          {
-            "severity": "note",
-            "claim": "a February 2026 knowledge cutoff",
-            "issue": "Imprecise but not wrong. The documented knowledge cutoff is specifically February 16, 2026. 'February 2026' is an acceptable rounding but could be made exact."
+            "claim": "OpenAI's current flagship is GPT-6 Astra (stated with no 'as of' date)",
+            "issue": "The 'flagship = Astra' claim remains correct as of today (2026-10-03): GPT-6.1 Sol launched Sep 29, 2026 as a mid-tier replacement for GPT-6 Sol, and GPT-6.1 Astra was reportedly shelved, so Astra is still the top model. However, the card omits GPT-6.1 Sol entirely and lists 'GPT-6 Sol' as current when GPT-6 Sol has since been replaced by GPT-6.1 Sol in the API/Codex. Consider updating the model list and adding an explicit 'as of <date>' for freshness/robustness, though no house-rule 'as of writing/today' phrase is present so this is not blocking."
           }
         ]
       },
-      "draftFile": "llms101-automation/drafts/fortnightly-2026-10-03/model-card-gpt-amp-o-series.html",
-      "priorDrafts": [
-        {
-          "date": "2026-07-21",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-gpt-amp-o-series.html"
-        },
-        {
-          "date": "2026-07-22",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gpt-amp-o-series.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-gpt-amp-o-series.html"
-        }
-      ],
-      "unappliedPriorDrafts": [
-        {
-          "date": "2026-07-22",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gpt-amp-o-series.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-gpt-amp-o-series.html"
-        }
-      ],
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
       "error": null,
       "justApplied": false,
       "slug": null,
@@ -150,149 +129,52 @@
     {
       "company": "Anthropic",
       "name": "Claude",
-      "stale": true,
+      "stale": false,
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "models: 'Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5'; description presents this as the current lineup",
-            "issue": "This lineup is stale as of today (2026-10-03). The current lineup is Fable 5.1, Opus 5.5, Sonnet 5.5 (latest, released Sept 28, 2026), with Sonnet 5, Haiku 4.5, and restricted-access Mythos 5.1 also active. Opus 4.8 was superseded by Opus 5 (July 24, 2026) and then Opus 5.5; it is now a previous/legacy generation. Fable 5 was superseded by Fable 5.1 on Sept 1, 2026. Presenting Opus 4.8 and Fable 5 as the current tier is exactly the pipeline's known failure mode and must be corrected or re-framed historically before publication."
-          },
-          {
-            "severity": "blocking",
-            "claim": "As of July 21, 2026, Claude Fable 5 is available globally ... Anthropic describes it as its most capable widely released model, sitting above the Opus tier.",
-            "issue": "The 'as of July 21, 2026' anchor presents a ~2.5-month-old snapshot as the site's current state. While Fable 5 was accurately Anthropic's 'most capable widely released model' at that time, that title now belongs to Fable 5.1 (released Sept 1, 2026). Published today without historical framing, this misrepresents the current state of the world. The date itself is also unverified — the documented availability milestones are June 9 (launch), June 12 (suspension), June 30 (controls lifted), July 1 (access restored); July 21 does not correspond to a known Fable 5 milestone."
+            "severity": "note",
+            "claim": "All six inline model links (Fable 5.1, Opus 5.5, Sonnet 5.5) point to \"#\".",
+            "issue": "Every cited link is a bare \"#\" placeholder rather than a real destination, so the requirement to verify that cited pages exist and match their labels cannot be satisfied. This is not a factual error in the prose, but the placeholders should be replaced with real URLs before publication so readers reach the intended model pages."
           },
           {
             "severity": "note",
-            "claim": "US export controls imposed on June 12 were lifted on June 30 and access was restored on July 1",
-            "issue": "This chronology is accurate: controls imposed June 12, 2026; lifted by Commerce June 30; global access restored July 1. No correction needed, included for completeness."
-          },
-          {
-            "severity": "note",
-            "claim": "context window of up to 1 million tokens on its Opus 4.8 and Sonnet 5 models at flat per-token pricing (Haiku 4.5 supports 200,000 tokens)",
-            "issue": "Context window figures are correct (Opus/Sonnet 5 = 1M, Haiku 4.5 = 200K). The phrase 'flat per-token pricing' is questionable: Anthropic's long-context (>200K) usage has historically carried premium long-context pricing tiers rather than a single flat rate, so 'flat' may be inaccurate. Worth verifying against the current pricing page before publication."
+            "claim": "\"...the still-active Sonnet 5 and Haiku 4.5...\"",
+            "issue": "Accurate as written, but worth knowing: Haiku 4.5 carries a near-term retirement floor of 15 October 2026 (≈2 weeks after today's date, 2026-10-03). It remains current/active now, so this is not blocking, but the page may need a prompt update if/when Haiku 4.5 is retired or a Haiku 5.5 ships (Anthropic has signaled a Haiku 5.5 is coming)."
           }
         ]
       },
-      "draftFile": "llms101-automation/drafts/fortnightly-2026-10-03/model-card-claude.html",
-      "priorDrafts": [
-        {
-          "date": "2026-07-21",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-claude.html"
-        },
-        {
-          "date": "2026-07-22",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-claude.html"
-        },
-        {
-          "date": "2026-08-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-08-01/model-card-claude.html"
-        },
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-claude.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-claude.html"
-        }
-      ],
-      "unappliedPriorDrafts": [
-        {
-          "date": "2026-08-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-08-01/model-card-claude.html"
-        },
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-claude.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-claude.html"
-        }
-      ],
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
       "error": null,
-      "justApplied": false,
-      "slug": null,
-      "appliedDraftDate": null
+      "justApplied": true,
+      "slug": "claude",
+      "appliedDraftDate": "2026-10-01"
     },
     {
       "company": "Google DeepMind",
       "name": "Gemini",
-      "stale": true,
+      "stale": false,
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "The current Gemini lineup is 'Gemini 3.5 Flash, Gemini 3.1 Pro, Gemini 3.1 Flash-Lite,' with Gemini 3.5 Flash presented as the current fast/efficient model.",
-            "issue": "This is a superseded lineup presented as current — the exact failure mode flagged. Gemini 3.5 Flash was released at Google I/O on May 19, 2026 and has since been superseded four times in the Flash line: Gemini 3.6 Flash and 3.5 Flash-Lite (GA July 21, 2026), 3.7 Flash (Aug 13, 2026), and 3.8 Flash (GA Sept 2, 2026). As of today (2026-10-03), the current generally available Flash model is Gemini 3.8 Flash. The draft should either be updated to the current lineup or reframed historically."
-          },
-          {
-            "severity": "blocking",
-            "claim": "Gemini 3.5 Flash ... scoring 55 on the Artificial Analysis Intelligence Index while running faster than most models in its intelligence tier.",
-            "issue": "The '55' figure was accurate for Gemini 3.5 Flash (high reasoning) at its May 2026 launch, but it is attached to a stale model presented as current. The current Flash model, Gemini 3.8 Flash, scores 59 on the Artificial Analysis Intelligence Index (high reasoning). Presenting the 55 figure as the current state is blocking because it misrepresents the present lineup."
+            "severity": "note",
+            "claim": "the more capable Gemini 3.1 Pro [as part of the] current generally available lineup",
+            "issue": "Gemini 3.1 Pro is the current Pro-tier flagship, but authoritative sources consistently label it as 'Gemini 3.1 Pro Preview' (preview stage), not full GA. The draft bundles it into a 'generally available lineup.' Correct framing: 3.8 Flash and 3.5 Flash-Lite are GA, while the Pro tier remains in preview (released in preview 2026-02-19). Not blocking because 3.1 Pro IS the current, callable Pro model and the lineup is not stale; the GA/preview distinction is a minor accuracy point that would not embarrass the site."
           },
           {
             "severity": "note",
-            "claim": "Gemini 3.1 Flash-Lite is part of the named lineup.",
-            "issue": "Gemini 3.1 Flash-Lite (preview March 3, 2026; GA May 8, 2026) was itself superseded by Gemini 3.5 Flash-Lite (GA July 21, 2026). If the lineup is updated, the Flash-Lite entry should be refreshed to 3.5 Flash-Lite."
-          },
-          {
-            "severity": "note",
-            "claim": "Gemini 3.5 Flash offers a 1 million–token context window.",
-            "issue": "This specific claim is accurate (the current 3.8 Flash also has a 1M-token context window), so it survives even an update to the lineup. Noted only for completeness."
-          },
-          {
-            "severity": "note",
-            "claim": "The draft contains no explicit 'as of <date>' statement.",
-            "issue": "The description makes present-tense currency claims (e.g., 'is a strong pick', 'running faster than most models in its intelligence tier') without any dated 'as of' anchor. Per the house rule, currency claims about a fast-moving model lineup should carry an explicit date; its absence here compounds the stale-lineup problem and the content should not be published present-tense without a date."
+            "claim": "Gemini 3.5 Flash-Lite for high-volume tasks [as the current Flash-Lite]",
+            "issue": "Gemini 3.5 Flash-Lite (released July 21, 2026) is indeed a current, listed model, so this is not stale. Worth noting only that a newer 3.1 Flash-Lite / 3.5 Flash-Lite naming coexists in the ecosystem and other Flash-Lite variants exist; the named model is valid and current, so no correction needed."
           }
         ]
       },
-      "draftFile": "llms101-automation/drafts/fortnightly-2026-10-03/model-card-gemini.html",
-      "priorDrafts": [
-        {
-          "date": "2026-07-21",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-gemini.html"
-        },
-        {
-          "date": "2026-07-22",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gemini.html"
-        },
-        {
-          "date": "2026-08-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-08-01/model-card-gemini.html"
-        },
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-gemini.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-gemini.html"
-        }
-      ],
-      "unappliedPriorDrafts": [
-        {
-          "date": "2026-07-22",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-gemini.html"
-        },
-        {
-          "date": "2026-08-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-08-01/model-card-gemini.html"
-        },
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-gemini.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-gemini.html"
-        }
-      ],
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
       "error": null,
       "justApplied": false,
       "slug": null,
@@ -307,28 +189,13 @@
         "findings": [
           {
             "severity": "blocking",
-            "claim": "Grok 4.5 as the current flagship since its July 8, 2026 release",
-            "issue": "Grok 4.5 is no longer the current flagship — it has been superseded twice. Grok 4.6 shipped August 12, 2026, and Grok 4.7 (released September 21, 2026) is xAI's current flagship as of today (2026-10-03). The July 8, 2026 release date for Grok 4.5 is itself accurate, but presenting Grok 4.5 as 'the current flagship' presents a stale state of the world as current. Current correct flagship: Grok 4.7."
-          },
-          {
-            "severity": "blocking",
-            "claim": "models: Grok 4.5 · Grok 4.3 · Grok 4.1 Fast (presented as the current lineup)",
-            "issue": "The current lineup is misrepresented. The flagship should be Grok 4.7 (with Grok 4.6 and 4.5 below it), not Grok 4.5. Additionally, Grok 4.1 Fast was retired from the API on May 15, 2026, so listing it as a current budget tier is stale. The current active lineup centers on Grok 4.7/4.6/4.5 (500K), Grok 4.3/4.20 (1M), and Grok Build 0.1."
-          },
-          {
-            "severity": "blocking",
-            "claim": "Grok 4.1 Fast, a budget, high-throughput option with a 2M-token window",
-            "issue": "Grok 4.1 Fast was retired from the xAI API on May 15, 2026 and is no longer an available option. (The 2M-token window figure matched it while it existed, but it is presented as currently available, which is stale.)"
+            "claim": "The broader lineup includes Grok 4.3 and Grok 4.20 with 1-million-token windows",
+            "issue": "Grok 4.3 does have a 1M-token window, but Grok 4.20 does not — xAI documentation and OpenRouter list the entire Grok 4.20 family (reasoning, non-reasoning, multi-agent) at a 2,000,000-token context window. This is a specific, commonly-confused quantitative error; the correct figure for Grok 4.20 is 2M tokens, not 1M."
           },
           {
             "severity": "note",
-            "claim": "Grok 4.3, the lower-cost 1M-context tier launched in April 2026",
-            "issue": "Date is roughly correct (Grok 4.3 launched approximately April 17, 2026) and the 1M context window is accurate. The concern is only that Grok 4.3 is no longer the second tier below the true flagship; in the corrected lineup it sits as a cheaper 1M general-purpose model below the 4.5/4.6/4.7 flagship tier."
-          },
-          {
-            "severity": "note",
-            "claim": "Grok 4.5 ... priced at $2 per million input tokens and $6 per million output ... 500K-token context window",
-            "issue": "These specific figures for Grok 4.5 are accurate ($2/$6 per million input/output, 500K context). No correction needed to the numbers themselves; flagged only because they are attached to a model wrongly labeled as current."
+            "claim": "\"models\": \"Grok 4.7 · Grok 4.6 · Grok 4.5 · Grok 4.3 · Grok Build 0.1\"",
+            "issue": "The models list and the description are internally inconsistent: the description discusses Grok 4.20 (a real, current model) but it is absent from the models list, while Grok 4.3 appears in the list. Not factually wrong per se, but the lineup enumeration is incomplete/mismatched versus the prose. Grok 4.20 is a current model and arguably should be included."
           }
         ]
       },
@@ -352,6 +219,10 @@
         }
       ],
       "unappliedPriorDrafts": [
+        {
+          "date": "2026-07-21",
+          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-grok.html"
+        },
         {
           "date": "2026-07-22",
           "path": "llms101-automation/drafts/fortnightly-2026-07-22/model-card-grok.html"
@@ -379,28 +250,18 @@
         "findings": [
           {
             "severity": "blocking",
-            "claim": "Meta's Llama 4 family remains the most widely deployed open-weight AI ecosystem... Llama 3.3 70B remains a widely-deployed practical text-only option.",
-            "issue": "These are present-tense 'state of the world' claims with NO explicit date anchor anywhere in the content. House rule requires an explicit 'as of <date>'. Bare present-tense currency claims without a date are a blocking finding. Add an explicit date (e.g., 'as of October 2026') or reframe historically."
-          },
-          {
-            "severity": "blocking",
-            "claim": "In April 2026, Meta Superintelligence Labs launched a new proprietary model, Muse Spark, as the engine behind Meta AI — a strategic pivot away from Llama as Meta's frontier effort.",
-            "issue": "This presents the April 2026 launch state as the current situation. The Muse lineup has advanced substantially since: Muse Spark 1.1 (July 9, 2026), Muse Spark 1.2 (Aug 5-6, 2026), and the current flagship Muse Spark 1.3 (Sept 2, 2026). Describing plain 'Muse Spark' as the present engine is stale. The current proprietary flagship is Muse Spark 1.3."
-          },
-          {
-            "severity": "blocking",
-            "claim": "a strategic pivot away from Llama as Meta's frontier effort, though existing Llama models remain open and available for self-hosting.",
-            "issue": "The 'pivot away from open weights' framing is now outdated and presented as the current state. On August 10, 2026, Meta released Muse Glimmer, a ~30B open-weight model under Apache 2.0, and committed to open-weighting Muse Spark 1.2 — reversing the closed-only approach. The content omits this material reversal, presenting a superseded strategic narrative as current."
+            "claim": "Meta's frontier development has moved to its newer Muse line ... reflecting a renewed open-weight commitment rather than a move away from it.",
+            "issue": "This is factually backwards and is the kind of stale/inverted framing that would embarrass the site. Meta's frontier flagship, Muse Spark (1.3), is proprietary/closed-weights, and the Muse launch was widely reported as a strategic DEPARTURE from Meta's open-weight Llama tradition toward closed frontier models — not a 'renewed open-weight commitment.' Muse Spark was described as marking 'a sharp strategic departure from Meta's previous LLaMA model family, which had been released under open-weight licenses,' and Meta's 2026 frontier models ship behind a closed API. The open-weight Muse Glimmer is a smaller distilled/local model, not the frontier. The characterization should be reversed: Meta's frontier moved to proprietary models, with open weights now limited to smaller releases like Glimmer."
           },
           {
             "severity": "note",
-            "claim": "Llama 4 Scout offers ... a 10-million-token context window — the largest of any openly available model.",
-            "issue": "Factually consistent with Meta's specs (Scout 10M context, Maverick 1M context, both natively multimodal MoE) and the superlative held at Llama 4's launch. However, presented as current without a date; given the expanding open-weight landscape (e.g., Muse Glimmer), the 'largest of any openly available model' superlative should carry a date anchor or historical framing to stay safe."
+            "claim": "the open-weight, Apache 2.0-licensed Muse Glimmer (a ~30-billion-parameter model released August 10, 2026 that runs on a single consumer GPU)",
+            "issue": "Facts check out (30B, Apache 2.0, Aug 10 2026, single consumer GPU). Worth knowing: Muse Glimmer is a distilled/smaller model derived from Muse Spark and is positioned for local agentic workloads, not as a frontier model — the draft correctly separates it from the flagship but readers could misread 'open-weight commitment' as applying to the frontier line (see blocking finding)."
           },
           {
             "severity": "note",
-            "claim": "Model names presented as CURRENT: 'Llama 4 Maverick · Llama 4 Scout · Llama 3.3 70B'.",
-            "issue": "These models exist and their individual specs are correct, but the card frames the Llama 4 lineup as Meta's current frontier/flagship ecosystem. As of the content's framing, Meta's frontier effort is the proprietary Muse family (current flagship Muse Spark 1.3), and Meta's newest open-weight model is Muse Glimmer (Aug 2026). The Llama models are valid as legacy/self-hostable options but should not be framed as Meta's current frontier."
+            "claim": "the proprietary flagship Muse Spark 1.3 (released September 2, 2026, with a roughly 1-million-token context window)",
+            "issue": "Verified correct: Muse Spark 1.3 stable release is dated September 2, 2026, it is proprietary/closed-weights, and supports roughly a 1-million-token context window. No correction needed."
           }
         ]
       },
@@ -441,82 +302,50 @@
     {
       "company": "Meta Superintelligence Labs",
       "name": "Muse Spark",
-      "stale": true,
+      "stale": false,
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "Muse Spark 1.1 (current); 'As of July 2026, the current model in this family is Muse Spark 1.1'",
-            "issue": "Presents a superseded lineup as current. The page will auto-publish on 2026-10-03, by which point two newer releases exist: Muse Spark 1.2 (released August 5, 2026) and Muse Spark 1.3 (released September 2, 2026), which is the current/default version with a 1M-token context. The draft omits both 1.2 and 1.3 and labels 1.1 as current. The 'As of July 2026' date is technically present but the content frames a stale state of the world as the present-tense current lineup, which is this pipeline's named failure mode."
-          },
-          {
-            "severity": "blocking",
-            "claim": "models: 'Muse Spark 1.1 (current), Muse Spark 1.0'",
-            "issue": "There is no 'Muse Spark 1.0'. The original model (introduced April 2026) was called simply 'Muse Spark' with no version number; version numbering began at 1.1. Meta's own 1.1 blog describes it as 'a significant upgrade from Muse Spark', not from a '1.0'. The version list is also incomplete (missing 1.2 and 1.3)."
+            "severity": "note",
+            "claim": "roughly 20% fewer tool calls and 25% fewer tokens than 1.2",
+            "issue": "Accurate, but worth flagging that these are Meta's own self-reported engineering comparisons, not independently verified. Multiple sources attribute the ~20% fewer tool calls / ~25% fewer tokens figures to comparisons 'run by Meta's own engineers.' Consider framing as a vendor claim."
           },
           {
             "severity": "note",
-            "claim": "released ... as its second Meta Superintelligence Labs model",
-            "issue": "Imprecise. Muse Spark 1.1 was the second release in the Muse Spark family, but MSL also ships other models (e.g., Muse Image/Video around the same window). 'Second MSL model' overstates; 'second Muse Spark release' would be accurate."
+            "claim": "Muse Spark is the first model family from Meta Superintelligence Labs ... first versioned as Muse Spark 1.1 on July 9, 2026",
+            "issue": "Accurate, but note that the original April 2026 base model is sometimes cataloged as 'Muse Spark 1.0' by third-party trackers. The draft's phrasing (base 'Muse Spark' then 1.1) is consistent with Meta's own naming (Wikipedia: introduced April 2026, launched as 1.1 on July 9, 2026), so this is not an error—just a naming nuance that could cause reader confusion."
           }
         ]
       },
-      "draftFile": "llms101-automation/drafts/fortnightly-2026-10-03/model-card-muse-spark.html",
-      "priorDrafts": [
-        {
-          "date": "2026-07-21",
-          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-muse-spark.html"
-        },
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-muse-spark.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-muse-spark.html"
-        }
-      ],
-      "unappliedPriorDrafts": [
-        {
-          "date": "2026-09-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-muse-spark.html"
-        },
-        {
-          "date": "2026-10-01",
-          "path": "llms101-automation/drafts/fortnightly-2026-10-01/model-card-muse-spark.html"
-        }
-      ],
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
       "error": null,
-      "justApplied": false,
-      "slug": null,
-      "appliedDraftDate": null
+      "justApplied": true,
+      "slug": "muse-spark",
+      "appliedDraftDate": "2026-10-01"
     },
     {
       "company": "DeepSeek",
-      "name": "DeepSeek",
-      "stale": true,
+      "name": "DeepSeek V4.1",
+      "stale": false,
       "factCheck": {
-        "verdict": "fail",
+        "verdict": "pass",
         "findings": [
           {
-            "severity": "blocking",
-            "claim": "DeepSeek V4 Pro & DeepSeek V4 Flash — the current model lineup; 'DeepSeek V4 Pro is the current flagship'",
-            "issue": "This presents a superseded lineup as current. On September 10, 2026 DeepSeek released DeepSeek-V4.1-Flash (552B-parameter MoE, native multimodal vision, 1M context) and retired the original V4-Flash and its experimental vision model, routing their API identifiers to V4.1-Flash. In addition, from 04:00 UTC on September 14, 2026, deepseek-v4-pro API requests are routed to V4.1-Flash at Flash prices until a (currently unreleased) V4.1-Pro ships. As of today (2026-10-03), 'V4 Flash' is not the current Flash model, and V4 Pro is no longer served as the default flagship. The card should reflect V4.1-Flash and the V4-Pro routing status, ideally with an explicit 'as of' date."
-          },
-          {
-            "severity": "blocking",
-            "claim": "DeepSeek V4 Pro is the current flagship ... Both are available as open weights and via the DeepSeek API.",
-            "issue": "Missing required explicit 'as of <date>' anchor for a present-tense state-of-the-world claim, and the claim is factually stale: V4 Flash is retired on the API (its name routes to V4.1-Flash) and V4-Pro API traffic is routed to V4.1-Flash as of September 14, 2026. An explicit date is required by house rule and would also make the staleness visible."
+            "severity": "note",
+            "claim": "DeepSeek announced that from 04:00 UTC on September 14, 2026 all deepseek-v4-pro requests would route to V4.1-Flash at Flash prices... though it later indicated it may keep V4 Pro service running",
+            "issue": "This understates a confirmed, documented reversal as a tentative possibility. DeepSeek reversed the routing plan BEFORE it took effect (around Sept 11, with a change-log update seen hours before the Sept 14 deadline), stating it would continue providing V4 Pro API service after September 14, 2026 with billing unchanged. The newer official notice supersedes the old routing line. The draft's 'may keep... running' framing is weaker than the facts: as of early October 2026, V4 Pro remains live at unchanged prices and the Sept 14 routing never happened. The draft's advice to 'confirm current status directly with DeepSeek' is prudent and prevents this from being blocking, but the characterization is weaker than the record supports."
           },
           {
             "severity": "note",
-            "claim": "DeepSeek's January 2025 release of R1 shocked the AI industry by matching OpenAI o1's reasoning benchmark performance at a fraction of the training cost.",
-            "issue": "Accurate and correctly historically framed. R1 was released January 2025 and matched o1 across math/coding/reasoning at ~90-95% lower cost. No change needed; included only for completeness."
+            "claim": "a 552B-parameter Mixture-of-Experts model",
+            "issue": "Accurate for the backbone (552B total, 8B active prefill / 16B decode). Note that some trackers cite a larger total (~763B) when including ~196B Engram conditional-memory parameters. The 552B figure matches DeepSeek/SiliconANGLE reporting and is defensible; just be aware of the alternate total-parameter count if precision is challenged."
           }
         ]
       },
-      "draftFile": "llms101-automation/drafts/fortnightly-2026-10-03/model-card-deepseek.html",
+      "draftFile": null,
       "priorDrafts": [],
       "unappliedPriorDrafts": [],
       "error": null,
@@ -533,33 +362,18 @@
         "findings": [
           {
             "severity": "blocking",
-            "claim": "so \"open-weight\" is a promise rather than a download ... nobody outside Alibaba can run it yet",
-            "issue": "Stale state presented as current — the pipeline's signature failure. This was only true at the July 19, 2026 preview. Alibaba actually released the Qwen3.8-Max weights (Qwen3.8-2.4T-A95B, 2.4T total / 95B active, custom Qwen3.8-Max Licence) around August 12-14, 2026, and the model is runnable via providers such as OpenRouter and Together AI. It is no longer a promise-only, un-runnable model."
-          },
-          {
-            "severity": "blocking",
-            "claim": "which Alibaba claims performs \"second only to Fable 5\" — though that claim shipped with no benchmark table, no model card, no license, and no active-parameter count",
-            "issue": "Mixed stale/incorrect. The active-parameter count WAS disclosed at the August 3, 2026 official launch (~95B active per token, ~4% of 2.4T total). The 'no license / no active-parameter count' characterization describes only the July 19 preview state and is presented as the current state of the world."
-          },
-          {
-            "severity": "blocking",
-            "claim": "models: Qwen3.8-Max-Preview, Qwen3.7-Max, Qwen3.7-Plus, Qwen3.6-27B (open weights)",
-            "issue": "The lineup is framed as current but lists the superseded preview build. Qwen3.8-Max officially launched (GA) on August 3, 2026 — it is no longer 'Preview'. It should be listed as Qwen3.8-Max, and it is itself now available as open weights, contradicting the body text."
+            "claim": "models: Qwen3.8-Max, Qwen3.7-Max, Qwen3.7-Plus, Qwen3.6-27B (open weights)",
+            "issue": "The open-weights model listed, Qwen3.6-27B, is superseded and presented as the current open 27B in a lineup led by Qwen3.8-Max. The current open-weights 27B is Qwen3.8-27B, released August 14, 2026 under Apache 2.0, which explicitly supersedes Qwen3.6-27B as the default local Qwen. Listing Qwen3.6-27B as the current open-weights entry presents a stale lineup as current — the pipeline's primary failure mode. Replace with Qwen3.8-27B."
           },
           {
             "severity": "note",
-            "claim": "if you specifically want to self-host, the genuinely open line is the earlier Qwen3.6 family, which remains a solid free option",
-            "issue": "Qwen3.6-27B (Apache 2.0, released April 22, 2026) is genuinely open and still usable, but it has been superseded as the default open option by Qwen3.8-27B (Apache 2.0, released ~August 13-14, 2026). Presenting Qwen3.6 as the go-to open line understates the current open lineup."
+            "claim": "the hosted model is available through providers such as OpenRouter and Together AI at roughly $2 per million input and $6 per million output tokens",
+            "issue": "Pricing and providers are correct ($2/$6 per million; Together is among the providers serving the open-weight Qwen3.8-2.4T-A95B). Minor nuance: on OpenRouter the hosted flagship is the API 'Qwen3.8 Max' SKU while $2/$6 Together pricing is tied to the open-weight Qwen3.8-2.4T-A95B variant; both land at $2/$6 so the claim is accurate, but the draft slightly conflates the hosted-API and open-weight SKUs."
           },
           {
             "severity": "note",
-            "claim": "\"second only to Fable 5\"",
-            "issue": "Accurate to Alibaba's own wording, but 'Fable 5' refers specifically to Anthropic's Claude Fable 5; naming it fully avoids ambiguity. Also note this remains a self-reported, unverified claim with no independent benchmark confirmation."
-          },
-          {
-            "severity": "note",
-            "claim": "Entire description uses present-tense, time-sensitive claims ('yet', 'current', 'remains') with no explicit 'as of <date>' anchor.",
-            "issue": "No bare 'as of writing/today' phrase appears, so the blocking date rule is not literally triggered, but the content makes rapidly-changing claims (open-weight availability, flagship status) with no date anchor, which is precisely what let the stale state slip through. An explicit 'as of <date>' should be added."
+            "claim": "roughly 95 billion active per token ... context window of up to one million tokens ... launched on August 3, 2026 ... 2.4 trillion total parameters",
+            "issue": "All verified correct (2.4T total / ~95B active MoE, up to 1M token context, GA August 3, 2026, open weights as Qwen3.8-2.4T-A95B under custom Qwen3.8-Max License in mid-August). No correction needed; recorded only for completeness."
           }
         ]
       },
@@ -576,6 +390,10 @@
       ],
       "unappliedPriorDrafts": [
         {
+          "date": "2026-07-21",
+          "path": "llms101-automation/drafts/fortnightly-2026-07-21/model-card-qwen.html"
+        },
+        {
           "date": "2026-09-01",
           "path": "llms101-automation/drafts/fortnightly-2026-09-01/model-card-qwen.html"
         }
@@ -591,23 +409,7 @@
       "stale": false,
       "factCheck": {
         "verdict": "pass",
-        "findings": [
-          {
-            "severity": "note",
-            "claim": "models: 'Kimi K3 (current flagship), K3 Swarm Max'",
-            "issue": "Internal naming inconsistency. The standard flagship variant is officially named 'K3 Max' (chat/agent all-rounder), not bare 'Kimi K3'. The description field correctly calls it 'K3 Max for chat and agents,' but the structured models list labels it 'Kimi K3 (current flagship),' which doesn't match the two-variant naming (K3 Max / K3 Swarm Max). Recommend aligning the models field to 'Kimi K3 Max (current flagship), K3 Swarm Max' for consistency."
-          },
-          {
-            "severity": "note",
-            "claim": "prior: K2.7 Code, K2.6, K2.5, K2",
-            "issue": "The prior-model list omits Kimi K2.8 Preview, which Moonshot released September 11, 2026 (after K3's July launch) as a multimodal model positioned between K2.7 Code and the K3 flagship. This does not affect the central claim that K3 is the current flagship, but the lineup is incomplete. Note that K2.8 Preview post-dates K3, so 'prior' framing is debatable; consider noting it separately if lineup completeness matters."
-          },
-          {
-            "severity": "note",
-            "claim": "roughly 2.8-trillion-parameter mixture-of-experts model",
-            "issue": "2.8T is the consensus and officially cited figure (104B active, 896 experts, 16 active per token), so the claim is correct. Minor caveat: some early launch-day coverage (e.g., Fortune, July 16) reported 2.7T before the 2.8T figure settled. The draft's 'roughly 2.8-trillion' phrasing is accurate and not a problem."
-          }
-        ]
+        "findings": []
       },
       "draftFile": null,
       "priorDrafts": [],
@@ -626,18 +428,8 @@
         "findings": [
           {
             "severity": "note",
-            "claim": "Mistral Medium 3.5 ... released as open weights",
-            "issue": "Accurate, but worth noting the specific license is a 'Modified MIT' license, not Apache 2.0 like the other two models. The weights are published on Hugging Face. The draft's generic 'open weights' is correct but could be more precise."
-          },
-          {
-            "severity": "note",
             "claim": "Mistral Medium 3.5 is the newest",
-            "issue": "Correct within this three-model lineup (Medium 3.5 ~April 28-29, 2026; Small 4 March 16, 2026; Large 3 December 2025). However, Mistral has shipped even newer products in 2026 (e.g., Voxtral TTS in late March 2026 and other releases), so 'newest' is only true relative to the three models listed, not Mistral's entire catalog."
-          },
-          {
-            "severity": "note",
-            "claim": "now the default in Mistral's own Vibe and Le Chat tools",
-            "issue": "Supported: Medium 3.5 replaced Devstral 2 in the Vibe CLI and retired Magistral from Le Chat. Minor nuance — Le Chat was renamed/rebranded toward 'Mistral Vibe' in 2026, so listing both Vibe and Le Chat as separate current tools is slightly imprecise, but both names remain in use in sources and this is not a factual error."
+            "issue": "Accurate within the three general-purpose LLMs listed (Medium 3.5 shipped Apr 29, 2026; Small 4 Mar 16, 2026; Large 3 Dec 2025). However, Mistral has since shipped later specialist releases (e.g., Leanstral 1.5 around end of June 2026, OCR 4.1 GA Aug 31 2026, Robostral Navigate July 2026). The claim is defensible as written since it scopes to this lineup, but 'newest' is only strictly true for the core LLM trio, not Mistral's catalog overall."
           }
         ]
       },
@@ -653,19 +445,11 @@
   "spotAuditFindings": [
     {
       "area": "Tracker",
-      "issue": "OpenAI shipped the GPT-6 generation (Astra ~Sep 3; Sol and Luna Sep 22, 2026) as direct replacements for the GPT-5.6 line at ~50% lower prices (Sol $2/$10, Luna $0.10/$0.50). The tracker still lists GPT-5.6 Sol, GPT-5.6 Terra, and GPT-5.6 Luna, which are now the superseded prior generation. This is a full-family refresh an informed reader would expect to see."
+      "issue": "The tracker's newest OpenAI entries are the GPT-5.6 family (Sol/Terra/Luna), but OpenAI shipped an entire new flagship generation in September 2026: GPT-6 Astra (public GA Sep 4), GPT-6 Sol and GPT-6 Luna (Sep 22), and GPT-6.1 Sol (Sep 29, announced at DevDay). GPT-6 Astra is OpenAI's current flagship and powers ChatGPT. Absence of any GPT-6 row would look like a clear oversight to an informed reader."
     },
     {
       "area": "Tracker",
-      "issue": "Anthropic released Claude Opus 5.5 (Sep 22) and Claude Sonnet 5.5 (Sep 28, 2026), both now Anthropic's recommended current models, with Opus 5.5 priced at $4/$20 (down from Opus 5's $5/$25). The tracker still lists Claude Opus 5 and Claude Sonnet 5 as the current entries, missing the .5 refresh of both tiers."
-    },
-    {
-      "area": "Tracker",
-      "issue": "xAI released Grok 4.7 on September 21, 2026 (with Grok 4.6 shipping earlier). The tracker still lists Grok 4.5, now two point releases behind."
-    },
-    {
-      "area": "Trends",
-      "issue": "A significant AI price war broke out on Sep 22, 2026: OpenAI's GPT-6 Sol/Luna and Anthropic's Opus 5.5 both cut API prices by roughly 40-50% within hours of each other, halving the cost of frontier-tier inference. No existing or recently-completed Trends topic covers this consumer/developer-relevant pricing shift."
+      "issue": "The tracker lists only Claude Opus 5 / Sonnet 5 / Fable 5, but Anthropic has released a new 5.5 family: Claude Opus 5.5 (Sep 22, 2026) and Claude Sonnet 5.5 (Sep 28, 2026), with Opus 5.5 widely rated the current top coding model. This major Anthropic generation refresh is missing."
     }
   ],
   "trackerPRs": [],
