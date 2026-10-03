@@ -304,5 +304,25 @@
         "url": "/resources"
       }
     ]
+  },
+  {
+    "date": "2026-10-03",
+    "items": [
+      {
+        "area": "Site",
+        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
+        "url": "/resources"
+      },
+      {
+        "area": "Models",
+        "text": "Anthropic — Claude card corrected (fortnightly review draft applied).",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "Meta Superintelligence Labs — Muse Spark card corrected (fortnightly review draft applied).",
+        "url": "/models.html"
+      }
+    ]
   }
 ]
