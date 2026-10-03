@@ -29,7 +29,7 @@
   "description": "Monthly updated tracking of frontier AI model performance tiers based on human preference rankings, alongside plain-English cost guidance and best use cases.",
   "url": "https://llms101.com/tracker",
   "isPartOf": {"@type":"WebSite","url":"https://llms101.com/","name":"LLMs 101"},
-  "dateModified": "2026-08-16",
+  "dateModified": "2026-10-03",
   "isAccessibleForFree": true,
   "inLanguage": "en-US"
 }
@@ -93,6 +93,14 @@ nav a.active{color:var(--brown);background:var(--light)}
 .trow:nth-child(10){animation-delay:.40s}
 .trow:nth-child(11){animation-delay:.44s}
 .trow:nth-child(12){animation-delay:.48s}
+.trow:nth-child(13){animation-delay:.52s}
+.trow:nth-child(14){animation-delay:.56s}
+.trow:nth-child(15){animation-delay:.60s}
+.trow:nth-child(16){animation-delay:.64s}
+.trow:nth-child(17){animation-delay:.68s}
+.trow:nth-child(18){animation-delay:.72s}
+.trow:nth-child(19){animation-delay:.76s}
+.trow:nth-child(20){animation-delay:.80s}
 .trow.hidden{display:none}
 
 /* rank column */
@@ -223,19 +231,19 @@ footer a{color:var(--gold);text-decoration:none}
 
   <div class="tracker-list" id="tracker-list">
 
-    <!-- #1 Claude Fable 5 -->
-    <div class="trow" data-tags="top writing coding">
+    <!-- #1 Claude Fable 5.1 -->
+    <div class="trow" data-tags="top coding writing">
       <div class="rank-col"><span class="rank-num top">1</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Anthropic</div>
-          <div class="model-name"><a href="https://www.anthropic.com/claude/fable" target="_blank" rel="noopener">Claude Fable 5</a></div>
-          <div class="model-flagship">Most capable general-access model</div>
-          <span class="tier-badge tier-1">🏆 Tier 1 - Top</span>
+          <div class="model-name"><a href="https://platform.claude.com/docs/en/models/fable-5-1/overview" target="_blank" rel="noopener">Claude Fable 5.1</a></div>
+          <div class="model-flagship">Anthropic's most capable public model</div>
+          <span class="tier-badge tier-1">🏆 Tier 1 - Top (near tie with GPT-6 Astra)</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">State-of-the-art performance on the hardest, longest-running coding, research, and knowledge-work tasks — software engineering, scientific/financial analysis, and multi-day autonomous agent work where raw capability matters more than cost.</div>
+          <div class="bestfor-mini">Long, complex agentic coding, research and knowledge work where getting it right matters more than cost. More than most people need for everyday chat.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -244,19 +252,19 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #2 Claude Opus 5 -->
-    <div class="trow" data-tags="top writing coding">
+    <!-- #2 GPT-6 Astra -->
+    <div class="trow" data-tags="top coding writing">
       <div class="rank-col"><span class="rank-num top">2</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">Anthropic</div>
-          <div class="model-name"><a href="https://www.anthropic.com/claude/opus" target="_blank" rel="noopener">Claude Opus 5</a></div>
-          <div class="model-flagship">Flagship intelligence model</div>
-          <span class="tier-badge tier-1">🥈 Tier 1 - Top</span>
+          <div class="model-family">OpenAI</div>
+          <div class="model-name"><a href="https://openai.com/index/gpt-6-astra/" target="_blank" rel="noopener">GPT-6 Astra</a></div>
+          <div class="model-flagship">OpenAI's most capable model</div>
+          <span class="tier-badge tier-1">🥈 Tier 1 - Top (near tie with Fable 5.1)</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Serious coding, long-running agentic work, and high-stakes enterprise and legal tasks where reliability and reasoning quality matter most.</div>
+          <div class="bestfor-mini">The hardest reasoning, computer-use and document work, like building slides, spreadsheets and apps from start to finish. Expensive. In ChatGPT it powers GPT-6 Pro on higher plans.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -265,61 +273,19 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #3 GPT-5.6 Sol -->
-    <div class="trow" data-tags="top writing coding">
+    <!-- #3 Claude Opus 5.5 -->
+    <div class="trow" data-tags="top coding writing">
       <div class="rank-col"><span class="rank-num top">3</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">OpenAI</div>
-          <div class="model-name"><a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener">GPT-5.6 Sol</a></div>
-          <div class="model-flagship">Flagship reasoning and coding model</div>
-          <span class="tier-badge tier-1">🥉 Tier 1 - Top</span>
+          <div class="model-family">Anthropic</div>
+          <div class="model-name"><a href="https://platform.claude.com/docs/en/models/opus-5-5/overview" target="_blank" rel="noopener">Claude Opus 5.5</a></div>
+          <div class="model-flagship">Near-Fable smarts at lower cost</div>
+          <span class="tier-badge tier-1">🥉 Tier 1 - Best all-round flagship</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Complex professional work across coding, science, and research. OpenAI's most capable model and the strongest reasoning option in ChatGPT.</div>
-        </div>
-      </div>
-      <div class="trow-meta">
-        <span class="cost-vibe cost-premium">Premium</span>
-        <span class="open-badge">Closed API</span>
-      </div>
-    </div>
-
-    <!-- #4 Gemini 3.1 Pro -->
-    <div class="trow" data-tags="top writing coding">
-      <div class="rank-col"><span class="rank-num">4</span></div>
-      <div class="trow-main">
-        <div class="trow-left">
-          <div class="model-family">Google DeepMind</div>
-          <div class="model-name"><a href="https://deepmind.google/models/gemini/pro/" target="_blank" rel="noopener">Gemini 3.1 Pro</a></div>
-          <div class="model-flagship">Advanced multimodal reasoning</div>
-          <span class="tier-badge tier-1">Tier 1 - Top</span>
-        </div>
-        <div class="trow-right">
-          <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Deep reasoning over huge multimodal inputs. Its 1M-token context handles entire codebases, long documents, audio, and video in a single prompt.</div>
-        </div>
-      </div>
-      <div class="trow-meta">
-        <span class="cost-vibe cost-premium">Premium</span>
-        <span class="open-badge">Closed API</span>
-      </div>
-    </div>
-
-    <!-- #5 Grok 4.5 -->
-    <div class="trow" data-tags="top coding">
-      <div class="rank-col"><span class="rank-num">5</span></div>
-      <div class="trow-main">
-        <div class="trow-left">
-          <div class="model-family">xAI</div>
-          <div class="model-name"><a href="https://x.ai/news/grok-4-5" target="_blank" rel="noopener">Grok 4.5</a></div>
-          <div class="model-flagship">Efficient coding and agentic model</div>
-          <span class="tier-badge tier-1">Tier 1 - Efficient frontier</span>
-        </div>
-        <div class="trow-right">
-          <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Real software engineering and agentic tasks. Trained alongside Cursor, it is pitched as Opus-class quality at faster speeds and lower cost.</div>
+          <div class="bestfor-mini">The default pick for serious work: coding, analysis and long documents. Anthropic says it matches Fable 5.1 on most tasks for much less money.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -328,19 +294,61 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #6 Claude Sonnet 5 -->
+    <!-- #4 GPT-6.1 Sol -->
+    <div class="trow" data-tags="coding writing">
+      <div class="rank-col"><span class="rank-num">4</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name"><a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol" target="_blank" rel="noopener">GPT-6.1 Sol</a></div>
+          <div class="model-flagship">Near-Astra performance, 1/5 the cost</div>
+          <span class="tier-badge tier-2">Tier 2 - Best value OpenAI</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Everyday professional and coding work in ChatGPT Work, Codex or the API when you want close to top quality without paying Astra prices. Not in regular ChatGPT chat yet.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-standard">Standard</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #5 Kimi K3 -->
+    <div class="trow" data-tags="open coding">
+      <div class="rank-col"><span class="rank-num">5</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Moonshot AI</div>
+          <div class="model-name"><a href="https://platform.kimi.ai/docs/guide/kimi-k3-quickstart" target="_blank" rel="noopener">Kimi K3</a></div>
+          <div class="model-flagship">Largest open-weight frontier model</div>
+          <span class="tier-badge tier-3">Tier 3 - Top open-weight</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">An open-weight alternative to US flagships for long coding, research and front-end work. At 2.8T parameters you use the hosted API, not a laptop. The license limits big resellers.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-standard">Standard</span>
+        <span class="open-badge">Open weights</span>
+      </div>
+    </div>
+
+    <!-- #6 Claude Sonnet 5.5 -->
     <div class="trow" data-tags="writing coding">
       <div class="rank-col"><span class="rank-num">6</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Anthropic</div>
-          <div class="model-name"><a href="https://www.anthropic.com/claude/sonnet" target="_blank" rel="noopener">Claude Sonnet 5</a></div>
-          <div class="model-flagship">Balanced everyday Claude</div>
+          <div class="model-name"><a href="https://platform.claude.com/docs/en/models/sonnet-5-5/overview" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>
+          <div class="model-flagship">Fast, cheaper everyday Claude</div>
           <span class="tier-badge tier-2">Tier 2 - Best value Claude</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">A lower-cost Claude for agentic coding, tool use, and knowledge work when you want strong quality without paying Opus-tier prices.</div>
+          <div class="bestfor-mini">Clearly defined daily tasks: fixing bugs, drafting, and making documents, slides and spreadsheets. Over 30% faster than Sonnet 5 at half the token price of Opus 5.5.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -349,19 +357,40 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #7 GPT-5.6 Terra -->
-    <div class="trow" data-tags="writing coding">
+    <!-- #7 GLM-5.3 -->
+    <div class="trow" data-tags="open coding cheap">
       <div class="rank-col"><span class="rank-num">7</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">OpenAI</div>
-          <div class="model-name"><a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener">GPT-5.6 Terra</a></div>
-          <div class="model-flagship">Balanced value model</div>
-          <span class="tier-badge tier-2">Tier 2 - Best value GPT</span>
+          <div class="model-family">Z.ai</div>
+          <div class="model-name"><a href="https://docs.z.ai/guides/llm/glm-5.3" target="_blank" rel="noopener">GLM-5.3</a></div>
+          <div class="model-flagship">Open-weight agentic coding leader</div>
+          <span class="tier-badge tier-3">Tier 3 - Open-weight coding value</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Everyday work that needs solid intelligence at lower cost. Terra matches the prior GPT-5.5 flagship on benchmarks at roughly half the price.</div>
+          <div class="bestfor-mini">Agentic coding and long tasks that use many tools, at a fraction of US flagship prices. Text only and always reasons. The weights use a custom license, so check the terms.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Low</span>
+        <span class="open-badge">Open weights</span>
+      </div>
+    </div>
+
+    <!-- #8 Grok 4.7 -->
+    <div class="trow" data-tags="coding">
+      <div class="rank-col"><span class="rank-num">8</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">xAI</div>
+          <div class="model-name"><a href="https://docs.x.ai/developers/grok-4-7" target="_blank" rel="noopener">Grok 4.7</a></div>
+          <div class="model-flagship">xAI flagship for code and agents</div>
+          <span class="tier-badge tier-1">Tier 1 - Value-priced frontier</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Coding agents and knowledge work for less than Claude or GPT flagships cost, with strong Cursor support. Independent tests show smaller gains than xAI claims.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -370,40 +399,82 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #8 GLM-5.2 -->
-    <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">8</span></div>
-      <div class="trow-main">
-        <div class="trow-left">
-          <div class="model-family">Z.ai</div>
-          <div class="model-name"><a href="https://z.ai/blog/glm-5.2" target="_blank" rel="noopener">GLM-5.2</a></div>
-          <div class="model-flagship">Top open-weight model</div>
-          <span class="tier-badge tier-3">Tier 3 - Open-weight leader</span>
-        </div>
-        <div class="trow-right">
-          <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Self-hosted or low-cost agentic coding. The highest-ranked open-weight model on the Artificial Analysis Intelligence Index, MIT-licensed with 1M context.</div>
-        </div>
-      </div>
-      <div class="trow-meta">
-        <span class="cost-vibe cost-low">Low</span>
-        <span class="open-badge">Open weights</span>
-      </div>
-    </div>
-
-    <!-- #9 Kimi K3 -->
-    <div class="trow" data-tags="coding open">
+    <!-- #9 Gemini 3.1 Pro -->
+    <div class="trow" data-tags="writing">
       <div class="rank-col"><span class="rank-num">9</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">Moonshot AI</div>
-          <div class="model-name"><a href="https://www.moonshot.ai/" target="_blank" rel="noopener">Kimi K3</a></div>
-          <div class="model-flagship">Largest open-weight model</div>
-          <span class="tier-badge tier-3">Tier 3 - Open-weight frontier</span>
+          <div class="model-family">Google DeepMind</div>
+          <div class="model-name"><a href="https://deepmind.google/models/gemini/pro/" target="_blank" rel="noopener">Gemini 3.1 Pro</a></div>
+          <div class="model-flagship">Google's top public model, now aging</div>
+          <span class="tier-badge tier-1">Tier 1 - Google's best available (aging)</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Long-horizon coding and agent workflows. At 2.8T parameters with a 1M-token context, it is the largest openly downloadable model to date.</div>
+          <div class="bestfor-mini">Multimodal reasoning over long documents, video and audio in Google's apps. Still a February preview. Gemini 4 Argon is out, but only for selected security partners.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-standard">Standard</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #10 Gemini 3.8 Flash -->
+    <div class="trow" data-tags="cheap coding">
+      <div class="rank-col"><span class="rank-num">10</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Google DeepMind</div>
+          <div class="model-name"><a href="https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash" target="_blank" rel="noopener">Gemini 3.8 Flash</a></div>
+          <div class="model-flagship">Google's smartest Flash model</div>
+          <span class="tier-badge tier-2">Tier 2 - Best value Gemini</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">The best-value Google option for coding, agents and multi-step work, with a free tier in AI Studio. The introductory API price doubles on January 1, 2027.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Low</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #11 DeepSeek V4.1 Flash -->
+    <div class="trow" data-tags="open cheap coding">
+      <div class="rank-col"><span class="rank-num">11</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">DeepSeek</div>
+          <div class="model-name"><a href="https://www.deepseek.com/en/news/deepseek-v4-1-flash/" target="_blank" rel="noopener">DeepSeek V4.1 Flash</a></div>
+          <div class="model-flagship">MIT-licensed, very cheap, multimodal</div>
+          <span class="tier-badge tier-3">Tier 3 - Open-weight price disruptor</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">High-volume coding and agent work on a tight budget, or hosting it yourself under a permissive MIT license. Off-peak API prices are among the lowest anywhere.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Ultra-low</span>
+        <span class="open-badge">Open weights</span>
+      </div>
+    </div>
+
+    <!-- #12 Qwen3.8-Max -->
+    <div class="trow" data-tags="open cheap coding">
+      <div class="rank-col"><span class="rank-num">12</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Alibaba Qwen</div>
+          <div class="model-name"><a href="https://qwen.ai/blog?id=qwen3.8" target="_blank" rel="noopener">Qwen3.8-Max</a></div>
+          <div class="model-flagship">Alibaba's 2.4T flagship</div>
+          <span class="tier-badge tier-3">Tier 3 - Open-weight contender</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Long coding and office tasks through Alibaba's low-cost API. The downloadable 2.4T version is text-only with a custom license. Qwen 4 is announced but not out yet.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -412,19 +483,82 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #10 DeepSeek V4-Pro -->
-    <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">10</span></div>
+    <!-- #13 Muse Spark 1.3 -->
+    <div class="trow" data-tags="cheap coding">
+      <div class="rank-col"><span class="rank-num">13</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">DeepSeek</div>
-          <div class="model-name"><a href="https://www.deepseek.com/" target="_blank" rel="noopener">DeepSeek V4-Pro</a></div>
-          <div class="model-flagship">Cost-efficient open frontier</div>
-          <span class="tier-badge tier-3">Tier 3 - Open-weight value</span>
+          <div class="model-family">Meta</div>
+          <div class="model-name"><a href="https://research.meta.ai/blog/introducing-muse-spark-1-3" target="_blank" rel="noopener">Muse Spark 1.3</a></div>
+          <div class="model-flagship">Meta's closed agentic coder</div>
+          <span class="tier-badge tier-3">Tier 3 - Emerging disruptor</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Frontier-adjacent chat, coding, and agent work at very low cost. A 1.6T mixture-of-experts model with a 1M-token context, self-hostable via open weights.</div>
+          <div class="bestfor-mini">Low-cost coding and agent work through Meta Model API or Muse Code, with a 1M-token context. Weights are closed, it is still labeled a public preview, and EU access is unconfirmed.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Low</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #14 Mistral Medium 3.5 -->
+    <div class="trow" data-tags="open coding">
+      <div class="rank-col"><span class="rank-num">14</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Mistral AI</div>
+          <div class="model-name"><a href="https://docs.mistral.ai/models/model-cards/mistral-medium-3-5-26-04" target="_blank" rel="noopener">Mistral Medium 3.5</a></div>
+          <div class="model-flagship">Europe's open-weight flagship</div>
+          <span class="tier-badge tier-3">Tier 3 - EU open-weight pick</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Teams that want an EU-made model they can host themselves on about four GPUs for coding and agent work. Benchmarks put it a step below the frontier leaders.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Low</span>
+        <span class="open-badge">Open weights</span>
+      </div>
+    </div>
+
+    <!-- #15 GPT-6 Luna -->
+    <div class="trow" data-tags="cheap">
+      <div class="rank-col"><span class="rank-num">15</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">OpenAI</div>
+          <div class="model-name"><a href="https://developers.openai.com/api/docs/models/gpt-6-luna" target="_blank" rel="noopener">GPT-6 Luna</a></div>
+          <div class="model-flagship">OpenAI's cheapest, fastest GPT-6</div>
+          <span class="tier-badge tier-4">Tier 4 - Budget OpenAI</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">High-volume jobs with a clear goal: summaries, data extraction, quick answers. Very cheap through the API. Free users get it in the desktop app; ChatGPT chat still uses GPT-5.6 Luna.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-low">Ultra-low</span>
+        <span class="open-badge">Closed API</span>
+      </div>
+    </div>
+
+    <!-- #16 GLM-5.3-Flash -->
+    <div class="trow" data-tags="open cheap coding">
+      <div class="rank-col"><span class="rank-num">16</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Z.ai</div>
+          <div class="model-name"><a href="https://docs.z.ai/guides/vlm/glm-5.3-flash" target="_blank" rel="noopener">GLM-5.3-Flash</a></div>
+          <div class="model-flagship">Cheap open multimodal workhorse</div>
+          <span class="tier-badge tier-4">Tier 4 - Budget open-weight</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Budget agent and coding loops that take image and video input, with MIT-licensed weights you can host yourself. Great value, but independent tests have not confirmed the vendor's benchmarks.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -433,19 +567,19 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #11 Gemini 3.6 Flash -->
-    <div class="trow" data-tags="cheap coding">
-      <div class="rank-col"><span class="rank-num">11</span></div>
+    <!-- #17 Gemini 3.5 Flash-Lite -->
+    <div class="trow" data-tags="cheap">
+      <div class="rank-col"><span class="rank-num">17</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Google DeepMind</div>
-          <div class="model-name"><a href="https://deepmind.google/models/gemini/flash/" target="_blank" rel="noopener">Gemini 3.6 Flash</a></div>
-          <div class="model-flagship">Fast, cheap workhorse</div>
-          <span class="tier-badge tier-4">Tier 4 - Speed and cost leader</span>
+          <div class="model-name"><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/" target="_blank" rel="noopener">Gemini 3.5 Flash-Lite</a></div>
+          <div class="model-flagship">Google's lowest-cost current model</div>
+          <span class="tier-badge tier-4">Tier 4 - Budget Gemini</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">High-volume coding, knowledge work, and multimodal tasks where speed and price matter. Google's current default Flash workhorse, cheaper than its predecessor.</div>
+          <div class="bestfor-mini">Sorting, data extraction, tagging, translation and small helper tasks at scale. Much better than 3.1 Flash-Lite, but not built for hard reasoning.</div>
         </div>
       </div>
       <div class="trow-meta">
@@ -454,44 +588,65 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
 
-    <!-- #12 GPT-5.6 Luna -->
-    <div class="trow" data-tags="cheap">
-      <div class="rank-col"><span class="rank-num">12</span></div>
+    <!-- #18 Command A+ -->
+    <div class="trow" data-tags="open">
+      <div class="rank-col"><span class="rank-num">18</span></div>
       <div class="trow-main">
         <div class="trow-left">
-          <div class="model-family">OpenAI</div>
-          <div class="model-name"><a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener">GPT-5.6 Luna</a></div>
-          <div class="model-flagship">Fastest, lowest-cost GPT</div>
-          <span class="tier-badge tier-4">Tier 4 - Budget and high-volume</span>
+          <div class="model-family">Cohere</div>
+          <div class="model-name"><a href="https://cohere.com/blog/command-a-plus" target="_blank" rel="noopener">Command A+</a></div>
+          <div class="model-flagship">Enterprise open model, 48 languages</div>
+          <span class="tier-badge tier-3">Tier 3 - Enterprise specialist</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Cost-sensitive, high-throughput workloads like classification, routing, and simple tool calls. The fastest and cheapest model in the current GPT-5.6 family.</div>
+          <div class="bestfor-mini">Regulated or sovereign deployments that need multilingual search over your own documents, with citations, on hardware you control (fits on 2 H100 GPUs). Not a frontier coder.</div>
         </div>
       </div>
       <div class="trow-meta">
-        <span class="cost-vibe cost-low">Ultra-low</span>
-        <span class="open-badge">Closed API</span>
+        <span class="cost-vibe cost-low">Low</span>
+        <span class="open-badge">Open weights</span>
       </div>
     </div>
 
-    <!-- #13 Qwen 3.6 -->
-    <div class="trow" data-tags="coding open cheap">
-      <div class="rank-col"><span class="rank-num">13</span></div>
+    <!-- #19 Qwen3.8-27B -->
+    <div class="trow" data-tags="open cheap">
+      <div class="rank-col"><span class="rank-num">19</span></div>
       <div class="trow-main">
         <div class="trow-left">
           <div class="model-family">Alibaba Qwen</div>
-          <div class="model-name"><a href="https://qwen.ai/" target="_blank" rel="noopener">Qwen 3.6</a></div>
-          <div class="model-flagship">Open coding specialist</div>
-          <span class="tier-badge tier-3">Tier 3 - Open coding specialist</span>
+          <div class="model-name"><a href="https://qwen.ai/blog?id=qwen3.8" target="_blank" rel="noopener">Qwen3.8-27B</a></div>
+          <div class="model-flagship">Open model that fits on one GPU</div>
+          <span class="tier-badge tier-3">Tier 3 - Best small local model</span>
         </div>
         <div class="trow-right">
           <div class="bestfor-mini-label">Best for</div>
-          <div class="bestfor-mini">Local, self-hosted coding. The dense 27B model beats far larger predecessors on agentic coding benchmarks and runs on a single consumer GPU under Apache 2.0.</div>
+          <div class="bestfor-mini">Running a capable model that handles images locally or privately on a single GPU under Apache 2.0, for coding and agent tasks. Well behind frontier models on hard work.</div>
         </div>
       </div>
       <div class="trow-meta">
-        <span class="cost-vibe cost-low">Ultra-low</span>
+        <span class="cost-vibe cost-free">Free*</span>
+        <span class="open-badge">Open weights</span>
+      </div>
+    </div>
+
+    <!-- #20 Muse Glimmer 30B -->
+    <div class="trow" data-tags="open cheap">
+      <div class="rank-col"><span class="rank-num">20</span></div>
+      <div class="trow-main">
+        <div class="trow-left">
+          <div class="model-family">Meta</div>
+          <div class="model-name"><a href="https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model" target="_blank" rel="noopener">Muse Glimmer 30B</a></div>
+          <div class="model-flagship">Meta's on-device open agent model</div>
+          <span class="tier-badge tier-3">Tier 3 - Local and private</span>
+        </div>
+        <div class="trow-right">
+          <div class="bestfor-mini-label">Best for</div>
+          <div class="bestfor-mini">Private, offline agent tasks on a Mac or PC with one consumer GPU, under Apache 2.0. Good for local experiments, not for frontier-level reasoning.</div>
+        </div>
+      </div>
+      <div class="trow-meta">
+        <span class="cost-vibe cost-free">Free*</span>
         <span class="open-badge">Open weights</span>
       </div>
     </div>
