@@ -186,20 +186,80 @@ footer a{color:var(--gold);text-decoration:none}
 <div class="grid" id="model-grid">
 
   <!-- OpenAI -->
-  <div class="mcard" data-tags="closed reasoning budget">
+  <div class="mcard" data-tags="closed reasoning">
     <div class="mcard-header">
       <div class="mcard-top">
         <span class="mcard-company">OpenAI</span>
         <span class="status-badge status-dominant">Market Leader</span>
       </div>
-      <div class="mcard-name"><a href="https://openai.com/" target="_blank" rel="noopener">GPT &amp; o-Series</a></div>
-      <div class="mcard-models">GPT-5.6 Sol (flagship) · GPT-5.6 Terra · GPT-5.6 Luna · GPT-5.5 (Thinking / Pro) · GPT-5.5 Instant · GPT-5.4</div>
+      <div class="mcard-name"><a href="https://openai.com/" target="_blank" rel="noopener">GPT-6 (Astra, Sol, Luna) &amp; o-Series</a></div>
+      <div class="mcard-models">GPT-6 Astra, GPT-6 Sol, GPT-6 Luna, GPT-5.6 (succeeded)</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">A three-tier flagship family that lets you dial cost against capability — from top-end reasoning to fast, cheap, high-volume work — without switching brands.</div>
+      <div class="superpower">Long, complex, multi-step work — 
+  coding, browser and computer use, professional analysis, science, mathematics, and healthcare
+   — handled by OpenAI's newest and most capable flagship.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">The tiers can be genuinely confusing: "available in ChatGPT" doesn't mean every model shows up in your picker, and access depends on your plan, effort settings, and rollout wave.</div>
+      <div class="tradeoff">The best model is gated and pricey: 
+  a 1M-token context window, and a price 2.5x GPT-5.6 Sol's
+  , with top-tier "GPT-6 Pro" access only on Pro, Business, and Enterprise plans — not Free or Plus.</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Speed</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:70%"></div></div>
+          <span class="bar-score">7/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Reasoning</span>
+          <div class="bar-track"><div class="bar-fill" style="width:97%"></div></div>
+          <span class="bar-score">9.7/10</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Cost</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:45%"></div></div>
+          <span class="bar-score">Premium</span>
+        </div>
+      </div>
+      <div class="bestfor">
+        <div class="bestfor-label">Best non-technical use</div>
+        <div class="bestfor-text">Working through a big, multi-part project — like drafting, researching, and refining a long report in one sitting — where you want the model to stay on track across many steps.</div>
+      </div>
+      <div class="cost-tier">
+        <span class="cost-label">Cost tier</span>
+        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div></div>
+        <span class="cost-tier-name">Premium</span>
+      </div>
+    </div>
+    <div class="seo-content">
+      <p>OpenAI's current flagship is GPT-6 Astra, 
+  a closed multimodal reasoning model released by OpenAI on September 3, 2026
+  , followed by 
+  GPT-6 Sol and GPT-6 Luna
+   on September 22, 2026. It carries 
+  a 1M-token context window
+   and in ChatGPT appears as GPT-6 Pro on Pro, Business, and Enterprise plans. GPT-6 succeeds the GPT-5.6 family (Sol, Terra, and Luna), which 
+  rolled out across ChatGPT, ChatGPT Work, Codex, and the API since July 9, 2026
+   and is now a previous generation — best suited for deep reasoning, agentic coding, and long professional tasks.</p>
+    </div>
+  </div>
+
+
+  <!-- Anthropic -->
+  <div class="mcard" data-tags="closed reasoning">
+    <div class="mcard-header">
+      <div class="mcard-top">
+        <span class="mcard-company">Anthropic</span>
+        <span class="status-badge status-strong">Highly Competitive</span>
+      </div>
+      <div class="mcard-name"><a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude</a></div>
+      <div class="mcard-models">Fable 5.1, Opus 5.5, Sonnet 5.5, Sonnet 5, Haiku 4.5, Mythos 5.1 (restricted)</div>
+    </div>
+    <div class="mcard-body">
+      <div class="superpower-label">Core superpower</div>
+      <div class="superpower">Careful, high-quality reasoning and writing across a tiered lineup, so you can match the model to the job instead of overpaying for every task.</div>
+      <div class="tradeoff-label">Key trade-off</div>
+      <div class="tradeoff">The lineup moves fast and the names are confusing — Opus 5.5 and Sonnet 5.5 both launched within a week in late September 2026, and older versions like Opus 4.8 and Fable 5 are now legacy, so it's easy to pick a stale or wrong-tier model.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
@@ -214,12 +274,12 @@ footer a{color:var(--gold);text-decoration:none}
         <div class="bar-row">
           <span class="bar-label">Cost</span>
           <div class="bar-track"><div class="bar-fill cost" style="width:50%"></div></div>
-          <span class="bar-score">Premium</span>
+          <span class="bar-score">Premium at the top tier</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Working through a hard, multi-step task — drafting a detailed report, planning a project, or reasoning through a tricky decision — where you want the strongest thinking available in ChatGPT.</div>
+        <div class="bestfor-text">Drafting, editing, and reasoning through long documents — a 1M-token context window means you can hand it a whole report or contract and ask questions about the entire thing at once.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
@@ -228,77 +288,31 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
     <div class="seo-content">
-      <p>OpenAI's current flagship family is GPT-5.6, which was released publicly on July 9, 2026 across ChatGPT, the API, and Codex as three models: Sol, the frontier flagship for complex reasoning, coding, and long-horizon agentic work; Terra, the balanced everyday model; and Luna, the fastest and cheapest tier built for high-volume workloads. It followed a limited preview that began on June 26, 2026 for a small group of trusted partners, with access confined to the API, Codex, or both. All three models share the same core specs: a 1 million token context window, 128,000 maximum output tokens, and a February 2026 knowledge cutoff. In practice, eligible paid plans access GPT-5.6 Sol through ChatGPT's reasoning settings while GPT-5.5 Instant remains the default for everyday chat, and Terra and Luna are available in Work, Codex, and the API depending on the product and plan. API pricing runs from $5 input / $30 output per million tokens for Sol, $2.50 / $15 for Terra, and $1 / $6 for Luna.</p>
+      <p>Claude is Anthropic's family of AI models. As of October 2026, the current lineup includes <a href="#">Fable 5.1</a>, the flagship <a href="#">Opus 5.5</a> (released September 22, 2026) and <a href="#">Sonnet 5.5</a> (released September 28, 2026), alongside the still-active Sonnet 5 and Haiku 4.5, plus the restricted-access Mythos 5.1. <a href="#">Opus 5.5</a> carries a 1M-token context window at $4 per million input and $20 per million output tokens, while <a href="#">Sonnet 5.5</a> runs the same 1M context at $2 input / $10 output, making it the better-value pick for everyday writing, research, and document work. Earlier releases such as Opus 4.8 and Fable 5 have been superseded and are no longer the current tier.</p>
     </div>
   </div>
 
-  <!-- Anthropic -->
-  <div class="mcard" data-tags="closed reasoning">
-    <div class="mcard-header">
-      <div class="mcard-top">
-        <span class="mcard-company">Anthropic</span>
-        <span class="status-badge status-dominant">Market Leader</span>
-      </div>
-      <div class="mcard-name"><a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude</a></div>
-      <div class="mcard-models">Fable 5, Opus 4.8, Sonnet 5, Haiku 4.5</div>
-    </div>
-    <div class="mcard-body">
-      <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Careful, nuanced reasoning and long-form writing that stays coherent across very long, complex tasks.</div>
-      <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Top-tier models sit at a premium price, and Fable 5 access briefly hinged on shifting US export rules — a reminder that frontier availability can change fast.</div>
-      <div class="bars">
-        <div class="bar-row">
-          <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:70%"></div></div>
-          <span class="bar-score">7/10</span>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:96%"></div></div>
-          <span class="bar-score">9.6/10</span>
-        </div>
-        <div class="bar-row">
-          <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:45%"></div></div>
-          <span class="bar-score">Premium</span>
-        </div>
-      </div>
-      <div class="bestfor">
-        <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Drafting, editing, and thinking through long documents — reports, proposals, research summaries — where tone and accuracy matter.</div>
-      </div>
-      <div class="cost-tier">
-        <span class="cost-label">Cost tier</span>
-        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div></div>
-        <span class="cost-tier-name">Premium</span>
-      </div>
-    </div>
-    <div class="seo-content">
-      <p>Claude is Anthropic's family of AI models, spanning the flagship Fable 5, the Opus 4.8 reasoning tier, and the faster Sonnet and Haiku variants. As of July 21, 2026, Claude Fable 5 is available globally after US export controls imposed on June 12 were lifted on June 30 and access was restored on July 1; Anthropic describes it as its most capable widely released model, sitting above the Opus tier. Claude is widely used for complex reasoning, coding, and long-form writing, with a context window of up to 1 million tokens on its Opus 4.8 and Sonnet 5 models at flat per-token pricing (Haiku 4.5 supports 200,000 tokens).</p>
-    </div>
-  </div>
 
   <!-- Google -->
   <div class="mcard" data-tags="closed reasoning budget">
     <div class="mcard-header">
       <div class="mcard-top">
         <span class="mcard-company">Google DeepMind</span>
-        <span class="status-badge status-strong">Highly Competitive</span>
+        <span class="status-badge status-dominant">Market Leader</span>
       </div>
       <div class="mcard-name"><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a></div>
-      <div class="mcard-models">Gemini 3.5 Flash, Gemini 3.1 Pro, Gemini 3.1 Flash-Lite</div>
+      <div class="mcard-models">Gemini 3.8 Flash, Gemini 3.1 Pro, Gemini 3.5 Flash-Lite</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Gemini 3.5 Flash packs near-Pro coding and agentic ability into a fast, high-throughput package, so it can churn through multi-step tool-use tasks quickly and cheaply.</div>
+      <div class="superpower">Delivers near-frontier reasoning and coding at a fraction of the usual cost, with a huge 1-million-token context window that lets it read long documents, codebases, or hours of video in one go.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">It is fast for its intelligence class but not the outright speed leader — and on deep reasoning, long-context retrieval, and knowledge-heavy work, the pricier Gemini 3.1 Pro (and rivals from OpenAI and Anthropic) still pull ahead.</div>
+      <div class="tradeoff">The lineup moves fast — four Flash releases in under four months in 2026 — so model names you learn today can be superseded within weeks, and real-world cost per task can rise even when the per-token price stays flat.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:85%"></div></div>
-          <span class="bar-score">8.5/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:88%"></div></div>
+          <span class="bar-score">8.8/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
@@ -307,13 +321,13 @@ footer a{color:var(--gold);text-decoration:none}
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:70%"></div></div>
-          <span class="bar-score">Good value</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:78%"></div></div>
+          <span class="bar-score">Low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Running an AI assistant that works through long, multi-step tasks — like reading a stack of invoices or a 100-page document and pulling out the answers — where you want speedy, affordable results and can accept slightly-below-frontier accuracy.</div>
+        <div class="bestfor-text">Summarizing, searching, and asking questions across very large sets of material at once — think a long contract, a full research report, or a lengthy video transcript — without having to break it into pieces.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
@@ -322,25 +336,26 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
     <div class="seo-content">
-      <p>Gemini is Google DeepMind's family of multimodal AI models, spanning the fast, efficient Gemini 3.5 Flash, the higher-intelligence Gemini 3.1 Pro, and the ultra-cheap Gemini 3.1 Flash-Lite. Gemini 3.5 Flash offers a 1 million–token context window and is optimized for high-throughput coding and agentic ("tool-using") workflows, scoring 55 on the Artificial Analysis Intelligence Index while running faster than most models in its intelligence tier. It is a strong pick for high-volume, multi-step tasks like document processing, research assistants, and automated workflows where speed and cost matter as much as raw capability.</p>
+      <p>Gemini is Google DeepMind's family of multimodal large language models, with the current generally available lineup built around Gemini 3.8 Flash (the fast, efficient workhorse released September 2, 2026), the more capable Gemini 3.1 Pro, and the ultra-cheap Gemini 3.5 Flash-Lite for high-volume tasks. Gemini 3.8 Flash scores 59 on the independent Artificial Analysis Intelligence Index at high reasoning — up three points from Gemini 3.7 Flash — and carries a roughly 1-million-token context window. That combination makes Gemini well suited to long-document analysis, coding, and agentic workflows where you need strong reasoning without a premium price tag.</p>
     </div>
   </div>
 
+
   <!-- xAI -->
-  <div class="mcard" data-tags="closed reasoning">
+  <div class="mcard" data-tags="closed reasoning budget">
     <div class="mcard-header">
       <div class="mcard-top">
         <span class="mcard-company">xAI</span>
-        <span class="status-badge status-strong">Highly Competitive</span>
+        <span class="status-badge status-disruptor">Disruptor</span>
       </div>
       <div class="mcard-name"><a href="https://x.ai/grok" target="_blank" rel="noopener">Grok</a></div>
-      <div class="mcard-models">Grok 4.5 · Grok 4.3 · Grok 4.1 Fast</div>
+      <div class="mcard-models">Grok 4.7 · Grok 4.6 · Grok 4.5 · Grok 4.3 · Grok Build 0.1</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Live access to what people are posting on X right now, so it's unusually good at "what's happening lately" questions that stump models working from a fixed training set.</div>
+      <div class="superpower">Frontier-adjacent coding and reasoning at a fraction of rivals' prices, plus live access to X's real-time data stream that other major models don't offer natively.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">The newest model has the smallest memory: Grok 4.5 reads about 500K tokens at once, while the older Grok 4.3 handles 1M and Grok 4.1 Fast handles 2M — so for very long documents, the newest isn't always the right pick.</div>
+      <div class="tradeoff">It's genuinely cheap for its tier, but independent benchmarks still place it a step behind the absolute best models from Anthropic and OpenAI — and xAI ships new versions so fast that whatever you learn can be outdated within weeks.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
@@ -349,78 +364,78 @@ footer a{color:var(--gold);text-decoration:none}
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:80%"></div></div>
-          <span class="bar-score">8/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:84%"></div></div>
+          <span class="bar-score">8.4/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:60%"></div></div>
-          <span class="bar-score">Moderate</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:78%"></div></div>
+          <span class="bar-score">Low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Getting a fast, current read on breaking news or public reaction — asking what people are saying about a company, event, or trend as it unfolds.</div>
+        <div class="bestfor-text">Keeping up with breaking news and public conversation — Grok can pull from X's live feed to answer "what's happening right now" questions that other assistants often can't.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
-        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
-        <span class="cost-tier-name">Standard</span>
+        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
+        <span class="cost-tier-name">Low</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Grok is xAI's family of models, with Grok 4.5 as the current flagship since its July 8, 2026 release — a coding- and agent-focused model with a 500K-token context window, priced at $2 per million input tokens and $6 per million output. Below it sit Grok 4.3, the lower-cost 1M-context tier launched in April 2026, and Grok 4.1 Fast, a budget, high-throughput option with a 2M-token window. Grok's defining feature is real-time access to X, making it a strong choice for questions that depend on the latest public conversation rather than a static training cutoff.</p>
+      <p>Grok is xAI's family of large language models, with Grok 4.7 serving as the current flagship since its September 21, 2026 release — it supersedes Grok 4.6 (August 12, 2026) and Grok 4.5 (July 8, 2026), all of which carry a 500,000-token context window. Grok 4.7 lists at $2 per million input tokens and $6 per million output tokens, and is tuned for coding, agentic tasks, and professional knowledge work. The broader lineup includes Grok 4.3 and Grok 4.20 with 1-million-token windows for long-document and high-throughput work, plus the coding-focused Grok Build 0.1; the older Grok 4.1 Fast was retired from the API on May 15, 2026.</p>
     </div>
   </div>
+
 
   <!-- Meta Llama -->
   <div class="mcard" data-tags="open budget">
     <div class="mcard-header">
       <div class="mcard-top">
         <span class="mcard-company">Meta AI</span>
-        <span class="status-badge status-rising">Rising</span>
+        <span class="status-badge status-strong">Highly Competitive</span>
       </div>
       <div class="mcard-name"><a href="https://www.llama.com/" target="_blank" rel="noopener">Llama</a></div>
-      <div class="mcard-models">Llama 4 Maverick &middot; Llama 4 Scout &middot; Llama 3.3 70B</div>
+      <div class="mcard-models">Llama 4 (Scout, Maverick), Llama 3.3 70B, Llama 3.1 (8B, 70B, 405B)</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Fully open weights — download and run privately on your own hardware, free forever with no API costs; Llama 4 Scout's 10-million-token context window is the largest of any openly available model</div>
+      <div class="superpower">Open weights you can download and run yourself — a huge, mature ecosystem of tools and fine-tunes built on freely available models.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Meta has shifted its frontier investment to a new proprietary model (Muse Spark, below) — Llama remains available but is expected to see maintenance updates rather than continued frontier development, and now trails closed frontier models by a wider margin than before</div>
+      <div class="tradeoff">Meta has shifted its frontier work to its newer Muse line, so the Llama family is no longer where Meta's latest capability improvements land.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:73%"></div></div>
-          <span class="bar-score">7.3/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:80%"></div></div>
+          <span class="bar-score">8/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:48%"></div></div>
-          <span class="bar-score">4.8/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+          <span class="bar-score">6.5/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:96%"></div></div>
-          <span class="bar-score">Free*</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:95%"></div></div>
+          <span class="bar-score">Free to self-host</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Privacy-sensitive workflows where data cannot leave your machine, high-volume automation where API costs would otherwise be prohibitive</div>
+        <div class="bestfor-text">Teams or hobbyists who want a capable chatbot running on their own hardware — for privacy, cost control, or offline use — without paying per-message API fees.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
-        <div class="cost-dots">
-          <div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
-        </div>
+        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
         <span class="cost-tier-name">Free</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Meta's Llama 4 family remains the most widely deployed open-weight AI ecosystem. Llama 4 Maverick is a natively multimodal Mixture-of-Experts model with a 1-million-token context window. Llama 4 Scout offers the same multimodal capability with a 10-million-token context window — the largest of any openly available model. Llama 3.3 70B remains a widely-deployed practical text-only option. In April 2026, Meta Superintelligence Labs launched a new proprietary model, Muse Spark, as the engine behind Meta AI — a strategic pivot away from Llama as Meta's frontier effort, though existing Llama models remain open and available for self-hosting via Ollama, Hugging Face, and every major inference framework.</p>
+      <p>Llama is Meta's family of open-weight language models, including Llama 4 (Scout and Maverick) and the widely-deployed text-only Llama 3.3 70B, all available for free download and self-hosting. As of October 2026, Meta's frontier development has moved to its newer Muse line — the proprietary flagship Muse Spark 1.3 (released September 2, 2026, with a roughly 1-million-token context window) and the open-weight, Apache 2.0-licensed Muse Glimmer (a ~30-billion-parameter model released August 10, 2026 that runs on a single consumer GPU), reflecting a renewed open-weight commitment rather than a move away from it. Existing Llama models remain open and available, making them a practical choice for local chatbots, document summarization, and privacy-sensitive deployments.</p>
     </div>
   </div>
+
 
   <!-- Muse Spark -->
   <div class="mcard" data-tags="closed reasoning">
@@ -430,13 +445,13 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="status-badge status-rising">Rising</span>
       </div>
       <div class="mcard-name"><a href="https://meta.ai/" target="_blank" rel="noopener">Muse Spark</a></div>
-      <div class="mcard-models">Muse Spark 1.1 (current), Muse Spark 1.0</div>
+      <div class="mcard-models">Muse Spark 1.3 (current), Muse Spark 1.2, Muse Spark 1.1, Muse Spark</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">A multimodal reasoning model built for agentic tasks — planning, using tools, and orchestrating work across apps with a very large 1-million-token memory that it actively manages during long jobs.</div>
+      <div class="superpower">It's a natively multimodal model built for long, multi-step "agentic" work — holding a huge amount of material in mind while it reasons, uses tools, and writes code across big projects.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">It's tuned for tool use and orchestration rather than raw coding accuracy, so it trails top rivals on the hardest coding and reasoning tasks — and all the standout benchmark numbers so far are Meta's own, not independent tests.</div>
+      <div class="tradeoff">It's closed and API-only (no downloadable weights yet), rollout is uneven by region, and the cheapest access tier trains on your data unless you opt out — so read the tier details before you rely on it.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
@@ -445,18 +460,18 @@ footer a{color:var(--gold);text-decoration:none}
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:78%"></div></div>
-          <span class="bar-score">7.8/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:80%"></div></div>
+          <span class="bar-score">8/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:82%"></div></div>
+          <div class="bar-track"><div class="bar-fill cost" style="width:80%"></div></div>
           <span class="bar-score">Low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Chatting free in the Meta AI app or at meta.ai, where "Thinking" mode shows the model's step-by-step reasoning before it answers — handy for multi-step questions like planning an event or working through a problem out loud.</div>
+        <div class="bestfor-text">Feeding it a large pile of documents — reports, research, long threads, images, and even video — and asking it to work through them in one go without losing track of the details.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
@@ -465,9 +480,10 @@ footer a{color:var(--gold);text-decoration:none}
       </div>
     </div>
     <div class="seo-content">
-      <p>As of July 2026, the current model in this family is Muse Spark 1.1, which Meta released on July 9, 2026 as its second Meta Superintelligence Labs model and a significant upgrade over the original Muse Spark from April. It is a multimodal reasoning model built for agentic tasks, with a 1-million-token context window and gains in tool use, computer use, coding, and multimodal understanding, and now runs in "Thinking" mode inside the Meta AI app and at meta.ai. On the same day, Meta opened a public preview of the new Meta Model API — a self-serve, US-only developer preview priced at $1.25 per million input tokens and $4.25 per million output tokens, with $20 in free credits for new accounts.</p>
+      <p>Muse Spark is the first model family from Meta Superintelligence Labs, introduced in April 2026 and first versioned as Muse Spark 1.1 on July 9, 2026, followed by Muse Spark 1.2 (August 5, 2026) and the current flagship, Muse Spark 1.3 (September 2, 2026). Muse Spark 1.3 is a natively multimodal reasoning model aimed at agentic workflows and coding, with a 1,048,576-token (~1M) context window and roughly 20% fewer tool calls and 25% fewer tokens than 1.2. It is proprietary and closed-weight, available through the Meta Model API and the Muse Code agent, with standard API pricing around $1.25 per million input tokens and $4.25 per million output tokens.</p>
     </div>
   </div>
+
 
   <!-- DeepSeek -->
   <div class="mcard" data-tags="open budget reasoning">
@@ -476,94 +492,94 @@ footer a{color:var(--gold);text-decoration:none}
         <span class="mcard-company">DeepSeek</span>
         <span class="status-badge status-disruptor">Disruptor</span>
       </div>
-      <div class="mcard-name"><a href="https://www.deepseek.com/" target="_blank" rel="noopener">DeepSeek</a></div>
-      <div class="mcard-models">DeepSeek V4 Pro &middot; DeepSeek V4 Flash</div>
+      <div class="mcard-name"><a href="https://www.deepseek.com/" target="_blank" rel="noopener">DeepSeek V4.1</a></div>
+      <div class="mcard-models">DeepSeek V4.1-Flash, DeepSeek V4 Pro (legacy)</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">Frontier-competitive reasoning at a small fraction of closed-model pricing — still the most significant price disruption in AI history</div>
+      <div class="superpower">Flagship-level answers at bargain prices — DeepSeek says its small, fast Flash model now beats its old Pro flagship on performance, cost, and speed.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">Chinese-operated; some content restrictions; data privacy considerations for sensitive enterprise use</div>
+      <div class="tradeoff">The lineup moves fast and messily: the old "V4 Flash" name is retired (it now quietly points to V4.1-Flash), so what you get can change behind a stable name without any error.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:54%"></div></div>
-          <span class="bar-score">5.4/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:88%"></div></div>
+          <span class="bar-score">8.8/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:86%"></div></div>
-          <span class="bar-score">8.6/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+          <span class="bar-score">8.2/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:100%"></div></div>
+          <div class="bar-track"><div class="bar-fill cost" style="width:95%"></div></div>
           <span class="bar-score">Ultra-low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">High-volume automation where cost-per-prompt needs to be near zero; advanced coding tasks where quality needs to match closed frontier models at a fraction of the cost</div>
+        <div class="bestfor-text">Working through very long documents or mixed text-and-image files cheaply — its million-token window can hold a whole book or a big stack of reports at once.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
-        <div class="cost-dots">
-          <div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div>
-        </div>
+        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
         <span class="cost-tier-name">Ultra-low</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>DeepSeek's January 2025 release of R1 shocked the AI industry by matching OpenAI o1's reasoning benchmark performance at a fraction of the training cost of Western frontier labs. DeepSeek V4 Pro is the current flagship, a Mixture of Experts model achieving frontier-competitive reasoning scores at dramatically lower inference cost than closed alternatives. DeepSeek V4 Flash trades some capability for speed and even lower cost. Both are available as open weights and via the DeepSeek API.</p>
+      <p>As of October 3, 2026, DeepSeek's current lineup is led by DeepSeek-V4.1-Flash, a 552B-parameter Mixture-of-Experts model with native image-and-text (multimodal) input and a 1-million-token context window, released September 10, 2026 under an MIT open-weights license and served via the DeepSeek API as "deepseek-flash." It replaced the retired original V4-Flash, whose legacy name now routes to V4.1-Flash. The older V4 Pro flagship is in flux: DeepSeek announced that from 04:00 UTC on September 14, 2026 all deepseek-v4-pro requests would route to V4.1-Flash at Flash prices until an unreleased V4.1-Pro ships, though it later indicated it may keep V4 Pro service running — so confirm current status directly with DeepSeek before relying on either model name.</p>
     </div>
   </div>
 
+
   <!-- Qwen -->
-  <div class="mcard" data-tags="closed open reasoning">
+  <div class="mcard" data-tags="open reasoning">
     <div class="mcard-header">
       <div class="mcard-top">
         <span class="mcard-company">Alibaba</span>
-        <span class="status-badge status-rising">Rising</span>
+        <span class="status-badge status-strong">Highly Competitive</span>
       </div>
       <div class="mcard-name"><a href="https://qwen.ai/" target="_blank" rel="noopener">Qwen</a></div>
-      <div class="mcard-models">Qwen3.8-Max-Preview, Qwen3.7-Max, Qwen3.7-Plus, Qwen3.6-27B (open weights)</div>
+      <div class="mcard-models">Qwen3.8-Max, Qwen3.7-Max, Qwen3.7-Plus, Qwen3.6-27B (open weights)</div>
     </div>
     <div class="mcard-body">
       <div class="superpower-label">Core superpower</div>
-      <div class="superpower">A fast-shipping frontier lineup topped by a huge new preview model, backed by long-horizon agent skills and a genuinely open-weight budget tier you can download and run yourself.</div>
+      <div class="superpower">A genuinely downloadable frontier-scale model: <span></span>you can run the same 2.4-trillion-parameter engine that powers Alibaba's flagship, not just rent it from an API.</div>
       <div class="tradeoff-label">Key trade-off</div>
-      <div class="tradeoff">The lineup is split: the newest and strongest models (Qwen3.8-Max-Preview, Qwen3.7-Max, Qwen3.7-Plus) are cloud-only and proprietary, while the free-to-download open weights are a generation behind — so you can't have the top capability and self-hosting at the same time.</div>
+      <div class="tradeoff">"Open weights" here doesn't mean "runs on your laptop" — the open checkpoint is enormous and needs serious server hardware, and it drops some cloud features like image input and the non-thinking mode.</div>
       <div class="bars">
         <div class="bar-row">
           <span class="bar-label">Speed</span>
-          <div class="bar-track"><div class="bar-fill speed" style="width:50%"></div></div>
-          <span class="bar-score">5/10</span>
+          <div class="bar-track"><div class="bar-fill speed" style="width:75%"></div></div>
+          <span class="bar-score">7.5/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Reasoning</span>
-          <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
-          <span class="bar-score">8.5/10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:87%"></div></div>
+          <span class="bar-score">8.7/10</span>
         </div>
         <div class="bar-row">
           <span class="bar-label">Cost</span>
-          <div class="bar-track"><div class="bar-fill cost" style="width:70%"></div></div>
-          <span class="bar-score">Mixed</span>
+          <div class="bar-track"><div class="bar-fill cost" style="width:88%"></div></div>
+          <span class="bar-score">Low</span>
         </div>
       </div>
       <div class="bestfor">
         <div class="bestfor-label">Best non-technical use</div>
-        <div class="bestfor-text">Working through long, multi-step reasoning tasks — like analyzing a big pile of documents or research at once — thanks to a very large context window that fits huge amounts of text in a single request.</div>
+        <div class="bestfor-text">Long, multi-step work like drafting and revising a big research document or managing a lengthy project plan, where its very large memory for context keeps everything in view at once.</div>
       </div>
       <div class="cost-tier">
         <span class="cost-label">Cost tier</span>
-        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
+        <div class="cost-dots"><div class="cost-dot active"></div><div class="cost-dot active"></div><div class="cost-dot"></div><div class="cost-dot"></div><div class="cost-dot"></div></div>
         <span class="cost-tier-name">Low</span>
       </div>
     </div>
     <div class="seo-content">
-      <p>Qwen is Alibaba's family of large language models. Its current flagship is Qwen3.8-Max, previewed on July 19, 2026 as a 2.4-trillion-parameter multimodal (text, image, video, document) sparse Mixture-of-Experts model , which Alibaba claims performs "second only to Fable 5" — though that claim shipped with no benchmark table, no model card, no license, and no active-parameter count, and nobody outside Alibaba can run it yet, so "open-weight" is a promise rather than a download. Below it sit the proprietary, API-only Qwen3.7-Max, formally announced at the Alibaba Cloud Summit in May 2026 and text-only , and Qwen 3.7 Plus, a low-cost multimodal sibling that adds vision and video and lists at roughly one-sixth the per-token price of Qwen 3.7 Max , both carrying a 1M-token context window. Note that Qwen 3.7-Max is not open source and not open-weight — you cannot download it or run it on your own GPUs ; if you specifically want to self-host, the genuinely open line is the earlier Qwen3.6 family, which remains a solid free option for cost-sensitive work.</p>
+      <p>Qwen is Alibaba's family of large language models, led by Qwen3.8-Max, which launched on August 3, 2026 as a sparse mixture-of-experts model with 2.4 trillion total parameters, roughly 95 billion active per token, and a context window of up to one million tokens. <span></span>Alibaba released the open weights as Qwen3.8-2.4T-A95B in mid-August 2026 under a custom Qwen3.8-Max License, and the hosted model is available through providers such as OpenRouter and Together AI at roughly $2 per million input and $6 per million output tokens. The lineup also includes earlier releases like Qwen3.7-Max and Qwen3.7-Plus, with Qwen aimed primarily at coding, long-horizon agentic tasks, and research.</p>
     </div>
   </div>
+
 
   <!-- Kimi -->
   <div class="mcard" data-tags="open reasoning">
