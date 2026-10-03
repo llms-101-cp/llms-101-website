@@ -175,19 +175,13 @@ async function generateTrackerRows(previousRowsSummary) {
   log('Calling Anthropic API with web_search enabled...');
 
   const message = await client.messages.create({
-    model: 'claude-opus-4-8', // verified current as of 2026-06-27 — re-check this against
-                              // docs.claude.com if this script hasn't run in a while and
-                              // errors with a model-not-found message; Anthropic ships new
-                              // Opus versions roughly every 6-10 weeks
-    // 8000, raised from 4000 on 2026-07-22. The original limit was borderline
-    // for a 12-row, web_search-grounded JSON generation: the June 27 and
-    // July 1 runs squeaked under it, but the 2026-07-22 re-run truncated
-    // (stop_reason: max_tokens → the hard "not safe to parse" failure below),
-    // blocking the tracker refresh entirely. 8000 gives comfortable headroom
-    // and matches the ceilings validate-and-publish.js's repair stage and
-    // generate.js already use; a higher ceiling only affects runs that would
-    // otherwise truncate, never a clean one.
-    max_tokens: 8000,
+    model: 'claude-opus-5-5', // updated 2026-10-03; re-check against docs.anthropic.com
+                              // if this errors with model-not-found
+    // Raised to 12000 on 2026-10-03 when tracker expanded from 12 to 20 rows.
+    // 8000 was comfortable for 12 rows; 20 rows ≈ 67% more JSON output so
+    // headroom increased proportionally. Higher ceiling only affects truncating
+    // runs, never a clean one.
+    max_tokens: 12000,
     system: prompt.system,
     messages: [{ role: 'user', content: prompt.user }],
     tools: [{ type: 'web_search_20250305', name: 'web_search' }]

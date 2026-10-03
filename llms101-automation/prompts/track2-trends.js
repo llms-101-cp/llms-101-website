@@ -266,7 +266,7 @@ no explanation, no surrounding page HTML. Start directly with <div class="mcard"
  * stale, not because the prompt is bad.
  */
 
-export const TRACKER_ROW_COUNT = 12;
+export const TRACKER_ROW_COUNT = 20;
 
 export const VALID_COST_CLASSES = ['cost-free', 'cost-low', 'cost-standard', 'cost-premium'];
 export const VALID_TIER_CLASSES = ['tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5'];
@@ -316,25 +316,25 @@ cadence; check whether any of the above models have been superseded,
 discontinued, or had a successor released. Also check whether a model that
 isn't on last month's list now belongs there.
 
-Cover this same spread of categories, scaled up for ${TRACKER_ROW_COUNT}
-rows (adjust which specific model fills each slot based on what you find —
-do not just relabel last month's models):
-- 3-4 closed frontier "Tier 1" models (the current best from OpenAI,
-  Anthropic, Google, and optionally xAI)
-- 2-3 open-weight models genuinely competitive at the frontier -- don't
+Cover this spread of categories across ${TRACKER_ROW_COUNT} rows (adjust
+which specific model fills each slot based on what you find — do not just
+relabel last month's models):
+- 4-5 closed frontier "Tier 1" models (the current best from OpenAI,
+  Anthropic, Google, xAI, and any other lab now competing at the frontier)
+- 3-4 open-weight models genuinely competitive at the frontier -- don't
   reduce the open-weight ecosystem to a single representative; cover more
   than one of DeepSeek, Llama, Qwen, Mistral, or whichever else currently
   leads open-weight quality
-- 1 mid-tier "best value" closed model per major lab as relevant
-- 1-2 budget/speed-optimised models for high-volume use cases. Prefer the
+- 2-3 mid-tier "best value" closed models (one per major lab as relevant)
+- 2-3 budget/speed-optimised models for high-volume use cases. Prefer the
   budget/fast sibling of each lab's CURRENT flagship generation (e.g. the
   model currently serving as the ChatGPT default fast tier), not an older
   generation's budget model that merely satisfies the category label --
   verify via web_search which sibling is most current before choosing.
-- 1-2 notable specialized or emerging models that don't fit neatly into
-  the above -- e.g. a strong coding-specialized model, or a competitive
-  model from a lab not otherwise represented in this list (Mistral,
-  Cohere, Perplexity, or similar)
+- 3-5 notable specialized or emerging models that don't fit neatly into
+  the above -- e.g. strong coding-specialized models, multimodal leaders,
+  reasoning-optimised models, or competitive models from labs not otherwise
+  represented (Mistral, Cohere, Perplexity, AI21, or similar)
 
 Do NOT include any model whose access is currently suspended, restricted to
 a small preview group, or otherwise not generally available to a typical
