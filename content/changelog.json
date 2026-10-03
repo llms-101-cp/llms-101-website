@@ -334,5 +334,40 @@
         "url": "/tracker"
       }
     ]
+  },
+  {
+    "date": "2026-10-03",
+    "items": [
+      {
+        "area": "Models",
+        "text": "OpenAI — GPT-6 (Astra, Sol, Luna) card updated — reflects September 2026 GPT-6 launch, superseding GPT-5.6 family.",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "Google DeepMind — Gemini card updated — Gemini 3.8 Flash (Sept 2026) now current; benchmark score updated to 59.",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "xAI — Grok card updated — Grok 4.7 flagship; Grok 4.20 2M context corrected; retired Grok 4.1 Fast removed.",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "Meta AI — Llama card updated — corrected framing: Meta’s frontier now proprietary Muse line; Muse Glimmer is a smaller local model.",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "DeepSeek — card updated — DeepSeek V4.1-Flash (Sept 2026) replaces retired V4 Pro/Flash lineup.",
+        "url": "/models.html"
+      },
+      {
+        "area": "Models",
+        "text": "Alibaba — Qwen card updated — Qwen3.8-Max GA and open-weight Qwen3.8-27B (Aug 2026) replace Preview-era lineup.",
+        "url": "/models.html"
+      }
+    ]
   }
 ]
