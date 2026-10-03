@@ -1,0 +1,192 @@
+{
+  "week": "2026-10-03",
+  "pageResults": [
+    {
+      "id": "about",
+      "status": "held",
+      "reasons": [
+        "error during check/repair: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebyv4eqtpkLoVN9HoxU\"}"
+      ],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": null,
+      "newData": null
+    },
+    {
+      "id": "beginners",
+      "status": "held",
+      "reasons": [
+        "error during check/repair: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebyw89UzQrt2pyXB65r\"}"
+      ],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": null,
+      "newData": null
+    },
+    {
+      "id": "contact",
+      "status": "held",
+      "reasons": [
+        "error during check/repair: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfebywdujfWbYSw5CgvWy\"}"
+      ],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": null,
+      "newData": null
+    },
+    {
+      "id": "resources",
+      "status": "held",
+      "reasons": [
+        "error during check/repair: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfebyxAecvagzTtb3i7Gy\"}"
+      ],
+      "linkRot": [],
+      "originalFactCheck": null,
+      "factCheck": null,
+      "newData": null
+    }
+  ],
+  "modelCardResults": [
+    {
+      "company": "OpenAI",
+      "name": "GPT &amp; o-Series",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfebyxfB1w6oDvToCogZw\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Anthropic",
+      "name": "Claude",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfebyyAvkf557838W8KUx\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Google DeepMind",
+      "name": "Gemini",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebyyex92wPabV5kZ6X7\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "xAI",
+      "name": "Grok",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebyz9xkczpFvwmEEaNm\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Meta AI",
+      "name": "Llama",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CfebyzfELRzZ4nqUL4v3p\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Meta Superintelligence Labs",
+      "name": "Muse Spark",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz1AjhD9MQUazJxQDa\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "DeepSeek",
+      "name": "DeepSeek",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz1jDBKQkABNV1CeNs\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Alibaba",
+      "name": "Qwen",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz2JTACuyuXfqGqYWQ\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Moonshot AI",
+      "name": "Kimi",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz2ohq421nrZvpYLWE\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    },
+    {
+      "company": "Mistral AI",
+      "name": "Mistral",
+      "stale": false,
+      "factCheck": null,
+      "draftFile": null,
+      "priorDrafts": [],
+      "unappliedPriorDrafts": [],
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz3JiLwK5VncXB9HBk\"}",
+      "justApplied": false,
+      "slug": null,
+      "appliedDraftDate": null
+    }
+  ],
+  "spotAuditFindings": [],
+  "trackerPRs": [
+    {
+      "number": 55,
+      "title": "Monthly Model Tracker refresh (2026-09-01)",
+      "url": "https://github.com/llms-101-cp/llms-101-website/pull/55",
+      "createdAt": "2026-09-01T14:15:27Z",
+      "ageDays": 31
+    }
+  ],
+  "fatalError": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011Cfebz3pjTtecsApsCBmhq\"}"
+}
