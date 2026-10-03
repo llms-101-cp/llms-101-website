@@ -324,5 +324,15 @@
         "url": "/models.html"
       }
     ]
+  },
+  {
+    "date": "2026-10-03",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Monthly Model Tracker updated — top models include Claude Fable 5.1, GPT-6 Astra, Claude Opus 5.5 and 17 more.",
+        "url": "/tracker"
+      }
+    ]
   }
 ]
