@@ -205,14 +205,16 @@ async function generateTrackerRows(previousRowsSummary) {
   // mis-grab it — but that then fails loudly in validateTrackerRows below,
   // never silently.)
   const allText = message.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  log(`stop_reason: ${message.stop_reason} | text blocks: ${message.content.filter(b => b.type === 'text').length} | allText length: ${allText.length}`);
   const fenceStripped = allText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
   const cleaned = extractJsonArray(fenceStripped) ?? fenceStripped;
+  log(`extractJsonArray result length: ${cleaned?.length ?? 0}`);
 
   let rows;
   try {
     rows = JSON.parse(cleaned);
   } catch (err) {
-    log('ERROR: JSON parse failed. Raw response saved to drafts/errors/.');
+    log(`ERROR: JSON parse failed (${err.message}). Raw response saved to drafts/errors/.`);
     await saveError(allText);
     throw err;
   }
