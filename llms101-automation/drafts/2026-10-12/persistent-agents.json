@@ -1,0 +1,27 @@
+{
+  "label": "Persistent Agents",
+  "sub": "Memory across sessions",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "Persistent Agents: Always-On AI That Remembers",
+  "body": "<p>A <strong>persistent agent</strong> is an AI system that keeps working, remembering, and acting between conversations. Unlike standard chatbots that forget everything when you close the window, persistent agents store information in external databases and resume exactly where they left off—even days or weeks later.</p><p>The key mechanism is a <strong>write-manage-read loop</strong>: as the agent works, it writes important facts and preferences to long-term storage, then retrieves them when relevant. Think of it like the agent keeping notes on you. Some systems use hierarchical memory—a fast \"working memory\" in the context window, plus deeper archival storage the agent can search when needed.</p><p>This matters because real tasks take time. An agent helping with a weeks-long project, or running background research while you sleep, needs to remember what happened yesterday. Persistent memory transforms a stateless text generator into something closer to an ongoing collaborator—one that learns your preferences, avoids repeating mistakes, and accumulates knowledge over time.</p>",
+  "examples": [
+    "MemGPT",
+    "Long-term memory",
+    "Session continuity",
+    "Background agents",
+    "Retrieval-augmented memory",
+    "State persistence"
+  ],
+  "sources": [
+    {
+      "label": "MemGPT: Towards LLMs as Operating Systems (Packer et al., 2023)",
+      "url": "https://arxiv.org/abs/2310.08560"
+    },
+    {
+      "label": "Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory",
+      "url": "https://arxiv.org/abs/2504.19413"
+    }
+  ]
+}
