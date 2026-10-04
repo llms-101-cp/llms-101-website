@@ -1,5 +1,19 @@
 [
   {
+    "title": "The AI That Keeps Working After You Close the App: Always-On Agents, Explained",
+    "slug": "always-on-agents-explained",
+    "date": "2026-10-04",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "A new generation of AI agents keeps working while you sleep. Before you hand one your inbox, know what it can do unsupervised, what it remembers, and which permissions stick.",
+    "before_label": "The chatbot era",
+    "before": "You ask a question, you get an answer. Close the app and nothing happens until you come back.",
+    "after_label": "The agent era",
+    "after": "The AI keeps researching, scheduling, and drafting in the background - then pings you when it needs approval.",
+    "file": "content/articles/always-on-agents-explained.json",
+    "url": "/trends/view-article.html?article=always-on-agents-explained"
+  },
+  {
     "title": "Your Browser Now Has an AI Inside It: What to Know Before Turning It On",
     "slug": "ai-browsers-prompt-injection-risk",
     "date": "2026-09-27",
