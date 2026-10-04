@@ -349,5 +349,19 @@
         "url": "/models.html"
       }
     ]
+  },
+  {
+    "date": "2026-10-04",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Persistent Agents node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: The AI That Keeps Working After You Close the App: Always-On Agents, Explained.",
+        "url": "/trends/view-article.html?article=always-on-agents-explained"
+      }
+    ]
   }
 ]

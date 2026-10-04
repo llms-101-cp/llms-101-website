@@ -1,0 +1,68 @@
+{
+  "week": "2026-10-12",
+  "generatedAt": "2026-10-04T23:53:46.510Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "In the last two weeks the whole industry shipped 'always-on' agents at once — OpenAI's dots at DevDay, plus Meta Muse, Siri, and Instinct — a genuine category shift a non-technical reader will encounter in products they already pay for. It's not covered by the existing agents/tools/computer-use nodes, which describe one-shot or screen-control agents, not persistent memory-keeping coworkers. The practical takeaways (background actions, cross-app memory, permissions you can't disable) are durable orientation that will still matter a month from now regardless of which product wins.",
+  "items": [
+    {
+      "filename": "persistent-agents.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/persistent-agents.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": []
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/1",
+        "after": "3/3/3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "always-on-agents-explained.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/always-on-agents-explained.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Meta's Muse 'launched three weeks earlier' than OpenAI's dots (announced Sept 29, 2026).",
+            "issue": "Muse launched September 8, 2026, which is exactly 21 days (three weeks) before the Dots announcement on September 29. The claim is accurate. However, note that Muse is US-only (later US and Canada); the draft does not misstate this but readers may assume broad availability. Not blocking."
+          },
+          {
+            "severity": "note",
+            "claim": "OpenAI's dots 'runs on GPT-6 Astra.'",
+            "issue": "Correct and well-supported: OpenAI's own help center and multiple outlets confirm Dots is powered by GPT-6 Astra. Worth flagging only because OpenAI simultaneously declined to ship the newer GPT-6.1 Astra over safety concerns and released GPT-6.1 Sol at the same DevDay — so 'GPT-6 Astra' (not GPT-6.1) is the correct current model for Dots. The draft gets this right."
+          },
+          {
+            "severity": "note",
+            "claim": "Instinct 'valued at $10 billion as of late September.'",
+            "issue": "Accurate — Instinct's $1B Series C at a $10B valuation was announced Monday, September 28, 2026. The phrasing 'as of late September' carries an implicit but adequately specific date; this is a quickly-moving figure that could become stale, but it is correct as written today."
+          },
+          {
+            "severity": "note",
+            "claim": "Quoted safety text: dots \"can still make mistakes, including when following your rules,\" and help-center text: \"You currently cannot view, delete or directly modify individual dot memories.\"",
+            "issue": "These quotes are consistent with OpenAI's launch/help material as reflected in coverage (e.g., guidance that dots can make mistakes and that individual dot memories cannot be individually managed, requiring deletion of the dot). Could not verify the exact wording character-for-character against the primary OpenAI page in results; recommend a final check against the live help-center article before publication. Not blocking."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=always-on-agents-explained"
+    }
+  ]
+}
