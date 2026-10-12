@@ -237,6 +237,21 @@
       "_planned_by": "auto",
       "rationale": "In the last two weeks the whole industry shipped 'always-on' agents at once — OpenAI's dots at DevDay, plus Meta Muse, Siri, and Instinct — a genuine category shift a non-technical reader will encounter in products they already pay for. It's not covered by the existing agents/tools/computer-use nodes, which describe one-shot or screen-control agents, not persistent memory-keeping coworkers. The practical takeaways (background actions, cross-app memory, permissions you can't disable) are durable orientation that will still matter a month from now regardless of which product wins.",
       "_completed_at": "2026-10-04T23:53:04.323Z"
+    },
+    {
+      "week_of": "2026-10-19",
+      "node": {
+        "id": "generative-ui",
+        "parentContext": "Themes branch — how people actually interact with AI products; sits alongside multimodal and the consumer-facing theme nodes about what AI tools do for everyday users",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "ChatGPT Stopped Just Talking: What 'Interactive' AI Answers Mean for You",
+        "notes": "Explain, for a non-technical reader, the shift from walls of text to answers that render charts, buttons, forms, calculators, and small on-the-fly tools inside the chat — and why that changes everyday use (planning, comparing, budgeting). Ground via live search on OpenAI's GPT-6 'Intelligent UI' rollout (Oct 7-8, 2026, paid tiers first then Free/Go; ~1.2B weekly users) and note this is part of a broader 'generative UI' direction other assistants may follow. Keep it evergreen by focusing on the concept (AI that builds an interface for the question) rather than version numbers; flag that exact features vary by plan/region and that these are early capabilities. Avoid benchmark hype, speed stats presented as fact (label them as the company's own claims), and avoid duplicating the multimodal (voice/vision) node — this is about interactive/visual output, not input modalities."
+      },
+      "_planned_by": "auto",
+      "rationale": "A genuine, highly visible product shift landed in the last week that touches more than a billion weekly users and changes the one thing every non-technical person notices first: what an AI answer looks like. The site has nodes on multimodal input and agents but nothing on generative/interactive output, so this fills a real gap. It stays relevant in a month because it's a durable interface direction, not a transient news event, and understanding 'AI that builds a tool for your question' helps readers regardless of which product they use.",
+      "_completed_at": "2026-10-12T00:17:44.953Z"
     }
   ]
 }
