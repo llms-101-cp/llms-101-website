@@ -1,5 +1,19 @@
 [
   {
+    "title": "ChatGPT Stopped Just Talking: What Interactive AI Answers Mean for You",
+    "slug": "chatgpt-interactive-answers-intelligent-ui",
+    "date": "2026-10-12",
+    "category": "Trend Spotlight",
+    "read_time": "5 min read",
+    "summary": "AI assistants are shifting from walls of text to answers with charts, buttons, and mini-tools built on the spot. Here is what that means for everyday tasks.",
+    "before_label": "The old way",
+    "before": "You ask a question, the AI types back several paragraphs. You read, copy, paste into a spreadsheet, then build the chart yourself.",
+    "after_label": "The new way",
+    "after": "You ask a question, the AI returns a clickable chart, a calculator, or a form you can fill out right inside the conversation.",
+    "file": "content/articles/chatgpt-interactive-answers-intelligent-ui.json",
+    "url": "/trends/view-article.html?article=chatgpt-interactive-answers-intelligent-ui"
+  },
+  {
     "title": "The AI That Keeps Working After You Close the App: Always-On Agents, Explained",
     "slug": "always-on-agents-explained",
     "date": "2026-10-04",
