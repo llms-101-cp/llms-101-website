@@ -363,5 +363,19 @@
         "url": "/trends/view-article.html?article=always-on-agents-explained"
       }
     ]
+  },
+  {
+    "date": "2026-10-12",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New Generative UI node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: ChatGPT Stopped Just Talking: What Interactive AI Answers Mean for You.",
+        "url": "/trends/view-article.html?article=chatgpt-interactive-answers-intelligent-ui"
+      }
+    ]
   }
 ]

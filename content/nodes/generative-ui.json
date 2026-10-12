@@ -1,0 +1,27 @@
+{
+  "label": "Generative UI",
+  "sub": "AI creates interfaces on the fly",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "Generative UI: When the AI builds the interface",
+  "body": "<p><strong>Generative UI</strong> is when an AI model creates user interface elements — buttons, charts, interactive widgets — rather than just returning plain text. Instead of a chatbot replying with \"Here's a table of your data,\" it can actually render a live, interactive table you can sort and filter.</p><p>Here's the mechanism: a large language model receives your request and decides which visual component fits best. It then outputs structured instructions (often selecting from a pre-defined set of components) along with the relevant data to populate them. The application's frontend receives this and renders the actual interface in real time. Think of it as the model becoming a kind of on-demand designer that assembles interfaces piece by piece.</p><p>This matters because it moves AI from a text-in-text-out tool toward something that feels like using genuine software. Instead of reading a wall of text, you get charts, forms, and controls tailored to exactly what you asked. Google has rolled this out through features like \"dynamic view\" in Gemini, and developer tools like Vercel's AI SDK let anyone build similar experiences.</p>",
+  "examples": [
+    "Vercel AI SDK streamUI",
+    "Google Gemini dynamic view",
+    "v0.dev prompt-to-React",
+    "ChatGPT canvas",
+    "Component registries",
+    "Bolt.new"
+  ],
+  "sources": [
+    {
+      "label": "Google Research: Generative UI (Nov 2025)",
+      "url": "https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/"
+    },
+    {
+      "label": "Vercel: Introducing AI SDK 3.0 with Generative UI support",
+      "url": "https://vercel.com/blog/ai-sdk-3-generative-ui"
+    }
+  ]
+}

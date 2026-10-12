@@ -1,0 +1,59 @@
+{
+  "week": "2026-10-19",
+  "generatedAt": "2026-10-12T00:18:33.343Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "A genuine, highly visible product shift landed in the last week that touches more than a billion weekly users and changes the one thing every non-technical person notices first: what an AI answer looks like. The site has nodes on multimodal input and agents but nothing on generative/interactive output, so this fills a real gap. It stays relevant in a month because it's a durable interface direction, not a transient news event, and understanding 'AI that builds a tool for your question' helps readers regardless of which product they use.",
+  "items": [
+    {
+      "filename": "generative-ui.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/generative-ui.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Vercel's AI SDK streamUI (AI SDK RSC) listed as an example and described via 'Introducing AI SDK 3.0 with Generative UI support'",
+            "issue": "Still accurate as an example that exists, but note that Vercel now marks the AI SDK RSC module (which provides streamUI) as experimental and development is paused; for production Vercel recommends AI SDK UI (useChat). The cited AI SDK 3.0 blog is from ~2024, so the 'streamUI' example is somewhat dated relative to the current recommended API, though the content makes no false currency claim about it."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/2",
+        "after": "3/3/3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "chatgpt-interactive-answers-intelligent-ui.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/chatgpt-interactive-answers-intelligent-ui.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Google introduced a comparable capability with its Gemini 3 model in late 2025, calling it 'generative UI'... The Gemini app can create what Google calls 'Dynamic View'.",
+            "issue": "Accurate: Gemini 3 launched November 18, 2025 with 'generative UI' and the Gemini app's 'dynamic view' experiment. Minor caveat worth knowing: Google's dynamic view / visual layout remain experimental and selectively A/B-tested rather than default behavior. The draft does not overclaim universality, so this is informational only and not a problem."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=chatgpt-interactive-answers-intelligent-ui"
+    }
+  ]
+}
