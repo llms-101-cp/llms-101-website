@@ -174,6 +174,30 @@ reader-facing twin: any PR changing reader-facing content must append a
   `plan-week.js` catches this for self-planned topics but does NOT run on
   hand-queued calendar entries.
 
+* **2026-10-17 — Mind Map connector redesign + layout spacing fix.**
+  The branch→child connector lines were individual S-curves from each branch
+  node to every child, fanning out diagonally across 3 columns and looking
+  messy. Root causes and fixes, all in `index.html`:
+  (1) **Canvas widened** from 1400 → 1700px (`cw` in `initLayout()`) and all
+  three `panX` centering calculations updated, so the 6 branch nodes have
+  enough horizontal room to centre a 3-wide child row without the margin clamp
+  shifting it sideways.
+  (2) **`perRow` capped at 3** (was `children.length <= 4 ? children.length : 3`):
+  the `math` branch's 4 children had been placed in a single 730px row that
+  couldn't centre on a 160px branch node near the canvas edge.
+  (3) **Connector style redesigned** (`drawConnectors()`): replaced individual
+  S-curves with a trunk-and-bar pattern — one vertical trunk from the branch
+  node downward, a horizontal bar at the mid-gap above each row of children,
+  and short verticals from the bar to each child top. Root→branch gold curves
+  are unchanged.
+  (4) **`vGap` raised** from `GAP+12` (42px) to `GAP+57` (87px): actual
+  rendered cards are ~97px tall vs the assumed `H=60`, leaving only 5px between
+  rows at the old value. Raising `vGap` gives ~50px of clear gap, so connector
+  bars sit visibly between rows rather than being drawn on top of node borders.
+  **GOTCHA:** `vGap`, `H`, `W`, `GAP`, and `perRow` in `initLayout()` are also
+  replicated in the automation's `LAYOUT` object (track1-json.js) for the
+  layout simulation. If any of these constants change, update both places.
+
 * **2026-08-31 — models.html "Updated" badge auto-update fix.** The
   badge was a hardcoded string never updated automatically — frozen at
   "22nd July 2026" since the last manual card paste. Two changes:
@@ -635,7 +659,8 @@ goes in the report email:
    "monthly cadence" generalisation).
 4. **Nodes only — layout simulation.** Replicates `initLayout()`'s exact
    `perRow` / row-width / margin-shift math (constants kept in MANUAL SYNC
-   with index.html — see the `LAYOUT` object) against the post-insert
+   with index.html — see the `LAYOUT` object; current values: W=160, H=60,
+   GAP=30, vGap=87, cw=1700, perRow cap=3) against the post-insert
    child count of the manifest's `targetBranch`; asserts no overlap and
    rows within canvas margins, and reports the before/after row shape
    (e.g. "training 3/3/1 → 3/3/2") in the email.
