@@ -2070,11 +2070,11 @@ function initLayout(){
     const children = TREE[id] || [];
     if(!children.length) return;
 
-    // Branches with 4 or fewer children get a single row (no wrap) —
-    // avoids a lone item wrapping to its own row with a long, dangling
-    // connector line back to the parent. Branches with more children
-    // (training, arch, prompting, roles) keep wrapping at 3, unchanged.
-    const perRow = children.length <= 4 ? children.length : 3;
+    // All branches wrap at 3 columns so every row fits within the canvas
+    // without hitting the margin clamp. A single-row of 4 nodes (730px)
+    // is too wide to centre on a branch node near the canvas edge,
+    // producing diagonal connectors — capped at 3 fixes that.
+    const perRow = children.length <= 3 ? children.length : 3;
     const hGap = GAP;
     const vGap = GAP + 12;
 
