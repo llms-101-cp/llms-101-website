@@ -2056,7 +2056,7 @@ async function loadCMSData() {
    REVISED LAYOUT CONFIG (Edge Detection)
 ══════════════════════════════════════════════ */
 function initLayout(){
-  const cw = 1400; 
+  const cw = 1700;
   POS['root'] = {x: cw/2 - W/2, y: 30};
 
   const branchIds = TREE.root;
@@ -2125,11 +2125,11 @@ function initInteractivity() {
   if (wasHidden) page.style.display = 'block';
 
   const viewWidth = container.offsetWidth;
-  panX = (viewWidth - 1400 * mapScale) / 2;
-  
+  panX = (viewWidth - 1700 * mapScale) / 2;
+
   if(viewWidth < 768) {
     mapScale = 0.6;
-    panX = (viewWidth - (1400 * mapScale)) / 2;
+    panX = (viewWidth - (1700 * mapScale)) / 2;
   }
   
   if (wasHidden) page.style.display = ''; 
@@ -2211,7 +2211,7 @@ function resetMapView(){
   const container = document.getElementById('page-mindmap-inner');
   const viewWidth = container ? container.offsetWidth : 1400;
   mapScale = viewWidth < 768 ? 0.6 : 0.85;
-  panX = (viewWidth - 1400 * mapScale) / 2;
+  panX = (viewWidth - 1700 * mapScale) / 2;
   panY = 0;
   updateTransform();
   syncLines();
