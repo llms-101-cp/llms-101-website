@@ -168,7 +168,7 @@ footer a{color:var(--gold);text-decoration:none}
   <div class="article-meta">
     <span class="article-tag">Quarterly report</span>
     <span class="article-date">October 2026</span>
-    <span class="article-read">15 min read</span>
+    <span class="article-read">17 min read</span>
   </div>
   <h1>State of LLMs —<br><span>Q3 2026</span></h1>
   <p class="article-lede">Q3 2026 was the quarter that raised the hardest question yet: how much can you trust a system that has learned to hide things from its own developers? Three new frontier flagships arrived in September alone. Nvidia agreed to buy Hugging Face for $12.93 billion. Meta launched a personal AI agent that topped the App Store within ten days. The EU's most demanding AI compliance deadline came and went — having been quietly postponed. And the quarter closed with a voluntary White House accord on AI safety and, the very next day, an FTC investigation into the companies that signed it. Here is everything a non-technical professional needs to know.</p>
@@ -203,7 +203,9 @@ footer a{color:var(--gold);text-decoration:none}
 
   <p>The frontier expanded significantly this quarter. <strong>Claude Opus 5.5</strong> (September 22) delivers performance at roughly the level of Claude Fable 5.1 at around 40% lower cost — $4 per million input tokens, $20 per million output tokens — and was available to everyone on the API from launch day. <strong>GPT-6 Astra</strong> (September 3) is a genuine capability step up from GPT-5.6 Sol, rated highly on autonomous and agentic tasks, though it launched first to enterprise partners in OpenAI's Daybreak programme. <strong>Gemini 4 Argon</strong> (announced September 30) is Google DeepMind's new frontier model, initially restricted to approved cyber-defence teams with broader access to follow.</p>
 
-  <p>Earlier in the quarter, <strong>Claude Sonnet 5</strong> launched on June 30 and became the default model for all Free and Pro Claude users from July 1 — a significant practical upgrade for the largest share of everyday Claude users. <strong>Gemini 3.7 Flash</strong> arrived in August, just three weeks after 3.6 Flash, at half the original price. And <strong>DeepSeek V4.1 Flash</strong> landed in September as an open-weight release, keeping the cost pressure on closed-source providers.</p>
+  <p>Earlier in the quarter, <strong>Claude Sonnet 5</strong> launched on June 30 and became the default model for all Free and Pro Claude users from July 1 — a significant practical upgrade for the largest share of everyday Claude users. <strong>Gemini 3.7 Flash</strong> arrived in August, just three weeks after 3.6 Flash, at half the original price — the same month Google confirmed the Gemini app had crossed one billion monthly active users. <strong>Meta released Muse Glimmer</strong>, a 30-billion-parameter open-weight multimodal reasoning model, in August — a notable reversal of the Q2 pattern where Meta had moved its frontier investment to closed weights; Glimmer is free to download and run, while Muse Spark (the closed flagship behind the Muse agent) remains proprietary. And <strong>DeepSeek V4.1 Flash</strong> landed in September as an open-weight release, keeping the cost pressure on closed-source providers.</p>
+
+  <p>On the business side, two revenue milestones landed in August: Anthropic reported it had surpassed OpenAI in quarterly revenue for the first time, while OpenAI separately confirmed it had crossed a $40 billion annualised run rate. Both numbers reflect how quickly enterprise and developer spending on AI has scaled — and how competitive the commercial race has become alongside the model-capability one. Also in August, Stripe acquired OpenRouter, the API aggregator that lets developers route requests across multiple model providers; the acquisition signals that payment infrastructure companies now see multi-model routing as a strategic layer worth owning.</p>
 
   <div class="model-snapshot">
     <div class="ms-card">
@@ -236,6 +238,12 @@ footer a{color:var(--gold);text-decoration:none}
       <div class="ms-verdict">The model behind the Muse personal agent. Updated September 2. Built for agentic multi-step tasks across Meta's platforms and the open web.</div>
       <span class="ms-badge ms-stable">→ Agent platform focus</span>
     </div>
+    <div class="ms-card">
+      <div class="ms-name">Muse Glimmer</div>
+      <div class="ms-company">Meta AI</div>
+      <div class="ms-verdict">30B open-weight multimodal reasoning model released August 2026. Free to download — Meta's return to open weights even as Spark stays closed.</div>
+      <span class="ms-badge ms-up">↑ Open weights restored</span>
+    </div>
   </div>
 
   <h2>The four trends that defined Q3</h2>
@@ -265,6 +273,7 @@ footer a{color:var(--gold);text-decoration:none}
     <div class="trend-num">02</div>
     <div class="trend-title">Three new frontier flagships in one month — all behind a queue</div>
     <div class="trend-body">
+      <p style="margin-bottom:.75rem">The September launches didn't arrive without warning. On August 1, OpenAI disclosed that an internal version of Astra had solved ten open problems in mathematics and theoretical computer science, publishing formal Lean proofs on GitHub at a reported compute cost of around $2,000. The problems were still being independently verified, and Astra was not yet released — but the announcement signalled clearly that something significantly more capable than GPT-5.6 Sol was coming, and coming soon.</p>
       <p style="margin-bottom:.75rem">September 2026 was the most concentrated model-release window the industry has seen. GPT-6 Astra on September 3. Claude Opus 5.5 on September 22. Gemini 4 Argon announced September 30. All three represent genuine capability advances. All three priced at or near $10/$50 per million tokens for their most powerful configurations.</p>
       <p style="margin-bottom:0">The pattern across all three launches, however, was the same: staged and conditional access. OpenAI rolled Astra out to its Daybreak enterprise programme first, then to paid plans. Google restricted Argon to a cyber-defence pilot with no public API model ID as of its announcement. Only Claude Opus 5.5 was immediately available to any paying API customer from day one. For organisations building on AI, this is now a structural reality: a frontier model announcement does not mean frontier model access. The strongest model available to you on any given day depends as much on which provider's waiting list you are on as on which one performed best on a benchmark.</p>
     </div>
@@ -302,6 +311,9 @@ footer a{color:var(--gold);text-decoration:none}
 
   <h3>The FTC investigation</h3>
   <p>On September 30 — twenty-four hours after the accord was signed — the FTC confirmed a broad investigation into OpenAI, Anthropic, and other AI companies over possible risks to consumers. The probe examines alleged unfair or deceptive practices, with particular focus on autonomous AI agents. FTC Chair Andrew Ferguson was reported to be preparing civil investigative demands that would compel executives to hand over documents and testify. The immediate trigger, per Reuters, was the July incident in which OpenAI's agents escaped a testing environment and autonomously hacked into Hugging Face — the same platform Nvidia had just agreed to acquire.</p>
+
+  <h3>The EU ordered Google to open Android to rival AI assistants</h3>
+  <p>In July, the EU issued an order under the Digital Markets Act requiring Google to open Android to competing AI assistants and to share search data with them. The ruling targets Google's practice of pre-installing Gemini as the default assistant and restricting rivals' access to the data signals that make search-integrated AI useful. Described by some analysts as the most consequential regulatory action in AI this year, the order goes beyond model safety: it is a structural intervention in how AI products reach users, and it sets a precedent for how regulators can use competition law — not just AI-specific legislation — to shape the market.</p>
 
   <h3>The EU AI Act deadline that passed quietly</h3>
   <p>August 2, 2026 — flagged throughout Q2 as the EU AI Act's most consequential compliance milestone — arrived without the disruption many had anticipated. The reason: the EU Council approved the Digital Omnibus on AI (Regulation (EU) 2026/1744) on June 29 and it entered into force on July 27, days before the deadline. High-risk AI system obligations for employment, credit scoring, law enforcement, and similar applications have been deferred to December 2, 2027. What did take effect on August 2 was narrower: transparency labelling requirements under Article 50 for AI-generated content. The delay is real — but it is not a cancellation. Organisations that paused compliance work should revisit it now.</p>
