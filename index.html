@@ -2554,36 +2554,30 @@ function drawConnectors() {
       const els = rowIds.map(id => document.getElementById(`node-${id}`)).filter(Boolean);
       if (!els.length) return;
 
-      // Use the minimum topY across all cards in the row (cards may vary in height)
-      // and the maximum botY so the trunk starts below the tallest card.
       const rowTop = Math.min(...els.map(el => topY(el)));
       const rowBot = Math.max(...els.map(el => botY(el)));
 
-      // Place the bar at the midpoint, clamped so it is always at least 8px
-      // below the previous level and 8px above this row's cards. This prevents
-      // the bar being drawn inside a tall card when variable-height cards from
-      // the previous row extend close to the next row's top.
-      const rawBarY = (trunkFromY + rowTop) / 2;
-      const barY = Math.min(rowTop - 8, Math.max(trunkFromY + 8, rawBarY));
+      // Place the bar at 55% of the gap above the row top. Using a fraction of
+      // the actual gap (not a fixed pixel offset) means the bar always sits
+      // between trunkFromY and rowTop even when the gap is only a few pixels —
+      // which happens when taller-than-assumed cards nearly touch the next row.
+      const gap = rowTop - trunkFromY;
+      if (gap > 0) {
+        const barY = rowTop - gap * 0.45; // 45% up from rowTop = 55% below trunkFromY
 
-      // Vertical trunk segment from previous level down to bar
-      if (trunkFromY < barY) {
         seg(`M${trunkX},${trunkFromY} L${trunkX},${barY}`, 'var(--muted)', 1.0, '0.45', '5 4');
+
+        const leftX = cx(els[0]);
+        const rightX = cx(els[els.length - 1]);
+        if (leftX !== rightX) {
+          seg(`M${leftX},${barY} L${rightX},${barY}`, 'var(--muted)', 1.0, '0.45', '5 4');
+        }
+
+        els.forEach(el => {
+          seg(`M${cx(el)},${barY} L${cx(el)},${rowTop}`, 'var(--muted)', 1.0, '0.45', '5 4');
+        });
       }
 
-      // Horizontal bar spanning all children in this row
-      const leftX = cx(els[0]);
-      const rightX = cx(els[els.length - 1]);
-      if (leftX !== rightX) {
-        seg(`M${leftX},${barY} L${rightX},${barY}`, 'var(--muted)', 1.0, '0.45', '5 4');
-      }
-
-      // Short verticals from bar down to each child's top
-      els.forEach(el => {
-        seg(`M${cx(el)},${barY} L${cx(el)},${topY(el)}`, 'var(--muted)', 1.0, '0.45', '5 4');
-      });
-
-      // Advance trunk origin to below the tallest card in this row
       trunkFromY = rowBot;
     });
   });
