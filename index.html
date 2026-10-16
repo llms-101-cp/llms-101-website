@@ -2554,11 +2554,22 @@ function drawConnectors() {
       const els = rowIds.map(id => document.getElementById(`node-${id}`)).filter(Boolean);
       if (!els.length) return;
 
-      const rowTop = topY(els[0]);
-      const barY = (trunkFromY + rowTop) / 2;
+      // Use the minimum topY across all cards in the row (cards may vary in height)
+      // and the maximum botY so the trunk starts below the tallest card.
+      const rowTop = Math.min(...els.map(el => topY(el)));
+      const rowBot = Math.max(...els.map(el => botY(el)));
+
+      // Place the bar at the midpoint, clamped so it is always at least 8px
+      // below the previous level and 8px above this row's cards. This prevents
+      // the bar being drawn inside a tall card when variable-height cards from
+      // the previous row extend close to the next row's top.
+      const rawBarY = (trunkFromY + rowTop) / 2;
+      const barY = Math.min(rowTop - 8, Math.max(trunkFromY + 8, rawBarY));
 
       // Vertical trunk segment from previous level down to bar
-      seg(`M${trunkX},${trunkFromY} L${trunkX},${barY}`, 'var(--muted)', 1.0, '0.45', '5 4');
+      if (trunkFromY < barY) {
+        seg(`M${trunkX},${trunkFromY} L${trunkX},${barY}`, 'var(--muted)', 1.0, '0.45', '5 4');
+      }
 
       // Horizontal bar spanning all children in this row
       const leftX = cx(els[0]);
@@ -2569,11 +2580,11 @@ function drawConnectors() {
 
       // Short verticals from bar down to each child's top
       els.forEach(el => {
-        seg(`M${cx(el)},${barY} L${cx(el)},${rowTop}`, 'var(--muted)', 1.0, '0.45', '5 4');
+        seg(`M${cx(el)},${barY} L${cx(el)},${topY(el)}`, 'var(--muted)', 1.0, '0.45', '5 4');
       });
 
-      // Advance trunk origin to bottom of this row's children (between rows)
-      trunkFromY = botY(els[0]);
+      // Advance trunk origin to below the tallest card in this row
+      trunkFromY = rowBot;
     });
   });
 }
