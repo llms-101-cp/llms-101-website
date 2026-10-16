@@ -1,8 +1,9 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-08-31 — split into current-state reference (this file)
-+ dated incident history (PR #47). Section notes through 2026-07-22 supersede
+**Last verified: 2026-10-17 — Q3 2026 quarterly report authored and live.
+Previously split 2026-08-31 into current-state reference (this file) +
+dated incident history (PR #47). Section notes through 2026-07-22 supersede
 where present; the blow-by-blow debugging narratives were moved out (see below).**
 
 **Full dated incident history: `docs/ARCHITECTURE-history.md`** — this file
@@ -136,9 +137,12 @@ reader-facing twin: any PR changing reader-facing content must append a
 * W1 — **CLOSED 2026-08-01.** August tracker run (PR #50) merged and
   live. Review confirmed clean run: correct flagship generation picked,
   model-specific `homepage_url` values, broad lab coverage.
-* W2 — Digital Omnibus. The `regulation` node correctly treats the
-  amendment as agreed-but-unpublished. When it is formally published,
-  the node's dates need updating. See the regulation-node note.
+* W2 — **CLOSED 2026-10-17.** Digital Omnibus formally published as
+  Regulation (EU) 2026/1744 on 24 July 2026, in force 27 July 2026.
+  High-risk Annex III deadline deferred to December 2, 2027; embedded-product
+  deadline to August 2, 2028. Article 50 transparency obligations took effect
+  August 2, 2026 as originally scheduled. The `regulation` Mind Map node dates
+  should be updated in the next fortnightly review pass.
 * W3 — **CLOSED 2026-07-26.** First autonomous changelog append
   confirmed live on that run.
 * W4 — **CLOSED 2026-07-26.** First fully unattended run clean end to end.
@@ -436,26 +440,47 @@ content type is what caused most of today's problems.
 
 ---
 
-## Quarterly Reports — pipeline fixed 2026-06-26, awaiting first real report
+## Quarterly Reports — Q3 2026 report live 2026-10-17
 
 - **Storage:** `content/reports/{slug}.json` (collection exists in Decap
   config, indexed by `generate-indices.js` into `reports_index.json`)
-- **Status as of 2026-06-26:** `content/reports/` is still empty — no real
-  report has been authored through the dynamic system yet (the current
-  quarter, Q2 2026, is already covered by the legacy standalone page below).
-  But the pipeline itself is now fixed and ready for the first real entry,
-  whenever Craig publishes one via Decap (likely Q3 2026, after quarter end).
-- **The 3 existing quarterly reports are real, permanent standalone HTML
-  pages** in `trends/` (`state-of-llms-q2-2026.html`, `-q1-2026.html`,
-  `-q4-2025.html`) — same pattern and same reasoning as the 5 permanent
-  hardcoded Trends articles. They predate the dynamic system, were never
-  given `content/reports/*.json` entries, and don't need to be — they work
-  fine as-is. **Do not delete or "migrate" them.**
+- **Decision (2026-10-17):** Q3 2026 report authored directly as a standalone
+  HTML page (same pattern as Q1/Q2), NOT via the Decap dynamic system.
+  Rationale: the dynamic pipeline is not yet wired for reports; the quarterly
+  cadence is rare enough that hand-authoring remains the right call.
+- **The 4 existing quarterly reports are real, permanent standalone HTML
+  pages** in `trends/` (`state-of-llms-q3-2026.html`, `-q2-2026.html`,
+  `-q1-2026.html`, `-q4-2025.html`) — same pattern and same reasoning as the
+  permanent hardcoded Trends articles. They predate (or bypass) the dynamic
+  system, were never given `content/reports/*.json` entries, and don't need
+  to be — they work fine as-is. **Do not delete or "migrate" them.**
+- **`trends.html` featured section** always points to the latest quarterly
+  report. Updated 2026-10-17 from Q2 → Q3: featured card, article feed card,
+  and JSON-LD structured data all updated in the same commit.
 - **Not yet done:** no automation/generation track exists for reports (no
   `EXISTING_REPORTS`-style awareness in `llms101-automation/`, unlike
-  articles' `EXISTING_TRENDS_SLUGS`). Given the quarterly (not weekly)
-  cadence, this may not be worth automating — reports are rare enough to
-  author by hand in Decap. Revisit only if that assumption stops holding.
+  articles' `EXISTING_TRENDS_SLUGS`). Given the quarterly cadence this may
+  not be worth automating — revisit only if that assumption stops holding.
+
+### 2026-10-17 — Q3 2026 quarterly report authored (commits eae22bf, 6e12bbe, 9c274f2)
+
+Research-driven report covering July–September 2026. Published in three
+commits after two verification passes caught significant gaps in the first
+draft. Key lessons:
+
+- **First draft missed six material stories** including Nvidia's $12.93B
+  Hugging Face acquisition, the White House Accord on Super Intelligence,
+  the FTC investigation into OpenAI/Anthropic, Meta Muse's App Store launch,
+  OpenAI's internal Astra solving 10 open maths problems, and the EU/Google
+  Android competition ruling. Always run a broad month-by-month sweep before
+  declaring a quarterly report complete.
+- **Model deception finding** (OpenAI's September 17 disclosure + Berkeley/
+  UC Santa Cruz cross-lab study) elevated to lead trend given its long-term
+  significance. Confirmed across all major labs — not an OpenAI-specific issue.
+- **Report structure:** four trend cards, model snapshot (6 cards), regulatory
+  section (4 subsections), Fable 5 callout, "what changed" professional guide,
+  Q4 watchlist. 17 min read. Standalone HTML at
+  `trends/state-of-llms-q3-2026.html`.
 
 ---
 
