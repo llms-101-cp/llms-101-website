@@ -2076,7 +2076,8 @@ function initLayout(){
     // producing diagonal connectors — capped at 3 fixes that.
     const perRow = children.length <= 3 ? children.length : 3;
     const hGap = GAP;
-    const vGap = GAP + 12;
+    const vGap = GAP + 57; // increased from +12: actual cards render ~97px tall vs assumed H=60,
+                            // leaving only 5px between rows at +12 — raised to give ~50px clear gap
 
     const numRows = Math.ceil(children.length / perRow);
     for (let row = 0; row < numRows; row++) {
