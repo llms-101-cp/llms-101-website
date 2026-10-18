@@ -1,0 +1,64 @@
+{
+  "week": "2026-10-26",
+  "generatedAt": "2026-10-18T22:52:19.017Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "AI-generated political advertising is the single most visible, high-stakes way AI is touching ordinary people this month, with the US midterms on November 3 and a documented surge in undisclosed deepfake ads. It's squarely non-technical (you don't need to understand models to be a target of an ad) and the site hasn't covered it — existing nodes cover content labeling rules and companions/privacy, but not how to evaluate the political media you're seeing right now. It stays worth reading well past the election as a durable media-literacy guide.",
+  "items": [
+    {
+      "filename": "ai-political-ads.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-political-ads.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "over 30 states now have laws addressing AI in elections",
+            "issue": "NCSL's June 2026 count is 31 states having enacted deepfake/AI election laws, so 'over 30' is technically correct for enactments. However, roughly 29 are actually in effect — California's AB 2839 and Hawaii's law have been permanently enjoined on First Amendment grounds. The phrase 'now have laws' is slightly generous versus 'in effect,' but the number is defensible and not misleading enough to block."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/3",
+        "after": "3/3/3/3/3/1"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-political-ads-2026-how-to-spot-fakes.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-political-ads-2026-how-to-spot-fakes.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "only about 27% of those ads included any disclosure... The remaining 70% or so carried no label at all.",
+            "issue": "Internal arithmetic inconsistency: if 27% disclosed, then ~73% carried no label, not ~70%. Both figures appear in the same paragraph. The underlying source figures are correct individually (Wesleyan: 27% disclosed; separately ~69–70% of ads had no disclaimer in an earlier/narrower count), but presenting 27% and 70% side by side as complementary shares does not add up and could invite a correction. Recommend using 73% (the true complement of 27%) or clarifying the two figures come from different accountings."
+          },
+          {
+            "severity": "note",
+            "claim": "As of October 2026, 30 states have enacted some form of law regulating AI-generated media in political advertising.",
+            "issue": "Source counts vary slightly by methodology and date: NCSL's June 2026 report counts 31 states; one state-tracking site counts 30 (as of Oct 5, 2026); Axios (Aug 2026) notes 29 in effect with two (California, Hawaii) enjoined. '30 states' is within the defensible range, but readers may encounter the widely-cited '31 states' figure. Not incorrect, but worth a precise date anchor and possibly noting court-enjoined laws."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-political-ads-2026-how-to-spot-fakes"
+    }
+  ]
+}

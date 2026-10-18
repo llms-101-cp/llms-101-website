@@ -377,5 +377,19 @@
         "url": "/trends/view-article.html?article=chatgpt-interactive-answers-intelligent-ui"
       }
     ]
+  },
+  {
+    "date": "2026-10-18",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI Political Ads node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: AI Is All Over This Year's Political Ads: How to Spot a Fake Before You Share It.",
+        "url": "/trends/view-article.html?article=ai-political-ads-2026-how-to-spot-fakes"
+      }
+    ]
   }
 ]
