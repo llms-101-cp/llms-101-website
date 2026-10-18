@@ -252,6 +252,21 @@
       "_planned_by": "auto",
       "rationale": "A genuine, highly visible product shift landed in the last week that touches more than a billion weekly users and changes the one thing every non-technical person notices first: what an AI answer looks like. The site has nodes on multimodal input and agents but nothing on generative/interactive output, so this fills a real gap. It stays relevant in a month because it's a durable interface direction, not a transient news event, and understanding 'AI that builds a tool for your question' helps readers regardless of which product they use.",
       "_completed_at": "2026-10-12T00:17:44.953Z"
+    },
+    {
+      "week_of": "2026-10-26",
+      "node": {
+        "id": "ai-political-ads",
+        "parentContext": "Real-world AI uses that affect everyday people — joins the 'themes' branch alongside your-data-privacy, ai-shopping, and provenance-watermarking, but focused on AI-generated and deepfake political advertising rather than general content labeling",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "AI Is All Over This Year's Political Ads: How to Spot a Fake Before You Share It",
+        "notes": "Angle: a calm, practical voter's guide, not a partisan take — explain that AI-made and AI-enhanced campaign ads have exploded this cycle, that most carry no disclosure, and give readers a simple checklist for spotting fakes (lip sync, blinking, hands/edges, reverse-image search, check the source) plus the mindset of 'pause before you share.' Ground via live search: the current spending figure (~$137M per Wesleyan Media Project/AdImpact), the roughly 70%/only-27%-disclosed stat, concrete recent examples (e.g., the fabricated Mamdani/Hochul 'delusion pill' ad), and the patchwork of state disclosure laws (~30 states) with no federal rule. Avoid: endorsing or attacking either party beyond neutrally noting the reported spending skew; avoid deep technical detection steps (no code/Python scripts) since the audience is non-technical; avoid presenting detection cues as foolproof — stress verifying the source over 'gotcha' visual tells."
+      },
+      "_planned_by": "auto",
+      "rationale": "AI-generated political advertising is the single most visible, high-stakes way AI is touching ordinary people this month, with the US midterms on November 3 and a documented surge in undisclosed deepfake ads. It's squarely non-technical (you don't need to understand models to be a target of an ad) and the site hasn't covered it — existing nodes cover content labeling rules and companions/privacy, but not how to evaluate the political media you're seeing right now. It stays worth reading well past the election as a durable media-literacy guide.",
+      "_completed_at": "2026-10-18T22:51:35.149Z"
     }
   ]
 }

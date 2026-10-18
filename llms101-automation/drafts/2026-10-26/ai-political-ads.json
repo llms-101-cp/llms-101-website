@@ -1,0 +1,27 @@
+{
+  "label": "AI Political Ads",
+  "sub": "Deepfakes, disclosure & democracy",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI-Generated Political Advertising",
+  "body": "<p>AI can now create convincing fake videos, audio clips, and images of politicians saying things they never said. These <strong>deepfakes</strong> — and less dramatic AI-generated campaign materials — have sparked a wave of new laws aimed at protecting voters from deception.</p><p>The main regulatory approach is <strong>disclosure</strong>: requiring labels that tell viewers when political content was created or altered using AI. In the US, over 30 states now have laws addressing AI in elections, typically requiring disclaimers on AI-generated political ads in the weeks before an election. At the federal level, existing fraud laws apply but there's no specific AI disclosure requirement for campaign ads. The EU takes a different approach, combining dedicated political advertising rules with broader AI transparency requirements.</p><p>The challenge is balancing free speech with voter protection. Several state laws have already faced First Amendment challenges in court. Meanwhile, the technology keeps advancing faster than regulation can follow.</p>",
+  "examples": [
+    "Deepfake disclosure laws",
+    "State disclaimer requirements",
+    "FEC fraudulent misrepresentation rule",
+    "AI robocall regulations",
+    "EU political advertising rules",
+    "Content provenance metadata"
+  ],
+  "sources": [
+    {
+      "label": "National Conference of State Legislatures — AI in Elections and Campaigns",
+      "url": "https://www.ncsl.org/elections-and-campaigns/artificial-intelligence-ai-in-elections-and-campaigns"
+    },
+    {
+      "label": "Federal Register — FEC Artificial Intelligence in Campaign Ads (2024)",
+      "url": "https://www.federalregister.gov/documents/2024/09/26/2024-21979/artificial-intelligence-in-campaign-ads"
+    }
+  ]
+}
