@@ -1,0 +1,27 @@
+{
+  "label": "AI & Your Money",
+  "sub": "Agents, Banking, and Finance",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Agents and Personal Finance",
+  "body": "<p>AI financial agents are software tools that can monitor your bank accounts, track spending, flag unusual charges, and even take actions like cancelling subscriptions or moving money between accounts. Unlike older budgeting apps that simply display information, these agents can <strong>act on your behalf</strong> — negotiating bills, alerting you to forgotten free trials, or suggesting you shift savings to higher-yield accounts.</p><p>Here's how they work: you grant the agent access to your financial accounts (sometimes by sharing login credentials, sometimes through official bank integrations). The agent then continuously monitors your transactions, applies rules or AI reasoning to spot patterns, and either recommends actions or executes them automatically. Some agents work through text messages; others plug directly into banking apps.</p><p>The tradeoff is real. These tools can save you money and time, but they require handing over sensitive access. Major banks have started <strong>restricting third-party agent access</strong> over security concerns, and regulators warn that deleting an app doesn't always revoke its access to your data. Before connecting any AI to your finances, understand exactly what permissions you're granting — and whether you can easily revoke them.</p>",
+  "examples": [
+    "Rocket Money Rowan",
+    "Subscription trackers",
+    "Bill negotiation bots",
+    "Savings optimisers",
+    "Spending alerts",
+    "Open banking APIs"
+  ],
+  "sources": [
+    {
+      "label": "Center for Democracy and Technology – Agentic AI in Financial Services",
+      "url": "https://cdt.org/insights/agentic-ai-in-financial-services-emerging-uses-risks-and-policy-considerations/"
+    },
+    {
+      "label": "Brookings Institution – Should Consumers and Businesses Use AI Assistants?",
+      "url": "https://www.brookings.edu/articles/should-consumers-and-businesses-use-ai-assistants"
+    }
+  ]
+}

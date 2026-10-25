@@ -391,5 +391,19 @@
         "url": "/trends/view-article.html?article=ai-political-ads-2026-how-to-spot-fakes"
       }
     ]
+  },
+  {
+    "date": "2026-10-25",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI & Your Money node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Should You Let an AI Agent Into Your Bank Account?.",
+        "url": "/trends/view-article.html?article=ai-agents-bank-accounts-october-2026"
+      }
+    ]
   }
 ]

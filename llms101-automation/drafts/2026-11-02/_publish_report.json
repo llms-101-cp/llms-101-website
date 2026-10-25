@@ -1,0 +1,64 @@
+{
+  "week": "2026-11-02",
+  "generatedAt": "2026-10-25T23:04:44.662Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "This broke in the last few days (Axios scoop, Oct 22; CBS follow-up Oct 25) and touches something every non-technical reader has — a bank account — making it immediately relevant. The core lesson (what it means to hand an AI your financial login, and why 'read-only' is the safer middle ground) will remain useful well beyond a month as agentic AI keeps spreading. It fills a clear gap: existing articles cover shopping agents and general account-trust, but none focus on banking and personal money specifically.",
+  "items": [
+    {
+      "filename": "ai-banking-money.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-banking-money.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Major banks have started restricting third-party agent access over security concerns.",
+            "issue": "Accurate as of the check date (late October 2026): Morgan Stanley, JPMorgan, Bank of America, Citi, Wells Fargo and Charles Schwab were reported restricting or blocking third-party AI agents in reports dated October 22-23, 2026. The claim is correct and current, but it is a fast-moving story with no date anchor in the text. The house 'as of <date>' blocking rule is NOT triggered because the content makes no explicit 'as of writing'/'as of today' statement. Consider adding a dated anchor to keep this claim from going stale, since this is exactly the kind of state-of-the-world claim that can be superseded quickly."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/3/1",
+        "after": "3/3/3/3/3/2"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-agents-bank-accounts-october-2026.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-agents-bank-accounts-october-2026.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "White House AI advisor David Sacks noted there is 'a world of difference between user-authorized agents'...",
+            "issue": "The quote is accurate and correctly attributed. However, Sacks' title is most commonly reported as 'White House AI czar' (or 'AI and crypto czar'); one outlet referred to him as 'Former White House AI Czar.' 'AI advisor' is a loose but defensible paraphrase and not misleading. Consider using 'White House AI czar' for precision."
+          },
+          {
+            "severity": "note",
+            "claim": "JPMorgan already allows this limited approach through data intermediaries like Plaid.",
+            "issue": "Verified in substance: JPMorgan supports read-only, customer-authorized data sharing through open banking providers, and Plaid is named as an example intermediary in coverage. The specific pairing of JPMorgan + Plaid as a currently-live arrangement is a reasonable characterization but is presented slightly more definitively than sources confirm; sources frame read-only access through approved open-banking providers generally. Not misleading enough to block."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-agents-bank-accounts-october-2026"
+    }
+  ]
+}
