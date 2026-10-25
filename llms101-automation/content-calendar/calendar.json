@@ -267,6 +267,21 @@
       "_planned_by": "auto",
       "rationale": "AI-generated political advertising is the single most visible, high-stakes way AI is touching ordinary people this month, with the US midterms on November 3 and a documented surge in undisclosed deepfake ads. It's squarely non-technical (you don't need to understand models to be a target of an ad) and the site hasn't covered it — existing nodes cover content labeling rules and companions/privacy, but not how to evaluate the political media you're seeing right now. It stays worth reading well past the election as a durable media-literacy guide.",
       "_completed_at": "2026-10-18T22:51:35.149Z"
+    },
+    {
+      "week_of": "2026-11-02",
+      "node": {
+        "id": "ai-banking-money",
+        "parentContext": "Everyday AI uses and risks for non-technical readers (consumer-facing themes branch), sitting alongside ai-shopping and your-data-privacy — this one focuses specifically on AI agents, banking, and personal finances",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Should You Let an AI Agent Into Your Bank Account? What Banks Just Did About It",
+        "notes": "Angle: explain plainly what it means to give an AI agent your banking login, why banks suddenly started blocking or restricting them in October 2026, and what a regular person should (and shouldn't) do with their money and AI. Ground via live search: the late-October 2026 Axios scoop that major banks (Morgan Stanley, JPMorgan/Chase, Bank of America, Wells Fargo, Citi) detected and began restricting third-party agents; Chase's 'don't share your login with anyone' guidance; the shift toward 'read-only' access; and the public distinction between user-authorized agents vs. truly rogue/unauthorized ones. Avoid: alarmist 'hackers in your bank' framing (White House and banks drew a careful line between user-authorized agents and cyberattacks), deep technical jargon about OAuth/credential-sharing, and naming specific consumer agent products as endorsements. Keep it to practical reader takeaways: what 'read-only' means, why sharing passwords is risky, and how to check what you've connected."
+      },
+      "_planned_by": "auto",
+      "rationale": "This broke in the last few days (Axios scoop, Oct 22; CBS follow-up Oct 25) and touches something every non-technical reader has — a bank account — making it immediately relevant. The core lesson (what it means to hand an AI your financial login, and why 'read-only' is the safer middle ground) will remain useful well beyond a month as agentic AI keeps spreading. It fills a clear gap: existing articles cover shopping agents and general account-trust, but none focus on banking and personal money specifically.",
+      "_completed_at": "2026-10-25T23:04:00.388Z"
     }
   ]
 }
