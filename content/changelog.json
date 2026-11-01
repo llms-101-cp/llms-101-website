@@ -405,5 +405,20 @@
         "url": "/trends/view-article.html?article=ai-agents-bank-accounts-october-2026"
       }
     ]
+  },
+  {
+    "date": "2026-11-01",
+    "items": [
+      {
+        "area": "Site",
+        "text": "Resources page updated — corrected stale facts found during the fortnightly review.",
+        "url": "/resources"
+      },
+      {
+        "area": "Models",
+        "text": "Alibaba — Qwen card corrected (fortnightly review draft applied).",
+        "url": "/models.html"
+      }
+    ]
   }
 ]
