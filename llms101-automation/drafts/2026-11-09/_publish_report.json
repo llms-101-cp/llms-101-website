@@ -1,0 +1,69 @@
+{
+  "week": "2026-11-09",
+  "generatedAt": "2026-11-02T00:24:30.195Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "Rising electricity costs touch nearly every household, and in October 2026 a wave of surveys, Fed/grid-operator projections, and new state laws made the AI-data-center-to-your-bill connection front-page news — yet the site has nothing explaining this cost of AI to everyday readers. It's a concrete, pocketbook topic that a smart non-technical audience cares about now and that will remain relevant for well over a month as grids strain and more states legislate. It also fills a real gap: existing nodes cover model cost and hardware, but none explain AI's energy footprint in human terms.",
+  "items": [
+    {
+      "filename": "ai-energy-bills.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-energy-bills.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Tech companies are now racing to secure nuclear power deals just to keep their servers running.",
+            "issue": "Accurate and well-supported (Microsoft/Constellation Sept 2024, Google/Kairos and Amazon/X-energy Oct 2024, Meta/Constellation June 2025, etc.), but the present-tense 'now' carries no explicit date. It reads as a general ongoing trend rather than an 'as of <date>' snapshot, so it does not trigger the blocking date rule, but adding a year would future-proof it."
+          },
+          {
+            "severity": "note",
+            "claim": "Training a model like GPT-4 reportedly consumed around 50-60 gigawatt-hours.",
+            "issue": "Supported (MIT Technology Review cites ~50 GWh; detailed estimates range ~52-62 GWh). Worth knowing this is an estimate based on leaked specs, not an official OpenAI figure, and GPT-4 is a 2023 model used here only as a historical illustration — which is acceptable framing."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/3/2",
+        "after": "3/3/3/3/3/3"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-data-centers-electricity-bills-explained.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-data-centers-electricity-bills-explained.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Research from the Federal Reserve Bank of Dallas published in August 2026 found that AI data centers have already pushed average wholesale electricity prices 2% to 6% higher nationwide",
+            "issue": "The 2%-6% and 20%-30%-by-2028 figures match the widely-reported Dallas Fed findings and are fine. However, the paper itself (Working Paper No. 2606, 'Processing Power: The Effect of Data Centers on Wholesale Electricity Markets') is dated March 20, 2026 (revised October 2026); 'August 2026' is when the major media coverage appeared, not the publication date. Consider rephrasing to 'Dallas Fed research widely reported in August 2026' to avoid mislabeling the publication date."
+          },
+          {
+            "severity": "note",
+            "claim": "New York passed legislation in 2026 imposing a moratorium on new data center permits and directing the Public Service Commission to create a separate utility rate class for large data centers.",
+            "issue": "The New York State Legislature did pass the Responsible Data Center Development Act (S10642/A11560) on June 4, 2026, which includes both provisions as described. However, listing it alongside the fully-enacted NJ and WI measures slightly overstates its status: at least one source indicates the bill had not yet been delivered to or signed by the Governor as of mid-2026, so it may not have been enacted law. Separately, New York did impose a statewide moratorium via executive order (EO 62, 50 MW+). The 'passed legislation' framing is defensible (the legislature did pass it) but the enacted-vs-pending status is worth confirming before presenting it as settled alongside active laws."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-data-centers-electricity-bills-explained"
+    }
+  ]
+}

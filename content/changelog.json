@@ -420,5 +420,19 @@
         "url": "/models.html"
       }
     ]
+  },
+  {
+    "date": "2026-11-02",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI Energy Bills node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Is AI Making Your Electricity Bill Go Up? What's Actually Happening.",
+        "url": "/trends/view-article.html?article=ai-data-centers-electricity-bills-explained"
+      }
+    ]
   }
 ]
