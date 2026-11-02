@@ -1,5 +1,19 @@
 [
   {
+    "title": "Is AI Making Your Electricity Bill Go Up? What's Actually Happening",
+    "slug": "ai-data-centers-electricity-bills-explained",
+    "date": "2026-11-02",
+    "category": "Trend Spotlight",
+    "read_time": "6 min read",
+    "summary": "Data centers powering AI are surging electricity demand, and some of that cost reaches your bill even if no data center is nearby. Here's the mechanism, the evidence, and the uncertainty.",
+    "before_label": "What most people assume",
+    "before": "My electricity bill only reflects what I use. If there's no data center in my neighborhood, AI infrastructure shouldn't affect what I pay.",
+    "after_label": "The reality",
+    "after": "Electricity prices are set by regional markets, so big new loads anywhere on your grid can push up wholesale rates for everyone.",
+    "file": "content/articles/ai-data-centers-electricity-bills-explained.json",
+    "url": "/trends/view-article.html?article=ai-data-centers-electricity-bills-explained"
+  },
+  {
     "title": "Should You Let an AI Agent Into Your Bank Account?",
     "slug": "ai-agents-bank-accounts-october-2026",
     "date": "2026-10-25",
