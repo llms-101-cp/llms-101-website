@@ -282,6 +282,21 @@
       "_planned_by": "auto",
       "rationale": "This broke in the last few days (Axios scoop, Oct 22; CBS follow-up Oct 25) and touches something every non-technical reader has — a bank account — making it immediately relevant. The core lesson (what it means to hand an AI your financial login, and why 'read-only' is the safer middle ground) will remain useful well beyond a month as agentic AI keeps spreading. It fills a clear gap: existing articles cover shopping agents and general account-trust, but none focus on banking and personal money specifically.",
       "_completed_at": "2026-10-25T23:04:00.388Z"
+    },
+    {
+      "week_of": "2026-11-09",
+      "node": {
+        "id": "ai-energy-bills",
+        "parentContext": "Big-picture 'themes' branch covering AI's real-world costs and tradeoffs (sits alongside cost, hardware, regulation)",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Is AI Making Your Electricity Bill Go Up? What's Actually Happening",
+        "notes": "Explainer angle for a worried non-technical homeowner: why the AI data-center boom can raise household power bills even if no data center is near you, and what (if anything) they can do or watch for. Ground via live search the concrete October 2026 data points — the Consumer Reports survey on bill increases, the Dallas Fed / PJM / NC State projections, and state-level ratepayer-protection laws (New Jersey, Wisconsin, New York) — and note that the evidence is still contested so households shouldn't assume every rate hike is AI's fault. Avoid technical grid jargon, avoid partisan framing, and don't overclaim a direct cause; present it as 'here's the mechanism and here's what's uncertain.'"
+      },
+      "_planned_by": "auto",
+      "rationale": "Rising electricity costs touch nearly every household, and in October 2026 a wave of surveys, Fed/grid-operator projections, and new state laws made the AI-data-center-to-your-bill connection front-page news — yet the site has nothing explaining this cost of AI to everyday readers. It's a concrete, pocketbook topic that a smart non-technical audience cares about now and that will remain relevant for well over a month as grids strain and more states legislate. It also fills a real gap: existing nodes cover model cost and hardware, but none explain AI's energy footprint in human terms.",
+      "_completed_at": "2026-11-02T00:23:38.009Z"
     }
   ]
 }

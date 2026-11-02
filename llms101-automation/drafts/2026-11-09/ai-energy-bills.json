@@ -1,0 +1,27 @@
+{
+  "label": "AI Energy Bills",
+  "sub": "The power behind every prompt",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "AI Energy Consumption: The Hidden Cost of Intelligence",
+  "body": "<p><strong>AI systems consume real electricity</strong> every time you send a prompt. According to OpenAI CEO Sam Altman, a single ChatGPT query uses about 0.34 watt-hours — roughly what a high-efficiency lightbulb uses in a couple of minutes. That sounds tiny, but multiply it by billions of daily queries and the numbers get serious fast.</p><p><strong>The energy cost happens at two stages:</strong> training (the one-time process of building the model) and inference (every time someone actually uses it). Training a model like GPT-4 reportedly consumed around 50-60 gigawatt-hours — enough to power thousands of homes for a year. But inference energy now adds up even faster because usage never stops.</p><p><strong>At the global level, AI is reshaping power grids.</strong> Data centers consumed about 415 terawatt-hours in 2024 — roughly 1.5% of global electricity. The International Energy Agency projects this could more than double to 945 TWh by 2030, with AI as a primary driver. Tech companies are now racing to secure nuclear power deals just to keep their servers running.</p>",
+  "examples": [
+    "0.34 Wh per query",
+    "Data center cooling",
+    "GPU power draw",
+    "Training vs inference",
+    "Grid stress",
+    "Nuclear power deals"
+  ],
+  "sources": [
+    {
+      "label": "IEA: Energy and AI Report",
+      "url": "https://www.iea.org/reports/energy-and-ai"
+    },
+    {
+      "label": "Our World in Data: AI Energy Use",
+      "url": "https://ourworldindata.org/how-much-energy-do-data-centers-and-artificial-intelligence-use"
+    }
+  ]
+}
