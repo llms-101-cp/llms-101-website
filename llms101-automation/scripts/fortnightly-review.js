@@ -223,6 +223,25 @@ export function extractCardHtml(text) {
   return extractBalancedDiv(text, idx);
 }
 
+// Extracts the text fields from a generated <div class="mcard"> block.
+// Mirrors extractModelCards() but operates on a single card string — used to
+// build the fact-check payload for the auto-apply gate.
+export function extractCardFields(cardHtml) {
+  const company = (cardHtml.match(/<span class="mcard-company">([^<]*)<\/span>/) || [])[1] ?? '';
+  const name = ((cardHtml.match(/<div class="mcard-name">([\s\S]*?)<\/div>/) || [])[1] ?? '').replace(/<[^>]+>/g, '').trim();
+  const models = ((cardHtml.match(/<div class="mcard-models">([\s\S]*?)<\/div>/) || [])[1] ?? '').trim();
+  const seo = ((cardHtml.match(/<div class="seo-content">\s*<p>([\s\S]*?)<\/p>/) || [])[1] ?? '').trim();
+  return { company, name, models, seo };
+}
+
+// Replaces one <div class="mcard"> block in models.html with a new one.
+// Returns the updated HTML string, or null if oldCardHtml is not found.
+export function spliceModelCard(html, oldCardHtml, newCardHtml) {
+  const idx = html.indexOf(oldCardHtml);
+  if (idx === -1) return null;
+  return html.slice(0, idx) + newCardHtml + html.slice(idx + oldCardHtml.length);
+}
+
 // Same bracket-depth-counting approach as generate-tracker.js's
 // extractJsonArray / validate-and-publish.js's extractJsonObject — a greedy
 // regex mis-extracts if the model appends citation-style brackets after the
@@ -396,7 +415,8 @@ async function checkModelCards(client, weekLabel, { dryRun, appliedLog = {} }) {
     const result = {
       company: card.company, name: card.name, stale: false, factCheck: null, draftFile: null,
       priorDrafts: [], unappliedPriorDrafts: [], error: null,
-      justApplied: false, slug: null, appliedDraftDate: null
+      justApplied: false, slug: null, appliedDraftDate: null,
+      autoApplied: false, autoApplyHtml: null, originalCardHtml: null, draftFactCheck: null
     };
     results.push(result);
 
@@ -490,7 +510,42 @@ async function checkModelCards(client, weekLabel, { dryRun, appliedLog = {} }) {
         const draftPath = path.join(draftDir, `model-card-${slugify(card.name)}.html`);
         await fs.writeFile(draftPath, draftHtml, 'utf8');
         result.draftFile = path.relative(REPO_ROOT, draftPath);
-        log(`  draft written to ${result.draftFile} — review and paste manually`);
+        log(`  draft written to ${result.draftFile}`);
+      }
+
+      // Auto-apply gate: fact-check the generated draft; if it passes (and
+      // vocab is clean), mark it for splicing into models.html in the
+      // correction commit. Skipped in dry-run (no live writes) and when vocab
+      // problems mean the draft needs manual review before going anywhere near
+      // the live page. A second fact-check per stale card is the deliberate
+      // trade-off: it costs extra API credits but ensures only verified content
+      // lands in models.html without manual intervention.
+      if (extracted && !result.vocabProblems?.length && !dryRun) {
+        try {
+          const fields = extractCardFields(extracted);
+          const draftFc = await factCheck(client, entry, {
+            name: fields.name || card.name,
+            maker: fields.company || card.company,
+            models: fields.models,
+            description: fields.seo
+          });
+          result.draftFactCheck = draftFc;
+          if (draftFc.verdict !== 'fail') {
+            result.autoApplied = true;
+            result.autoApplyHtml = extracted;
+            result.originalCardHtml = card.html;
+            log(`  AUTO-APPLY: draft passed fact-check — will be spliced into models.html in the correction commit`);
+          } else {
+            const remaining = draftFc.findings.filter(f => f.severity === 'blocking');
+            log(`  draft still has ${remaining.length} blocking finding(s) after generation — leaving as manual draft (review and paste manually)`);
+          }
+        } catch (err) {
+          log(`  WARNING: could not fact-check draft for auto-apply — ${err.message}. Leaving as manual draft.`);
+        }
+      } else if (!extracted) {
+        log(`  draft left as manual (raw response — no <div class="mcard"> extracted; review and paste manually)`);
+      } else if (result.vocabProblems?.length) {
+        log(`  draft left as manual (vocab problems must be resolved before auto-apply; review and paste manually)`);
       }
     } catch (err) {
       result.error = err.message;
@@ -654,6 +709,10 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
       sections.push(`  • ${r.company} — ${r.name}: ERROR — ${r.error}`);
       continue;
     }
+    if (r.autoApplied) {
+      sections.push(`  • ${r.company} — ${r.name}: ✓ AUTO-APPLIED (was stale; draft fact-checked and spliced into models.html this run)`);
+      continue;
+    }
     if (!r.stale) {
       if (r.justApplied) {
         sections.push(`  • ${r.company} — ${r.name}: ✓ current — APPLIED just detected (matches the ${r.appliedDraftDate} draft; changelog entry added this run)`);
@@ -717,18 +776,29 @@ async function sendReportEmail(weekLabel, { pageResults, modelCardResults, spotA
     sections.push('Nothing published this run — no static-page corrections were needed.');
   }
   sections.push('');
-  sections.push('This email is the review trigger for any auto-published static-page');
-  sections.push('correction above. Model-card drafts (if any) still need manual paste.');
 
   const staleTrackerPR = Array.isArray(trackerPRs) && trackerPRs.some(pr => pr.ageDays >= STALE_TRACKER_PR_DAYS);
-  const unappliedDrafts = modelCardResults.some(r => r.stale && (r.unappliedPriorDrafts ?? []).length > 0);
+  const unappliedDrafts = modelCardResults.some(r => r.stale && !r.autoApplied && (r.unappliedPriorDrafts ?? []).length > 0);
+  const autoAppliedCount = modelCardResults.filter(r => r.autoApplied).length;
+  const manualDraftCount = modelCardResults.filter(r => r.draftFile && !r.autoApplied).length;
+
+  if (manualDraftCount > 0) {
+    sections.push('This email is the review trigger for any auto-published static-page');
+    sections.push(`correction above. ${manualDraftCount} model-card draft(s) still need manual paste.`);
+  } else {
+    sections.push('This email is the review trigger for any auto-published static-page correction above.');
+    if (autoAppliedCount > 0) {
+      sections.push(`${autoAppliedCount} model card(s) were auto-applied from drafts that passed fact-check.`);
+    }
+  }
+
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'llms101-bot@llms101.com',
       to: process.env.REVIEW_EMAIL,
-      subject: `[llms101] Monthly full review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${unappliedDrafts ? ' — UNAPPLIED CARD DRAFT' : ''}${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
+      subject: `[llms101] Monthly full review ${weekLabel} — ${corrected.length} page(s) corrected, ${modelCardResults.filter(r => r.draftFile).length} card draft(s), ${spotAuditFindings.length} spot-audit finding(s)${autoAppliedCount > 0 ? ` — ${autoAppliedCount} AUTO-APPLIED` : ''}${unappliedDrafts ? ' — UNAPPLIED CARD DRAFT' : ''}${staleTrackerPR ? ' — STALE TRACKER PR' : ''}${fatalError ? ' — PIPELINE ERROR' : ''}`,
       text: sections.join('\n')
     })
   });
@@ -994,7 +1064,34 @@ async function main() {
 
     const corrected = pageResults.filter(r => r.status === 'corrected');
     const justApplied = modelCardResults.filter(r => r.justApplied);
-    if (!dryRun && (corrected.length || justApplied.length)) {
+    const autoApplied = modelCardResults.filter(r => r.autoApplied);
+
+    // Splice auto-approved card drafts into models.html before the correction
+    // commit — the badge-update commit already landed, so this read picks up
+    // the badge-updated file and adds the card changes on top of it.
+    if (!dryRun && autoApplied.length) {
+      try {
+        let modelsHtml = await fs.readFile(MODELS_HTML, 'utf8');
+        for (const r of autoApplied) {
+          const spliced = spliceModelCard(modelsHtml, r.originalCardHtml, r.autoApplyHtml);
+          if (spliced) {
+            modelsHtml = spliced;
+            log(`Auto-spliced ${r.name} card into models.html`);
+          } else {
+            log(`WARNING: could not locate original ${r.name} card block in models.html — card not auto-applied; leaving as manual draft`);
+            r.autoApplied = false;
+          }
+        }
+        await fs.writeFile(MODELS_HTML, modelsHtml, 'utf8');
+      } catch (err) {
+        log(`WARNING: could not auto-apply model cards — ${err.message}. All flagged cards left as manual drafts.`);
+        for (const r of autoApplied) r.autoApplied = false;
+      }
+    }
+
+    const effectiveAutoApplied = autoApplied.filter(r => r.autoApplied);
+
+    if (!dryRun && (corrected.length || justApplied.length || effectiveAutoApplied.length)) {
       const changelogItems = [
         ...corrected.map(r => ({
           area: 'Site',
@@ -1005,6 +1102,11 @@ async function main() {
           area: 'Models',
           text: `${r.company} — ${r.name} card corrected (fortnightly review draft applied).`,
           url: '/models.html'
+        })),
+        ...effectiveAutoApplied.map(r => ({
+          area: 'Models',
+          text: `${r.company} — ${r.name} card updated (monthly review auto-applied).`,
+          url: '/models.html'
         }))
       ];
       const cl = await appendToChangelog(changelogItems, todayISO, REPO_ROOT, { log });
@@ -1013,14 +1115,16 @@ async function main() {
       const relPaths = corrected.map(r => path.relative(REPO_ROOT, path.join(PAGES_DIR, `${r.id}.json`)));
       if (relPaths.length) git('add', ...relPaths);
       if (cl.staged) git('add', 'content/changelog.json');
+      if (effectiveAutoApplied.length) git('add', 'models.html');
 
       // Persist the applied-log update alongside the changelog entry — same
       // commit, so the two never drift out of sync (a log write that lands
       // without its changelog entry, or vice versa, would either silently
       // re-flag next run or silently suppress a real one).
-      if (justApplied.length) {
+      if (justApplied.length || effectiveAutoApplied.length) {
         const updatedLog = { ...appliedLog };
         for (const r of justApplied) updatedLog[r.slug] = r.appliedDraftDate;
+        for (const r of effectiveAutoApplied) updatedLog[slugify(r.name)] = todayISO;
         await fs.mkdir(DRAFTS_DIR, { recursive: true });
         await fs.writeFile(APPLIED_LOG_PATH, JSON.stringify(updatedLog, null, 2) + '\n', 'utf8');
         git('add', path.relative(REPO_ROOT, APPLIED_LOG_PATH));
@@ -1031,6 +1135,7 @@ async function main() {
         const parts = [];
         if (corrected.length) parts.push(`${corrected.length} static page correction(s)`);
         if (justApplied.length) parts.push(`${justApplied.length} model card(s) marked applied`);
+        if (effectiveAutoApplied.length) parts.push(`${effectiveAutoApplied.length} model card(s) auto-applied`);
         git('commit', '-m', `fortnightly review: ${parts.join(', ')} (${todayISO})`);
         commitSha = git('rev-parse', 'HEAD');
         log(`Committed ${parts.join(', ')}: ${commitSha}`);

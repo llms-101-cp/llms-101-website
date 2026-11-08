@@ -543,7 +543,24 @@ findings array with verdict "pass" is the expected result for clean content.`;
   const raw = lastTextBlock(message);
   const fenceStripped = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
   const cleaned = extractJsonObject(fenceStripped) ?? fenceStripped;
-  const result = JSON.parse(cleaned);
+  let result;
+  try {
+    result = JSON.parse(cleaned);
+  } catch (firstErr) {
+    // Fallback: search all text blocks in case the JSON landed in an earlier
+    // block (can happen when the model writes its answer before tool results).
+    const allText = allTextBlocks(message);
+    const fallbackCleaned = extractJsonObject(allText);
+    if (fallbackCleaned) {
+      try {
+        result = JSON.parse(fallbackCleaned);
+      } catch {
+        throw new Error(`fact-check JSON parse failed (tried last block and all blocks) — raw: ${raw.slice(0, 300)}`);
+      }
+    } else {
+      throw new Error(`fact-check JSON parse failed — ${firstErr.message} — raw: ${raw.slice(0, 300)}`);
+    }
+  }
 
   if (!result || (result.verdict !== 'pass' && result.verdict !== 'fail') || !Array.isArray(result.findings)) {
     throw new Error(`fact-check returned an unexpected shape: ${cleaned.slice(0, 200)}`);
