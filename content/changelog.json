@@ -452,6 +452,16 @@
     ]
   },
   {
+    "date": "2026-11-01",
+    "items": [
+      {
+        "area": "Tracker",
+        "text": "Monthly Model Tracker updated — top models include Claude Fable 5.1, GPT-6 Astra, Gemini 4 Argon and 17 more.",
+        "url": "/tracker"
+      }
+    ]
+  },
+  {
     "date": "2026-11-02",
     "items": [
       {
