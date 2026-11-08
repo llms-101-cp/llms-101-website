@@ -379,6 +379,16 @@
     ]
   },
   {
+    "date": "2026-11-08",
+    "items": [
+      {
+        "area": "Models",
+        "text": "7 model cards updated: Claude (Haiku 5.5 added, tier hierarchy corrected), Grok (Grok 4.7 current flagship), Llama (Llama 4 Scout/Maverick), Muse (Wonder/Wonder Full now flagship, Spark 1.3 to lightweight tier), DeepSeek (V4.1-Flash-1017 current checkpoint), Kimi (K3.1 Pro current flagship), Mistral (Large 4 added as new flagship).",
+        "url": "/models.html"
+      }
+    ]
+  },
+  {
     "date": "2026-10-17",
     "items": [
       {
