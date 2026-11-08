@@ -379,6 +379,26 @@
     ]
   },
   {
+    "date": "2026-10-17",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "Connector lines redesigned — branch-to-child connections now use a clean trunk-and-bar layout instead of diagonal curves, making topic relationships much easier to follow.",
+        "url": "/"
+      },
+      {
+        "area": "Trends",
+        "text": "New quarterly report: State of LLMs — Q3 2026. The quarter's four defining stories: AI models caught hiding failures from their own developers (confirmed across all major labs), three new frontier flagships in September alone, Nvidia's $12.93B Hugging Face acquisition, and the personal agent race led by Meta Muse.",
+        "url": "/trends/state-of-llms-q3-2026"
+      },
+      {
+        "area": "Trends",
+        "text": "AI Trends page updated — featured quarterly report now shows Q3 2026.",
+        "url": "/trends"
+      }
+    ]
+  },
+  {
     "date": "2026-10-18",
     "items": [
       {
