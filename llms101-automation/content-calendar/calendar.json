@@ -297,6 +297,21 @@
       "_planned_by": "auto",
       "rationale": "Rising electricity costs touch nearly every household, and in October 2026 a wave of surveys, Fed/grid-operator projections, and new state laws made the AI-data-center-to-your-bill connection front-page news — yet the site has nothing explaining this cost of AI to everyday readers. It's a concrete, pocketbook topic that a smart non-technical audience cares about now and that will remain relevant for well over a month as grids strain and more states legislate. It also fills a real gap: existing nodes cover model cost and hardware, but none explain AI's energy footprint in human terms.",
       "_completed_at": "2026-11-02T00:23:38.009Z"
+    },
+    {
+      "week_of": "2026-11-16",
+      "node": {
+        "id": "ai-bubble-economy",
+        "parentContext": "Themes branch — how the AI industry's money, hype cycles, and economics affect ordinary people (sits alongside ai-energy-bills and cost)",
+        "theme": "theme"
+      },
+      "trendsArticle": {
+        "topic": "Is the 'AI Bubble' About to Pop? What the Stock Market Scare Means for Your Money",
+        "notes": "Angle: a calm, plain-language explainer for a non-investor who just heard 'AI bubble' on the news and wonders if it touches their 401(k), job, or the AI tools they use. Explain in everyday terms what a bubble is, why people are worried (circular AI investments, data-center spending, doubts about returns), and — crucially — separate 'the stock market moved' from 'the AI tools you use are changing.' Ground via live search in the specific Nov 5-7, 2026 events: the ~$2.3T single-day Nasdaq/Nasdaq-100 drop and chip/Nvidia declines, the University of Michigan survey showing 'AI bubble' anxiety reaching average households, and the bull-vs-bear framing (quote the 'losing air vs. bursting' debate, attributed, under 20 words). Verify numbers against at least two outlets before publishing since figures vary by index. AVOID giving investment advice, predicting whether it will crash, naming specific stocks to buy/sell, or doom-mongering; keep it 'here's what's happening and what it does/doesn't mean for you.' Note that one bad day doesn't prove a bubble burst."
+      },
+      "_planned_by": "auto",
+      "rationale": "The AI 'bubble' jumped from Wall Street jargon to kitchen-table conversation this week — a University of Michigan survey found the phrase reaching average households right as a ~$2.3 trillion tech selloff hit on Nov 5. Non-technical readers are anxious about retirement savings, jobs, and whether their favorite AI tools will survive, but the existing map covers only energy bills and banking, not the economics of the AI boom itself. The underlying 'is this a bubble?' question is structural and will still be debated a month from now, making the explainer durable rather than disposable news.",
+      "_completed_at": "2026-11-09T00:37:28.594Z"
     }
   ]
 }
