@@ -1,0 +1,27 @@
+{
+  "label": "AI Bubble Economy",
+  "sub": "Trillions in, uncertain returns out",
+  "tag": "Theme",
+  "theme": "theme",
+  "hasChildren": false,
+  "title": "The AI Bubble Economy: What Happens When the Money Doesn't Add Up",
+  "body": "<p>An <strong>economic bubble</strong> forms when asset prices climb far beyond what future profits could justify. Major tech companies are spending over $700 billion on AI infrastructure in 2026 alone, while revenue from AI products lags far behind. Some analysts estimate the industry would need to generate roughly $650 billion in new annual revenue just to earn modest returns on current infrastructure spending—a gap that raises real concerns about sustainability.</p><p>The mechanism works like this: companies borrow and spend heavily building data centres and buying chips, hoping future AI revenue will justify the cost. When investment outpaces actual demand, <strong>asset values can correct sharply</strong>—triggering layoffs, tightening credit, and spilling into the wider economy. Meanwhile, some AI firms use circular financing, investing in each other's services, which can mask weak underlying demand.</p><p>For ordinary people, the stakes are real. Retirement funds hold significant AI-related stock. If valuations drop, pension portfolios suffer. Companies that overspent on AI may cut non-tech staff to save money. And recessions can actually <strong>accelerate automation</strong>, as struggling businesses adopt cost-cutting technology—meaning workers could lose jobs even as investors lose money.</p>",
+  "examples": [
+    "Hyperscaler capex",
+    "Circular financing",
+    "Tech valuations",
+    "Retirement fund exposure",
+    "Infrastructure ROI",
+    "Job displacement risk"
+  ],
+  "sources": [
+    {
+      "label": "Gartner: AI Infrastructure Spending Impairment Risk (Oct 2026)",
+      "url": "https://www.gartner.com/en/newsroom/press-releases/2026-10-14-gartner-says-over-us-dollars-three-and-a-half-trillion-of-artificial-intelligence-infrastructure-spending-could-be-exposed-to-impairment-by-the-end-of-2030"
+    },
+    {
+      "label": "Open Markets Institute: Brace for Impact Report (2026)",
+      "url": "https://www.openmarketsinstitute.org/publications/brace-for-impact-report-release"
+    }
+  ]
+}

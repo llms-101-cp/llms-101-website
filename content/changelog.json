@@ -474,5 +474,19 @@
         "url": "/trends/view-article.html?article=ai-data-centers-electricity-bills-explained"
       }
     ]
+  },
+  {
+    "date": "2026-11-09",
+    "items": [
+      {
+        "area": "Mind Map",
+        "text": "New AI Bubble Economy node added to the What Else Matters branch."
+      },
+      {
+        "area": "Trends",
+        "text": "New article: Is the 'AI Bubble' About to Pop? What It Means for You.",
+        "url": "/trends/view-article.html?article=ai-bubble-stock-scare-explained"
+      }
+    ]
   }
 ]

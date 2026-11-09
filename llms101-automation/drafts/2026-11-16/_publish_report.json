@@ -1,0 +1,69 @@
+{
+  "week": "2026-11-16",
+  "generatedAt": "2026-11-09T00:38:23.116Z",
+  "dryRun": false,
+  "plannedBy": "auto",
+  "planRationale": "The AI 'bubble' jumped from Wall Street jargon to kitchen-table conversation this week — a University of Michigan survey found the phrase reaching average households right as a ~$2.3 trillion tech selloff hit on Nov 5. Non-technical readers are anxious about retirement savings, jobs, and whether their favorite AI tools will survive, but the existing map covers only energy bills and banking, not the economics of the AI boom itself. The underlying 'is this a bubble?' question is structural and will still be debated a month from now, making the explainer durable rather than disposable news.",
+  "items": [
+    {
+      "filename": "ai-bubble-economy.json",
+      "contentType": "node",
+      "targetPath": "content/nodes/ai-bubble-economy.json",
+      "note": null,
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "Open Markets Institute: Brace for Impact Report (2026)",
+            "issue": "The source link and report are genuine (published October 16, 2026, URL matches). Minor accuracy note: the report is co-published by Open Markets Institute AND the Americans for Financial Reform Education Fund (authors Matthew Scherer and Maya Jenkins); the label attributes it solely to Open Markets. Not blocking — the attribution is substantially correct and would not embarrass the site."
+          },
+          {
+            "severity": "note",
+            "claim": "Some analysts estimate the industry would need to generate roughly $650 billion in new annual revenue just to earn modest returns on current infrastructure spending.",
+            "issue": "Figure is accurate and attributable to a JPMorgan analysis (10% return on buildout through 2030). Worth knowing: this is specifically a JPMorgan estimate, and other analyses cite much higher thresholds (e.g., Gartner's $8.5T cumulative revenue through 2030; Bain's $6T annual by 2031). The '$650 billion' claim is defensible but represents the lower end of published estimates; attributing it to 'some analysts' is fair and not misleading."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": {
+        "branch": "themes",
+        "before": "3/3/3/3/3/3",
+        "after": "3/3/3/3/3/3/1"
+      },
+      "liveUrl": "https://llms101.com/"
+    },
+    {
+      "filename": "ai-bubble-stock-scare-explained.json",
+      "contentType": "trends-article",
+      "targetPath": "content/articles/ai-bubble-stock-scare-explained.json",
+      "note": "Upload this single file to content/articles/. The existing indexing.yml workflow rebuilds articles_index.json automatically, and the article becomes visible on /trends within a minute or two.",
+      "status": "published",
+      "reasons": [],
+      "notes": [],
+      "factCheck": {
+        "verdict": "pass",
+        "findings": [
+          {
+            "severity": "note",
+            "claim": "A data center takes 12 to 24 months to generate revenue after construction begins.",
+            "issue": "This is presented as a flat fact without a source. It is a plausible industry generalization and timelines vary widely by project (some large AI data centers take longer; phased buildouts can monetize partial capacity sooner). Not contradicted by sources, but it is the one unsourced quantitative claim in the piece and could be softened or attributed."
+          },
+          {
+            "severity": "note",
+            "claim": "The Nasdaq-100 dropped about 6.3% to 6.4%, erasing roughly $2.3 trillion ... according to multiple outlets including Bloomberg, Yahoo Finance, and NBC News.",
+            "issue": "The 6.36% Nasdaq-100 drop and ~$2.3T figure are well supported (e.g., Mint/Yahoo-syndicated and other outlets). However, dollar-loss estimates for the session vary meaningfully by scope across outlets (reports range from ~$1.8T for the Nasdaq-100 intraday up to ~$2.5T for the Nasdaq-100 and ~$3T for the S&P 500). The $2.3T figure is defensible but is one of several circulating numbers; the specific attribution to 'Bloomberg, Yahoo Finance, and NBC News' for that exact figure was not individually confirmed for all three. Not embarrassing or wrong, just worth knowing the number is scope-dependent."
+          }
+        ]
+      },
+      "originalFactCheck": null,
+      "repair": null,
+      "layout": null,
+      "liveUrl": "https://llms101.com/trends/view-article.html?article=ai-bubble-stock-scare-explained"
+    }
+  ]
+}
