@@ -1,0 +1,91 @@
+#!/bin/sh
+#
+# Pre-commit hook: enforce changelog.json entries for reader-facing changes.
+#
+# Any commit that touches a reader-facing file must also stage
+# content/changelog.json.  The automation pipeline does this automatically;
+# manual sessions must do it by hand.
+#
+# To bypass in a genuine non-content commit (e.g. tooling-only):
+#   git commit --no-verify -m "..."
+# but only do this when you are certain no reader-facing content changed.
+
+CHANGELOG="content/changelog.json"
+
+# Files / patterns that count as reader-facing.
+# A staged path matches if it equals one of these exactly, or starts with
+# one of the directory prefixes (those ending in /).
+READER_FACING_EXACT="
+index.html
+trends.html
+models.html
+tracker.html
+resources.html
+updates.html
+methodology.html
+"
+
+READER_FACING_PREFIX="
+trends/
+content/articles/
+content/models/
+content/tracker/
+"
+
+# --- collect staged file paths ---
+staged=$(git diff --cached --name-only)
+
+changelog_staged=0
+reader_facing_staged=0
+reader_facing_examples=""
+
+for f in $staged; do
+  # check changelog
+  if [ "$f" = "$CHANGELOG" ]; then
+    changelog_staged=1
+  fi
+
+  # check reader-facing exact matches
+  for pattern in $READER_FACING_EXACT; do
+    if [ "$f" = "$pattern" ]; then
+      reader_facing_staged=1
+      reader_facing_examples="$reader_facing_examples\n  $f"
+      break
+    fi
+  done
+
+  # check reader-facing prefix matches
+  for prefix in $READER_FACING_PREFIX; do
+    case "$f" in
+      "$prefix"*)
+        reader_facing_staged=1
+        reader_facing_examples="$reader_facing_examples\n  $f"
+        break
+        ;;
+    esac
+  done
+done
+
+# --- enforce the rule ---
+if [ "$reader_facing_staged" -eq 1 ] && [ "$changelog_staged" -eq 0 ]; then
+  echo ""
+  echo "------------------------------------------------------------"
+  echo "  COMMIT BLOCKED: changelog entry missing"
+  echo "------------------------------------------------------------"
+  echo ""
+  echo "  These reader-facing files are staged:"
+  printf "$reader_facing_examples\n"
+  echo ""
+  echo "  But content/changelog.json is NOT staged."
+  echo ""
+  echo "  Append an entry to content/changelog.json describing what"
+  echo "  changed for readers, then: git add content/changelog.json"
+  echo ""
+  echo "  To skip this check for a tooling-only commit:"
+  echo "    git commit --no-verify -m \"your message\""
+  echo "------------------------------------------------------------"
+  echo ""
+  exit 1
+fi
+
+exit 0

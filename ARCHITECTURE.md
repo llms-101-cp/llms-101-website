@@ -472,11 +472,10 @@ content type is what caused most of today's problems.
   `models.html`, `tracker.html`, `resources.html`, `updates.html`,
   `methodology.html`, and all paths under `trends/`, `content/articles/`,
   `content/models/`, `content/tracker/`. Bypass for tooling-only commits:
-  `git commit --no-verify -m "..."`. **GOTCHA:** `.git/hooks/` is NOT
-  tracked by git — the hook is lost on a fresh clone. If the repo is ever
-  re-cloned, recreate the hook from the script content in ARCHITECTURE
-  history or move it to `.githooks/` with `git config core.hooksPath
-  .githooks` (not yet done).
+  `git commit --no-verify -m "..."`. The hook lives in `.githooks/`
+  (tracked by git, moved from `.git/hooks/` on 2026-11-14). After a fresh
+  clone, run `git config core.hooksPath .githooks` once to activate it —
+  or it won't fire.
 - **Automation appends to the END of the array** (page sorts, so order
   in file doesn't matter). Failure mode is a broken JSON parse → page
   shows a graceful fallback message; validate JSON parses before commit.
