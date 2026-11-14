@@ -1,7 +1,9 @@
 # LLMs101.com — Architecture Reference
 
 **Read this file FIRST before making any changes to content systems.**
-**Last verified: 2026-10-17 — Q3 2026 quarterly report authored and live.
+**Last verified: 2026-11-14 — What Else Matters branch pruned; model card auto-apply
+added; pre-commit changelog hook added; factCheck JSON parse fallback fix.
+Previously: 2026-10-17 — Q3 2026 quarterly report authored and live.
 Previously split 2026-08-31 into current-state reference (this file) +
 dated incident history (PR #47). Section notes through 2026-07-22 supersede
 where present; the blow-by-blow debugging narratives were moved out (see below).**
@@ -178,6 +180,19 @@ reader-facing twin: any PR changing reader-facing content must append a
   `plan-week.js` catches this for self-planned topics but does NOT run on
   hand-queued calendar entries.
 
+* **2026-11-08 — factCheck JSON parse fallback (commit `dd00932`).**
+  `factCheck()` in `validate-and-publish.js` threw `Unexpected token ','`
+  when processing the Google DeepMind Gemini card in the Nov 1 monthly
+  run. Root cause: when the model uses `web_search_20250305` (built-in
+  search), it sometimes writes its JSON answer in an earlier text block
+  before tool results. `lastTextBlock()` returns only the LAST text block,
+  which in this case was prose preamble containing a comma — `JSON.parse`
+  choked on the comma. Fix: catch the JSON.parse failure and fall back to
+  searching ALL text blocks via `extractJsonObject(allTextBlocks(message))`.
+  If that also fails, error message includes 300 chars of raw response for
+  debugging. The fix is in `factCheck()` only — the same `lastTextBlock`
+  pattern is used elsewhere but only factCheck has this exposure.
+
 * **2026-10-17 — Mind Map connector redesign + layout spacing fix.**
   The branch→child connector lines were individual S-curves from each branch
   node to every child, fanning out diagonally across 3 columns and looking
@@ -285,6 +300,16 @@ content type is what caused most of today's problems.
   with identical labels. The pipeline's `plan-week.js` plan-validation
   catches duplicates for self-planned topics, but does NOT validate
   hand-queued `calendar.json` entries — that check is manual-only.
+- **SCOPE RULE — `themes` branch is LOCKED (2026-11-14):** The "What Else
+  Matters" branch holds exactly six foundational structural topics: open vs
+  closed, safety & alignment, hardware, evaluation & benchmarks, AI
+  regulation, cost of AI. These are stable. **Do NOT add new nodes to
+  `TREE.themes` via the self-planner, backlog, or automation.** New nodes
+  for `themes` require an explicit hand-queued `calendar.json` entry AND a
+  deliberate editorial decision. Background: the branch grew from 6 to 18
+  nodes (July–November 2026) by accumulating consumer/news topics that
+  belong in Trends articles, not on a mind map about understanding LLMs.
+  All 12 additions were removed 2026-11-14 (commit `4fc19be`).
 - **CRITICAL GOTCHA #2:** The root node file MUST be named exactly
   `root.json`. It was previously misnamed `large-language-models.json`,
   which silently broke the ENTIRE dynamic loading system for ALL node
@@ -384,8 +409,20 @@ content type is what caused most of today's problems.
 - **DO NOT attempt to "fix" this by building a dynamic system unless
   explicitly asked** — it works as a static file and converting it is a
   bigger, riskier change than it's worth without a clear reason.
-- When generating a new card via automation, it must be reviewed visually
-  and pasted in manually — never auto-spliced into the shared file.
+- **Auto-apply gate (added 2026-11-08, commit `c7bb32f`):** the monthly
+  full-site review (`fortnightly-review.js`) now auto-splices a generated
+  draft into `models.html` **if and only if** it passes a second `factCheck`
+  pass AND has no vocab-drift problems. The splice uses `spliceModelCard()`
+  — a balanced-div extractor that finds the old card by company span,
+  extracts it, and replaces it in-place. Cards that fail the second
+  fact-check, have vocab problems, or whose HTML couldn't be extracted are
+  still written as manual drafts (the original behaviour). **The
+  `mcard-name` link (`<a href>`) must be preserved when splicing** — draft
+  output omits it; `spliceModelCard` reads the live card's link first.
+  When reviewing a monthly report email, `✓ AUTO-APPLIED` means the card
+  was already spliced; `draft written` means it still needs manual paste.
+- When generating a new card via automation outside the auto-apply path,
+  it must be reviewed visually and pasted in manually.
 - **"Updated …" badge is auto-maintained (fixed 2026-08-31).** The
   `<span class="updated-badge">Updated …</span>` badge in `models.html`
   is rewritten by `fortnightly-review.js` on every monthly full run
@@ -429,6 +466,17 @@ content type is what caused most of today's problems.
   tracker data, articles, reports, static-page content. NOT reader-facing
   = scripts, CSS, infra, docs. This is the reader-facing twin of the
   Outstanding-work list maintenance rule.
+- **Pre-commit hook enforcement (added 2026-11-08):** `.git/hooks/pre-commit`
+  blocks any commit that stages a reader-facing file without also staging
+  `content/changelog.json`. Exact files watched: `index.html`, `trends.html`,
+  `models.html`, `tracker.html`, `resources.html`, `updates.html`,
+  `methodology.html`, and all paths under `trends/`, `content/articles/`,
+  `content/models/`, `content/tracker/`. Bypass for tooling-only commits:
+  `git commit --no-verify -m "..."`. **GOTCHA:** `.git/hooks/` is NOT
+  tracked by git — the hook is lost on a fresh clone. If the repo is ever
+  re-cloned, recreate the hook from the script content in ARCHITECTURE
+  history or move it to `.githooks/` with `git config core.hooksPath
+  .githooks` (not yet done).
 - **Automation appends to the END of the array** (page sorts, so order
   in file doesn't matter). Failure mode is a broken JSON parse → page
   shows a graceful fallback message; validate JSON parses before commit.
