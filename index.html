@@ -883,10 +883,10 @@ let NODE_DATA = {
   },
 
   themes:{
-    label:'What Else Matters',sub:'openness, safety, hardware & evaluation',tag:'Branch',theme:'theme',hasChildren:true,
+    label:'What Else Matters',sub:'openness, safety, hardware, evaluation, regulation & cost',tag:'Branch',theme:'theme',hasChildren:true,
     title:'Beyond the model itself',
-    body:`<p>Understanding how LLMs work is only part of the picture. Just as important is the context they operate in: whether a model's weights are open or closed, how labs try to keep AI systems safe and aligned, the physical hardware that makes any of this possible, and how we actually know whether one model is genuinely better than another.</p><p>These aren't technical mechanics like the branches above — they're the surrounding questions worth understanding regardless of which model you use, and they shape how the whole field actually develops.</p>`,
-    examples:['Open vs. closed weights','AI safety & alignment','GPUs & hardware','Evaluation & benchmarks'],
+    body:`<p>Understanding how LLMs work is only part of the picture. Just as important is the context they operate in: whether a model's weights are open or closed, how labs try to keep AI systems safe and aligned, the physical hardware that makes any of this possible, how we actually know whether one model is genuinely better than another, what rules governments are applying to AI, and what the technology actually costs to run.</p><p>These aren't technical mechanics like the branches above — they're the surrounding questions worth understanding regardless of which model you use, and they shape how the whole field actually develops.</p>`,
+    examples:['Open vs. closed weights','AI safety & alignment','GPUs & hardware','Evaluation & benchmarks','AI Regulation','Cost of AI'],
     sources:[{label:'Stanford HAI — AI Index Report',url:'https://hai.stanford.edu/ai-index'}]
   },
 
@@ -1950,7 +1950,7 @@ const TREE = {
   training: ['data','pretraining','sft','rlhf','dpo','synthetic','fine-tuning','knowledge-distillation'],
   arch: ['dense','moe','reasoning','openai','anthropic-model','google-model','open-models','multimodal'],
   prompting: ['cot','fewshot','system-prompt','rag','context-window','injection','agents','mcp','computer-use'],
-  themes: ['open-closed','safety','hardware','evaluation','regulation','cost','ai-agents-tools','provenance-watermarking','your-data-privacy','ai-shopping','ai-companions-teens','ai-health-advice','ai-browsers','persistent-agents','generative-ui','ai-political-ads','ai-banking-money','ai-energy-bills','ai-bubble-economy'],
+  themes: ['open-closed','safety','hardware','evaluation','regulation','cost'],
   roles: ['role-data', 'role-ml', 'role-ethics', 'role-swe', 'role-hw']
 };
   /* ══════════════════════════════════════════════
